@@ -525,7 +525,7 @@ DtJsonSchemaCredential.json:
   ],
   "id": "https://ecs-trust-registry/dt-credential-schema-credential.json",
   "type": ["VerifiableCredential", "JsonSchemaCredential"],
-  "issuer": "did:webs:ecs-trust-registry",
+  "issuer": "did:example:ecs-trust-registry",
   "issuanceDate": "2024-01-01T19:23:24Z",
   "credentialSchema": {
     "id": "https://w3c.github.io/vc-json-schema/schema/json-schema-credential-schema.json",
@@ -562,12 +562,12 @@ Example:
 ```json
   "service": [
     {
-      "id": "did:webs:dl-trust-registry#dtr-schemas-driving-license-credential-schema-credential",
+      "id": "did:example:dl-trust-registry#dtr-schemas-driving-license-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://dl-trust-registry/driving-license-credential-schema-presentation.json"]
     },
     {
-      "id": "did:webs:dl-trust-registry#dtr-schemas-trust-registry",
+      "id": "did:example:dl-trust-registry#dtr-schemas-trust-registry",
       "type": "DecentralizedTrustRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://dtr-hostname/dtr/v1/"]
@@ -589,27 +589,27 @@ Example:
 ```json
   "service": [
     {
-      "id": "did:webs:ecs-trust-registry#dtr-essential-schemas-service-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-service-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/service-credential-schema-presentation.json"]
     },
     {
-      "id": "did:webs:ecs-trust-registry#dtr-essential-schemas-organization-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-organization-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/org-credential-schema-presentation.json"]
     },
     {
-      "id": "did:webs:ecs-trust-registry#dtr-essential-schemas-person-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-person-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/person-credential-schema-presentation.json"]
     },
     {
-      "id": "did:webs:ecs-trust-registry#dtr-essential-schemas-user-agent-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-user-agent-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/user-agent-credential-schema-presentation.json"]
     },
     {
-      "id": "did:webs:ecs-trust-registry#dtr-essential-schemas-trust-registry",
+      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-trust-registry",
       "type": "DecentralizedTrustRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://dtr-hostname/dtr/v1/"]
@@ -628,7 +628,7 @@ A simple diagram for a clear understanding:
 @startuml
 scale max 800 width
 object "TrustRegistry (in DT-R)" as tr {
-  did: did:webs:ecs-trust-registry
+  did: did:example:ecs-trust-registry
 }
 object "CredentialSchema (in DT-R)" as cs {
   id: 12345678
@@ -636,8 +636,8 @@ object "CredentialSchema (in DT-R)" as cs {
 }
 object "DT Json Schema Credential" as jsc #3fbdb6 {
   id: https://ecs-trust-registry/dts-credential-schema-credential.json
-  issuer: did:webs:ecs-trust-registry
-  jsonSchema: https://dtr-hostname/did:webs:ecs-trust-registry/cs/js/12345678
+  issuer: did:example:ecs-trust-registry
+  jsonSchema: https://dtr-hostname/did:example:ecs-trust-registry/cs/js/12345678
 }
 
 object "DT Credential" as dtscred #3fbdb6 {
@@ -668,11 +668,11 @@ Example DTCredential.json:
   "@context": [
     "https://www.w3.org/ns/credentials/v2"
   ],
-  "id": "did:webs:user-dts.gaiaid.io",
+  "id": "did:example:user-dts.gaiaid.io",
   "type": ["VerifiableCredential", "ServiceCredential"],
-  "issuer": "did:webs:user-dts.gaiaid.io",
+  "issuer": "did:example:user-dts.gaiaid.io",
   "credentialSubject": {
-     "id": "did:webs:user-dts.gaiaid.io",
+     "id": "did:example:user-dts.gaiaid.io",
     ...
   },
   ...
@@ -795,7 +795,7 @@ Example:
 { 
   essentialSchemaTrustRegistries: [ 
     { 
-      "tr": "did:webs:ecs-trust-registry",
+      "tr": "did:example:ecs-trust-registry",
       "dtr": "dtr-mainnet"
     },
     { 
@@ -870,17 +870,17 @@ Let's see a full example in action. Here is a DID Document of a compliant DT-Ser
 ```json
   "service": [
     {
-      "id": "did:webs:user-dts.gaiaid.io#dtr-essential-schemas-service-credential",
+      "id": "did:example:user-dts.gaiaid.io#dtr-essential-schemas-service-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://user-dts.gaiaid.io/service-credential-presentation.json"]
     },
     {
-      "id": "did:webs:user-dts.gaiaid.io#dtr-essential-schemas-org-credential",
+      "id": "did:example:user-dts.gaiaid.io#dtr-essential-schemas-org-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://user-dts.gaiaid.io/org-credential-presentation.json"]
     },
     {
-      "id": "did:webs:user-dts.gaiaid.io#dtr-schemas-trademark-credential",
+      "id": "did:example:user-dts.gaiaid.io#dtr-schemas-trademark-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://user-dts.gaiaid.io/trademark-credential-presentation.json"]
     }
@@ -898,18 +898,18 @@ service-credential-presentation.json:
   "@context": [
     "https://www.w3.org/ns/credentials/v2"
   ],
-  "holder": "did:webs:user-dts.gaiaid.io",
+  "holder": "did:example:user-dts.gaiaid.io",
   "type": ["VerifiablePresentation"],
   "verifiableCredential": [
     {
       "@context": [
         "https://www.w3.org/ns/credentials/v2"
       ],
-      "id": "did:webs:user-dts.gaiaid.io",
+      "id": "did:example:user-dts.gaiaid.io",
       "type": ["VerifiableCredential", "ServiceCredential"],
-      "issuer": "did:webs:user-dts.gaiaid.io",
+      "issuer": "did:example:user-dts.gaiaid.io",
       "credentialSubject": {
-        "id": "did:webs:user-dts.gaiaid.io",
+        "id": "did:example:user-dts.gaiaid.io",
         ...
       },
       ...
@@ -923,7 +923,7 @@ service-credential-presentation.json:
   "proof": {
     "type": "Ed25519Signature2018",
     "created": "2024-02-08T17:38:46Z",
-    "verificationMethod": "did:webs:user-dts.gaiaid.io#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
+    "verificationMethod": "did:example:user-dts.gaiaid.io#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
     "proofPurpose": "assertionMethod",
     "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..6_k6Dbgug-XvksZvDVi9UxUTAmQ0J76pjdrQyNaQL7eVMmP_SUPZCqso6EN3aEKFSsJrjDJoPJa9rBK99mXvDw"
   }
@@ -941,7 +941,7 @@ service-credential-schema-credential.json:
   ],
   "id": "https://ecs-trust-registry/service-credential-schema-credential.json",
   "type": ["VerifiableCredential", "JsonSchemaCredential"],
-  "issuer": "did:webs:ecs-trust-registry",
+  "issuer": "did:example:ecs-trust-registry",
   "issuanceDate": "2024-01-01T19:23:24Z",
   "credentialSchema": {
     "id": "https://w3c.github.io/vc-json-schema/schema/json-schema-credential-schema.json",
@@ -961,7 +961,7 @@ service-credential-schema-credential.json:
 ```
 
 :::note
-Here for trust resolution we need to get did:webs:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)
+Here for trust resolution we need to get did:example:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)
 :::
 
 org-credential-presentation.json:
@@ -972,18 +972,18 @@ org-credential-presentation.json:
   "@context": [
     "https://www.w3.org/ns/credentials/v2"
   ],
-  "holder": "did:webs:user-dts.gaiaid.io",
+  "holder": "did:example:user-dts.gaiaid.io",
   "type": ["VerifiablePresentation"],
   "verifiableCredential": [
     {
       "@context": [
         "https://www.w3.org/ns/credentials/v2"
       ],
-      "id": "did:webs:user-dts.gaiaid.io",
+      "id": "did:example:user-dts.gaiaid.io",
       "type": ["VerifiableCredential", "OrganizationCredential"],
-      "issuer": "did:webs:certivera.com",
+      "issuer": "did:example:certivera.com",
       "credentialSubject": {
-        "id": "did:webs:user-dts.gaiaid.io",
+        "id": "did:example:user-dts.gaiaid.io",
         ...
       },
       ...
@@ -997,7 +997,7 @@ org-credential-presentation.json:
   "proof": {
     "type": "Ed25519Signature2018",
     "created": "2024-02-08T17:38:46Z",
-    "verificationMethod": "did:webs:user-dts.gaiaid.io#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
+    "verificationMethod": "did:example:user-dts.gaiaid.io#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
     "proofPurpose": "assertionMethod",
     "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..6_k6Dbgug-XvksZvDVi9UxUTAmQ0J76pjdrQyNaQL7eVMmP_SUPZCqso6EN3aEKFSsJrjDJoPJa9rBK99mXvDw"
   }
@@ -1015,7 +1015,7 @@ org-credential-schema-credential.json:
   ],
   "id": "https://example.tr/credentials/OrganizationJsonSchemaCredential",
   "type": ["VerifiableCredential", "JsonSchemaCredential"],
-  "issuer": "did:webs:ecs-trust-registry",
+  "issuer": "did:example:ecs-trust-registry",
   "issuanceDate": "2024-01-01T19:23:24Z",
   "credentialSchema": {
     "id": "https://w3c.github.io/vc-json-schema/schema/json-schema-credential-schema.json",
@@ -1042,18 +1042,18 @@ trademark-credential-presentation.json:
   "@context": [
     "https://www.w3.org/ns/credentials/v2"
   ],
-  "holder": "did:webs:user-dts.gaiaid.io",
+  "holder": "did:example:user-dts.gaiaid.io",
   "type": ["VerifiablePresentation"],
   "verifiableCredential": [
     {
       "@context": [
         "https://www.w3.org/ns/credentials/v2"
       ],
-      "id": "did:webs:user-dts.gaiaid.io",
+      "id": "did:example:user-dts.gaiaid.io",
       "type": ["VerifiableCredential", "TrademarkCredential"],
-      "issuer": "did:webs:trademark.abc",
+      "issuer": "did:example:trademark.abc",
       "credentialSubject": {
-        "id": "did:webs:user-dts.gaiaid.io",
+        "id": "did:example:user-dts.gaiaid.io",
         ...
       },
       ...
@@ -1072,7 +1072,7 @@ trademark-credential-presentation.json:
   "proof": {
     "type": "Ed25519Signature2018",
     "created": "2024-02-08T17:38:46Z",
-    "verificationMethod": "did:webs:user-dts.gaiaid.io#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
+    "verificationMethod": "did:example:user-dts.gaiaid.io#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
     "proofPurpose": "assertionMethod",
     "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..6_k6Dbgug-XvksZvDVi9UxUTAmQ0J76pjdrQyNaQL7eVMmP_SUPZCqso6EN3aEKFSsJrjDJoPJa9rBK99mXvDw"
   }
@@ -1109,27 +1109,27 @@ TrademarkJsonSchemaCredential.json:
 
 ```
 
-DID Document of did:webs:ecs-trust-registry:
+DID Document of did:example:ecs-trust-registry:
 
 ```json
   "service": [
     {
-      "id": "did:webs:ecs-trust-registry#dtr-essential-schemas-service-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-service-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/service-credential-schema-presentation.json"]
     },
     {
-      "id": "did:webs:ecs-trust-registry#dtr-essential-schemas-organization-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-organization-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/org-credential-schema-presentation.json"]
     },
     {
-      "id": "did:webs:ecs-trust-registry#dtr-essential-schemas-person-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-person-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/person-credential-schema-presentation.json"]
     },
     {
-      "id": "did:webs:ecs-trust-registry#dtr-essential-schemas-trust-registry",
+      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-trust-registry",
       "type": "DecentralizedTrustRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://dtr-hostname/dtr/v1/"]
