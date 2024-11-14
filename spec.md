@@ -826,7 +826,7 @@ Example #1: check if issuer `did:example:service-credential-issuer` is (was) gra
   "schema_id": "12345678",
   "country": "fr",
   "when": "2024-10-31T01:48:52Z",
-  "[[ref: session]]_id": "09b6d2e1-684f-443a-94ae-f6bc3112b2e5"
+  "session_id": "09b6d2e1-684f-443a-94ae-f6bc3112b2e5"
 }
 ```
 
@@ -851,7 +851,7 @@ Example #2: check if verifier `did:example:verifier` is (was) granted presentati
   "schema_id": "12345678",
   "country": "fr",
   "when": "2024-10-31T01:48:52Z",
-  "[[ref: session]]_id": "09b6d2e1-684f-443a-94ae-f6bc3112b2e5"
+  "session_id": "09b6d2e1-684f-443a-94ae-f6bc3112b2e5"
 }
 ```
 
