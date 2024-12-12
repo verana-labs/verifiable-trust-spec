@@ -4,8 +4,8 @@
       {
         "title": "Decentralized Trust v1 Specification",
         "spec_directory": "./",
-        "logo": "https://verana.foundation/logo.svg",
-        "logo_link": "https://verana.foundation",
+        "logo": "https://verana.io/logo.svg",
+        "logo_link": "https://verana.io",
         "source": {
           "host": "github",
           "account": "verana-labs",
