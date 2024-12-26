@@ -84,7 +84,6 @@ Additionally, VUAs must perform a trust resolution by verifying the credentials 
 A Verifiable Public Registry ([[ref: VPR]]) is a "registry of registries" public service, which provides:
 
 - trust registry features, that can be used by all its [[ref: participants]]: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,...
-- a tokenized business model(s), for charging [[ref: participants]] for fees, that are transferred to other [[ref: participants]].
 - a query API, used by VSs, VUAs, to enforce application of governance frameworks and rules of created trust registries.
 
 ### Conformance
@@ -159,7 +158,71 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 
 ## Specification
 
+### VPR stored Verifiable Credential Json Schemas
+
+*This section is not part of this specification and is provided for understanding only.*
+
+As specified in the [[ref:VPR]] spec, Credential Schemas (CS) are created and linked to a Trust Registry in a [[ref: VPR]].
+
+A Trust Registry creates itself in a [[ref: VPR]] by creating a `TrustRegistry` entry `tr`, and create one or more `CredentialSchema` entry(ies), which definition are Json Schema(s).
+
+Example:
+
+```json
+{
+  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SimpleExampleCredential",
+  "description": "SimpleExampleCredential using JsonSchema",
+  "type": "object",
+  "properties": {
+    "credentialSubject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri"
+        },
+        "firstName": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256
+        },
+        "lastName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "expirationDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "countryOfResidence": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2
+        }
+      },
+      "required": [
+        "id",
+        "lastName",
+        "birthDate",
+        "expirationDate",
+        "countryOfResidence"
+      ]
+    }
+  }
+}
+```
+
 ### [ECS] Essential Credential Schemas
+
+Essential Credential Schemas are the Verifiable Trust basic needed schemas for enabling a minimum trust resolution in Services and User Agents by answering these questions:
+
+- who is the provider of this Verifiable Service?
+- what is the minimum age required to access this service?
+- is the User Agent trying to connect to a Verifiable Service a Verifiable User Agent?
+- ...
 
 Essential Credential Schemas (ECS) are created and linked to a Trust Registry in a [[ref: VPR]]. There are 4 kinds of ECS:
 
@@ -499,11 +562,11 @@ the resulting `json_schema` attribute will be the following Json Schema. Replace
 }
 ```
 
-### [DT-JSON-SCHEMA-CRED] Verifiable Trust Json Schema Credential
+### [VT-JSON-SCHEMA-CRED] Verifiable Trust Json Schema Credential
 
-A DT Json Schema Credential is a [[ref: json schema credential]] self-issued by a Trust Registry DID, that MUST refer to the json schema of a `CredentialSchema` entry created in a `VPR`. Issuer of the DT Json Schema Credential MUST be the same DID that the DID of the `TrustRegistry` entry created in the [[ref: VPR]] than owns the `CredentialSchema` entry in the [[ref: VPR]].
+A Verifiable Trust Json Schema Credential is a [[ref: json schema credential]] self-issued by a Trust Registry DID, that MUST refer to the json schema of a `CredentialSchema` entry created in a `VPR`. Issuer of the Verifiable Trust Json Schema Credential MUST be the same DID that the DID of the `TrustRegistry` entry created in the [[ref: VPR]] than owns the `CredentialSchema` entry in the [[ref: VPR]].
 
-A DT Json Schema Credential MUST have a `credentialSchema` property that contains exactly the following:
+A Verifiable Trust Json Schema Credential MUST have a `credentialSchema` property that contains exactly the following:
 
 ```json
   "credentialSchema": {
@@ -520,9 +583,9 @@ Additionally, it MUST have a `credentialSubject` object with:
 - an object `jsonSchema` MUST be present with an `$ref` properties that is the URL to access the [[ref: json schema]] in the VPR
 - a digestSRI property that MUST match the [[ref: json schema]] file content hash.
 
-Example of a DT Json Schema Credential:
+Example of a Verifiable Trust Json Schema Credential:
 
-DtJsonSchemaCredential.json:
+VtJsonSchemaCredential.json:
 
 ```json
 
@@ -530,7 +593,7 @@ DtJsonSchemaCredential.json:
   "@context": [
       "https://www.w3.org/ns/credentials/v2"
   ],
-  "id": "https://ecs-trust-registry/dt-credential-schema-credential.json",
+  "id": "https://ecs-trust-registry/vt-credential-schema-credential.json",
   "type": ["VerifiableCredential", "JsonSchemaCredential"],
   "issuer": "did:example:ecs-trust-registry",
   "issuanceDate": "2024-01-01T19:23:24Z",
@@ -555,14 +618,14 @@ DtJsonSchemaCredential.json:
 This is subject to a slight update of [vc-json-schema](https://w3c.github.io/vc-json-schema/) as specified in this [issue](https://github.com/w3c/vc-json-schema/issues/235)
 :::
 
-### [DT-TR-DIDDOC] Trust Registry DID Document
+### [VT-TR-DIDDOC] Trust Registry DID Document
 
-For each `CredentialSchema` entry a Trust Registry has created in a [[ref: VPR]], the Trust Registry MUST self-issue the corresponding DT Json Schema Credential as specified in [DT-JSON-SCHEMA-CRED].
+For each `CredentialSchema` entry a Trust Registry has created in a [[ref: VPR]], the Trust Registry MUST self-issue the corresponding Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].
 
-Additionally, in MUST present the DT Json Schema Credential(s) in its DIDDocument, as well as the corresponding trust registry entry for verification. To do so, it MUST define the following entries in its DIDDocument:
+Additionally, in MUST present the Verifiable Trust Json Schema Credential(s) in its DIDDocument, as well as the corresponding trust registry entry for verification. To do so, it MUST define the following entries in its DIDDocument:
 
-- for each `CredentialSchema` entry it wants to be resolvable, a "LinkedVerifiablePresentation" service entry with a fragment that MUST start with to `#vpr-schemas`, that MUST point to a self-issued DT Json Schema Credential as specified in [DT-JSON-SCHEMA-CRED].
-- a "DecentralizedTrustRegistry" service entry with fragment name equal to `#vpr-schemas-trust-registry`, that MUST point to the API of the DID's trust registry in the VPR.
+- for each `CredentialSchema` entry it wants to be resolvable, a "LinkedVerifiablePresentation" service entry with a fragment that MUST start with to `#vpr-schemas`, that MUST point to a self-issued Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].
+- a "VerifiableTrustRegistry" service entry with fragment name equal to `#vpr-schemas-trust-registry`, that MUST point to the API of the DID's trust registry in the VPR.
 
 Example:
 
@@ -575,7 +638,7 @@ Example:
     },
     {
       "id": "did:example:dl-trust-registry#vpr-schemas-trust-registry",
-      "type": "DecentralizedTrustRegistry",
+      "type": "VerifiableTrustRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
@@ -583,13 +646,13 @@ Example:
   ]
 ```
 
-If the Trust Registry wishes to provide ECS trust resolution, it MUST present 4 DT Json Credential Schemas of the 4 ECSs required for trust resolution, as well as the corresponding trust registry entry for verification. To do that, it MUST define the following entries in its DIDDocument:
+If the Trust Registry wishes to provide ECS trust resolution, it MUST present 4 VT Json Credential Schemas of the 4 ECSs required for trust resolution, as well as the corresponding trust registry entry for verification. To do that, it MUST define the following entries in its DIDDocument:
 
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-service-credential-schema-credential`, that MUST point to a self-issued Service DT Json Schema Credential as specified in [SERVICE-JSON-SCHEMA-CRED] of a service json schema as specified in [ECS-SERVICE].
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-org-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a DT json schema as specified in [ECS-ORG].
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-person-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a DT json schema as specified in [ECS-PERSON].
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-user-agent-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a DT json schema as specified in [ECS-USER-AGENT].
-- a "DecentralizedTrustRegistry" service entry with fragment name equal to `#vpr-essential-schemas-trust-registry`, that MUST point to the API URL of this DID's trust registry in the VPR.
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-service-credential-schema-credential`, that MUST point to a self-issued Service Verifiable Trust Json Schema Credential as specified in [SERVICE-JSON-SCHEMA-CRED] of a service json schema as specified in [ECS-SERVICE].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-org-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a VT json schema as specified in [ECS-ORG].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-person-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a VT json schema as specified in [ECS-PERSON].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-user-agent-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a VT json schema as specified in [ECS-USER-AGENT].
+- a "VerifiableTrustRegistry" service entry with fragment name equal to `#vpr-essential-schemas-trust-registry`, that MUST point to the API URL of this DID's trust registry in the VPR.
 
 Example:
 
@@ -617,7 +680,7 @@ Example:
     },
     {
       "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry",
-      "type": "DecentralizedTrustRegistry",
+      "type": "VerifiableTrustRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
@@ -626,7 +689,7 @@ Example:
   ]
 ```
 
-### [DT-CRED] Verifiable Trust (DT) Credential
+### [VT-CRED] Verifiable Trust Credential
 
 A simple diagram for a clear understanding:
 
@@ -641,31 +704,31 @@ object "CredentialSchema (in VPR)" as cs {
   id: 12345678
   json_schema: { "$id": ... "title": "ServiceCredential"}
 }
-object "DT Json Schema Credential" as jsc #3fbdb6 {
+object "Verifiable Trust Json Schema Credential" as jsc #3fbdb6 {
   id: https://ecs-trust-registry/vs-credential-schema-credential.json
   issuer: did:example:ecs-trust-registry
   jsonSchema: https://vpr-hostname/vpr/v1/cs/js/12345678
 }
 
-object "DT Credential" as vscred #3fbdb6 {
+object "Verifiable Trust Credential" as vscred #3fbdb6 {
   issuer: did:example:vs-owner
   jsonSchemaCredential: https://ecs-trust-registry/vs-credential-schema-credential.json
 }
 
 cs <-- tr : create a CredentialSchema (in VPR)
 jsc <-- cs : trust registry did issue a JsonSchemaCredential based on json_schema located in CredentialSchema in the VPR
-vscred <-- jsc: VS owner issue its DT credential based on JsonSchemaCredential issued by trust registry did
+vscred <-- jsc: VS owner issue its VT credential based on JsonSchemaCredential issued by trust registry did
 
 @enduml
 
 ```
 
-A DT Credential MUST have a `credentialSchema` property:
+A Verifiable Trust Credential MUST have a `credentialSchema` property:
 
 - `id` must point to a [[ref: json schema credential]] issued by the trust registry [[ref: DID]] owner of the schema in the VPR;
 - `type` MUST be `JsonSchemaCredential`.
 
-As a matter of fact, a DT Credential MUST conform to the dereferenced [[ref: json schema]] of the `JsonSchemaCredential`.
+As a matter of fact, a Verifiable Trust Credential MUST conform to the dereferenced [[ref: json schema]] of the `JsonSchemaCredential`.
 
 Example DTCredential.json:
 
@@ -691,57 +754,57 @@ Example DTCredential.json:
 
 ```
 
-### [DT-EC] DT Essential Credentials
+### [VT-EC] VT Essential Credentials
 
-- DT Service Essential Credential [DT-EC-SERVICE]: a [DT-CRED] linked to a CredentialSchema entry that conforms to [ECS-SERVICE].
-- DT Organization Essential Credential [DT-EC-ORG]: a [DT-CRED] linked to a CredentialSchema entry that conforms to [ECS-ORG].
-- DT Person Essential Credential [DT-EC-PERSON]: a [DT-CRED] linked to a CredentialSchema entry that conforms to [ECS-PERSON].
-- DT User Agent Essential Credential [DT-EC-USER-AGENT]: a [DT-CRED] linked to a CredentialSchema entry that conforms to [ECS-USER-AGENT].
+- VT Service Essential Credential [VT-EC-SERVICE]: a [VT-CRED] linked to a CredentialSchema entry that conforms to [ECS-SERVICE].
+- VT Organization Essential Credential [VT-EC-ORG]: a [VT-CRED] linked to a CredentialSchema entry that conforms to [ECS-ORG].
+- VT Person Essential Credential [VT-EC-PERSON]: a [VT-CRED] linked to a CredentialSchema entry that conforms to [ECS-PERSON].
+- VT User Agent Essential Credential [VT-EC-USER-AGENT]: a [VT-CRED] linked to a CredentialSchema entry that conforms to [ECS-USER-AGENT].
 
 ### [VS-REQ] Requirements for a service to be a VS
 
 - [VS-REQ-1] A [[ref: VS]] MUST be identified by a [[:ref DID]]. The [[:ref DID]] of a [[ref: VS]] MUST resolve to a [[ref: DID Document]].
-- [VS-REQ-2] A [[ref: VS]] DID Document MUST present (linked-vp) a DT Service Essential Credential that conforms to [DT-EC-SERVICE].
-- [VS-REQ-3] If the issuer of the DT Service Essential Credential of [VS-REQ-2] is the [[ref: DID]] of this service, service DID Document MUST present a credential that conforms to [DT-EC-ORG] or (exclusive) a [DT-EC-PERSON].
-- [VS-REQ-4] If the issuer of the DT Service Credential of [VS-REQ-2] is not the [[ref: DID]] of this service, issuer service MUST be a [VS-REQ] [[ref: VS]] that conforms to [VS-REQ-3].
+- [VS-REQ-2] A [[ref: VS]] DID Document MUST present (linked-vp) a VT Service Essential Credential that conforms to [VT-EC-SERVICE].
+- [VS-REQ-3] If the issuer of the VT Service Essential Credential of [VS-REQ-2] is the [[ref: DID]] of this service, service DID Document MUST present a credential that conforms to [VT-EC-ORG] or (exclusive) a [VT-EC-PERSON].
+- [VS-REQ-4] If the issuer of the VT Service Credential of [VS-REQ-2] is not the [[ref: DID]] of this service, issuer service MUST be a [VS-REQ] [[ref: VS]] that conforms to [VS-REQ-3].
 - [VS-REQ-5] A compliant [[ref: VS]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify VS Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
 
 ::: note
 In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.
 :::
 
-- [VS-REQ-5] The service MAY issue, present through linked verifiable presentation entries, or request presentation of any additional VS Credential that conforms to [DT-CRED].
+- [VS-REQ-5] The service MAY issue, present through linked verifiable presentation entries, or request presentation of any additional VS Credential that conforms to [VT-CRED].
 
 ### [VS-CI] Credential Issuance
 
-- [VS-CI-1] A [[ref: VS]] CAN issue [DT-CRED] DT Credentials.
-- [VS-CI-2] A [[ref: VS]] MUST NOT issue credentials that are not compliant with [DT-CRED].
+- [VS-CI-1] A [[ref: VS]] CAN issue [VT-CRED] VT Credentials.
+- [VS-CI-2] A [[ref: VS]] MUST NOT issue credentials that are not compliant with [VT-CRED].
 
 ### [VS-PR] Presentation Request
 
-- [VS-PR-1] A [[ref: VS]] CAN request presentation of [DT-CRED] DT Credentials
-- [VS-PR-2] A [[ref: VS]] MUST NOT request presentation of credentials that are not compliant with [DT-CRED].
+- [VS-PR-1] A [[ref: VS]] CAN request presentation of [VT-CRED] VT Credentials
+- [VS-PR-2] A [[ref: VS]] MUST NOT request presentation of credentials that are not compliant with [VT-CRED].
 
 ### [VS-LVP] Linked Verifiable Presentations
 
 Linked verifiable presentations of credential CAN be present in service DID Document, if present, they MUST conform to the following:
 
 - [VS-LVP-1] Verifiable presentation MUST be signed by the VS DID.
-- [VS-LVP-2] if linked verifiable presentation id fragment start with `#vpr-schemas`, presented credential and DID Document MUST conform to [DT-CRED].
-- [VS-LVP-3] if linked verifiable presentation id fragment is `#vpr-essential-schemas-service-credential`, presented credential MUST be a DT Service Essential Credential [DT-EC-SERVICE].
-- [VS-LVP-4] if linked verifiable presentation id fragment is `#vpr-essential-schemas-org-credential`, presented credential MUST be a DT Organization Essential Credential [DT-EC-ORG].
-- [VS-LVP-5] if linked verifiable presentation id fragment is `#vpr-essential-schemas-person-credential`, presented credential MUST be a DT Person Essential Credential [DT-EC-PERSON].
+- [VS-LVP-2] if linked verifiable presentation id fragment start with `#vpr-schemas`, presented credential and DID Document MUST conform to [VT-CRED].
+- [VS-LVP-3] if linked verifiable presentation id fragment is `#vpr-essential-schemas-service-credential`, presented credential MUST be a VT Service Essential Credential [VT-EC-SERVICE].
+- [VS-LVP-4] if linked verifiable presentation id fragment is `#vpr-essential-schemas-org-credential`, presented credential MUST be a VT Organization Essential Credential [VT-EC-ORG].
+- [VS-LVP-5] if linked verifiable presentation id fragment is `#vpr-essential-schemas-person-credential`, presented credential MUST be a VT Person Essential Credential [VT-EC-PERSON].
 
 ### [VUA-REQ] Requirements for a User Agent to be a VUA
 
 ::: todo
-ignore or now
+ignore for now
 :::
 
 - [VUA-REQ-1] A [[ref: VUA]] MUST be identified by a [[:ref DID]]. The [[:ref DID]] of a [[ref: VUA]] MUST resolve to a [[ref: DID Document]].
-- [VUA-REQ-2] A [[ref: VUA]] DID Document MUST present a DT Organization Essential Credential that conforms to [DT-EC-ORG] or (exclusive) to [DT-EC-PERSON].
-- [VUA-REQ-3] A [[ref: VUA]] DID Document MUST present a DT User Agent Essential Credential that conforms to [DT-EC-USER-AGENT].
-- [VUA-REQ-4] A compliant [[ref: VUA]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify DT Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
+- [VUA-REQ-2] A [[ref: VUA]] DID Document MUST present a VT Organization Essential Credential that conforms to [VT-EC-ORG] or (exclusive) to [VT-EC-PERSON].
+- [VUA-REQ-3] A [[ref: VUA]] DID Document MUST present a VT User Agent Essential Credential that conforms to [VT-EC-USER-AGENT].
+- [VUA-REQ-4] A compliant [[ref: VUA]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify Verifiable Trust Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
 
 :::note
 In other words, a to be a VUA, a User Agent MUST identify itself to the other end by sharing its DID, and the other end MUST verify it complies with [VUA-REQ]
@@ -753,9 +816,9 @@ This must be modified as each user agent instance will have its own credential i
 
 ### [VS-CONN-VS] Requirements for a VS to accept a connection from another service
 
-When a [[ref: VS]] VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-SPEC], else VS-1 MUST NOT accept the connection. Exception: if provided by VS-1 service Service-2 wants to connect to is an issuer of [DT-EC-ORG] or [DT-EC-PERSON] and Service-2 is just missing a [DT-EC-ORG] / [DT-EC-PERSON] for being compliant, connection CAN be accepted by VS-1.
+When a [[ref: VS]] VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-SPEC], else VS-1 MUST NOT accept the connection. Exception: if provided by VS-1 service Service-2 wants to connect to is an issuer of [VT-EC-ORG] or [VT-EC-PERSON] and Service-2 is just missing a [VT-EC-ORG] / [VT-EC-PERSON] for being compliant, connection CAN be accepted by VS-1.
 
-### [VS-CONN-VUA] Requirements for a VS to accept a connection from a VUA User Agent
+### [VS-CONN-VUA] Requirements for a VS to accept a connection from a User Agent
 
 When a User Agent start a [[ref: session]] with a compliant [[ref: VS]], [[ref: VS]] MUST verify that User Agent complies with [VUA-SPEC], else [[ref: VS]] MUST drop the connection.
 
@@ -769,7 +832,7 @@ When a [[ref: VUA]] start a [[ref: session]] with another User Agent, [[ref: VUA
 
 ### [TR-WL] VPR and Trust Registry whitelists
 
-Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of trusted VPRs and trusted DT Essential Credential issuers, and ignore VPRs and DT ECS issuers that are not in these lists when resolving trust:
+Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of trusted VPRs and trusted VT Essential Credential issuers, and ignore VPRs and VT ECS issuers that are not in these lists when resolving trust:
 
 - [TR-WL-VPR]: A list of prefix URLs of trusted VPRs (registry of registries).
 
@@ -821,7 +884,7 @@ Example:
 }
 ```
 
-### [TR-RESOL] Verification of permission(s) in Verifiable Public Registries
+### [VT-RESOL] Verification of permission(s) in Verifiable Public Registries
 
 :::todo
 Use TRQP instead of native [[ref: VPR]] queries when TRQP stabilizes
@@ -1145,7 +1208,7 @@ DID Document of did:example:ecs-trust-registry:
     },
     {
       "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry",
-      "type": "DecentralizedTrustRegistry",
+      "type": "VerifiableTrustRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
@@ -1166,7 +1229,7 @@ DID Document of did:example:trademark-trust-registry:
     },
     {
       "id": "did:example:trademark-trust-registry#vpr-schemas-trust-registry",
-      "type": "DecentralizedTrustRegistry",
+      "type": "VerifiableTrustRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
@@ -1204,21 +1267,13 @@ Based on the [DIDComm](https://didcomm.org) open protocol, Hologram provides cla
 
 Because Hologram is using the [DIDComm](https://didcomm.org) open protocol, anyone can create a new interoperable VUA so that Hologram users will natively be able to chat with users from others compatible VUAs.
 
-#### Interferences
-
-*This section is non-normative.*
-
-Interferences is a decentralized social network app which is a browser of Social Channels. Because Social Channels are VSs, their owner can be clearly identified: users know that they are following the real influencer. Each channel owner is responsible of the moderation of his/her channel meaning the social network does not need external moderation. Channel owners decide how user can interact in their channel. For example, they can decide that any user can "like" a post, but require user to authenticate himself by presenting a verifiable credential for having the right to write post comments.
-
-Interferences is not fully developed and thus is not yet available to public.
-
 ### VSs Implementations
 
 #### Hologram Services
 
 *This section is non-normative.*
 
-Hologram Services can be of 2 kind:
+Hologram Services can be of 2 kinds:
 
 - Chatbot Services
 - Basic Out-of-band Services, for Verifiable Credential Presentation Request and/or Verifiable Credential Issuance.
