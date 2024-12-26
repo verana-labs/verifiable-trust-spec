@@ -6,7 +6,7 @@
 
 **Editors:**
 
-~ [Fabrice Rochette](https://www.linkedin.com/in/fabricerochette) (2060.io)
+~ [Fabrice Rochette](https://www.linkedin.com/in/fabricerochette) (The Verana Foundation, 2060.io)
 
 <!-- -->
 
@@ -34,51 +34,58 @@ Not to talk about privacy, and what's done with our data.
 
 To build a new, trustable internet, we need new, zero trust communication channels, where both ends can be clearly identified, and where providing a service, accessing a service, or creating a new account, should be as simple as clicking a link or presenting a credential.
 
-Decentralized Trust Services are services that are using a secure bidirectional persistent communication channel that, combined to trust layers such as [Decentralized Trust Registries](https://github.com/verana-labs/decentralized-trust-registry-spec), enable establishing a zero trust communication channel between peers.
-
 ## About this Document
 
-In order to fully understand the concepts developed in this document, you should have some basic knowledge of [[ref:DID]], [[ref:DIDComm]], [[ref:DT-Service]], [[ref:trust registry]], ledger-based applications, and more generally, all terms present in the [Terminology](#terminology) section.
+In order to fully understand the concepts developed in this document, you should have some basic knowledge of [[ref:DID]], [[ref:DIDComm]], [[ref:VS]], [[ref:trust registry]], ledger-based applications, and more generally, all terms present in the [Terminology](#terminology) section.
 
 ## Introduction
 
-### What is a Trustable Communication Channel?
+### What is a Verifiable Communication Channel?
 
 *This section is non-normative.*
 
-A trustable communication channel is a persistent communication channel, where participants have been fully authenticated with a [[ref: verifiable credential]].
+A verifiable communication channel is a communication channel, where participants have been fully authenticated with a [[ref: verifiable credential]].
 
-A communication channel is considered a trustable communication channel if:
+A communication channel is considered a verifiable communication channel if:
 
 - communication channel supports verifiable credentials, either through linked-vp and/or present proof;
-- communication channel is persistent;
 - all communication channel participants presented a [[ref: verifiable credential]], and presented [[ref: verifiable credentials]] were considered acceptable by other participants (authorized issuers, and optionally matching claims).
 - when public resolvable DID(s) are involved for establishing the connection, ciphering keys for bootstrapping the connection MUST be keys defined in DID Document(s);
 - when direct did:peer DIDs are involved for bootstrapping the connection, they can be accepted only if originating from a compliant user agent.
 
 All the above is detailed in this spec.
 
+Verifiable communication channel can be persistent or ephemerous.
+
 :::note
 Presented credentials do not necessarily need to be human/organization identity related. An IoT service could present a deviceId credential to authenticate itself.
 :::
 
-### What is a Decentralized Trust - Service?
+### What is a Verifiable Service?
 
 *This section is non-normative.*
 
-A [[ref: decentralized trust service]] is a service that provide a way to identify itself *before* connecting to it. Entities that want to connect to a [[ref: decentralized trust service]] can review its presented [[ref: verifiable credentials]], prove their legitimacy by performing a [[ref: trust resolution]], and based on the result, decide to connect or not.
+A [[ref: verifiable service]] is a service that provide a way to identify itself *before* connecting to it. Entities that want to connect to a [[ref: verifiable service]] can review its presented [[ref: verifiable credentials]], prove their legitimacy by performing a [[ref: trust resolution]], and based on the result, decide to connect or not.
 
-Additionally, a [[ref: decentralized trust service]] that would like to issue or request verification of credentials must prove it is allowed to do so.
+Additionally, a [[ref: verifiable service]] that would like to issue or request verification of credentials must prove it is allowed to do so.
 
-### What is a Decentralized Trust - User Agent?
+### What is a Verifiable User Agent?
 
 *This section is non-normative.*
 
-A [[ref: decentralized trust user agent]] is a software (a browser, an app, a wallet...) 
+A Decentralized Trust - Verifiable User Agent ([[ref: VUA]]) is a software (a browser, an app, a wallet...) for connecting to VSs and other VUAs. When establishing connections, a VUA must verify the connection peer(s) and allow connection(s) only to compliant VS and VUA peers.
 
-service that provide a way to identify itself *before* connecting to it. Entities that want to connect to a [[ref: decentralized trust service]] can review its presented [[ref: verifiable credentials]], prove their legitimacy by performing a [[ref: trust resolution]], and based on the result, decide to connect or not.
+Additionally, VUAs must perform a trust resolution by verifying the credentials presented by the peers and query VPR(s) to check that these credentials have been issued by verified issuers.
 
-Additionally, a [[ref: decentralized trust service]] that would like to issue or request verification of credentials must prove it is allowed to do so.
+### What is a Verifiable Public Registry?
+
+*This section is non-normative.*
+
+A Verifiable Public Registry ([[ref: VPR]]) is a "registry of registries" public service, which provides:
+
+- trust registry features, that can be used by all its [[ref: participants]]: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,...
+- a tokenized business model(s), for charging [[ref: participants]] for fees, that are transferred to other [[ref: participants]].
+- a query API, used by VSs, VUAs, to enforce application of governance frameworks and rules of created trust registries.
 
 ### Conformance
 
@@ -88,7 +95,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ## Terminology
 
 [[def: credential schema, credential schemas]]:
-~ An [[ref: DT-R]] resource which represents a verifiable credential definition and the associated permissions and business rules for issuing, verifying or holding a credential linked to this credential schema.
+~ An [[ref: VPR]] resource which represents a verifiable credential definition and the associated permissions and business rules for issuing, verifying or holding a credential linked to this credential schema.
 
 [[def: decentralized identifier, DID, DIDs]]:
 ~ A decentralized identifier, as specified in [[spec-norm:DID-CORE]].
@@ -99,17 +106,17 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 [[def: decentralized identifier document, DID Document, DID Documents]]:
 ~ A DID Document, as specified in [[spec-norm:DID-CORE]].
 
-[[def: decentralized trust registry, DTR, DT-R, DT-Registry]]:
-~ a decentralized, ledger-based network, which provides: trust registry features that can be used by all its [[ref: participants]], including credential schema management, issuer and verifier management; and a tokenized business model for charging/rewarding [[ref: participants]]. For more information, please refer to [DT-R Spec](https://verana-labs.github.io/decentralized-trust-registry-spec/).
+[[def: verifiable public registry, VPR, VPRs]]:
+~ a public, normally decentralized, ledger-based network, which provides: trust registry features, that can be used by all its [[ref: participants]]: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,... and a tokenized business model for charging/rewarding [[ref: participants]]. For more information, please refer to [VPR Spec](https://verana-labs.github.io/decentralized-trust-registry-spec/).
 
-[[def: decentralized trust service, DTS, DTSs, DT-S, DT-Service, DT-Services]]:
+[[def: verifiable service, VS, VSs]]:
 ~ A service, identified by a resolvable [[ref: DID]] that can be deployed anywhere by its owner, and that is conforming to this spec and has a resolvable [[ref: proof of trust]].
 
-[[def: decentralized trust user agent, DT-UA, DT-UAs]]:
-~ A user agent for accessing and using [[ref: DT-Services]]. To be considered a [[ref: DT-UA]], a user agent must conform and enforce this spec, such as presenting a proof of trust to end user before accepting connecting to [[ref: DT-S]] compliant services, and refuse connecting to not compliant services.
+[[def: verifiable user agent, VUA, VUAs]]:
+~ A user agent for accessing and using [[ref: VSs]]. To be considered a [[ref: VUA]], a user agent must conform and enforce this spec, such as presenting a proof of trust to end user before accepting connecting to [[ref: VS]] compliant services, and refuse connecting to not compliant services.
 
 [[def: essential credential schema, essential credential schemas]]:
-~ Default [[ref: credential schema]], owned by a [[ref: trust registry]], that provide the basis for a trust layer to exist in the ecosystem so that [[ref: DT-UA]] can generate a [[ref: proof of trust]].
+~ Default [[ref: credential schema]], owned by a [[ref: trust registry]], that provide the basis for a trust layer to exist in the ecosystem so that [[ref: VUA]] can generate a [[ref: proof of trust]].
 
 [[def: holder, holders]]:
 ~ A role an entity might perform by possessing one or more verifiable credentials and generating verifiable presentations from them. A holder is often, but not always, a [[ref: subject]] of the verifiable credentials they are holding. Holders store their credentials in credential repositories. Example holders include organizations, persons, things.
@@ -127,13 +134,13 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ A presentation of a [[ref: verifiable credential]] as specified in [LINKED-VP](https://identity.foundation/linked-vp/).
 
 [[def: participant, participants]]:
-~ An entity that uses an [[ref: DT-R]] and its trust layer to provide or use services.
+~ An entity that uses an [[ref: VPR]] and its trust layer to provide or use services.
 
 [[def: proof of trust]]:
-~ Visual representation using [[ref: essential credential schemas]] of a [[ref: trust resolution]] process of a [[ref: DT-Service]], for identifying the [[ref: DT-Service]], its owner, and the [[ref: issuer]] of the verifiable credential of its owner.
+~ Visual representation using [[ref: essential credential schemas]] of a [[ref: trust resolution]] process of a [[ref: Verifiable Service]], for identifying the [[ref: VS]], its owner, and the [[ref: issuer]] of the verifiable credential of its owner.
 
 [[def: session]]:
-~ A session defines a connection to a DID Document provided service from a third party DT-S or DT-UA.
+~ A session defines a connection to a DID Document provided service from a third party VS or VUA.
 
 [[def: subject, subjects]]:
 ~ A thing about which claims are made. Example subjects include human beings, animals, things, and organization, a [[ref: DID]]...
@@ -142,7 +149,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ An approved list of [[ref: issuers]] and [[ref: verifiers]] that are authorized to issue/verify certain credentials in an ecosystem.
 
 [[def: trust resolution]]:
-~ Process run by, for example a [[ref: DT-UA]] or a [[ref: DT-S]], which purpose is to recursively resolve [[ref: DID]] by digging into [[ref: DID Documents]] and look for [[ref: linked-vp]] entries and their [[ref: issuer]] [[ref: DIDs]], and trust-registry entries to gather whether the service provided by the [[ref: DID]] is trustable (and legitimate), or not.
+~ Process run by, for example a [[ref: VUA]] or a [[ref: VS]], which purpose is to recursively resolve [[ref: DID]] by digging into [[ref: DID Documents]] and look for [[ref: linked-vp]] entries and their [[ref: issuer]] [[ref: DIDs]], and trust-registry entries to gather whether the service provided by the [[ref: DID]] is trustable (and legitimate), or not.
 
 [[def: verifier, verifiers]]:
 ~ A role an entity performs by receiving one or more verifiable credentials, optionally inside a verifiable presentation for processing. Example verifiers include service providers.
@@ -154,14 +161,14 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 
 ### [ECS] Essential Credential Schemas
 
-Essential Credential Schemas (ECS) are created and managed by a Trust Registry in a [[ref: DT-R]]. There are 4 kinds of ECS:
+Essential Credential Schemas (ECS) are created and linked to a Trust Registry in a [[ref: VPR]]. There are 4 kinds of ECS:
 
 - Service;
 - Organization;
 - Person;
 - UserAgent.
 
-A Trust Registry creates itself in a [[ref: DT-R]] by creating a `TrustRegistry` entry `tr`. For this Trust Registry to qualify for being used for trust resolution in [[ref: DT-Service]] and [[ref: DT-UA]], it MUST provide, associated to the `TrustRegistry` entry `tr`, all 4 `CredentialSchema` entries, with a respective `json_schema` attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSON], [ECS-USER-AGENT].
+A Trust Registry creates itself in a [[ref: VPR]] by creating a `TrustRegistry` entry `tr`. For this Trust Registry to qualify for being used for trust resolution in [[ref: VSs]] and [[ref: VUAs]], it MUST provide, associated to the `TrustRegistry` entry `tr`, all 4 `CredentialSchema` entries, with a respective `json_schema` attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSON], [ECS-USER-AGENT].
 
 #### [ECS-SERVICE] Service Credential Json Schema
 
@@ -184,7 +191,7 @@ the resulting `json_schema` attribute will be the following Json Schema. Replace
 
 ```json
 {
-  "$id": "https://dtr-hostname/dtr/v1/cs/js/{$schema_id}",
+  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ServiceCredential",
   "description": "ServiceCredential using JsonSchema",
@@ -274,7 +281,7 @@ the resulting `json_schema` attribute will be the following Json Schema. Replace
 
 ```json
 {
-  "$id": "https://dtr-hostname/dtr/v1/cs/js/{$schema_id}",
+  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "OrganizationCredential",
   "description": "OrganizationCredential using JsonSchema",
@@ -354,7 +361,7 @@ the resulting `json_schema` attribute will be the following Json Schema. Replace
 
 ```json
 {
-  "$id": "https://dtr-hostname/dtr/v1/cs/js/{$schema_id}",
+  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "PersonCredential",
   "description": "PersonCredential using JsonSchema",
@@ -424,10 +431,10 @@ the resulting `json_schema` attribute will be the following Json Schema. Replace
 
 ```json
 {
-  "$id": "https://dtr-hostname/dtr/v1/cs/js/{$schema_id}",
+  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "ServiceCredential",
-  "description": "ServiceCredential using JsonSchema",
+  "title": "UserAgentCredential",
+  "description": "UserAgentCredential using JsonSchema",
   "type": "object",
   "properties": {
     "credentialSubject": {
@@ -494,7 +501,7 @@ the resulting `json_schema` attribute will be the following Json Schema. Replace
 
 ### [DT-JSON-SCHEMA-CRED] Decentralized Trust Json Schema Credential
 
-A DT Json Schema Credential is a [[ref: json schema credential]] self-issued by a Trust Registry DID, that MUST refer to the json schema of a `CredentialSchema` entry created in a `DT-R`. Issuer of the DT Json Schema Credential MUST be the same DID that the DID of the `TrustRegistry` entry created in the [[ref: DT-R]] than owns the `CredentialSchema` entry in the [[ref: DT-R]].
+A DT Json Schema Credential is a [[ref: json schema credential]] self-issued by a Trust Registry DID, that MUST refer to the json schema of a `CredentialSchema` entry created in a `VPR`. Issuer of the DT Json Schema Credential MUST be the same DID that the DID of the `TrustRegistry` entry created in the [[ref: VPR]] than owns the `CredentialSchema` entry in the [[ref: VPR]].
 
 A DT Json Schema Credential MUST have a `credentialSchema` property that contains exactly the following:
 
@@ -508,9 +515,9 @@ A DT Json Schema Credential MUST have a `credentialSchema` property that contain
 
 Additionally, it MUST have a `credentialSubject` object with:
 
-- a `id` properties that is the URL to access the [[ref: json schema]] in the DT-R,
+- a `id` properties that is the URL to access the [[ref: json schema]] in the VPR,
 - `type` MUST be set to "JsonSchema",
-- an object `jsonSchema` MUST be present with an `$ref` properties that is the URL to access the [[ref: json schema]] in the DT-R
+- an object `jsonSchema` MUST be present with an `$ref` properties that is the URL to access the [[ref: json schema]] in the VPR
 - a digestSRI property that MUST match the [[ref: json schema]] file content hash.
 
 Example of a DT Json Schema Credential:
@@ -533,10 +540,10 @@ DtJsonSchemaCredential.json:
     "digestSRI": "sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"
   },
   "credentialSubject": {
-    "id": "https://dtr-hostname/dtr/v1/cs/js/12345678",
+    "id": "https://vpr-hostname/vpr/v1/cs/js/12345678",
     "type": "JsonSchema",
     "jsonSchema": {
-      "$ref": "https://dtr-hostname/dtr/v1/cs/js/12345678"
+      "$ref": "https://vpr-hostname/vpr/v1/cs/js/12345678"
     },
     "digestSRI": "sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ" 
   }
@@ -550,27 +557,27 @@ This is subject to a slight update of [vc-json-schema](https://w3c.github.io/vc-
 
 ### [DT-TR-DIDDOC] Trust Registry DID Document
 
-For each `CredentialSchema` entry a Trust Registry has created in a [[ref: DT-R]], the Trust Registry MUST self-issue the corresponding DT Json Schema Credential as specified in [DT-JSON-SCHEMA-CRED].
+For each `CredentialSchema` entry a Trust Registry has created in a [[ref: VPR]], the Trust Registry MUST self-issue the corresponding DT Json Schema Credential as specified in [DT-JSON-SCHEMA-CRED].
 
 Additionally, in MUST present the DT Json Schema Credential(s) in its DIDDocument, as well as the corresponding trust registry entry for verification. To do so, it MUST define the following entries in its DIDDocument:
 
-- for each `CredentialSchema` entry it wants to be resolvable, a "LinkedVerifiablePresentation" service entry with a fragment that MUST start with to `#dtr-schemas`, that MUST point to a self-issued DT Json Schema Credential as specified in [DT-JSON-SCHEMA-CRED].
-- a "DecentralizedTrustRegistry" service entry with fragment name equal to `#dtr-schemas-trust-registry`, that MUST point to the API of the DID's trust registry in the DT-R.
+- for each `CredentialSchema` entry it wants to be resolvable, a "LinkedVerifiablePresentation" service entry with a fragment that MUST start with to `#vpr-schemas`, that MUST point to a self-issued DT Json Schema Credential as specified in [DT-JSON-SCHEMA-CRED].
+- a "DecentralizedTrustRegistry" service entry with fragment name equal to `#vpr-schemas-trust-registry`, that MUST point to the API of the DID's trust registry in the VPR.
 
 Example:
 
 ```json
   "service": [
     {
-      "id": "did:example:dl-trust-registry#dtr-schemas-driving-license-credential-schema-credential",
+      "id": "did:example:dl-trust-registry#vpr-schemas-driving-license-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://dl-trust-registry/driving-license-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:dl-trust-registry#dtr-schemas-trust-registry",
+      "id": "did:example:dl-trust-registry#vpr-schemas-trust-registry",
       "type": "DecentralizedTrustRegistry",
       "version": "1.0",
-      "serviceEndpoint": ["https://dtr-hostname/dtr/v1/"]
+      "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
     ...
   ]
@@ -578,41 +585,41 @@ Example:
 
 If the Trust Registry wishes to provide ECS trust resolution, it MUST present 4 DT Json Credential Schemas of the 4 ECSs required for trust resolution, as well as the corresponding trust registry entry for verification. To do that, it MUST define the following entries in its DIDDocument:
 
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#dtr-essential-schemas-service-credential-schema-credential`, that MUST point to a self-issued Service DT Json Schema Credential as specified in [SERVICE-JSON-SCHEMA-CRED] of a service json schema as specified in [ECS-SERVICE].
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#dtr-essential-schemas-org-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a DT json schema as specified in [ECS-ORG].
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#dtr-essential-schemas-person-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a DT json schema as specified in [ECS-PERSON].
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#dtr-essential-schemas-user-agent-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a DT json schema as specified in [ECS-USER-AGENT].
-- a "DecentralizedTrustRegistry" service entry with fragment name equal to `#dtr-essential-schemas-trust-registry`, that MUST point to the API URL of this DID's trust registry in the DT-R.
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-service-credential-schema-credential`, that MUST point to a self-issued Service DT Json Schema Credential as specified in [SERVICE-JSON-SCHEMA-CRED] of a service json schema as specified in [ECS-SERVICE].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-org-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a DT json schema as specified in [ECS-ORG].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-person-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a DT json schema as specified in [ECS-PERSON].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-user-agent-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a DT json schema as specified in [ECS-USER-AGENT].
+- a "DecentralizedTrustRegistry" service entry with fragment name equal to `#vpr-essential-schemas-trust-registry`, that MUST point to the API URL of this DID's trust registry in the VPR.
 
 Example:
 
 ```json
   "service": [
     {
-      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-service-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-service-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/service-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-organization-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-organization-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/org-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-person-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-person-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/person-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-user-agent-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-user-agent-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/user-agent-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-trust-registry",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry",
       "type": "DecentralizedTrustRegistry",
       "version": "1.0",
-      "serviceEndpoint": ["https://dtr-hostname/dtr/v1/"]
+      "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
     
     ...
@@ -627,27 +634,27 @@ A simple diagram for a clear understanding:
 
 @startuml
 scale max 800 width
-object "TrustRegistry (in DT-R)" as tr {
+object "TrustRegistry (in VPR)" as tr {
   did: did:example:ecs-trust-registry
 }
-object "CredentialSchema (in DT-R)" as cs {
+object "CredentialSchema (in VPR)" as cs {
   id: 12345678
   json_schema: { "$id": ... "title": "ServiceCredential"}
 }
 object "DT Json Schema Credential" as jsc #3fbdb6 {
-  id: https://ecs-trust-registry/dts-credential-schema-credential.json
+  id: https://ecs-trust-registry/vs-credential-schema-credential.json
   issuer: did:example:ecs-trust-registry
-  jsonSchema: https://dtr-hostname/did:example:ecs-trust-registry/cs/js/12345678
+  jsonSchema: https://vpr-hostname/vpr/v1/cs/js/12345678
 }
 
-object "DT Credential" as dtscred #3fbdb6 {
-  issuer: did:example:dts-owner
-  jsonSchemaCredential: https://ecs-trust-registry/dts-credential-schema-credential.json
+object "DT Credential" as vscred #3fbdb6 {
+  issuer: did:example:vs-owner
+  jsonSchemaCredential: https://ecs-trust-registry/vs-credential-schema-credential.json
 }
 
-cs <-- tr : create a CredentialSchema (in DT-R)
-jsc <-- cs : trust registry did issue a JsonSchemaCredential based on json_schema located in CredentialSchema in the DT-R
-dtscred <-- jsc: DT-Service owner issue its DT credential based on JsonSchemaCredential issued by trust registry did
+cs <-- tr : create a CredentialSchema (in VPR)
+jsc <-- cs : trust registry did issue a JsonSchemaCredential based on json_schema located in CredentialSchema in the VPR
+vscred <-- jsc: VS owner issue its DT credential based on JsonSchemaCredential issued by trust registry did
 
 @enduml
 
@@ -655,7 +662,7 @@ dtscred <-- jsc: DT-Service owner issue its DT credential based on JsonSchemaCre
 
 A DT Credential MUST have a `credentialSchema` property:
 
-- `id` must point to a [[ref: json schema credential]] issued by the trust registry [[ref: DID]] owner of the schema in the DT-R;
+- `id` must point to a [[ref: json schema credential]] issued by the trust registry [[ref: DID]] owner of the schema in the VPR;
 - `type` MUST be `JsonSchemaCredential`.
 
 As a matter of fact, a DT Credential MUST conform to the dereferenced [[ref: json schema]] of the `JsonSchemaCredential`.
@@ -668,11 +675,11 @@ Example DTCredential.json:
   "@context": [
     "https://www.w3.org/ns/credentials/v2"
   ],
-  "id": "did:example:user-dts.gaiaid.io",
+  "id": "did:example:user-vs.example.com",
   "type": ["VerifiableCredential", "ServiceCredential"],
-  "issuer": "did:example:user-dts.gaiaid.io",
+  "issuer": "did:example:user-vs.example.com",
   "credentialSubject": {
-     "id": "did:example:user-dts.gaiaid.io",
+     "id": "did:example:user-vs.example.com",
     ...
   },
   ...
@@ -691,94 +698,102 @@ Example DTCredential.json:
 - DT Person Essential Credential [DT-EC-PERSON]: a [DT-CRED] linked to a CredentialSchema entry that conforms to [ECS-PERSON].
 - DT User Agent Essential Credential [DT-EC-USER-AGENT]: a [DT-CRED] linked to a CredentialSchema entry that conforms to [ECS-USER-AGENT].
 
-### [DT-Service-REQ] Requirements for a service to be a DT-Service
+### [VS-REQ] Requirements for a service to be a VS
 
-- [DT-Service-REQ-1] A [[ref: DT-Service]] MUST be identified by a [[:ref DID]]. The [[:ref DID]] of a [[ref: DT-Service]] MUST resolve to a [[ref: DID Document]].
-- [DT-Service-REQ-2] A [[ref: DT-Service]] DID Document MUST present (linked-vp) a DT Service Essential Credential that conforms to [DT-EC-SERVICE].
-- [DT-Service-REQ-3] If the issuer of the DT Service Essential Credential of [DT-Service-REQ-2] is the [[ref: DID]] of this service, service DID Document MUST present a credential that conforms to [DT-EC-ORG] or (exclusive) a [DT-EC-PERSON].
-- [DT-Service-REQ-4] If the issuer of the DT Service Credential of [DT-Service-REQ-2] is not the [[ref: DID]] of this service, issuer service MUST be a [DT-Service-REQ] [[ref: DT-Service]] that conforms to [DT-Service-REQ-3].
-- [DT-Service-REQ-5] A compliant [[ref: DT-Service]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify DT-Service Json Schema Credentials, Json Schema hashes, use the Decentralized Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
+- [VS-REQ-1] A [[ref: VS]] MUST be identified by a [[:ref DID]]. The [[:ref DID]] of a [[ref: VS]] MUST resolve to a [[ref: DID Document]].
+- [VS-REQ-2] A [[ref: VS]] DID Document MUST present (linked-vp) a DT Service Essential Credential that conforms to [DT-EC-SERVICE].
+- [VS-REQ-3] If the issuer of the DT Service Essential Credential of [VS-REQ-2] is the [[ref: DID]] of this service, service DID Document MUST present a credential that conforms to [DT-EC-ORG] or (exclusive) a [DT-EC-PERSON].
+- [VS-REQ-4] If the issuer of the DT Service Credential of [VS-REQ-2] is not the [[ref: DID]] of this service, issuer service MUST be a [VS-REQ] [[ref: VS]] that conforms to [VS-REQ-3].
+- [VS-REQ-5] A compliant [[ref: VS]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify VS Json Schema Credentials, Json Schema hashes, use the Decentralized Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
 
 ::: note
-In other words, to be a DT-Service, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.
+In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.
 :::
 
-- [DT-Service-REQ-5] The service MAY issue, present through linked verifiable presentation entries, or request presentation of any additional DT-Service Credential that conforms to [DT-CRED].
+- [VS-REQ-5] The service MAY issue, present through linked verifiable presentation entries, or request presentation of any additional VS Credential that conforms to [DT-CRED].
 
-### [DT-Service-CI] Credential Issuance
+### [VS-CI] Credential Issuance
 
-- [DT-Service-CI-1] A [[ref: DT-Service]] CAN issue [DT-CRED] DT Credentials.
-- [DT-Service-CI-2] A [[ref: DT-Service]] MUST NOT issue credentials that are not compliant with [DT-CRED].
+- [VS-CI-1] A [[ref: VS]] CAN issue [DT-CRED] DT Credentials.
+- [VS-CI-2] A [[ref: VS]] MUST NOT issue credentials that are not compliant with [DT-CRED].
 
-### [DT-Service-PR] Presentation Request
+### [VS-PR] Presentation Request
 
-- [DT-Service-PR-1] A [[ref: DT-Service]] CAN request presentation of [DT-CRED] DT Credentials
-- [DT-Service-PR-2] A [[ref: DT-Service]] MUST NOT request presentation of credentials that are not compliant with [DT-CRED].
+- [VS-PR-1] A [[ref: VS]] CAN request presentation of [DT-CRED] DT Credentials
+- [VS-PR-2] A [[ref: VS]] MUST NOT request presentation of credentials that are not compliant with [DT-CRED].
 
-### [DT-Service-LVP] Linked Verifiable Presentations
+### [VS-LVP] Linked Verifiable Presentations
 
 Linked verifiable presentations of credential CAN be present in service DID Document, if present, they MUST conform to the following:
 
-- [DT-Service-LVP-1] Verifiable presentation MUST be signed by the DT-Service DID.
-- [DT-Service-LVP-2] if linked verifiable presentation id fragment start with `#dtr-schemas`, presented credential and DID Document MUST conform to [DT-CRED].
-- [DT-Service-LVP-3] if linked verifiable presentation id fragment is `#dtr-essential-schemas-service-credential`, presented credential MUST be a DT Service Essential Credential [DT-EC-SERVICE].
-- [DT-Service-LVP-4] if linked verifiable presentation id fragment is `#dtr-essential-schemas-org-credential`, presented credential MUST be a DT Organization Essential Credential [DT-EC-ORG].
-- [DT-Service-LVP-5] if linked verifiable presentation id fragment is `#dtr-essential-schemas-person-credential`, presented credential MUST be a DT Person Essential Credential [DT-EC-PERSON].
+- [VS-LVP-1] Verifiable presentation MUST be signed by the VS DID.
+- [VS-LVP-2] if linked verifiable presentation id fragment start with `#vpr-schemas`, presented credential and DID Document MUST conform to [DT-CRED].
+- [VS-LVP-3] if linked verifiable presentation id fragment is `#vpr-essential-schemas-service-credential`, presented credential MUST be a DT Service Essential Credential [DT-EC-SERVICE].
+- [VS-LVP-4] if linked verifiable presentation id fragment is `#vpr-essential-schemas-org-credential`, presented credential MUST be a DT Organization Essential Credential [DT-EC-ORG].
+- [VS-LVP-5] if linked verifiable presentation id fragment is `#vpr-essential-schemas-person-credential`, presented credential MUST be a DT Person Essential Credential [DT-EC-PERSON].
 
-### [DT-UA-REQ] Requirements for a User Agent to be a DT-UA
+### [VUA-REQ] Requirements for a User Agent to be a VUA
 
-- [DT-UA-REQ-1] A [[ref: DT-UA]] MUST be identified by a [[:ref DID]]. The [[:ref DID]] of a [[ref: DT-UA]] MUST resolve to a [[ref: DID Document]].
-- [DT-UA-REQ-2] A [[ref: DT-UA]] DID Document MUST present a DT Organization Essential Credential that conforms to [DT-EC-ORG] or (exclusive) to [DT-EC-PERSON].
-- [DT-UA-REQ-3] A [[ref: DT-UA]] DID Document MUST present a DT User Agent Essential Credential that conforms to [DT-EC-USER-AGENT].
-- [DT-UA-REQ-4] A compliant [[ref: DT-UA]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify DT Json Schema Credentials, Json Schema hashes, use the Decentralized Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
-
-::: note
-In other words, a to be a DT-UA, a User Agent MUST identify itself to the other end by sharing its DID, and the other end MUST verify it complies with [DT-UA-REQ]
+::: todo
+ignore or now
 :::
 
-### [DT-Service-CONN-DT-Service] Requirements for a DT-Service to accept a connection from another service
+- [VUA-REQ-1] A [[ref: VUA]] MUST be identified by a [[:ref DID]]. The [[:ref DID]] of a [[ref: VUA]] MUST resolve to a [[ref: DID Document]].
+- [VUA-REQ-2] A [[ref: VUA]] DID Document MUST present a DT Organization Essential Credential that conforms to [DT-EC-ORG] or (exclusive) to [DT-EC-PERSON].
+- [VUA-REQ-3] A [[ref: VUA]] DID Document MUST present a DT User Agent Essential Credential that conforms to [DT-EC-USER-AGENT].
+- [VUA-REQ-4] A compliant [[ref: VUA]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify DT Json Schema Credentials, Json Schema hashes, use the Decentralized Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
 
-When a [[ref: DT-Service]] DT-Service-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, DT-Service-1 MUST verify service Service-2 complies with [DT-Service-SPEC], else DT-Service-1 MUST NOT accept the connection. Exception: if provided by DT-Service-1 service Service-2 wants to connect to is an issuer of [DT-EC-ORG] or [DT-EC-PERSON] and Service-2 is just missing a [DT-EC-ORG] / [DT-EC-PERSON] for being compliant, connection CAN be accepted by DT-Service-1.
+:::note
+In other words, a to be a VUA, a User Agent MUST identify itself to the other end by sharing its DID, and the other end MUST verify it complies with [VUA-REQ]
+:::
 
-### [DT-Service-CONN-DT-UA] Requirements for a DT-Service to accept a connection from a DT-UA User Agent
+:::todo
+This must be modified as each user agent instance will have its own credential issued.
+:::
 
-When a User Agent start a [[ref: session]] with a compliant [[ref: DT-Service]], [[ref: DT-Service]] MUST verify that User Agent complies with [DT-UA-SPEC], else [[ref: DT-Service]] MUST drop the connection.
+### [VS-CONN-VS] Requirements for a VS to accept a connection from another service
 
-### [DT-UA-CONN-DT-Service] Requirements for a DT-UA to accept connecting to a service
+When a [[ref: VS]] VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-SPEC], else VS-1 MUST NOT accept the connection. Exception: if provided by VS-1 service Service-2 wants to connect to is an issuer of [DT-EC-ORG] or [DT-EC-PERSON] and Service-2 is just missing a [DT-EC-ORG] / [DT-EC-PERSON] for being compliant, connection CAN be accepted by VS-1.
 
-When a [[ref: DT-UA]] start a [[ref: session]] with a service, [[ref: DT-UA]] MUST verify DT-Service complies with [DT-Service-SPEC], else DT-UA MUST NOT connect to DT-Service.
+### [VS-CONN-VUA] Requirements for a VS to accept a connection from a VUA User Agent
 
-### [DT-UA-CONN-DT-UA] Requirements for a DT-UA to accept connecting to a another User Agent
+When a User Agent start a [[ref: session]] with a compliant [[ref: VS]], [[ref: VS]] MUST verify that User Agent complies with [VUA-SPEC], else [[ref: VS]] MUST drop the connection.
 
-When a [[ref: DT-UA]] start a [[ref: session]] with another User Agent, [[ref: DT-UA]] MUST verify that the peer User Agent complies with [DT-UA-SPEC], else [[ref: DT-UA]] MUST drop the connection.
+### [VUA-CONN-VS] Requirements for a VUA to accept connecting to a service
 
-### [TR-WL] DT-R and Trust Registry whitelists
+When a [[ref: VUA]] start a [[ref: session]] with a service, [[ref: VUA]] MUST verify VS complies with [VS-SPEC], else VUA MUST NOT connect to VS.
 
-Compliant [[ref: DT-Services]] and [[ref: DT-UAs]] MUST maintain a list of trusted DT-Rs and trusted DT Essential Credential issuers, and ignore DT-Rs and DT ECS issuers that are not in these lists when resolving trust:
+### [VUA-CONN-VUA] Requirements for a VUA to accept connecting to a another User Agent
 
-- [TR-WL-DT-R]: A list of prefix URLs of trusted DT-Rs (registry of registries).
+When a [[ref: VUA]] start a [[ref: session]] with another User Agent, [[ref: VUA]] MUST verify that the peer User Agent complies with [VUA-SPEC], else [[ref: VUA]] MUST drop the connection.
+
+### [TR-WL] VPR and Trust Registry whitelists
+
+Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of trusted VPRs and trusted DT Essential Credential issuers, and ignore VPRs and DT ECS issuers that are not in these lists when resolving trust:
+
+- [TR-WL-VPR]: A list of prefix URLs of trusted VPRs (registry of registries).
 
 Example:
 
 ```json
 
 { 
-  decentralizedTrustRegistries: [ 
+  verifiablePublicRegistries: [ 
     { 
-      "name": "dtr-mainnet",
-      "baseurl": "https://dtr-mainnet/dtr/v1",
+      "name": "vpr-mainnet",
+      "baseurl": "https://vpr-mainnet/vpr/v1",
       "version": "1"
       "production": true
     },
     { 
-      "name": "dtr-testnet",
-      "baseurl": "https://dtr-testnet/dtr/v1",
+      "name": "vpr-testnet",
+      "baseurl": "https://vpr-testnet/vpr/v1",
       "version": "1"
       "production": false
     },
     { 
-      "name": "dtr-devnet",
-      "baseurl": "https://dtr-devnet/dtr/v2",
+      "name": "vpr-devnet",
+      "baseurl": "https://vpr-devnet/vpr/v2",
       "version": "2"
       "production": false
     },
@@ -796,27 +811,27 @@ Example:
   essentialSchemaTrustRegistries: [ 
     { 
       "tr": "did:example:ecs-trust-registry",
-      "dtr": "dtr-mainnet"
+      "vpr": "vpr-mainnet"
     },
     { 
       "tr": "did:efg:ecs-trust-registry",
-      "dtr": "dtr-testnet"
+      "vpr": "vpr-testnet"
     }
   ]
 }
 ```
 
-### [TR-RESOL] Verification of permission in Decentralized Trust Registries
+### [TR-RESOL] Verification of permission(s) in Verifiable Public Registries
 
 :::todo
-Use TRQP instead of native [[ref: DT-R]] queries when TRQP stabilizes
+Use TRQP instead of native [[ref: VPR]] queries when TRQP stabilizes
 :::
 
-Please refer to [MOD-CSP-QRY-3] and [MOD-CSP-QRY-4] in [[ref: DT-R]] specs.
+Please refer to [MOD-CSP-QRY-3] and [MOD-CSP-QRY-4] in [[ref: VPR]] specs.
 
 Example #1: check if issuer `did:example:service-credential-issuer` is (was) granted issuance of credentials from credential schema `12345678` to wallet_user_agent_did `did:example:wallet_user_agent` through user agent `did:example:user_agent` for country `fr` at datetime `2024-10-31T01:48:52Z` for [[ref: session]]_id `09b6d2e1-684f-443a-94ae-f6bc3112b2e5`:
 
-`POST /dtr/v1/csp/authorized_issuer`
+`POST /vpr/v1/csp/authorized_issuer`
 
 ```json
 {
@@ -840,7 +855,7 @@ Response:
 
 Example #2: check if verifier `did:example:verifier` is (was) granted presentation request of a credential from credential schema `12345678` issued by issuer `did:example:service-credential-issuer` from wallet_user_agent_did `did:example:wallet_user_agent` through user agent `did:example:user_agent` for country `fr` at datetime `2024-10-31T01:48:52Z` for [[ref: session]]_id `09b6d2e1-684f-443a-94ae-f6bc3112b2e5` and [[ref: session]]_id `09b6d2e1-684f-443a-94ae-f6bc3112b2e5`:
 
-`POST /dtr/v1/csp/authorized_verifier`
+`POST /vpr/v1/csp/authorized_verifier`
 
 ```json
 {
@@ -865,24 +880,24 @@ Response:
 
 ### Example
 
-Let's see a full example in action. Here is a DID Document of a compliant DT-Service:
+Let's see a full example in action. Here is a DID Document of a compliant VS:
 
 ```json
   "service": [
     {
-      "id": "did:example:user-dts.gaiaid.io#dtr-essential-schemas-service-credential",
+      "id": "did:example:user-vs.example.com#vpr-essential-schemas-service-credential",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://user-dts.gaiaid.io/service-credential-presentation.json"]
+      "serviceEndpoint": ["https://user-vs.example.com/service-credential-presentation.json"]
     },
     {
-      "id": "did:example:user-dts.gaiaid.io#dtr-essential-schemas-org-credential",
+      "id": "did:example:user-vs.example.com#vpr-essential-schemas-org-credential",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://user-dts.gaiaid.io/org-credential-presentation.json"]
+      "serviceEndpoint": ["https://user-vs.example.com/org-credential-presentation.json"]
     },
     {
-      "id": "did:example:user-dts.gaiaid.io#dtr-schemas-trademark-credential",
+      "id": "did:example:user-vs.example.com#vpr-schemas-trademark-credential",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://user-dts.gaiaid.io/trademark-credential-presentation.json"]
+      "serviceEndpoint": ["https://user-vs.example.com/trademark-credential-presentation.json"]
     }
     ...
   ]
@@ -898,18 +913,18 @@ service-credential-presentation.json:
   "@context": [
     "https://www.w3.org/ns/credentials/v2"
   ],
-  "holder": "did:example:user-dts.gaiaid.io",
+  "holder": "did:example:user-vs.example.com",
   "type": ["VerifiablePresentation"],
   "verifiableCredential": [
     {
       "@context": [
         "https://www.w3.org/ns/credentials/v2"
       ],
-      "id": "did:example:user-dts.gaiaid.io",
+      "id": "did:example:user-vs.example.com",
       "type": ["VerifiableCredential", "ServiceCredential"],
-      "issuer": "did:example:user-dts.gaiaid.io",
+      "issuer": "did:example:user-vs.example.com",
       "credentialSubject": {
-        "id": "did:example:user-dts.gaiaid.io",
+        "id": "did:example:user-vs.example.com",
         ...
       },
       ...
@@ -919,11 +934,11 @@ service-credential-presentation.json:
       }
     }
   ],
-  "id": "https://user-dts.gaiaid.io/service-credential-presentation.json",
+  "id": "https://user-vs.example.com/service-credential-presentation.json",
   "proof": {
     "type": "Ed25519Signature2018",
     "created": "2024-02-08T17:38:46Z",
-    "verificationMethod": "did:example:user-dts.gaiaid.io#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
+    "verificationMethod": "did:example:user-vs.example.com#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
     "proofPurpose": "assertionMethod",
     "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..6_k6Dbgug-XvksZvDVi9UxUTAmQ0J76pjdrQyNaQL7eVMmP_SUPZCqso6EN3aEKFSsJrjDJoPJa9rBK99mXvDw"
   }
@@ -949,10 +964,10 @@ service-credential-schema-credential.json:
     "digestSRI": "sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"
   },
   "credentialSubject": {
-    "id": "https://dtr-hostname/dtr/v1/cs/js/12345678",
+    "id": "https://vpr-hostname/vpr/v1/cs/js/12345678",
     "type": "JsonSchema",
     "jsonSchema": {
-      "$ref": "https://dtr-hostname/dtr/v1/cs/js/12345678"
+      "$ref": "https://vpr-hostname/vpr/v1/cs/js/12345678"
     },
     "digestSRI": "sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW" 
   }
@@ -972,18 +987,18 @@ org-credential-presentation.json:
   "@context": [
     "https://www.w3.org/ns/credentials/v2"
   ],
-  "holder": "did:example:user-dts.gaiaid.io",
+  "holder": "did:example:user-vs.example.com",
   "type": ["VerifiablePresentation"],
   "verifiableCredential": [
     {
       "@context": [
         "https://www.w3.org/ns/credentials/v2"
       ],
-      "id": "did:example:user-dts.gaiaid.io",
+      "id": "did:example:user-vs.example.com",
       "type": ["VerifiableCredential", "OrganizationCredential"],
       "issuer": "did:example:certivera.com",
       "credentialSubject": {
-        "id": "did:example:user-dts.gaiaid.io",
+        "id": "did:example:user-vs.example.com",
         ...
       },
       ...
@@ -993,11 +1008,11 @@ org-credential-presentation.json:
       }
     }
   ],
-  "id": "https://user-dts.gaiaid.io/org-credential-presentation.json",
+  "id": "https://user-vs.example.com/org-credential-presentation.json",
   "proof": {
     "type": "Ed25519Signature2018",
     "created": "2024-02-08T17:38:46Z",
-    "verificationMethod": "did:example:user-dts.gaiaid.io#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
+    "verificationMethod": "did:example:user-vs.example.com#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
     "proofPurpose": "assertionMethod",
     "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..6_k6Dbgug-XvksZvDVi9UxUTAmQ0J76pjdrQyNaQL7eVMmP_SUPZCqso6EN3aEKFSsJrjDJoPJa9rBK99mXvDw"
   }
@@ -1023,10 +1038,10 @@ org-credential-schema-credential.json:
     "digestSRI": "sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"
   },
   "credentialSubject": {
-    "id": "https://dtr-hostname/dtr/v1/cs/js/78901234",
+    "id": "https://vpr-hostname/vpr/v1/cs/js/78901234",
     "type": "JsonSchema",
     "jsonSchema": {
-      "$ref": "https://dtr-hostname/dtr/v1/cs/js/78901234"
+      "$ref": "https://vpr-hostname/vpr/v1/cs/js/78901234"
     },
     "digestSRI": "sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"  
   }
@@ -1042,18 +1057,18 @@ trademark-credential-presentation.json:
   "@context": [
     "https://www.w3.org/ns/credentials/v2"
   ],
-  "holder": "did:example:user-dts.gaiaid.io",
+  "holder": "did:example:user-vs.example.com",
   "type": ["VerifiablePresentation"],
   "verifiableCredential": [
     {
       "@context": [
         "https://www.w3.org/ns/credentials/v2"
       ],
-      "id": "did:example:user-dts.gaiaid.io",
+      "id": "did:example:user-vs.example.com",
       "type": ["VerifiableCredential", "TrademarkCredential"],
       "issuer": "did:example:trademark.abc",
       "credentialSubject": {
-        "id": "did:example:user-dts.gaiaid.io",
+        "id": "did:example:user-vs.example.com",
         ...
       },
       ...
@@ -1062,17 +1077,17 @@ trademark-credential-presentation.json:
         "type": "JsonSchemaCredential"
       }
       "credentialSchema": {
-        "id": "https://dtr-hostname/dtr/v1/cs/js/7358717246",
+        "id": "https://vpr-hostname/vpr/v1/cs/js/7358717246",
         "type": "JsonSchema",
         "digestSRI": "sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"
       }
     }
   ],
-  "id": "https://user-dts.gaiaid.io/trademark-credential-presentation.json",
+  "id": "https://user-vs.example.com/trademark-credential-presentation.json",
   "proof": {
     "type": "Ed25519Signature2018",
     "created": "2024-02-08T17:38:46Z",
-    "verificationMethod": "did:example:user-dts.gaiaid.io#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
+    "verificationMethod": "did:example:user-vs.example.com#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A",
     "proofPurpose": "assertionMethod",
     "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..6_k6Dbgug-XvksZvDVi9UxUTAmQ0J76pjdrQyNaQL7eVMmP_SUPZCqso6EN3aEKFSsJrjDJoPJa9rBK99mXvDw"
   }
@@ -1098,10 +1113,10 @@ TrademarkJsonSchemaCredential.json:
     "digestSRI": "sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"
   },
   "credentialSubject": {
-    "id": "https://example-dtr/cs/js/7358717246",
+    "id": "https://example-vpr/cs/js/7358717246",
     "type": "JsonSchema",
     "jsonSchema": {
-       "$ref": "https://example-dtr/dtr/v1/cs/js/7358717246",
+       "$ref": "https://example-vpr/vpr/v1/cs/js/7358717246",
     }
     "digestSRI": "sha384-GHJSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"
   }
@@ -1114,25 +1129,25 @@ DID Document of did:example:ecs-trust-registry:
 ```json
   "service": [
     {
-      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-service-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-service-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/service-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-organization-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-organization-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/org-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-person-credential-schema-credential",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-person-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecs-trust-registry/person-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:ecs-trust-registry#dtr-essential-schemas-trust-registry",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry",
       "type": "DecentralizedTrustRegistry",
       "version": "1.0",
-      "serviceEndpoint": ["https://dtr-hostname/dtr/v1/"]
+      "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
     
     ...
@@ -1145,15 +1160,15 @@ DID Document of did:example:trademark-trust-registry:
   ...
   "service": [
     {
-      "id": "did:example:trademark-trust-registry#dtr-schemas-trademark-credential-schema-credential",
+      "id": "did:example:trademark-trust-registry#vpr-schemas-trademark-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://trademark.abc/credentials/TrademarkJsonSchemaCredential"]
     },
     {
-      "id": "did:example:trademark-trust-registry#dtr-schemas-trust-registry",
+      "id": "did:example:trademark-trust-registry#vpr-schemas-trust-registry",
       "type": "DecentralizedTrustRegistry",
       "version": "1.0",
-      "serviceEndpoint": ["https://dtr-hostname/dtr/v1/"]
+      "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
     
     ...
@@ -1161,7 +1176,69 @@ DID Document of did:example:trademark-trust-registry:
   ...
 ```
 
+## Implementations
+
+*This section is non-normative.*
+
+Implementations are provided by the community, being the [Verana Foundation](https://verana.io) and [2060.io](https://2060.io) the most active contributors at the moment.
+
+### Trust Resolution
+
+#### Typescript Implementation
+
+::todo
+Provide repo info
+:::
+
+### VUAs Implementations
+
+#### Hologram Messaging
+
+*This section is non-normative.*
+
+Hologram Messaging is a Verifiable Credential wallet and messaging app with true privacy preserving features. Unlike other messaging apps, Hologram is a self-custody app, which means user’s data is only stored on device, and exclusively under user’s control.
+
+Hologram is the first ever-built VUA and is already available in the app stores, look for "Hologram Messaging" in apple store, google play or huawei's app gallery. It has a user interface very similar to that well known apps like whatsapp, signal or telegram.
+
+Based on the [DIDComm](https://didcomm.org) open protocol, Hologram provides classic features such has peer-to-peer chat with verifiable credential exchange (to be able to verify who I am chatting to), as well as a Verifiable Chatbot browser to connect to any decentralized Hologram Chatbot VS. Anyone can create an Hologram Service, publish its DID, and invite users to connect by using Hologram (or any other compatible User Agent), request Verifiable Credential Presentations, issue credentials, perform calls and video calls, exchange content, read NFC chips, and more. Integration of p2p money transfers and payments are underway.
+
+Because Hologram is using the [DIDComm](https://didcomm.org) open protocol, anyone can create a new interoperable VUA so that Hologram users will natively be able to chat with users from others compatible VUAs.
+
+#### Interferences
+
+*This section is non-normative.*
+
+Interferences is a decentralized social network app which is a browser of Social Channels. Because Social Channels are VSs, their owner can be clearly identified: users know that they are following the real influencer. Each channel owner is responsible of the moderation of his/her channel meaning the social network does not need external moderation. Channel owners decide how user can interact in their channel. For example, they can decide that any user can "like" a post, but require user to authenticate himself by presenting a verifiable credential for having the right to write post comments.
+
+Interferences is not fully developed and thus is not yet available to public.
+
+### VSs Implementations
+
+#### Hologram Services
+
+*This section is non-normative.*
+
+Hologram Services can be of 2 kind:
+
+- Chatbot Services
+- Basic Out-of-band Services, for Verifiable Credential Presentation Request and/or Verifiable Credential Issuance.
+
+Creation of an Hologram Service is really straightforward, just have a look at [2060.io github repository](https://github.com/2060-io) for examples.
+
+Popular Chatbot Services include:
+
+- UnicID, a chatbot service for obtaining a Verifiable Credential by reading a NFC-compatible passport or Id Card with a mobile phone. Service reads the document, then perform a biometric face matching with liveness detection to verify that user of the mobile phone is the same person than the picture of the face registered in the NFC chip of the document, and if there is a match, a Verifiable Credential is issued to user. After issuing the credential, service does not keep any user-related data.
+
+- AvatarID, a service for creating a unique avatar, protected by a biometric hash of user's face. If user looses his/her phone, he/she can restore the Avatar by performing a biometric face matching with liveness detection.
+
+Basic Out-of-band Services include:
+
+- VC Authenticator: an OpenID connect plugin for logging-in a user by requesting presentation of a verifiable credential
+- VC Verifier: a simple service for generating a Verifiable Credential Presentation Request link so that user present the credential and service instantly receives corresponding data to an URL callback.
+
 ### User Agent Display of Trust Resolution
+
+VUAs MUST show a representation of the trust resolution for any connection, with VSs or other VUAs.
 
 #### Credential Wallets
 
