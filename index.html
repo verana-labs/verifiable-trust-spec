@@ -90,7 +90,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </ul>
 <p>All the above is detailed in this spec.</p>
 <p>Verifiable communication channel can be persistent or ephemerous.</p>
-<div id="note-6" class="notice note"><a class="notice-link" href="#note-6">NOTE</a><p>Presented credentials do not necessarily need to be human/organization identity related. An IoT service could present a deviceId credential to authenticate itself.</p>
+<div id="note-11" class="notice note"><a class="notice-link" href="#note-11">NOTE</a><p>Presented credentials do not necessarily need to be human/organization identity related. An IoT service could present a deviceId credential to authenticate itself.</p>
 </div>
 <h3 id="what-is-a-verifiable-service"><a class="toc-anchor" href="#what-is-a-verifiable-service" >§</a> What is a Verifiable Service?</h3>
 <p><em>This section is non-normative.</em></p>
@@ -121,7 +121,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <dt><span id="term:did-documents"><span id="term:did-document"><span id="term:decentralized-identifier-document">decentralized identifier document</span></span></span>:</dt>
 <dd>A DID Document, as specified in [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>].</dd>
 <dt><span id="term:vprs"><span id="term:vpr"><span id="term:verifiable-public-registry">verifiable public registry</span></span></span>:</dt>
-<dd>a public, normally decentralized, ledger-based network, which provides: trust registry features, that can be used by all its <a class="term-reference" href="#term:participants">participants</a>: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,… and a tokenized business model for charging/rewarding <a class="term-reference" href="#term:participants">participants</a>. For more information, please refer to <a path-0="verana-labs.github.io"path-1="verifiable-trust-registry-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-registry-spec/" >VPR Spec</a>.</dd>
+<dd>a public, normally decentralized network, which provides: trust registry features, that can be used by all its <a class="term-reference" href="#term:participants">participants</a>: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,… For more information, please refer to <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >VPR Spec</a>.</dd>
 <dt><span id="term:vss"><span id="term:vs"><span id="term:verifiable-service">verifiable service</span></span></span>:</dt>
 <dd>A service, identified by a resolvable <a class="term-reference" href="#term:did">DID</a> that can be deployed anywhere by its owner, and that is conforming to this spec and has a resolvable <a class="term-reference" href="#term:proof-of-trust">proof of trust</a>.</dd>
 <dt><span id="term:vuas"><span id="term:vua"><span id="term:verifiable-user-agent">verifiable user agent</span></span></span>:</dt>
@@ -581,7 +581,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <span class="token punctuation">}</span>
 
 </code></pre>
-<div id="note-7" class="notice note"><a class="notice-link" href="#note-7">NOTE</a><p>This is subject to a slight update of <a path-0="w3c.github.io"path-1="vc-json-schema"path-2=""href="https://w3c.github.io/vc-json-schema/" >vc-json-schema</a> as specified in this <a path-0="github.com"path-1="w3c"path-2="vc-json-schema"path-3="issues"path-4="235"href="https://github.com/w3c/vc-json-schema/issues/235" >issue</a></p>
+<div id="note-12" class="notice note"><a class="notice-link" href="#note-12">NOTE</a><p>This is subject to a slight update of <a path-0="w3c.github.io"path-1="vc-json-schema"path-2=""href="https://w3c.github.io/vc-json-schema/" >vc-json-schema</a> as specified in this <a path-0="github.com"path-1="w3c"path-2="vc-json-schema"path-3="issues"path-4="235"href="https://github.com/w3c/vc-json-schema/issues/235" >issue</a></p>
 </div>
 <h3 id="vt-tr-diddoc-trust-registry-did-document"><a class="toc-anchor" href="#vt-tr-diddoc-trust-registry-did-document" >§</a> [VT-TR-DIDDOC] Trust Registry DID Document</h3>
 <p>For each <code>CredentialSchema</code> entry a Trust Registry has created in a <a class="term-reference" href="#term:vpr">VPR</a>, the Trust Registry MUST self-issue the corresponding Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].</p>
@@ -691,7 +691,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li>[VS-REQ-4] If the issuer of the VT Service Credential of [VS-REQ-2] is not the <a class="term-reference" href="#term:did">DID</a> of this service, issuer service MUST be a [VS-REQ] <a class="term-reference" href="#term:vs">VS</a> that conforms to [VS-REQ-3].</li>
 <li>[VS-REQ-5] A compliant <a class="term-reference" href="#term:vs">VS</a> MUST dereference all service credentials, User Agent credentials, DID Documents, verify VS Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,… comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.</li>
 </ul>
-<div id="note-8" class="notice note"><a class="notice-link" href="#note-8">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
+<div id="note-13" class="notice note"><a class="notice-link" href="#note-13">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
 </div>
 <ul>
 <li>[VS-REQ-5] The service MAY issue, present through linked verifiable presentation entries, or request presentation of any additional VS Credential that conforms to [VT-CRED].</li>
@@ -716,7 +716,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li>[VS-LVP-5] if linked verifiable presentation id fragment is <code>#vpr-essential-schemas-person-credential</code>, presented credential MUST be a VT Person Essential Credential [VT-EC-PERSON].</li>
 </ul>
 <h3 id="vua-req-requirements-for-a-user-agent-to-be-a-vua"><a class="toc-anchor" href="#vua-req-requirements-for-a-user-agent-to-be-a-vua" >§</a> [VUA-REQ] Requirements for a User Agent to be a VUA</h3>
-<div id="todo-4" class="notice todo"><a class="notice-link" href="#todo-4">TODO</a><p>ignore for now</p>
+<div id="todo-7" class="notice todo"><a class="notice-link" href="#todo-7">TODO</a><p>ignore for now</p>
 </div>
 <ul>
 <li>[VUA-REQ-1] A <a class="term-reference" href="#term:vua">VUA</a> MUST be identified by a <a class="term-reference" href="#term:did">DID</a>. The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-reference" href="#term:vua">VUA</a> MUST resolve to a <a class="term-reference" href="#term:did-document">DID Document</a>.</li>
@@ -724,9 +724,9 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li>[VUA-REQ-3] A <a class="term-reference" href="#term:vua">VUA</a> DID Document MUST present a VT User Agent Essential Credential that conforms to [VT-EC-USER-AGENT].</li>
 <li>[VUA-REQ-4] A compliant <a class="term-reference" href="#term:vua">VUA</a> MUST dereference all service credentials, User Agent credentials, DID Documents, verify Verifiable Trust Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,… comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.</li>
 </ul>
-<div id="note-9" class="notice note"><a class="notice-link" href="#note-9">NOTE</a><p>In other words, a to be a VUA, a User Agent MUST identify itself to the other end by sharing its DID, and the other end MUST verify it complies with [VUA-REQ]</p>
+<div id="note-14" class="notice note"><a class="notice-link" href="#note-14">NOTE</a><p>In other words, a to be a VUA, a User Agent MUST identify itself to the other end by sharing its DID, and the other end MUST verify it complies with [VUA-REQ]</p>
 </div>
-<div id="todo-5" class="notice todo"><a class="notice-link" href="#todo-5">TODO</a><p>This must be modified as each user agent instance will have its own credential issued.</p>
+<div id="todo-8" class="notice todo"><a class="notice-link" href="#todo-8">TODO</a><p>This must be modified as each user agent instance will have its own credential issued.</p>
 </div>
 <h3 id="vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service"><a class="toc-anchor" href="#vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service" >§</a> [VS-CONN-VS] Requirements for a VS to accept a connection from another service</h3>
 <p>When a <a class="term-reference" href="#term:vs">VS</a> VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-SPEC], else VS-1 MUST NOT accept the connection. Exception: if provided by VS-1 service Service-2 wants to connect to is an issuer of [VT-EC-ORG] or [VT-EC-PERSON] and Service-2 is just missing a [VT-EC-ORG] / [VT-EC-PERSON] for being compliant, connection CAN be accepted by VS-1.</p>
@@ -785,7 +785,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <span class="token punctuation">}</span>
 </code></pre>
 <h3 id="vt-resol-verification-of-permissions-in-verifiable-public-registries"><a class="toc-anchor" href="#vt-resol-verification-of-permissions-in-verifiable-public-registries" >§</a> [VT-RESOL] Verification of permission(s) in Verifiable Public Registries</h3>
-<div id="todo-6" class="notice todo"><a class="notice-link" href="#todo-6">TODO</a><p>Use TRQP instead of native <a class="term-reference" href="#term:vpr">VPR</a> queries when TRQP stabilizes</p>
+<div id="todo-9" class="notice todo"><a class="notice-link" href="#todo-9">TODO</a><p>Use TRQP instead of native <a class="term-reference" href="#term:vpr">VPR</a> queries when TRQP stabilizes</p>
 </div>
 <p>Please refer to [MOD-CSP-QRY-3] and [MOD-CSP-QRY-4] in <a class="term-reference" href="#term:vpr">VPR</a> specs.</p>
 <p>Example #1: check if issuer <code>did:example:service-credential-issuer</code> is (was) granted issuance of credentials from credential schema <code>12345678</code> to wallet_user_agent_did <code>did:example:wallet_user_agent</code> through user agent <code>did:example:user_agent</code> for country <code>fr</code> at datetime <code>2024-10-31T01:48:52Z</code> for <a class="term-reference" href="#term:session">session</a>_id <code>09b6d2e1-684f-443a-94ae-f6bc3112b2e5</code>:</p>
@@ -909,7 +909,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <span class="token punctuation">}</span>
 
 </code></pre>
-<div id="note-10" class="notice note"><a class="notice-link" href="#note-10">NOTE</a><p>Here for trust resolution we need to get did:example:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)</p>
+<div id="note-15" class="notice note"><a class="notice-link" href="#note-15">NOTE</a><p>Here for trust resolution we need to get did:example:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)</p>
 </div>
 <p>org-credential-presentation.json:</p>
 <pre class="language-json"><code class="language-json">
