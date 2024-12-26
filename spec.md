@@ -1,8 +1,8 @@
-# Decentralized Trust v1 Specification
+# Verifiable Trust v1 Specification
 
 **Specification Status:** *Draft*
 
-**Latest Draft:** [verana-labs/decentralized-trust-spec](https://github.com/verana-labs/decentralized-trust-spec)
+**Latest Draft:** [verana-labs/verifiable-trust-spec](https://github.com/verana-labs/verifiable-trust-spec)
 
 **Editors:**
 
@@ -12,11 +12,11 @@
 
 **Participate:**
 
-~ [GitHub repo](https://github.com/verana-labs/decentralized-trust-spec)
+~ [GitHub repo](https://github.com/verana-labs/verifiable-trust-spec)
 
-~ [File a bug](https://github.com/verana-labs/decentralized-trust-spec/issues)
+~ [File a bug](https://github.com/verana-labs/verifiable-trust-spec/issues)
 
-~ [Commit history](https://github.com/verana-labs/decentralized-trust-spec/commits/main)
+~ [Commit history](https://github.com/verana-labs/verifiable-trust-spec/commits/main)
 
 ---
 
@@ -73,7 +73,7 @@ Additionally, a [[ref: verifiable service]] that would like to issue or request 
 
 *This section is non-normative.*
 
-A Decentralized Trust - Verifiable User Agent ([[ref: VUA]]) is a software (a browser, an app, a wallet...) for connecting to VSs and other VUAs. When establishing connections, a VUA must verify the connection peer(s) and allow connection(s) only to compliant VS and VUA peers.
+A Verifiable User Agent ([[ref: VUA]]) is a software (a browser, an app, a wallet...) for connecting to VSs and other VUAs. When establishing connections, a VUA must verify the connection peer(s) and allow connection(s) only to compliant VS and VUA peers.
 
 Additionally, VUAs must perform a trust resolution by verifying the credentials presented by the peers and query VPR(s) to check that these credentials have been issued by verified issuers.
 
@@ -107,7 +107,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ A DID Document, as specified in [[spec-norm:DID-CORE]].
 
 [[def: verifiable public registry, VPR, VPRs]]:
-~ a public, normally decentralized, ledger-based network, which provides: trust registry features, that can be used by all its [[ref: participants]]: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,... and a tokenized business model for charging/rewarding [[ref: participants]]. For more information, please refer to [VPR Spec](https://verana-labs.github.io/decentralized-trust-registry-spec/).
+~ a public, normally decentralized, ledger-based network, which provides: trust registry features, that can be used by all its [[ref: participants]]: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,... and a tokenized business model for charging/rewarding [[ref: participants]]. For more information, please refer to [VPR Spec](https://verana-labs.github.io/verifiable-trust-registry-spec/).
 
 [[def: verifiable service, VS, VSs]]:
 ~ A service, identified by a resolvable [[ref: DID]] that can be deployed anywhere by its owner, and that is conforming to this spec and has a resolvable [[ref: proof of trust]].
@@ -419,7 +419,7 @@ Credential subject object of schema MUST contain the following attributes:
 - `description` (string) (*mandatory*): agent description. UTF8 charset, max length: 4096 bytes.
 - `category` (string) (*mandatory*): the category of the agent, ie SOCIAL_NETWORK,...
 - `logo` (image) (*mandatory*): the logo of the agent, as it will be shown in search engines.
-- `wallet` (boolean) (*mandatory*): If the agent implements the DTW (Decentralized Trust Wallet) spec, and thus provides wallet features.
+- `wallet` (boolean) (*mandatory*): If the agent implements the DTW (Verifiable Trust Wallet) spec, and thus provides wallet features.
 - `termsAndConditions` (string) (*mandatory*): URL of the terms and conditions of the service. It is recommended to store terms and conditions in a file, in a repository that allows file hash verification (IPFS).
 - `termsAndConditionsHash` (string) (*optional*): If terms and conditions of the service are stored in a file, optional hash of the file for data integrity verification.
 - `privacyPolicy` (string) (*mandatory*): URL of the terms and conditions of the service. MAY be the same URL that `terms_and_conditions` if file are combined. It is recommended to store privacy policy in a file repository that allows file hash verification (IPFS).
@@ -499,7 +499,7 @@ the resulting `json_schema` attribute will be the following Json Schema. Replace
 }
 ```
 
-### [DT-JSON-SCHEMA-CRED] Decentralized Trust Json Schema Credential
+### [DT-JSON-SCHEMA-CRED] Verifiable Trust Json Schema Credential
 
 A DT Json Schema Credential is a [[ref: json schema credential]] self-issued by a Trust Registry DID, that MUST refer to the json schema of a `CredentialSchema` entry created in a `VPR`. Issuer of the DT Json Schema Credential MUST be the same DID that the DID of the `TrustRegistry` entry created in the [[ref: VPR]] than owns the `CredentialSchema` entry in the [[ref: VPR]].
 
@@ -626,7 +626,7 @@ Example:
   ]
 ```
 
-### [DT-CRED] Decentralized Trust (DT) Credential
+### [DT-CRED] Verifiable Trust (DT) Credential
 
 A simple diagram for a clear understanding:
 
@@ -704,7 +704,7 @@ Example DTCredential.json:
 - [VS-REQ-2] A [[ref: VS]] DID Document MUST present (linked-vp) a DT Service Essential Credential that conforms to [DT-EC-SERVICE].
 - [VS-REQ-3] If the issuer of the DT Service Essential Credential of [VS-REQ-2] is the [[ref: DID]] of this service, service DID Document MUST present a credential that conforms to [DT-EC-ORG] or (exclusive) a [DT-EC-PERSON].
 - [VS-REQ-4] If the issuer of the DT Service Credential of [VS-REQ-2] is not the [[ref: DID]] of this service, issuer service MUST be a [VS-REQ] [[ref: VS]] that conforms to [VS-REQ-3].
-- [VS-REQ-5] A compliant [[ref: VS]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify VS Json Schema Credentials, Json Schema hashes, use the Decentralized Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
+- [VS-REQ-5] A compliant [[ref: VS]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify VS Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
 
 ::: note
 In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.
@@ -741,7 +741,7 @@ ignore or now
 - [VUA-REQ-1] A [[ref: VUA]] MUST be identified by a [[:ref DID]]. The [[:ref DID]] of a [[ref: VUA]] MUST resolve to a [[ref: DID Document]].
 - [VUA-REQ-2] A [[ref: VUA]] DID Document MUST present a DT Organization Essential Credential that conforms to [DT-EC-ORG] or (exclusive) to [DT-EC-PERSON].
 - [VUA-REQ-3] A [[ref: VUA]] DID Document MUST present a DT User Agent Essential Credential that conforms to [DT-EC-USER-AGENT].
-- [VUA-REQ-4] A compliant [[ref: VUA]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify DT Json Schema Credentials, Json Schema hashes, use the Decentralized Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
+- [VUA-REQ-4] A compliant [[ref: VUA]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify DT Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
 
 :::note
 In other words, a to be a VUA, a User Agent MUST identify itself to the other end by sharing its DID, and the other end MUST verify it complies with [VUA-REQ]
