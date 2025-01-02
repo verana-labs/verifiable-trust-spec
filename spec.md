@@ -170,7 +170,7 @@ Example:
 
 ```json
 {
-  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "SimpleExampleCredential",
   "description": "SimpleExampleCredential using JsonSchema",
@@ -248,13 +248,13 @@ Credential subject object of schema MUST contain the following attributes:
 - `privacyPolicy` (string) (*mandatory*): URL of the terms and conditions of the service. MAY be the same URL that `terms_and_conditions` if file are combined. It is recommended to store privacy policy in a file repository that allows file hash verification (IPFS).
 - `privacyPolicyHash` (string) (*optional*): If privacy policy of the service are stored in a file, optional hash of the file for data integrity verification.
 
-the resulting `json_schema` attribute will be the following Json Schema. Replace:
+the resulting `json_schema` attribute will be the following Json Schema.
 
-- `{$schema_id}` with the `schema_id` of the created `CredentialSchema` entry.
+- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
 
 ```json
 {
-  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ServiceCredential",
   "description": "ServiceCredential using JsonSchema",
@@ -337,14 +337,13 @@ Credential subject object of schema MUST contain the following attributes:
 - `type` (enum) (*mandatory*): type of organization. PUBLIC, PRIVATE, FOUNDATION.
 - `countryCode` (string) (*mandatory*): country where the company is registered.
 
-the resulting `json_schema` attribute will be the following Json Schema. Replace:
+the resulting `json_schema` attribute will be the following Json Schema.
 
-- `{$schema_id}` with the `schema_id` of the created `CredentialSchema` entry.
-
+- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
 
 ```json
 {
-  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "OrganizationCredential",
   "description": "OrganizationCredential using JsonSchema",
@@ -418,13 +417,13 @@ Credential subject object of schema MUST contain the following attributes:
 - `birthDate` (date) (*mandatory*): date of birth.
 - `countryOfResidence` (string) (*mandatory*): the country of residence.
 
-the resulting `json_schema` attribute will be the following Json Schema. Replace:
+the resulting `json_schema` attribute will be the following Json Schema.
 
-- `{$schema_id}` with the `schema_id` of the created `CredentialSchema` entry.
+- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
 
 ```json
 {
-  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "PersonCredential",
   "description": "PersonCredential using JsonSchema",
@@ -488,13 +487,13 @@ Credential subject object of schema MUST contain the following attributes:
 - `privacyPolicy` (string) (*mandatory*): URL of the terms and conditions of the service. MAY be the same URL that `terms_and_conditions` if file are combined. It is recommended to store privacy policy in a file repository that allows file hash verification (IPFS).
 - `privacyPolicyHash` (string) (*optional*): If privacy policy of the service are stored in a file, optional hash of the file for data integrity verification.
 
-the resulting `json_schema` attribute will be the following Json Schema. Replace:
+the resulting `json_schema` attribute will be the following Json Schema.
 
-- `{$schema_id}` with the `schema_id` of the created `CredentialSchema` entry.
+- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
 
 ```json
 {
-  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "UserAgentCredential",
   "description": "UserAgentCredential using JsonSchema",
