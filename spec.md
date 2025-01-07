@@ -170,7 +170,7 @@ Example:
 
 ```json
 {
-  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "SimpleExampleCredential",
   "description": "SimpleExampleCredential using JsonSchema",
@@ -248,13 +248,13 @@ Credential subject object of schema MUST contain the following attributes:
 - `privacyPolicy` (string) (*mandatory*): URL of the terms and conditions of the service. MAY be the same URL that `terms_and_conditions` if file are combined. It is recommended to store privacy policy in a file repository that allows file hash verification (IPFS).
 - `privacyPolicyHash` (string) (*optional*): If privacy policy of the service are stored in a file, optional hash of the file for data integrity verification.
 
-the resulting `json_schema` attribute will be the following Json Schema. Replace:
+the resulting `json_schema` attribute will be the following Json Schema.
 
-- `{$schema_id}` with the `schema_id` of the created `CredentialSchema` entry.
+- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
 
 ```json
 {
-  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ServiceCredential",
   "description": "ServiceCredential using JsonSchema",
@@ -337,14 +337,13 @@ Credential subject object of schema MUST contain the following attributes:
 - `type` (enum) (*mandatory*): type of organization. PUBLIC, PRIVATE, FOUNDATION.
 - `countryCode` (string) (*mandatory*): country where the company is registered.
 
-the resulting `json_schema` attribute will be the following Json Schema. Replace:
+the resulting `json_schema` attribute will be the following Json Schema.
 
-- `{$schema_id}` with the `schema_id` of the created `CredentialSchema` entry.
-
+- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
 
 ```json
 {
-  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "OrganizationCredential",
   "description": "OrganizationCredential using JsonSchema",
@@ -418,13 +417,13 @@ Credential subject object of schema MUST contain the following attributes:
 - `birthDate` (date) (*mandatory*): date of birth.
 - `countryOfResidence` (string) (*mandatory*): the country of residence.
 
-the resulting `json_schema` attribute will be the following Json Schema. Replace:
+the resulting `json_schema` attribute will be the following Json Schema.
 
-- `{$schema_id}` with the `schema_id` of the created `CredentialSchema` entry.
+- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
 
 ```json
 {
-  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "PersonCredential",
   "description": "PersonCredential using JsonSchema",
@@ -488,13 +487,13 @@ Credential subject object of schema MUST contain the following attributes:
 - `privacyPolicy` (string) (*mandatory*): URL of the terms and conditions of the service. MAY be the same URL that `terms_and_conditions` if file are combined. It is recommended to store privacy policy in a file repository that allows file hash verification (IPFS).
 - `privacyPolicyHash` (string) (*optional*): If privacy policy of the service are stored in a file, optional hash of the file for data integrity verification.
 
-the resulting `json_schema` attribute will be the following Json Schema. Replace:
+the resulting `json_schema` attribute will be the following Json Schema.
 
-- `{$schema_id}` with the `schema_id` of the created `CredentialSchema` entry.
+- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
 
 ```json
 {
-  "$id": "https://vpr-hostname/vpr/v1/cs/js/{$schema_id}",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "UserAgentCredential",
   "description": "UserAgentCredential using JsonSchema",
@@ -615,7 +614,7 @@ VtJsonSchemaCredential.json:
 ```
 
 :::note
-This is subject to a slight update of [vc-json-schema](https://w3c.github.io/vc-json-schema/) as specified in this [issue](https://github.com/w3c/vc-json-schema/issues/235)
+This is subject to a slight update of [vc-json-schema](https://w3c.github.io/vc-json-schema/) as specified in this [](https://github.com/w3c/vc-json-schema/issues/235)
 :::
 
 ### [VT-TR-DIDDOC] Trust Registry DID Document
@@ -625,7 +624,7 @@ For each `CredentialSchema` entry a Trust Registry has created in a [[ref: VPR]]
 Additionally, in MUST present the Verifiable Trust Json Schema Credential(s) in its DIDDocument, as well as the corresponding trust registry entry for verification. To do so, it MUST define the following entries in its DIDDocument:
 
 - for each `CredentialSchema` entry it wants to be resolvable, a "LinkedVerifiablePresentation" service entry with a fragment that MUST start with to `#vpr-schemas`, that MUST point to a self-issued Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].
-- a "VerifiableTrustRegistry" service entry with fragment name equal to `#vpr-schemas-trust-registry`, that MUST point to the API of the DID's trust registry in the VPR.
+- a "VerifiablePublicRegistry" service entry with fragment name equal to the concatenation of  `#vpr-schemas-trust-registry` and the id of the Trust Registry in the VPR, that MUST point to the API of the DID's trust registry in the VPR.
 
 Example:
 
@@ -637,8 +636,8 @@ Example:
       "serviceEndpoint": ["https://dl-trust-registry/driving-license-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:dl-trust-registry#vpr-schemas-trust-registry",
-      "type": "VerifiableTrustRegistry",
+      "id": "did:example:dl-trust-registry#vpr-schemas-trust-registry-1234",
+      "type": "VerifiablePublicRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
@@ -652,7 +651,7 @@ If the Trust Registry wishes to provide ECS trust resolution, it MUST present 4 
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-org-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a VT json schema as specified in [ECS-ORG].
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-person-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a VT json schema as specified in [ECS-PERSON].
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-user-agent-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a VT json schema as specified in [ECS-USER-AGENT].
-- a "VerifiableTrustRegistry" service entry with fragment name equal to `#vpr-essential-schemas-trust-registry`, that MUST point to the API URL of this DID's trust registry in the VPR.
+- a "VerifiablePublicRegistry" service entry with fragment name equal to `#vpr-essential-schemas-trust-registry`, that MUST point to the API URL of this DID's trust registry in the VPR.
 
 Example:
 
@@ -679,8 +678,8 @@ Example:
       "serviceEndpoint": ["https://ecs-trust-registry/user-agent-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry",
-      "type": "VerifiableTrustRegistry",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry-789041745",
+      "type": "VerifiablePublicRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
@@ -1207,8 +1206,8 @@ DID Document of did:example:ecs-trust-registry:
       "serviceEndpoint": ["https://ecs-trust-registry/person-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry",
-      "type": "VerifiableTrustRegistry",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry-8721547851287",
+      "type": "VerifiablePublicRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
@@ -1228,8 +1227,8 @@ DID Document of did:example:trademark-trust-registry:
       "serviceEndpoint": ["https://trademark.abc/credentials/TrademarkJsonSchemaCredential"]
     },
     {
-      "id": "did:example:trademark-trust-registry#vpr-schemas-trust-registry",
-      "type": "VerifiableTrustRegistry",
+      "id": "did:example:trademark-trust-registry#vpr-schemas-trust-registry-7890",
+      "type": "VerifiablePublicRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
