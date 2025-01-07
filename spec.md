@@ -614,7 +614,7 @@ VtJsonSchemaCredential.json:
 ```
 
 :::note
-This is subject to a slight update of [vc-json-schema](https://w3c.github.io/vc-json-schema/) as specified in this [issue](https://github.com/w3c/vc-json-schema/issues/235)
+This is subject to a slight update of [vc-json-schema](https://w3c.github.io/vc-json-schema/) as specified in this [](https://github.com/w3c/vc-json-schema/issues/235)
 :::
 
 ### [VT-TR-DIDDOC] Trust Registry DID Document
@@ -624,7 +624,7 @@ For each `CredentialSchema` entry a Trust Registry has created in a [[ref: VPR]]
 Additionally, in MUST present the Verifiable Trust Json Schema Credential(s) in its DIDDocument, as well as the corresponding trust registry entry for verification. To do so, it MUST define the following entries in its DIDDocument:
 
 - for each `CredentialSchema` entry it wants to be resolvable, a "LinkedVerifiablePresentation" service entry with a fragment that MUST start with to `#vpr-schemas`, that MUST point to a self-issued Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].
-- a "VerifiableTrustRegistry" service entry with fragment name equal to `#vpr-schemas-trust-registry`, that MUST point to the API of the DID's trust registry in the VPR.
+- a "VerifiablePublicRegistry" service entry with fragment name equal to the concatenation of  `#vpr-schemas-trust-registry` and the id of the Trust Registry in the VPR, that MUST point to the API of the DID's trust registry in the VPR.
 
 Example:
 
@@ -636,8 +636,8 @@ Example:
       "serviceEndpoint": ["https://dl-trust-registry/driving-license-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:dl-trust-registry#vpr-schemas-trust-registry",
-      "type": "VerifiableTrustRegistry",
+      "id": "did:example:dl-trust-registry#vpr-schemas-trust-registry-1234",
+      "type": "VerifiablePublicRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
@@ -651,7 +651,7 @@ If the Trust Registry wishes to provide ECS trust resolution, it MUST present 4 
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-org-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a VT json schema as specified in [ECS-ORG].
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-person-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a VT json schema as specified in [ECS-PERSON].
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-user-agent-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a VT json schema as specified in [ECS-USER-AGENT].
-- a "VerifiableTrustRegistry" service entry with fragment name equal to `#vpr-essential-schemas-trust-registry`, that MUST point to the API URL of this DID's trust registry in the VPR.
+- a "VerifiablePublicRegistry" service entry with fragment name equal to `#vpr-essential-schemas-trust-registry`, that MUST point to the API URL of this DID's trust registry in the VPR.
 
 Example:
 
@@ -678,8 +678,8 @@ Example:
       "serviceEndpoint": ["https://ecs-trust-registry/user-agent-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry",
-      "type": "VerifiableTrustRegistry",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry-789041745",
+      "type": "VerifiablePublicRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
@@ -1206,8 +1206,8 @@ DID Document of did:example:ecs-trust-registry:
       "serviceEndpoint": ["https://ecs-trust-registry/person-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry",
-      "type": "VerifiableTrustRegistry",
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry-8721547851287",
+      "type": "VerifiablePublicRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
@@ -1227,8 +1227,8 @@ DID Document of did:example:trademark-trust-registry:
       "serviceEndpoint": ["https://trademark.abc/credentials/TrademarkJsonSchemaCredential"]
     },
     {
-      "id": "did:example:trademark-trust-registry#vpr-schemas-trust-registry",
-      "type": "VerifiableTrustRegistry",
+      "id": "did:example:trademark-trust-registry#vpr-schemas-trust-registry-7890",
+      "type": "VerifiablePublicRegistry",
       "version": "1.0",
       "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
