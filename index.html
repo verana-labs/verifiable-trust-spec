@@ -90,7 +90,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </ul>
 <p>All the above is detailed in this spec.</p>
 <p>Verifiable communication channel can be persistent or ephemerous.</p>
-<div id="note-11" class="notice note"><a class="notice-link" href="#note-11">NOTE</a><p>Presented credentials do not necessarily need to be human/organization identity related. An IoT service could present a deviceId credential to authenticate itself.</p>
+<div id="note-1" class="notice note"><a class="notice-link" href="#note-1">NOTE</a><p>Presented credentials do not necessarily need to be human/organization identity related. An IoT service could present a deviceId credential to authenticate itself.</p>
 </div>
 <h3 id="what-is-a-verifiable-service"><a class="toc-anchor" href="#what-is-a-verifiable-service" >§</a> What is a Verifiable Service?</h3>
 <p><em>This section is non-normative.</em></p>
@@ -162,7 +162,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <p>A Trust Registry creates itself in a <a class="term-reference" href="#term:vpr">VPR</a> by creating a <code>TrustRegistry</code> entry <code>tr</code>, and create one or more <code>CredentialSchema</code> entry(ies), which definition are Json Schema(s).</p>
 <p>Example:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"https://vpr-hostname/vpr/v1/cs/js/{$schema_id}"</span><span class="token punctuation">,</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
   <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
   <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"SimpleExampleCredential"</span><span class="token punctuation">,</span>
   <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"SimpleExampleCredential using JsonSchema"</span><span class="token punctuation">,</span>
@@ -236,12 +236,12 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li><code>privacyPolicy</code> (string) (<em>mandatory</em>): URL of the terms and conditions of the service. MAY be the same URL that <code>terms_and_conditions</code> if file are combined. It is recommended to store privacy policy in a file repository that allows file hash verification (IPFS).</li>
 <li><code>privacyPolicyHash</code> (string) (<em>optional</em>): If privacy policy of the service are stored in a file, optional hash of the file for data integrity verification.</li>
 </ul>
-<p>the resulting <code>json_schema</code> attribute will be the following Json Schema. Replace:</p>
+<p>the resulting <code>json_schema</code> attribute will be the following Json Schema.</p>
 <ul>
-<li><code>{$schema_id}</code> with the <code>schema_id</code> of the created <code>CredentialSchema</code> entry.</li>
+<li><code>VPR_CREDENTIAL_SCHEMA_ID</code> is replaced by the <code>schema_id</code> of the created <code>CredentialSchema</code> entry in the VPR.</li>
 </ul>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"https://vpr-hostname/vpr/v1/cs/js/{$schema_id}"</span><span class="token punctuation">,</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
   <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
   <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"ServiceCredential"</span><span class="token punctuation">,</span>
   <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"ServiceCredential using JsonSchema"</span><span class="token punctuation">,</span>
@@ -322,12 +322,12 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li><code>type</code> (enum) (<em>mandatory</em>): type of organization. PUBLIC, PRIVATE, FOUNDATION.</li>
 <li><code>countryCode</code> (string) (<em>mandatory</em>): country where the company is registered.</li>
 </ul>
-<p>the resulting <code>json_schema</code> attribute will be the following Json Schema. Replace:</p>
+<p>the resulting <code>json_schema</code> attribute will be the following Json Schema.</p>
 <ul>
-<li><code>{$schema_id}</code> with the <code>schema_id</code> of the created <code>CredentialSchema</code> entry.</li>
+<li><code>VPR_CREDENTIAL_SCHEMA_ID</code> is replaced by the <code>schema_id</code> of the created <code>CredentialSchema</code> entry in the VPR.</li>
 </ul>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"https://vpr-hostname/vpr/v1/cs/js/{$schema_id}"</span><span class="token punctuation">,</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
   <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
   <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"OrganizationCredential"</span><span class="token punctuation">,</span>
   <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"OrganizationCredential using JsonSchema"</span><span class="token punctuation">,</span>
@@ -399,12 +399,12 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li><code>birthDate</code> (date) (<em>mandatory</em>): date of birth.</li>
 <li><code>countryOfResidence</code> (string) (<em>mandatory</em>): the country of residence.</li>
 </ul>
-<p>the resulting <code>json_schema</code> attribute will be the following Json Schema. Replace:</p>
+<p>the resulting <code>json_schema</code> attribute will be the following Json Schema.</p>
 <ul>
-<li><code>{$schema_id}</code> with the <code>schema_id</code> of the created <code>CredentialSchema</code> entry.</li>
+<li><code>VPR_CREDENTIAL_SCHEMA_ID</code> is replaced by the <code>schema_id</code> of the created <code>CredentialSchema</code> entry in the VPR.</li>
 </ul>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"https://vpr-hostname/vpr/v1/cs/js/{$schema_id}"</span><span class="token punctuation">,</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
   <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
   <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"PersonCredential"</span><span class="token punctuation">,</span>
   <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"PersonCredential using JsonSchema"</span><span class="token punctuation">,</span>
@@ -466,12 +466,12 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li><code>privacyPolicy</code> (string) (<em>mandatory</em>): URL of the terms and conditions of the service. MAY be the same URL that <code>terms_and_conditions</code> if file are combined. It is recommended to store privacy policy in a file repository that allows file hash verification (IPFS).</li>
 <li><code>privacyPolicyHash</code> (string) (<em>optional</em>): If privacy policy of the service are stored in a file, optional hash of the file for data integrity verification.</li>
 </ul>
-<p>the resulting <code>json_schema</code> attribute will be the following Json Schema. Replace:</p>
+<p>the resulting <code>json_schema</code> attribute will be the following Json Schema.</p>
 <ul>
-<li><code>{$schema_id}</code> with the <code>schema_id</code> of the created <code>CredentialSchema</code> entry.</li>
+<li><code>VPR_CREDENTIAL_SCHEMA_ID</code> is replaced by the <code>schema_id</code> of the created <code>CredentialSchema</code> entry in the VPR.</li>
 </ul>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"https://vpr-hostname/vpr/v1/cs/js/{$schema_id}"</span><span class="token punctuation">,</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
   <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
   <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"UserAgentCredential"</span><span class="token punctuation">,</span>
   <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"UserAgentCredential using JsonSchema"</span><span class="token punctuation">,</span>
@@ -581,14 +581,14 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <span class="token punctuation">}</span>
 
 </code></pre>
-<div id="note-12" class="notice note"><a class="notice-link" href="#note-12">NOTE</a><p>This is subject to a slight update of <a path-0="w3c.github.io"path-1="vc-json-schema"path-2=""href="https://w3c.github.io/vc-json-schema/" >vc-json-schema</a> as specified in this <a path-0="github.com"path-1="w3c"path-2="vc-json-schema"path-3="issues"path-4="235"href="https://github.com/w3c/vc-json-schema/issues/235" >issue</a></p>
+<div id="note-2" class="notice note"><a class="notice-link" href="#note-2">NOTE</a><p>This is subject to a slight update of <a path-0="w3c.github.io"path-1="vc-json-schema"path-2=""href="https://w3c.github.io/vc-json-schema/" >vc-json-schema</a> as specified in this <a path-0="github.com"path-1="w3c"path-2="vc-json-schema"path-3="issues"path-4="235"href="https://github.com/w3c/vc-json-schema/issues/235" ></a></p>
 </div>
 <h3 id="vt-tr-diddoc-trust-registry-did-document"><a class="toc-anchor" href="#vt-tr-diddoc-trust-registry-did-document" >§</a> [VT-TR-DIDDOC] Trust Registry DID Document</h3>
 <p>For each <code>CredentialSchema</code> entry a Trust Registry has created in a <a class="term-reference" href="#term:vpr">VPR</a>, the Trust Registry MUST self-issue the corresponding Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].</p>
 <p>Additionally, in MUST present the Verifiable Trust Json Schema Credential(s) in its DIDDocument, as well as the corresponding trust registry entry for verification. To do so, it MUST define the following entries in its DIDDocument:</p>
 <ul>
 <li>for each <code>CredentialSchema</code> entry it wants to be resolvable, a “LinkedVerifiablePresentation” service entry with a fragment that MUST start with to <code>#vpr-schemas</code>, that MUST point to a self-issued Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].</li>
-<li>a “VerifiableTrustRegistry” service entry with fragment name equal to <code>#vpr-schemas-trust-registry</code>, that MUST point to the API of the DID’s trust registry in the VPR.</li>
+<li>a “VerifiablePublicRegistry” service entry with fragment name equal to the concatenation of  <code>#vpr-schemas-trust-registry</code> and the id of the Trust Registry in the VPR, that MUST point to the API of the DID’s trust registry in the VPR.</li>
 </ul>
 <p>Example:</p>
 <pre class="language-json"><code class="language-json">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
@@ -598,8 +598,8 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
       <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://dl-trust-registry/driving-license-credential-schema-presentation.json"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:dl-trust-registry#vpr-schemas-trust-registry"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiableTrustRegistry"</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:dl-trust-registry#vpr-schemas-trust-registry-1234"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiablePublicRegistry"</span><span class="token punctuation">,</span>
       <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
       <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://vpr-hostname/vpr/v1/"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span>
@@ -612,7 +612,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-essential-schemas-org-credential-schema-credential</code>, that MUST point to a self-issued <a class="term-reference" href="#term:json-schema-credential">json schema credential</a> of a VT json schema as specified in [ECS-ORG].</li>
 <li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-essential-schemas-person-credential-schema-credential</code>, that MUST point to a self-issued <a class="term-reference" href="#term:json-schema-credential">json schema credential</a> of a VT json schema as specified in [ECS-PERSON].</li>
 <li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-essential-schemas-user-agent-credential-schema-credential</code>, that MUST point to a self-issued <a class="term-reference" href="#term:json-schema-credential">json schema credential</a> of a VT json schema as specified in [ECS-USER-AGENT].</li>
-<li>a “VerifiableTrustRegistry” service entry with fragment name equal to <code>#vpr-essential-schemas-trust-registry</code>, that MUST point to the API URL of this DID’s trust registry in the VPR.</li>
+<li>a “VerifiablePublicRegistry” service entry with fragment name equal to <code>#vpr-essential-schemas-trust-registry</code>, that MUST point to the API URL of this DID’s trust registry in the VPR.</li>
 </ul>
 <p>Example:</p>
 <pre class="language-json"><code class="language-json">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
@@ -637,8 +637,8 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
       <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecs-trust-registry/user-agent-credential-schema-presentation.json"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiableTrustRegistry"</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry-789041745"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiablePublicRegistry"</span><span class="token punctuation">,</span>
       <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
       <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://vpr-hostname/vpr/v1/"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span>
@@ -691,7 +691,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li>[VS-REQ-4] If the issuer of the VT Service Credential of [VS-REQ-2] is not the <a class="term-reference" href="#term:did">DID</a> of this service, issuer service MUST be a [VS-REQ] <a class="term-reference" href="#term:vs">VS</a> that conforms to [VS-REQ-3].</li>
 <li>[VS-REQ-5] A compliant <a class="term-reference" href="#term:vs">VS</a> MUST dereference all service credentials, User Agent credentials, DID Documents, verify VS Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,… comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.</li>
 </ul>
-<div id="note-13" class="notice note"><a class="notice-link" href="#note-13">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
+<div id="note-3" class="notice note"><a class="notice-link" href="#note-3">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
 </div>
 <ul>
 <li>[VS-REQ-5] The service MAY issue, present through linked verifiable presentation entries, or request presentation of any additional VS Credential that conforms to [VT-CRED].</li>
@@ -716,7 +716,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li>[VS-LVP-5] if linked verifiable presentation id fragment is <code>#vpr-essential-schemas-person-credential</code>, presented credential MUST be a VT Person Essential Credential [VT-EC-PERSON].</li>
 </ul>
 <h3 id="vua-req-requirements-for-a-user-agent-to-be-a-vua"><a class="toc-anchor" href="#vua-req-requirements-for-a-user-agent-to-be-a-vua" >§</a> [VUA-REQ] Requirements for a User Agent to be a VUA</h3>
-<div id="todo-7" class="notice todo"><a class="notice-link" href="#todo-7">TODO</a><p>ignore for now</p>
+<div id="todo-1" class="notice todo"><a class="notice-link" href="#todo-1">TODO</a><p>ignore for now</p>
 </div>
 <ul>
 <li>[VUA-REQ-1] A <a class="term-reference" href="#term:vua">VUA</a> MUST be identified by a <a class="term-reference" href="#term:did">DID</a>. The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-reference" href="#term:vua">VUA</a> MUST resolve to a <a class="term-reference" href="#term:did-document">DID Document</a>.</li>
@@ -724,9 +724,9 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li>[VUA-REQ-3] A <a class="term-reference" href="#term:vua">VUA</a> DID Document MUST present a VT User Agent Essential Credential that conforms to [VT-EC-USER-AGENT].</li>
 <li>[VUA-REQ-4] A compliant <a class="term-reference" href="#term:vua">VUA</a> MUST dereference all service credentials, User Agent credentials, DID Documents, verify Verifiable Trust Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,… comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.</li>
 </ul>
-<div id="note-14" class="notice note"><a class="notice-link" href="#note-14">NOTE</a><p>In other words, a to be a VUA, a User Agent MUST identify itself to the other end by sharing its DID, and the other end MUST verify it complies with [VUA-REQ]</p>
+<div id="note-4" class="notice note"><a class="notice-link" href="#note-4">NOTE</a><p>In other words, a to be a VUA, a User Agent MUST identify itself to the other end by sharing its DID, and the other end MUST verify it complies with [VUA-REQ]</p>
 </div>
-<div id="todo-8" class="notice todo"><a class="notice-link" href="#todo-8">TODO</a><p>This must be modified as each user agent instance will have its own credential issued.</p>
+<div id="todo-2" class="notice todo"><a class="notice-link" href="#todo-2">TODO</a><p>This must be modified as each user agent instance will have its own credential issued.</p>
 </div>
 <h3 id="vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service"><a class="toc-anchor" href="#vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service" >§</a> [VS-CONN-VS] Requirements for a VS to accept a connection from another service</h3>
 <p>When a <a class="term-reference" href="#term:vs">VS</a> VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-SPEC], else VS-1 MUST NOT accept the connection. Exception: if provided by VS-1 service Service-2 wants to connect to is an issuer of [VT-EC-ORG] or [VT-EC-PERSON] and Service-2 is just missing a [VT-EC-ORG] / [VT-EC-PERSON] for being compliant, connection CAN be accepted by VS-1.</p>
@@ -785,7 +785,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <span class="token punctuation">}</span>
 </code></pre>
 <h3 id="vt-resol-verification-of-permissions-in-verifiable-public-registries"><a class="toc-anchor" href="#vt-resol-verification-of-permissions-in-verifiable-public-registries" >§</a> [VT-RESOL] Verification of permission(s) in Verifiable Public Registries</h3>
-<div id="todo-9" class="notice todo"><a class="notice-link" href="#todo-9">TODO</a><p>Use TRQP instead of native <a class="term-reference" href="#term:vpr">VPR</a> queries when TRQP stabilizes</p>
+<div id="todo-3" class="notice todo"><a class="notice-link" href="#todo-3">TODO</a><p>Use TRQP instead of native <a class="term-reference" href="#term:vpr">VPR</a> queries when TRQP stabilizes</p>
 </div>
 <p>Please refer to [MOD-CSP-QRY-3] and [MOD-CSP-QRY-4] in <a class="term-reference" href="#term:vpr">VPR</a> specs.</p>
 <p>Example #1: check if issuer <code>did:example:service-credential-issuer</code> is (was) granted issuance of credentials from credential schema <code>12345678</code> to wallet_user_agent_did <code>did:example:wallet_user_agent</code> through user agent <code>did:example:user_agent</code> for country <code>fr</code> at datetime <code>2024-10-31T01:48:52Z</code> for <a class="term-reference" href="#term:session">session</a>_id <code>09b6d2e1-684f-443a-94ae-f6bc3112b2e5</code>:</p>
@@ -909,7 +909,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <span class="token punctuation">}</span>
 
 </code></pre>
-<div id="note-15" class="notice note"><a class="notice-link" href="#note-15">NOTE</a><p>Here for trust resolution we need to get did:example:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)</p>
+<div id="note-5" class="notice note"><a class="notice-link" href="#note-5">NOTE</a><p>Here for trust resolution we need to get did:example:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)</p>
 </div>
 <p>org-credential-presentation.json:</p>
 <pre class="language-json"><code class="language-json">
@@ -1062,8 +1062,8 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
       <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecs-trust-registry/person-credential-schema-presentation.json"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiableTrustRegistry"</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry-8721547851287"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiablePublicRegistry"</span><span class="token punctuation">,</span>
       <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
       <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://vpr-hostname/vpr/v1/"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span>
@@ -1080,8 +1080,8 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
       <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://trademark.abc/credentials/TrademarkJsonSchemaCredential"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:trademark-trust-registry#vpr-schemas-trust-registry"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiableTrustRegistry"</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:trademark-trust-registry#vpr-schemas-trust-registry-7890"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiablePublicRegistry"</span><span class="token punctuation">,</span>
       <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
       <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://vpr-hostname/vpr/v1/"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span>
