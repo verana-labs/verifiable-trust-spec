@@ -802,7 +802,7 @@ ignore for now
 
 - [VUA-REQ-1] A [[ref: VUA]] MUST be identified by a [[:ref DID]]. The [[:ref DID]] of a [[ref: VUA]] MUST resolve to a [[ref: DID Document]].
 - [VUA-REQ-2] A [[ref: VUA]] DID Document MUST present a VT Organization Essential Credential that conforms to [VT-EC-ORG] or (exclusive) to [VT-EC-PERSON].
-- [VUA-REQ-3] A [[ref: VUA]] DID Document MUST present a VT User Agent Essential Credential that conforms to [VT-EC-USER-AGENT].
+- [VUA-REQ-3] A [[ref: VUA]] The DID of a VUA MUST be an issuer of VT User Agent Essential Credential schema that conforms to [VT-EC-USER-AGENT].
 - [VUA-REQ-4] A compliant [[ref: VUA]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify Verifiable Trust Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
 
 :::note

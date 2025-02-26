@@ -90,7 +90,7 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </ul>
 <p>All the above is detailed in this spec.</p>
 <p>Verifiable communication channel can be persistent or ephemerous.</p>
-<div id="note-1" class="notice note"><a class="notice-link" href="#note-1">NOTE</a><p>Presented credentials do not necessarily need to be human/organization identity related. An IoT service could present a deviceId credential to authenticate itself.</p>
+<div id="note-7" class="notice note"><a class="notice-link" href="#note-7">NOTE</a><p>Presented credentials do not necessarily need to be human/organization identity related. An IoT service could present a deviceId credential to authenticate itself.</p>
 </div>
 <h3 id="what-is-a-verifiable-service"><a class="toc-anchor" href="#what-is-a-verifiable-service" >§</a> What is a Verifiable Service?</h3>
 <p><em>This section is non-normative.</em></p>
@@ -581,7 +581,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <span class="token punctuation">}</span>
 
 </code></pre>
-<div id="note-2" class="notice note"><a class="notice-link" href="#note-2">NOTE</a><p>This is subject to a slight update of <a path-0="w3c.github.io"path-1="vc-json-schema"path-2=""href="https://w3c.github.io/vc-json-schema/" >vc-json-schema</a> as specified in this <a path-0="github.com"path-1="w3c"path-2="vc-json-schema"path-3="issues"path-4="235"href="https://github.com/w3c/vc-json-schema/issues/235" ></a></p>
+<div id="note-8" class="notice note"><a class="notice-link" href="#note-8">NOTE</a><p>This is subject to a slight update of <a path-0="w3c.github.io"path-1="vc-json-schema"path-2=""href="https://w3c.github.io/vc-json-schema/" >vc-json-schema</a> as specified in this <a path-0="github.com"path-1="w3c"path-2="vc-json-schema"path-3="issues"path-4="235"href="https://github.com/w3c/vc-json-schema/issues/235" ></a></p>
 </div>
 <h3 id="vt-tr-diddoc-trust-registry-did-document"><a class="toc-anchor" href="#vt-tr-diddoc-trust-registry-did-document" >§</a> [VT-TR-DIDDOC] Trust Registry DID Document</h3>
 <p>For each <code>CredentialSchema</code> entry a Trust Registry has created in a <a class="term-reference" href="#term:vpr">VPR</a>, the Trust Registry MUST self-issue the corresponding Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].</p>
@@ -691,7 +691,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li>[VS-REQ-4] If the issuer of the VT Service Credential of [VS-REQ-2] is not the <a class="term-reference" href="#term:did">DID</a> of this service, issuer service MUST be a [VS-REQ] <a class="term-reference" href="#term:vs">VS</a> that conforms to [VS-REQ-3].</li>
 <li>[VS-REQ-5] A compliant <a class="term-reference" href="#term:vs">VS</a> MUST dereference all service credentials, User Agent credentials, DID Documents, verify VS Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,… comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.</li>
 </ul>
-<div id="note-3" class="notice note"><a class="notice-link" href="#note-3">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
+<div id="note-9" class="notice note"><a class="notice-link" href="#note-9">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
 </div>
 <ul>
 <li>[VS-REQ-5] The service MAY issue, present through linked verifiable presentation entries, or request presentation of any additional VS Credential that conforms to [VT-CRED].</li>
@@ -716,17 +716,17 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li>[VS-LVP-5] if linked verifiable presentation id fragment is <code>#vpr-essential-schemas-person-credential</code>, presented credential MUST be a VT Person Essential Credential [VT-EC-PERSON].</li>
 </ul>
 <h3 id="vua-req-requirements-for-a-user-agent-to-be-a-vua"><a class="toc-anchor" href="#vua-req-requirements-for-a-user-agent-to-be-a-vua" >§</a> [VUA-REQ] Requirements for a User Agent to be a VUA</h3>
-<div id="todo-1" class="notice todo"><a class="notice-link" href="#todo-1">TODO</a><p>ignore for now</p>
+<div id="todo-3" class="notice todo"><a class="notice-link" href="#todo-3">TODO</a><p>ignore for now</p>
 </div>
 <ul>
 <li>[VUA-REQ-1] A <a class="term-reference" href="#term:vua">VUA</a> MUST be identified by a <a class="term-reference" href="#term:did">DID</a>. The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-reference" href="#term:vua">VUA</a> MUST resolve to a <a class="term-reference" href="#term:did-document">DID Document</a>.</li>
 <li>[VUA-REQ-2] A <a class="term-reference" href="#term:vua">VUA</a> DID Document MUST present a VT Organization Essential Credential that conforms to [VT-EC-ORG] or (exclusive) to [VT-EC-PERSON].</li>
-<li>[VUA-REQ-3] A <a class="term-reference" href="#term:vua">VUA</a> DID Document MUST present a VT User Agent Essential Credential that conforms to [VT-EC-USER-AGENT].</li>
+<li>[VUA-REQ-3] A <a class="term-reference" href="#term:vua">VUA</a> The DID of a VUA MUST be an issuer of VT User Agent Essential Credential schema that conforms to [VT-EC-USER-AGENT].</li>
 <li>[VUA-REQ-4] A compliant <a class="term-reference" href="#term:vua">VUA</a> MUST dereference all service credentials, User Agent credentials, DID Documents, verify Verifiable Trust Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,… comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.</li>
 </ul>
-<div id="note-4" class="notice note"><a class="notice-link" href="#note-4">NOTE</a><p>In other words, a to be a VUA, a User Agent MUST identify itself to the other end by sharing its DID, and the other end MUST verify it complies with [VUA-REQ]</p>
+<div id="note-10" class="notice note"><a class="notice-link" href="#note-10">NOTE</a><p>In other words, a to be a VUA, a User Agent MUST identify itself to the other end by sharing its DID, and the other end MUST verify it complies with [VUA-REQ]</p>
 </div>
-<div id="todo-2" class="notice todo"><a class="notice-link" href="#todo-2">TODO</a><p>This must be modified as each user agent instance will have its own credential issued.</p>
+<div id="todo-4" class="notice todo"><a class="notice-link" href="#todo-4">TODO</a><p>This must be modified as each user agent instance will have its own credential issued.</p>
 </div>
 <h3 id="vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service"><a class="toc-anchor" href="#vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service" >§</a> [VS-CONN-VS] Requirements for a VS to accept a connection from another service</h3>
 <p>When a <a class="term-reference" href="#term:vs">VS</a> VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-SPEC], else VS-1 MUST NOT accept the connection. Exception: if provided by VS-1 service Service-2 wants to connect to is an issuer of [VT-EC-ORG] or [VT-EC-PERSON] and Service-2 is just missing a [VT-EC-ORG] / [VT-EC-PERSON] for being compliant, connection CAN be accepted by VS-1.</p>
@@ -818,7 +818,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li>if schema is not open, we call “Get Permission Session” to verify requester paid using the <code>sessionId</code>.</li>
 <li>we present the selected credential to verifier.</li>
 </ul>
-<div id="note-5" class="notice note"><a class="notice-link" href="#note-5">NOTE</a><p>Services that will want to request presentation of credential will need a crypto wallet and keys if VPR is a blockchain</p>
+<div id="note-11" class="notice note"><a class="notice-link" href="#note-11">NOTE</a><p>Services that will want to request presentation of credential will need a crypto wallet and keys if VPR is a blockchain</p>
 </div>
 <h3 id="example"><a class="toc-anchor" href="#example" >§</a> Example</h3>
 <p>Let’s see a full example in action. Here is a DID Document of a compliant VS:</p>
@@ -906,7 +906,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <span class="token punctuation">}</span>
 
 </code></pre>
-<div id="note-6" class="notice note"><a class="notice-link" href="#note-6">NOTE</a><p>Here for trust resolution we need to get did:example:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)</p>
+<div id="note-12" class="notice note"><a class="notice-link" href="#note-12">NOTE</a><p>Here for trust resolution we need to get did:example:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)</p>
 </div>
 <p>org-credential-presentation.json:</p>
 <pre class="language-json"><code class="language-json">
