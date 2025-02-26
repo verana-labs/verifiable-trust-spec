@@ -785,44 +785,41 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <span class="token punctuation">}</span>
 </code></pre>
 <h3 id="vt-resol-verification-of-permissions-in-verifiable-public-registries"><a class="toc-anchor" href="#vt-resol-verification-of-permissions-in-verifiable-public-registries" >§</a> [VT-RESOL] Verification of permission(s) in Verifiable Public Registries</h3>
-<div id="todo-3" class="notice todo"><a class="notice-link" href="#todo-3">TODO</a><p>Use TRQP instead of native <a class="term-reference" href="#term:vpr">VPR</a> queries when TRQP stabilizes</p>
+<p>Please refer to Permission Module in <a class="term-reference" href="#term:vpr">VPR</a> specs.</p>
+<p>Process for verifying trust is always following the same rules. You’ll find few examples below.</p>
+<h4 id="verify-that-an-organization-credential-has-been-issued-by-an-authorized-issuer"><a class="toc-anchor" href="#verify-that-an-organization-credential-has-been-issued-by-an-authorized-issuer" >§</a> Verify that an Organization Credential has been issued by an authorized issuer</h4>
+<p>“We” refers to a VUA or a VS.</p>
+<ul>
+<li>for a given service, get its Organization credential linked verifiable presentation in its DID Document.</li>
+<li>get and load the linked <code>Json Schema Credential</code>. Verify that the issuer (the Trust Registry owner of this schema) of this <code>Json Schema Credential</code> is in your <code>essentialSchemaTrustRegistries</code> list. Verify the <code>digestSRI</code> of the <code>credentialSchema</code> and the <code>credentialSubject</code> properties.</li>
+<li>get the credential schema id <code>schema_id</code> from the <code>credentialSubject</code> of the <code>Json Schema Credential</code>.</li>
+<li>use the VPR API such as “Get a Credential Schema” and “Get Trust Registry” methods. Verify that the Trust Registry DID matches the DID of the <code>Json Schema Credential</code>. If schema is open for anyone to issue, no need to do any further check.</li>
+<li>If schema is not open, call “Find Permissions With DID” method to verify that issuer of the organization credential had a valid permission for this schema at the time the credential was issued. If yes, credential has been issued by an authorized issuer.</li>
+</ul>
+<h4 id="verify-that-a-vt-credential-has-been-issued-by-an-authorized-issuer"><a class="toc-anchor" href="#verify-that-a-vt-credential-has-been-issued-by-an-authorized-issuer" >§</a> Verify that a VT Credential has been issued by an authorized issuer</h4>
+<p>We consider presentation receiver has already performed the checks and credential schema has credential verification set to OPEN (anyone can verify). “We” refers to a VUA or a VS.</p>
+<ul>
+<li>receive a credential presentation or get it as a linked verifiable presentation in a DID Document.</li>
+<li>get and load the linked <code>Json Schema Credential</code>. Verify that the issuer (the Trust Registry owner of this schema) of this <code>Json Schema Credential</code> is in your <code>trustRegistries</code> list. Verify the <code>digestSRI</code> of the <code>credentialSchema</code> and the <code>credentialSubject</code> properties.</li>
+<li>get the credential schema id <code>schema_id</code> from the <code>credentialSubject</code> of the <code>Json Schema Credential</code>.</li>
+<li>use the VPR API such as “Get a Credential Schema” and “Get Trust Registry” methods. Verify that the Trust Registry DID matches the DID of the <code>Json Schema Credential</code>. If schema is open for anyone to issue, no need to do any further check.</li>
+<li>If schema is not open, call “Find Permissions With DID” method to verify that issuer of the organization credential had a valid permission for this schema at the time the credential was issued. If yes, credential has been issued by an authorized issuer.</li>
+</ul>
+<h4 id="verify-that-a-service-has-the-right-to-request-the-presentation-of-a-credential-of-a-given-issuer-for-a-given-schema"><a class="toc-anchor" href="#verify-that-a-service-has-the-right-to-request-the-presentation-of-a-credential-of-a-given-issuer-for-a-given-schema" >§</a> Verify that a service has the right to request the presentation of a Credential of a given Issuer for a given schema</h4>
+<p>We consider we verified that the service is complying with this spec before connecting to it. “We” refers to a VUA or a VS.</p>
+<p>A requester want to request the presentation of a credential.</p>
+<ul>
+<li>the requester shares the <code>schemaId</code> to us;</li>
+<li>we use the VPR API such as “Get a Credential Schema” and “Get Trust Registry” methods and check if verification is open for this schema. If schema is not open, then verifier MUST create a transaction. We share a <code>sessionId</code> (uuid) to requester;</li>
+<li>we shared a list of found credential in the wallet(s) <code>(issuerPermId, walletAgentPermId)</code> (that implies we resolved the permIds by using the “Find Permissions With DID” method <em>at</em> issuance date)</li>
+<li>requester chooses a credential, verifies <code>issuerPermId</code> and <code>walletAgentPermId</code></li>
+<li>if a payment is required, the verifier uses the “Create or update Permission Session” method to pay.</li>
+<li>requester inform us which credential it wants.</li>
+<li>if schema is not open, we call “Get Permission Session” to verify requester paid using the <code>sessionId</code>.</li>
+<li>we present the selected credential to verifier.</li>
+</ul>
+<div id="note-5" class="notice note"><a class="notice-link" href="#note-5">NOTE</a><p>Services that will want to request presentation of credential will need a crypto wallet and keys if VPR is a blockchain</p>
 </div>
-<p>Please refer to [MOD-CSP-QRY-3] and [MOD-CSP-QRY-4] in <a class="term-reference" href="#term:vpr">VPR</a> specs.</p>
-<p>Example #1: check if issuer <code>did:example:service-credential-issuer</code> is (was) granted issuance of credentials from credential schema <code>12345678</code> to wallet_user_agent_did <code>did:example:wallet_user_agent</code> through user agent <code>did:example:user_agent</code> for country <code>fr</code> at datetime <code>2024-10-31T01:48:52Z</code> for <a class="term-reference" href="#term:session">session</a>_id <code>09b6d2e1-684f-443a-94ae-f6bc3112b2e5</code>:</p>
-<p><code>POST /vpr/v1/csp/authorized_issuer</code></p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"issuer_did"</span><span class="token operator">:</span> <span class="token string">"did:example:service-credential-issuer"</span><span class="token punctuation">,</span>
-  <span class="token property">"user_agent_did"</span><span class="token operator">:</span> <span class="token string">"did:example:user_agent"</span><span class="token punctuation">,</span>
-  <span class="token property">"wallet_user_agent_did"</span><span class="token operator">:</span> <span class="token string">"did:example:wallet_user_agent"</span><span class="token punctuation">,</span>
-  <span class="token property">"schema_id"</span><span class="token operator">:</span> <span class="token string">"12345678"</span><span class="token punctuation">,</span>
-  <span class="token property">"country"</span><span class="token operator">:</span> <span class="token string">"fr"</span><span class="token punctuation">,</span>
-  <span class="token property">"when"</span><span class="token operator">:</span> <span class="token string">"2024-10-31T01:48:52Z"</span><span class="token punctuation">,</span>
-  <span class="token property">"session_id"</span><span class="token operator">:</span> <span class="token string">"09b6d2e1-684f-443a-94ae-f6bc3112b2e5"</span>
-<span class="token punctuation">}</span>
-</code></pre>
-<p>Response:</p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"AUTHORIZED"</span>
-<span class="token punctuation">}</span>
-</code></pre>
-<p>Example #2: check if verifier <code>did:example:verifier</code> is (was) granted presentation request of a credential from credential schema <code>12345678</code> issued by issuer <code>did:example:service-credential-issuer</code> from wallet_user_agent_did <code>did:example:wallet_user_agent</code> through user agent <code>did:example:user_agent</code> for country <code>fr</code> at datetime <code>2024-10-31T01:48:52Z</code> for <a class="term-reference" href="#term:session">session</a>_id <code>09b6d2e1-684f-443a-94ae-f6bc3112b2e5</code> and <a class="term-reference" href="#term:session">session</a>_id <code>09b6d2e1-684f-443a-94ae-f6bc3112b2e5</code>:</p>
-<p><code>POST /vpr/v1/csp/authorized_verifier</code></p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"verifier_did"</span><span class="token operator">:</span> <span class="token string">"did:example:verifier"</span><span class="token punctuation">,</span>
-  <span class="token property">"issuer_did"</span><span class="token operator">:</span> <span class="token string">"did:example:service-credential-issuer"</span><span class="token punctuation">,</span>
-  <span class="token property">"user_agent_did"</span><span class="token operator">:</span> <span class="token string">"did:example:user_agent"</span><span class="token punctuation">,</span>
-  <span class="token property">"wallet_user_agent_did"</span><span class="token operator">:</span> <span class="token string">"did:example:wallet_user_agent"</span><span class="token punctuation">,</span>
-  <span class="token property">"schema_id"</span><span class="token operator">:</span> <span class="token string">"12345678"</span><span class="token punctuation">,</span>
-  <span class="token property">"country"</span><span class="token operator">:</span> <span class="token string">"fr"</span><span class="token punctuation">,</span>
-  <span class="token property">"when"</span><span class="token operator">:</span> <span class="token string">"2024-10-31T01:48:52Z"</span><span class="token punctuation">,</span>
-  <span class="token property">"session_id"</span><span class="token operator">:</span> <span class="token string">"09b6d2e1-684f-443a-94ae-f6bc3112b2e5"</span>
-<span class="token punctuation">}</span>
-</code></pre>
-<p>Response:</p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"AUTHORIZED"</span>
-<span class="token punctuation">}</span>
-</code></pre>
 <h3 id="example"><a class="toc-anchor" href="#example" >§</a> Example</h3>
 <p>Let’s see a full example in action. Here is a DID Document of a compliant VS:</p>
 <pre class="language-json"><code class="language-json">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
@@ -909,7 +906,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <span class="token punctuation">}</span>
 
 </code></pre>
-<div id="note-5" class="notice note"><a class="notice-link" href="#note-5">NOTE</a><p>Here for trust resolution we need to get did:example:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)</p>
+<div id="note-6" class="notice note"><a class="notice-link" href="#note-6">NOTE</a><p>Here for trust resolution we need to get did:example:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)</p>
 </div>
 <p>org-credential-presentation.json:</p>
 <pre class="language-json"><code class="language-json">
@@ -1197,7 +1194,13 @@ Provide repo info
 <li><a href="#vua-conn-vs-requirements-for-a-vua-to-accept-connecting-to-a-service" >[VUA-CONN-VS] Requirements for a VUA to accept connecting to a service</a></li>
 <li><a href="#vua-conn-vua-requirements-for-a-vua-to-accept-connecting-to-a-another-user-agent" >[VUA-CONN-VUA] Requirements for a VUA to accept connecting to a another User Agent</a></li>
 <li><a href="#tr-wl-vpr-and-trust-registry-whitelists" >[TR-WL] VPR and Trust Registry whitelists</a></li>
-<li><a href="#vt-resol-verification-of-permissions-in-verifiable-public-registries" >[VT-RESOL] Verification of permission(s) in Verifiable Public Registries</a></li>
+<li><a href="#vt-resol-verification-of-permissions-in-verifiable-public-registries" >[VT-RESOL] Verification of permission(s) in Verifiable Public Registries</a>
+<ul>
+<li><a href="#verify-that-an-organization-credential-has-been-issued-by-an-authorized-issuer" >Verify that an Organization Credential has been issued by an authorized issuer</a></li>
+<li><a href="#verify-that-a-vt-credential-has-been-issued-by-an-authorized-issuer" >Verify that a VT Credential has been issued by an authorized issuer</a></li>
+<li><a href="#verify-that-a-service-has-the-right-to-request-the-presentation-of-a-credential-of-a-given-issuer-for-a-given-schema" >Verify that a service has the right to request the presentation of a Credential of a given Issuer for a given schema</a></li>
+</ul>
+</li>
 <li><a href="#example" >Example</a></li>
 </ul>
 </li>

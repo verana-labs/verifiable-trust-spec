@@ -885,60 +885,48 @@ Example:
 
 ### [VT-RESOL] Verification of permission(s) in Verifiable Public Registries
 
-:::todo
-Use TRQP instead of native [[ref: VPR]] queries when TRQP stabilizes
+Please refer to Permission Module in [[ref: VPR]] specs.
+
+Process for verifying trust is always following the same rules. You'll find few examples below.
+
+#### Verify that an Organization Credential has been issued by an authorized issuer
+
+"We" refers to a VUA or a VS.
+
+- for a given service, get its Organization credential linked verifiable presentation in its DID Document.
+- get and load the linked `Json Schema Credential`. Verify that the issuer (the Trust Registry owner of this schema) of this `Json Schema Credential` is in your `essentialSchemaTrustRegistries` list. Verify the `digestSRI` of the `credentialSchema` and the `credentialSubject` properties.
+- get the credential schema id `schema_id` from the `credentialSubject` of the `Json Schema Credential`.
+- use the VPR API such as "Get a Credential Schema" and "Get Trust Registry" methods. Verify that the Trust Registry DID matches the DID of the `Json Schema Credential`. If schema is open for anyone to issue, no need to do any further check.
+- If schema is not open, call "Find Permissions With DID" method to verify that issuer of the organization credential had a valid permission for this schema at the time the credential was issued. If yes, credential has been issued by an authorized issuer.
+
+#### Verify that a VT Credential has been issued by an authorized issuer
+
+We consider presentation receiver has already performed the checks and credential schema has credential verification set to OPEN (anyone can verify). "We" refers to a VUA or a VS.
+
+- receive a credential presentation or get it as a linked verifiable presentation in a DID Document.
+- get and load the linked `Json Schema Credential`. Verify that the issuer (the Trust Registry owner of this schema) of this `Json Schema Credential` is in your `trustRegistries` list. Verify the `digestSRI` of the `credentialSchema` and the `credentialSubject` properties.
+- get the credential schema id `schema_id` from the `credentialSubject` of the `Json Schema Credential`.
+- use the VPR API such as "Get a Credential Schema" and "Get Trust Registry" methods. Verify that the Trust Registry DID matches the DID of the `Json Schema Credential`. If schema is open for anyone to issue, no need to do any further check.
+- If schema is not open, call "Find Permissions With DID" method to verify that issuer of the organization credential had a valid permission for this schema at the time the credential was issued. If yes, credential has been issued by an authorized issuer.
+
+#### Verify that a service has the right to request the presentation of a Credential of a given Issuer for a given schema
+
+We consider we verified that the service is complying with this spec before connecting to it. "We" refers to a VUA or a VS.
+
+A requester want to request the presentation of a credential.
+
+- the requester shares the `schemaId` to us;
+- we use the VPR API such as "Get a Credential Schema" and "Get Trust Registry" methods and check if verification is open for this schema. If schema is not open, then verifier MUST create a transaction. We share a `sessionId` (uuid) to requester;
+- we shared a list of found credential in the wallet(s) `(issuerPermId, walletAgentPermId)` (that implies we resolved the permIds by using the "Find Permissions With DID" method *at* issuance date)
+- requester chooses a credential, verifies `issuerPermId` and `walletAgentPermId`
+- if a payment is required, the verifier uses the "Create or update Permission Session" method to pay.
+- requester inform us which credential it wants.
+- if schema is not open, we call "Get Permission Session" to verify requester paid using the `sessionId`.
+- we present the selected credential to verifier.
+
+:::note
+Services that will want to request presentation of credential will need a crypto wallet and keys if VPR is a blockchain
 :::
-
-Please refer to [MOD-CSP-QRY-3] and [MOD-CSP-QRY-4] in [[ref: VPR]] specs.
-
-Example #1: check if issuer `did:example:service-credential-issuer` is (was) granted issuance of credentials from credential schema `12345678` to wallet_user_agent_did `did:example:wallet_user_agent` through user agent `did:example:user_agent` for country `fr` at datetime `2024-10-31T01:48:52Z` for [[ref: session]]_id `09b6d2e1-684f-443a-94ae-f6bc3112b2e5`:
-
-`POST /vpr/v1/csp/authorized_issuer`
-
-```json
-{
-  "issuer_did": "did:example:service-credential-issuer",
-  "user_agent_did": "did:example:user_agent",
-  "wallet_user_agent_did": "did:example:wallet_user_agent",
-  "schema_id": "12345678",
-  "country": "fr",
-  "when": "2024-10-31T01:48:52Z",
-  "session_id": "09b6d2e1-684f-443a-94ae-f6bc3112b2e5"
-}
-```
-
-Response:
-
-```json
-{
-  "status": "AUTHORIZED"
-}
-```
-
-Example #2: check if verifier `did:example:verifier` is (was) granted presentation request of a credential from credential schema `12345678` issued by issuer `did:example:service-credential-issuer` from wallet_user_agent_did `did:example:wallet_user_agent` through user agent `did:example:user_agent` for country `fr` at datetime `2024-10-31T01:48:52Z` for [[ref: session]]_id `09b6d2e1-684f-443a-94ae-f6bc3112b2e5` and [[ref: session]]_id `09b6d2e1-684f-443a-94ae-f6bc3112b2e5`:
-
-`POST /vpr/v1/csp/authorized_verifier`
-
-```json
-{
-  "verifier_did": "did:example:verifier",
-  "issuer_did": "did:example:service-credential-issuer",
-  "user_agent_did": "did:example:user_agent",
-  "wallet_user_agent_did": "did:example:wallet_user_agent",
-  "schema_id": "12345678",
-  "country": "fr",
-  "when": "2024-10-31T01:48:52Z",
-  "session_id": "09b6d2e1-684f-443a-94ae-f6bc3112b2e5"
-}
-```
-
-Response:
-
-```json
-{
-  "status": "AUTHORIZED"
-}
-```
 
 ### Example
 
