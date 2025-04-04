@@ -22,17 +22,21 @@
 
 ## Abstract
 
-The Internet is broken. All existing communication channels are insecure, and obsolete. Because all existing communication channels rely on public identifiers, anyone that knows your identifier can reach you.
+The internet is broken. Existing communication channels are insecure and outdated. Because they rely on public identifiers — like email addresses, usernames, or phone numbers — anyone who knows your identifier can reach you, whether you invited them or not.
 
-Furthermore, existing communication channels do not provide a sure-fire way of verifying service provider and end-user Identity. This is an open door to spam, phishing, fraud, identity theft...
+Worse, there’s no reliable way to verify the identity of either service providers or users. This leaves the door wide open to spam, phishing, fraud, and identity theft.
 
-Regarding service providers and services, each service has it own registration process, fastidious password rules... And/or they are usually using federated login, that makes you depend on a third party service for accessing your accounts.
+On the service side, each provider imposes its own fragmented registration process, often with complex password requirements or forced reliance on federated login systems—effectively handing control over to large third-party platforms.
 
-If the World Wide Web was initially designed for interoperability, major companies have managed to transform it to a closed, centralized internet, that we all depend on.
+Although the World Wide Web was originally built for openness and interoperability, dominant players have reshaped it into a closed, centralized system that most people and organizations now depend on. Privacy has become an afterthought, and personal data is routinely harvested, exploited, or leaked.
 
-Not to talk about privacy, and what's done with our data.
+To rebuild a trustworthy internet, we need new communication channels — channels that are secure by design, based on mutual verification, and governed by decentralized trust. 
 
-To build a new, trustable internet, we need new, zero trust communication channels, where both ends can be clearly identified, and where providing a service, accessing a service, or creating a new account, should be as simple as clicking a link or presenting a credential.
+Connecting to a service, proving who you are, or creating an account should be as simple and safe as presenting a verifiable credential.
+
+A universal, open trust layer is essential for this vision to succeed.
+
+That’s the purpose of **Verifiable Trust**.
 
 ## About this Document
 
@@ -40,28 +44,7 @@ In order to fully understand the concepts developed in this document, you should
 
 ## Introduction
 
-### What is a Verifiable Communication Channel?
-
-*This section is non-normative.*
-
-A verifiable communication channel is a communication channel, where participants have been fully authenticated with a [[ref: verifiable credential]].
-
-A communication channel is considered a verifiable communication channel if:
-
-- communication channel supports verifiable credentials, either through linked-vp and/or present proof;
-- all communication channel participants presented a [[ref: verifiable credential]], and presented [[ref: verifiable credentials]] were considered acceptable by other participants (authorized issuers, and optionally matching claims).
-- when public resolvable DID(s) are involved for establishing the connection, ciphering keys for bootstrapping the connection MUST be keys defined in DID Document(s);
-- when direct did:peer DIDs are involved for bootstrapping the connection, they can be accepted only if originating from a compliant user agent.
-
-All the above is detailed in this spec.
-
-Verifiable communication channel can be persistent or ephemerous.
-
-:::note
-Presented credentials do not necessarily need to be human/organization identity related. An IoT service could present a deviceId credential to authenticate itself.
-:::
-
-### What is a Verifiable Service?
+### What is a Verifiable Service (VS)?
 
 *This section is non-normative.*
 
@@ -69,7 +52,7 @@ A [[ref: verifiable service]] is a service that provide a way to identify itself
 
 Additionally, a [[ref: verifiable service]] that would like to issue or request verification of credentials must prove it is allowed to do so.
 
-### What is a Verifiable User Agent?
+### What is a Verifiable User Agent (VUA)?
 
 *This section is non-normative.*
 
@@ -77,7 +60,7 @@ A Verifiable User Agent ([[ref: VUA]]) is a software (a browser, an app, a walle
 
 Additionally, VUAs must perform a trust resolution by verifying the credentials presented by the peers and query VPR(s) to check that these credentials have been issued by verified issuers.
 
-### What is a Verifiable Public Registry?
+### What is a Verifiable Public Registry (VPR)?
 
 *This section is non-normative.*
 
@@ -162,9 +145,9 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 
 *This section is not part of this specification and is provided for understanding only.*
 
-As specified in the [[ref:VPR]] spec, Credential Schemas (CS) are created and linked to a Trust Registry in a [[ref: VPR]].
+As specified in the [[ref:VPR]] spec, Credential Schemas (CS) are created by Ecosystems and linked to a Trust Registry in a [[ref: VPR]].
 
-A Trust Registry creates itself in a [[ref: VPR]] by creating a `TrustRegistry` entry `tr`, and create one or more `CredentialSchema` entry(ies), which definition are Json Schema(s).
+An ecosystem creates a Trust Registry in a [[ref: VPR]] by creating a `TrustRegistry` entry `tr`, and create one or more `CredentialSchema` entry(ies), which definition are Json Schema(s).
 
 Example:
 
