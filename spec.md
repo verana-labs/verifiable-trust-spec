@@ -317,7 +317,7 @@ Credential subject object of schema MUST contain the following attributes:
 - `registryId` (string) (*mandatory*): registry id of the organization.
 - `registryUrl` (string) (*mandatory*): link to registry data.
 - `address` (string) (*mandatory*): address of the organization.
-- `type` (enum) (*mandatory*): type of organization. PUBLIC, PRIVATE, FOUNDATION.
+- `type` (string) (*mandatory*): type of organization. PUBLIC, PRIVATE, FOUNDATION.
 - `countryCode` (string) (*mandatory*): country where the company is registered.
 
 the resulting `json_schema` attribute will be the following Json Schema.
@@ -365,8 +365,8 @@ the resulting `json_schema` attribute will be the following Json Schema.
           "maxLength": 1024
         },
         "type": {
-          "type": "enum",
-          "value": ["PUBLIC", "PRIVATE", "FOUNDATION"]
+          "type": "string",
+          "enum": ["PUBLIC", "PRIVATE", "FOUNDATION"]
         },
         "countryCode": {
           "type": "string",
