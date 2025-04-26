@@ -603,7 +603,7 @@ Example of a Verifiable Trust Json Schema Credential:
   "@context": [
       "https://www.w3.org/ns/credentials/v2"
   ],
-  "id": "https://ecosystem/example-json-schema-credential.json",
+  "id": "https://ecosystem/schemas-example-jsc.json",
   "type": ["VerifiableCredential", "JsonSchemaCredential"],
   "issuer": "did:example:ecosystem",
   "issuanceDate": "2024-01-01T19:23:24Z",
@@ -643,7 +643,7 @@ Example:
     {
       "id": "did:example:ecosystem#vpr-schemas-example-jsc-vp",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/example-json-schema-credential-presentation.json"]
+      "serviceEndpoint": ["https://ecosystem/schemas-example-jsc-vp.json"]
     },
     {
       "id": "did:example:trust-registry#vpr-schemas-trust-registry-1234",
@@ -680,7 +680,7 @@ Example:
   },
   ...
   "credentialSchema": {
-    "id": "https://ecosystem/example-json-schema-credential.json",
+    "id": "https://ecosystem/schemas-example-jsc.json",
     "type": "JsonSchemaCredential"
   }
 }
@@ -1064,22 +1064,22 @@ Example:
     {
       "id": "did:example:ecosystem#vpr-ecs-service-jsc-vp",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/ecs-service-json-schema-credential-presentation.json"]
+      "serviceEndpoint": ["https://ecosystem/ecs-service-jsc-vp.json"]
     },
     {
       "id": "did:example:ecosystem#vpr-ecs-org-jsc-vp",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/ecs-org-json-schema-credential-presentation.json"]
+      "serviceEndpoint": ["https://ecosystem/ecs-org-jsc-vp.json"]
     },
     {
       "id": "did:example:ecosystem#vpr-ecs-person-jsc-vp",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/ecs-person-json-schema-credential-presentation.json"]
+      "serviceEndpoint": ["https://ecosystem/ecs-person-jsc-vp.json"]
     },
     {
       "id": "did:example:ecosystem#vpr-ecs-ua-jsc-vp",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/ecs-ua-json-schema-credential-presentation.json"]
+      "serviceEndpoint": ["https://ecosystem/ecs-ua-jsc-vp.json"]
     },
     {
       "id": "did:example:ecosystem#vpr-ecs-trust-registry-789041745",
@@ -1204,11 +1204,11 @@ Example:
 { 
   essentialSchemaTrustRegistries: [ 
     { 
-      "tr": "did:example:ecs-trust-registry",
+      "tr": "did:example:ecosystem",
       "vpr": "vpr-mainnet"
     },
     { 
-      "tr": "did:efg:ecs-trust-registry",
+      "tr": "did:example:ecosystem-test",
       "vpr": "vpr-testnet"
     }
   ]
