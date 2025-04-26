@@ -47,15 +47,21 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
                     </header>
       
                     <article id="content">
-                      <h1 id="verifiable-trust-v1-specification"><a class="toc-anchor" href="#verifiable-trust-v1-specification" >§</a> Verifiable Trust v1 Specification</h1>
+                      <h1 id="verifiable-trust-v2-specification"><a class="toc-anchor" href="#verifiable-trust-v2-specification" >§</a> Verifiable Trust v2 Specification</h1>
 <p><strong>Specification Status:</strong> <em>Draft</em></p>
 <p><strong>Latest Draft:</strong> <a path-0="github.com"path-1="verana-labs"path-2="verifiable-trust-spec"href="https://github.com/verana-labs/verifiable-trust-spec" >verana-labs/verifiable-trust-spec</a></p>
 <dl>
 <dt><strong>Editors:</strong></dt>
-<dd><a path-0="www.linkedin.com"path-1="in"path-2="fabricerochette"href="https://www.linkedin.com/in/fabricerochette" >Fabrice Rochette</a> (The Verana Foundation, <a path-0="2060.io"href="http://2060.io" ><span>2060.io</span></a>)</dd>
-</dl>
-<!-- -->
-<dl>
+<dd>
+<p><a path-0="www.linkedin.com"path-1="in"path-2="fabricerochette"href="https://www.linkedin.com/in/fabricerochette" >Fabrice Rochette</a> (The Verana Foundation, <a path-0="2060.io"href="http://2060.io" ><span>2060.io</span></a>)</p>
+</dd>
+<dd>
+<p><a path-0="www.linkedin.com"path-1="in"path-2="aogentile"path-3=""href="https://www.linkedin.com/in/aogentile/" >Ariel Gentile</a> (The Verana Foundation, <a path-0="2060.io"href="http://2060.io" ><span>2060.io</span></a>)</p>
+</dd>
+<dt><strong>Contributors:</strong></dt>
+<dd>
+<p><a path-0="www.linkedin.com"path-1="in"path-2="andres-felipe-vallecilla-puentes"path-3=""href="https://www.linkedin.com/in/andres-felipe-vallecilla-puentes/" >Andres Vallecilla</a> (Mobiera)</p>
+</dd>
 <dt><strong>Participate:</strong></dt>
 <dd>
 <p><a path-0="github.com"path-1="verana-labs"path-2="verifiable-trust-spec"href="https://github.com/verana-labs/verifiable-trust-spec" >GitHub repo</a></p>
@@ -78,82 +84,176 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 <p>A universal, open trust layer is essential for this vision to succeed.</p>
 <p>That’s the purpose of <strong>Verifiable Trust</strong>.</p>
 <h2 id="about-this-document"><a class="toc-anchor" href="#about-this-document" >§</a> About this Document</h2>
-<p>In order to fully understand the concepts developed in this document, you should have some basic knowledge of <a class="term-reference" href="#term:did">DID</a>, <a class="term-reference" href="#term:didcomm">DIDComm</a>, <a class="term-reference" href="#term:vs">VS</a>, <a class="term-reference" href="#term:trust-registry">trust registry</a>, ledger-based applications, and more generally, all terms present in the <a href="#terminology" >Terminology</a> section.</p>
-<h2 id="introduction"><a class="toc-anchor" href="#introduction" >§</a> Introduction</h2>
+<p>In order to fully understand the concepts developed in this document, you should have some basic knowledge of <a class="term-reference" href="#term:did">DID</a>, <a class="term-reference" href="#term:didcomm">DIDComm</a>, <a class="term-reference" href="#term:vs">VS</a>, <a class="term-reference" href="#term:trust-registry">trust registry</a>, and more generally, all terms present in the <a href="#terminology" >Terminology</a> section.</p>
+<h2 id="understanding-verifiable-trust"><a class="toc-anchor" href="#understanding-verifiable-trust" >§</a> Understanding Verifiable Trust</h2>
+<p><em>This section is non-normative.</em></p>
+<p>When a user is invited to connect to a service, a <em>verifiable trust compliant user agent</em> resolves the service and shows a Proof-of-Trust to the user, and prompts user to accept or refuse the connection:</p>
+<p><img src="./img/proof-of-trust.png" alt="proof-of-trust"></p>
+<p>Trust Resolution is as simple as calling a method passing the DID of the service we want to resolve, to display a <strong>Proof-of-Trust</strong> to the end-user:</p>
+<pre class="language-json"><code class="language-json">resolve_trust(<span class="token string">"did:example:gaia"</span>)
+</code></pre>
+<p>and receive a response similar to this one:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"did"</span><span class="token operator">:</span><span class="token string">"did:example:gaia"</span><span class="token punctuation">,</span>
+  <span class="token property">"verified"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token property">"service_provider"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:def"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Organization"</span><span class="token punctuation">,</span>
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Gaia Registry LLC"</span><span class="token punctuation">,</span>
+      <span class="token property">"country"</span><span class="token operator">:</span> <span class="token string">"zz"</span><span class="token punctuation">,</span>
+      <span class="token property">"reputation"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"issuedCredentials"</span><span class="token operator">:</span> <span class="token number">1234</span><span class="token punctuation">,</span>
+        <span class="token property">"verifiedCredentials"</span><span class="token operator">:</span> <span class="token number">7678</span><span class="token punctuation">,</span>
+        <span class="token property">"trustDepositValue"</span><span class="token operator">:</span> <span class="token number">176327.124356</span><span class="token punctuation">,</span>
+        <span class="token property">"amountSlashed"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token property">"stars"</span><span class="token operator">:</span> <span class="token number">5.0</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:zzz"</span><span class="token punctuation">,</span>
+      ...
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Gaia Registry"</span><span class="token punctuation">,</span>
+      <span class="token property">"termsAndConditions"</span><span class="token operator">:</span> <span class="token string">"http://example.com"</span><span class="token punctuation">,</span>
+      <span class="token property">"privacyPolicy"</span><span class="token operator">:</span> <span class="token string">"http://example.com"</span><span class="token punctuation">,</span>
+      <span class="token property">"minimumAgeRequired"</span><span class="token operator">:</span> <span class="token number">16</span><span class="token punctuation">,</span>
+      <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"Create your Metaverse ID at Gaia Registry! Protect your identity with biometrics and easily recover it if you loose your phone. Use your Gaia Identity to connect to fancy services with no password."</span>
+      ...
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"credentials"</span> <span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"TrademarkCredential"</span><span class="token punctuation">,</span>
+      ...
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+  ...
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Let’s explain how the Verifiable Trust does it.</p>
+<p><img src="./img/vt-creds-explained.png" alt="Verifiable Service"></p>
+<p>The core idea behind Verifiable Trust is simple: trust should not be implicit—it should be verifiable, transparent, and decentralized.</p>
+<p>In this example, a Verifiable Service (VS) presents several Verifiable Credentials to prove:</p>
+<ul>
+<li>Who operates the service, using an Essential Credential Schema (ECS) Service Verifiable Trust Credential (data shown in red)</li>
+<li>What the service offers, using another ECS Service Verifiable Trust Credential (data shown in blue)</li>
+<li>Trademark information, using a Trademark Verifiable Trust Credential (data shown in green)</li>
+</ul>
+<p>Additionally, the Verifiable Service presents computed reputation information (data shown in black). While this reputation data may support trust decisions, it is not directly defined by this specification. Refer to the <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >VPR Spec</a> for more information.</p>
+<p>Verifiable Trust introduces the following core concepts:</p>
+<ul>
+<li>Verifiable Service (VS)</li>
+<li>Verifiable User Agent (VUA)</li>
+<li>Verifiable Public Registry (VPR)</li>
+<li>Verifiable Trust Credentials</li>
+<li>Essential Credential Schemas (ECS)</li>
+</ul>
+<p>The Proof-of-Trust is established by recursively resolving the credentials presented by a service (the example above), a user agent… What makes this trust verifiable is the use of cryptographic mechanisms built into Decentralized Identifiers (DIDs) and Verifiable Credentials, as applied across these five key concepts.</p>
+<p>Because these concepts are deeply interdependent, you may need to explore them together, and revisit them several times to fully grasp the Verifiable Trust model.</p>
 <h3 id="what-is-a-verifiable-service-vs"><a class="toc-anchor" href="#what-is-a-verifiable-service-vs" >§</a> What is a Verifiable Service (VS)?</h3>
 <p><em>This section is non-normative.</em></p>
-<p>A <a class="term-reference" href="#term:verifiable-service">verifiable service</a> is a service that provide a way to identify itself <em>before</em> connecting to it. Entities that want to connect to a <a class="term-reference" href="#term:verifiable-service">verifiable service</a> can review its presented <a class="term-reference" href="#term:verifiable-credentials">verifiable credentials</a>, prove their legitimacy by performing a <a class="term-reference" href="#term:trust-resolution">trust resolution</a>, and based on the result, decide to connect or not.</p>
-<p>Additionally, a <a class="term-reference" href="#term:verifiable-service">verifiable service</a> that would like to issue or request verification of credentials must prove it is allowed to do so.</p>
+<p>A Verifiable Service (VS) is a service capable of identifying itself to a peer before any connection is established.</p>
+<p>Peers wishing to connect to a VS can review the Verifiable Credentials presented by the service, verify their legitimacy through trust resolution, and decide whether to proceed with the connection based on the outcome.</p>
+<p>A VS is also required to verify the trustworthiness of peers attempting to connect to it—whether those peers are other Verifiable Services (VS) or Verifiable User Agents (VUA)—and must reject connections from non-verifiable peers.</p>
+<p>Furthermore, if a Verifiable Service wants to issue credentials or request credential verification, it must first prove that it is authorized to perform these actions. Otherwise, the peer must refuse the request.</p>
 <h3 id="what-is-a-verifiable-user-agent-vua"><a class="toc-anchor" href="#what-is-a-verifiable-user-agent-vua" >§</a> What is a Verifiable User Agent (VUA)?</h3>
 <p><em>This section is non-normative.</em></p>
-<p>A Verifiable User Agent (<a class="term-reference" href="#term:vua">VUA</a>) is a software (a browser, an app, a wallet…) for connecting to VSs and other VUAs. When establishing connections, a VUA must verify the connection peer(s) and allow connection(s) only to compliant VS and VUA peers.</p>
-<p>Additionally, VUAs must perform a trust resolution by verifying the credentials presented by the peers and query VPR(s) to check that these credentials have been issued by verified issuers.</p>
+<p>A Verifiable User Agent (VUA) is software—such as a browser, app, or wallet—designed to connect with Verifiable Services (VS) and other VUAs. When establishing connections, a VUA must verify the identity and trustworthiness of its peers and allow connections only to compliant VS or VUA peers.</p>
+<p>As part of this process, the VUA must perform trust resolution by:</p>
+<ul>
+<li>Verifying the Verifiable Credentials presented by the peers</li>
+<li>Querying Verifiable Public Registries (VPRs) to confirm that these credentials were issued by recognized and authorized issuers</li>
+</ul>
+<p>This ensures that all connections are based on verifiable trust, not assumptions.</p>
 <h3 id="what-is-a-verifiable-public-registry-vpr"><a class="toc-anchor" href="#what-is-a-verifiable-public-registry-vpr" >§</a> What is a Verifiable Public Registry (VPR)?</h3>
 <p><em>This section is non-normative.</em></p>
-<p>A Verifiable Public Registry (<a class="term-reference" href="#term:vpr">VPR</a>) is a “registry of registries” public service, which provides:</p>
+<p>A <strong>Verifiable Public Registry (VPR)</strong> is a <strong>“registry of registries”</strong>, a public service that provides foundational infrastructure for decentralized trust ecosystems. It offers:</p>
 <ul>
-<li>trust registry features, that can be used by all its <a class="term-reference" href="#term:participants">participants</a>: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,…</li>
-<li>a query API, used by VSs, VUAs, to enforce application of governance frameworks and rules of created trust registries.</li>
+<li>
+<p><strong>Trust Registry Management</strong>:<br>
+Ecosystems can create and manage their own <strong>Trust Registries</strong>, each with:</p>
+<ul>
+<li>Defined <strong>Credential Schemas</strong></li>
+<li>Assigned roles for <strong>Issuers</strong>, <strong>Verifiers</strong>, and <strong>Grantors</strong> (Trust Registry Operators)</li>
+<li>Custom <strong>business models</strong> and permission policies</li>
 </ul>
-<h3 id="conformance"><a class="toc-anchor" href="#conformance" >§</a> Conformance</h3>
-<p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this specification are non-normative. Everything else in this specification is normative.
-The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and SHOULD NOT in this document are to be interpreted as described in <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="bcp14"href="https://datatracker.ietf.org/doc/html/bcp14" >BCP 14</a> <a path-0="w3c.github.io"path-1="vc-data-model"path-2="#bib-rfc2119"href="https://w3c.github.io/vc-data-model/#bib-rfc2119" >RFC2119</a> <a path-0="w3c.github.io"path-1="vc-data-model"path-2="#bib-rfc8174"href="https://w3c.github.io/vc-data-model/#bib-rfc8174" >RFC8174</a> when, and only when, they appear in all capitals, as shown here.</p>
-<h2 id="terminology"><a class="toc-anchor" href="#terminology" >§</a> Terminology</h2>
-<dl>
-<dt><span id="term:credential-schemas"><span id="term:credential-schema">credential schema</span></span>:</dt>
-<dd>An <a class="term-reference" href="#term:vpr">VPR</a> resource which represents a verifiable credential definition and the associated permissions and business rules for issuing, verifying or holding a credential linked to this credential schema.</dd>
-<dt><span id="term:dids"><span id="term:did"><span id="term:decentralized-identifier">decentralized identifier</span></span></span>:</dt>
-<dd>A decentralized identifier, as specified in [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>].</dd>
-<dt><span id="term:didcomm"><span id="term:decentralized-identifier-communication">decentralized identifier communication</span></span>:</dt>
-<dd><a path-0="identity.foundation"path-1="didcomm-messaging"path-2="spec"path-3=""href="https://identity.foundation/didcomm-messaging/spec/" >DIDComm</a> uses <a class="term-reference" href="#term:dids">DIDs</a> to establish confidential, ongoing connections.</dd>
-<dt><span id="term:did-documents"><span id="term:did-document"><span id="term:decentralized-identifier-document">decentralized identifier document</span></span></span>:</dt>
-<dd>A DID Document, as specified in [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>].</dd>
-<dt><span id="term:vprs"><span id="term:vpr"><span id="term:verifiable-public-registry">verifiable public registry</span></span></span>:</dt>
-<dd>a public, normally decentralized network, which provides: trust registry features, that can be used by all its <a class="term-reference" href="#term:participants">participants</a>: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,… For more information, please refer to <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >VPR Spec</a>.</dd>
-<dt><span id="term:vss"><span id="term:vs"><span id="term:verifiable-service">verifiable service</span></span></span>:</dt>
-<dd>A service, identified by a resolvable <a class="term-reference" href="#term:did">DID</a> that can be deployed anywhere by its owner, and that is conforming to this spec and has a resolvable <a class="term-reference" href="#term:proof-of-trust">proof of trust</a>.</dd>
-<dt><span id="term:vuas"><span id="term:vua"><span id="term:verifiable-user-agent">verifiable user agent</span></span></span>:</dt>
-<dd>A user agent for accessing and using <a class="term-reference" href="#term:vss">VSs</a>. To be considered a <a class="term-reference" href="#term:vua">VUA</a>, a user agent must conform and enforce this spec, such as presenting a proof of trust to end user before accepting connecting to <a class="term-reference" href="#term:vs">VS</a> compliant services, and refuse connecting to not compliant services.</dd>
-<dt><span id="term:essential-credential-schemas"><span id="term:essential-credential-schema">essential credential schema</span></span>:</dt>
-<dd>Default <a class="term-reference" href="#term:credential-schema">credential schema</a>, owned by a <a class="term-reference" href="#term:trust-registry">trust registry</a>, that provide the basis for a trust layer to exist in the ecosystem so that <a class="term-reference" href="#term:vua">VUA</a> can generate a <a class="term-reference" href="#term:proof-of-trust">proof of trust</a>.</dd>
-<dt><span id="term:holders"><span id="term:holder">holder</span></span>:</dt>
-<dd>A role an entity might perform by possessing one or more verifiable credentials and generating verifiable presentations from them. A holder is often, but not always, a <a class="term-reference" href="#term:subject">subject</a> of the verifiable credentials they are holding. Holders store their credentials in credential repositories. Example holders include organizations, persons, things.</dd>
-<dt><span id="term:issuers"><span id="term:issuer">issuer</span></span>:</dt>
-<dd>A role an entity can perform by asserting claims about one or more <a class="term-reference" href="#term:subjects">subjects</a>, creating a verifiable credential from these claims, and transmitting the verifiable credential to a <a class="term-reference" href="#term:holder">holder</a>. Example issuers include corporations, non-profit organizations, trade associations, governments, and individuals.</dd>
-<dt><span id="term:json-schemas"><span id="term:json-schema">json schema</span></span>:</dt>
-<dd>A json schema as defined in <a path-0="json-schema.org"href="https://json-schema.org" >JSON-SCHEMA</a>.</dd>
-<dt><span id="term:json-schema-credentials"><span id="term:json-schema-credential">json schema credential</span></span>:</dt>
-<dd>A json schema credential as defined in [<a class="spec-reference" href="#ref:VC-JSON-SCHEMA">VC-JSON-SCHEMA</a>].</dd>
-<dt><span id="term:linked-vp">linked-vp</span>:</dt>
-<dd>A presentation of a <a class="term-reference" href="#term:verifiable-credential">verifiable credential</a> as specified in <a path-0="identity.foundation"path-1="linked-vp"path-2=""href="https://identity.foundation/linked-vp/" >LINKED-VP</a>.</dd>
-<dt><span id="term:participants"><span id="term:participant">participant</span></span>:</dt>
-<dd>An entity that uses an <a class="term-reference" href="#term:vpr">VPR</a> and its trust layer to provide or use services.</dd>
-<dt><span id="term:proof-of-trust">proof of trust</span>:</dt>
-<dd>Visual representation using <a class="term-reference" href="#term:essential-credential-schemas">essential credential schemas</a> of a <a class="term-reference" href="#term:trust-resolution">trust resolution</a> process of a <a class="term-reference" href="#term:verifiable-service">Verifiable Service</a>, for identifying the <a class="term-reference" href="#term:vs">VS</a>, its owner, and the <a class="term-reference" href="#term:issuer">issuer</a> of the verifiable credential of its owner.</dd>
-<dt><span id="term:session">session</span>:</dt>
-<dd>A session defines a connection to a DID Document provided service from a third party VS or VUA.</dd>
-<dt><span id="term:subjects"><span id="term:subject">subject</span></span>:</dt>
-<dd>A thing about which claims are made. Example subjects include human beings, animals, things, and organization, a <a class="term-reference" href="#term:did">DID</a>…</dd>
-<dt><span id="term:trust-registries"><span id="term:trust-registry">trust registry</span></span></dt>
-<dd>An approved list of <a class="term-reference" href="#term:issuers">issuers</a> and <a class="term-reference" href="#term:verifiers">verifiers</a> that are authorized to issue/verify certain credentials in an ecosystem.</dd>
-<dt><span id="term:trust-resolution">trust resolution</span>:</dt>
-<dd>Process run by, for example a <a class="term-reference" href="#term:vua">VUA</a> or a <a class="term-reference" href="#term:vs">VS</a>, which purpose is to recursively resolve <a class="term-reference" href="#term:did">DID</a> by digging into <a class="term-reference" href="#term:did-documents">DID Documents</a> and look for <a class="term-reference" href="#term:linked-vp">linked-vp</a> entries and their <a class="term-reference" href="#term:issuer">issuer</a> <a class="term-reference" href="#term:dids">DIDs</a>, and trust-registry entries to gather whether the service provided by the <a class="term-reference" href="#term:did">DID</a> is trustable (and legitimate), or not.</dd>
-<dt><span id="term:verifiers"><span id="term:verifier">verifier</span></span>:</dt>
-<dd>A role an entity performs by receiving one or more verifiable credentials, optionally inside a verifiable presentation for processing. Example verifiers include service providers.</dd>
-<dt><span id="term:verifiable-credentials"><span id="term:verifiable-credential">verifiable credential</span></span>:</dt>
-<dd>A verifiable credential as defined in [<a class="spec-reference" href="#ref:VC-DATA-MODEL">VC-DATA-MODEL</a>].</dd>
-</dl>
-<h2 id="specification"><a class="toc-anchor" href="#specification" >§</a> Specification</h2>
-<h3 id="vpr-stored-verifiable-credential-json-schemas"><a class="toc-anchor" href="#vpr-stored-verifiable-credential-json-schemas" >§</a> VPR stored Verifiable Credential Json Schemas</h3>
-<p><em>This section is not part of this specification and is provided for understanding only.</em></p>
-<p>As specified in the <a class="term-reference" href="#term:vpr">VPR</a> spec, Credential Schemas (CS) are created by Ecosystems and linked to a Trust Registry in a <a class="term-reference" href="#term:vpr">VPR</a>.</p>
-<p>An ecosystem creates a Trust Registry in a <a class="term-reference" href="#term:vpr">VPR</a> by creating a <code>TrustRegistry</code> entry <code>tr</code>, and create one or more <code>CredentialSchema</code> entry(ies), which definition are Json Schema(s).</p>
-<p>Example:</p>
+</li>
+<li>
+<p><strong>Query API for Trust Resolution</strong>:<br>
+A standardized API used by <strong>Verifiable Services (VSs)</strong> and <strong>Verifiable User Agents (VUAs)</strong> to perform trust resolution, enabling them to query registry data and validate roles and permissions in real time.</p>
+</li>
+</ul>
+<img src="https://www.plantuml.com/plantuml/svg/fT5D2i8m40NWVKunj1Se2EAo_kr5nFqacTPeQqioLOjuTzCQYg0BYxD8idZl8p2fOxJSb8L8XvTJM12KU8DPai3LQ3u843Mg4-O4qPwioGnAdzaqiZ0AjfGRnxQD01rSQWjt8S1F9O-a6AATRHmFAQWoMAlAjOwfX7ZUjzWYn9DCQZdrxQxy664iWY7VZD78CY3g7sGL4Fs9_6oiWq7VZUuG_ayYfRFkD_Uwdm00" alt="uml diagram">
+<h4 id="trust-registries"><a class="toc-anchor" href="#trust-registries" >§</a> Trust Registries</h4>
+<p><em>This section is non-normative.</em></p>
+<p>Each <strong>Ecosystem Trust Registry</strong> is uniquely identified by a <strong>resolvable DID</strong> and must provide, at a minimum:</p>
+<ul>
+<li>One or more <strong>Governance Framework</strong> document(s)</li>
+<li>Zero or more <strong>Credential Schemas</strong></li>
+</ul>
+<p>The <strong>Verifiable Public Registry (VPR)</strong> is agnostic to the specific <strong>DID methods</strong> used. Trust resolution is performed externally, outside the VPR, allowing flexibility and interoperability across ecosystems.</p>
+<img src="https://www.plantuml.com/plantuml/svg/NOv12i9040Jlyuf6Fn0Gn6FU87vWiZj9LhExC3Cn1l7lYeA7zAMBfWxTchFwd2Tg_sI19q7c1qvDWoL57mbKkwi4n-wYipdECYHpNNTWWojZV-Yxs1tn97mYeTfgBXannSqILA8KJpp1mYYPRICCzIvQk0H1hvnbgNf3hC7eHTHAYT-xltu3" alt="uml diagram">
+<h4 id="credential-schemas"><a class="toc-anchor" href="#credential-schemas" >§</a> Credential Schemas</h4>
+<p><em>This section is non-normative.</em></p>
+<p><strong>Credential Schemas</strong> are created and managed by <strong>Trust Registry owners</strong> (Ecosystems). Each Credential Schema includes, at a minimum:</p>
+<ul>
+<li>A <strong>JSON Schema</strong> that defines the structure of the corresponding <strong>Verifiable Credential</strong></li>
+<li>A <strong>PermissionManagementMode</strong> for <strong>issuance policy</strong>, which determines how <code>Issuer</code> permissions are granted. Modes include:
+<ul>
+<li><code>OPEN</code>: Anyone can become an Issuer</li>
+<li><code>ECOSYSTEM</code>: Permissions are granted directly by the Ecosystem, the Trust Registry controller</li>
+<li><code>GRANTOR_VALIDATION</code>: Permissions are granted by one or several <code>Issuer Grantor(s)</code> (Trust Registry operator(s) responsible for selecting issuers for the ecosystem), selected by the Ecosystem.</li>
+</ul>
+</li>
+<li>A <strong>PermissionManagementMode</strong> for <strong>verification policy</strong>, which determines how <code>Verifier</code> permissions are granted. Modes include:
+<ul>
+<li><code>OPEN</code>: Anyone can act as a Verifier</li>
+<li><code>ECOSYSTEM</code>: Permissions are granted directly by the Ecosystem, the Trust Registry controller</li>
+<li><code>GRANTOR_VALIDATION</code>: Permissions are granted by one or several <code>Verifier Grantor(s)</code> (Trust Registry operator(s) responsible for selecting verifiers for the ecosystem), selected by the Ecosystem.</li>
+</ul>
+</li>
+<li>A <strong>Permission Tree</strong> that defines the roles and relationships involved in managing the schema’s lifecycle.</li>
+</ul>
+<img src="https://www.plantuml.com/plantuml/svg/ZPDTJy8m58Rl-ojEu4OlJ9QGCCE50SQ09IfccoHwOxhjCAhxIbicnF3VBUkOak2mD-r9t_C-FJtjK4ZAvIPDoB1PYP0c22dTmgrXm2UBv9e0AMZuGME4ZhsbQQ445iS8Cybe0bwunfJ24_AK2S7o37oEs04g81JmHGYeaGVl64gL7-PY9oIcCAeKaaEtjmgYeA-KK8-YiV9t1Gx0jXRUY-VR3t3bvhcyReGHYmQeJpJ0e_EesjwVO1qXDiXXncacSmxZYitY5gRZUS-s-pPpHu_-mZrBPF7uRvIb4JhecdtJn0Wkyivph3EO9NAsOhzgcbJ0igscfUqwK-T2LMKyQSFP6dCCkuOH62lZ7z3pCBjcdS3cUH8fxrUeM6iTTQVJiM7sMaZpnVsavko9iYH4lQwRcxj3emSG7-v9zK3ev_gJJDHsfTAzQbCU3Sjsmr8RDfVKQbbZ3mcwqbRr4BEe-h1w_WO0" alt="uml diagram">
+<p>Participant roles are defined in the table below:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Participant Role</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Trust Registry</strong></td>
+<td>Create and control Credential Schemas. Grant other roles.</td>
+</tr>
+<tr>
+<td><strong>Issuer Grantor</strong></td>
+<td>Trust Registry operator that grants Issuer permissions to candidate issuers.</td>
+</tr>
+<tr>
+<td><strong>Verifier Grantor</strong></td>
+<td>Trust Registry operator that grants Verifier permissions to candidate verifiers.</td>
+</tr>
+<tr>
+<td><strong>Issuer</strong></td>
+<td>Can issue credentials of this schema.</td>
+</tr>
+<tr>
+<td><strong>Verifier</strong></td>
+<td>Can request presentation of credentials of this schema.</td>
+</tr>
+<tr>
+<td><strong>Holder</strong></td>
+<td>Special role used for selected business models.</td>
+</tr>
+</tbody>
+</table>
+<p>Example of a Json Schema credential schema:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem-vpr-node/vpr/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
   <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
-  <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"SimpleExampleCredential"</span><span class="token punctuation">,</span>
-  <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"SimpleExampleCredential using JsonSchema"</span><span class="token punctuation">,</span>
+  <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"ExampleCredential"</span><span class="token punctuation">,</span>
+  <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"ExampleCredential using JsonSchema"</span><span class="token punctuation">,</span>
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
   <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
@@ -194,22 +294,264 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<h3 id="verifiable-trust-credentials"><a class="toc-anchor" href="#verifiable-trust-credentials" >§</a> Verifiable Trust Credentials</h3>
+<p>Data stored in a VPR is not verified at the time of storage, nor does it need to be. Verification happens outside the scope of the VPR.</p>
+<p>This is not a limitation, it’s a feature. For example, any DID method can be used, and the VPR will never attempt to resolve or validate DIDs itself.</p>
+<p>The VPR provides registrations, not validations, leaving trust decisions and verification where they belong: <strong>with the relying parties</strong>.</p>
+<p>To make things verifiable, for a given credential schema:</p>
+<ul>
+<li>Ecosystem creates a Credential Json Schema in a VPR, linked to its Ecosystem DID.</li>
+<li>Ecosystem issues, with its DID, a <strong>Json Schema Credential</strong> linked to its credential <strong>Json Schema</strong> in the VPR</li>
+<li>Then, authorized issuers can issue <strong>Verifiable Trust Credentials</strong> linked to the <strong>Json Schema Credential</strong> issued by Ecosystem DID.</li>
+</ul>
+<p>.</p>
+<img src="https://www.plantuml.com/plantuml/svg/bLDBJm8n4BxtLqnM3tXOLaNHxC5WX8ESZ1AkfjkERia-IASWQFZljdGjYyB1IvyptsCw7P3XsYpAWWt2YWGl44g-WjlpS_XGqkIipcOe34GZKTEQ39OmqGioy8plYenUGqTev0Obg0gcJyzd4N029FXY01YIf9BfTi0LB-S5fk6ARGB7WqQ9bL6yU14vbXmwRKpXCHtGnMNlwhf_SsktCwghLzg6f_05qQcIKGhTRXSYeqo1TXEDFESEFjgqMAUerPlYcRNkhOqj93GAMZbEmum4dFJUCfdrWvZSc3cbIH8S9UHIAMwinZQfwsIwUA85wcELy6vU6ZD_SEFbNCTLBJ6nYqHGihn8PfI4OcpOSK-_V2p9lfhSjt906b-OlDRg4sNihsrSNXVoTvm_szE_8_nFXQo5ROtZ-AxHcC9z4D5ez1C1X-a4HE21Z9EDiMytFg329qd8rgsk73uEcMqhn-POq_sh7Sz1m43NQa4eQl7p6VvqipqpERg6PkX9BNSA_lyucgFzpzW0Axdzh7x-1W00" alt="uml diagram">
+<h4 id="json-schema-credentials"><a class="toc-anchor" href="#json-schema-credentials" >§</a> Json Schema Credentials</h4>
+<p><em>This section is non-normative.</em></p>
+<p>To prove that data stored in a VPR, such as a credential json schema, is authentic, after creating the JSON Schema, the <strong>Ecosystem owner</strong> of the Trust Registry issues a <a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3=""href="https://www.w3.org/TR/vc-json-schema/" >JSON Schema Credential</a> using the <strong>DID registered as the Trust Registry’s Ecosystem identifier</strong> in the VPR.</p>
+<p>This credential serves as a verifiable proof of:</p>
+<ul>
+<li>Ownership of the <strong>Credential Schema</strong></li>
+<li>Control over the corresponding <strong>Trust Registry Ecosystem DID</strong>.</li>
+</ul>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem/shemas-example-jsc.json"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"JsonSchemaCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem"</span><span class="token punctuation">,</span>
+  <span class="token property">"issuanceDate"</span><span class="token operator">:</span> <span class="token string">"2024-01-01T19:23:24Z"</span><span class="token punctuation">,</span>
+  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://w3c.github.io/vc-json-schema/schema/json-schema-credential-schema.json"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
+    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem-vpr-node/vpr/cs/v1/js/12345678"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
+    <span class="token property">"jsonSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"$ref"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem-vpr-node/vpr/cs/v1/js/12345678"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ"</span> 
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Finally, the Ecosystem must publish both the <strong>JSON Schema Credential</strong> and the <strong>location of the Trust Registry</strong> within the <strong>DID Document</strong> associated with the declared <strong>Trust Registry Ecosystem DID</strong> in the VPR.</p>
+<p>This ensures that the Credential Schema and its controlling Trust Registry are publicly discoverable and cryptographically verifiable.</p>
+<pre class="language-json"><code class="language-json"><span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-schemas-example-jsc-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/schemas-example-jsc-vp.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:trust-registry#vpr-schemas-trust-registry-1234"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiablePublicRegistry"</span><span class="token punctuation">,</span>
+      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem-vpr-node/vpr"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+    ...
+  <span class="token punctuation">]</span>
+</code></pre>
+<h4 id="issuing-verifiable-trust-credentials"><a class="toc-anchor" href="#issuing-verifiable-trust-credentials" >§</a> Issuing Verifiable Trust Credentials</h4>
+<p><em>This section is non-normative.</em></p>
+<p>Once the Ecosystem has:</p>
+<ul>
+<li>Created its <strong>Credential Schemas</strong> in the VPR</li>
+<li>Issued the corresponding <strong>JSON Schema Credentials</strong></li>
+<li>Properly configured the <code>&quot;service&quot;</code> section of its <strong>Ecosystem DID Document</strong></li>
+</ul>
+<p>it is now possible to issue <strong>Verifiable Credentials</strong> based on these schemas.</p>
+<p>Credentials that comply with the <strong>Verifiable Trust Specification</strong> are referred to as <strong>Verifiable Trust Credentials</strong>. These credentials must include, in their <code>credentialSchema</code> attribute, a reference to the corresponding <strong>JSON Schema Credential</strong> issued by the Trust Registry Ecosystem DID. This linkage ensures cryptographic proof of the schema’s origin and trustworthiness.</p>
+<p>In our previous example, that would mean and ExampleCredential should look like this example:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:holder"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"VerifiableTrustCredential"</span><span class="token punctuation">,</span> <span class="token string">"ExampleCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:authorized-issuer"</span><span class="token punctuation">,</span>
+  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:holder"</span><span class="token punctuation">,</span>
+    ...
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  ...
+  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem/schemas-example-jsc.json"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchemaCredential"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<h3 id="essential-credential-schemas"><a class="toc-anchor" href="#essential-credential-schemas" >§</a> Essential Credential Schemas</h3>
+<p>To enable fundamental trust operations—such as identifying service providers, service names, and related entities—we define a set of Essential Credential Schemas (ECS) specifically designed for these purposes:</p>
+<ul>
+<li>Service: identifies services</li>
+<li>Organization: identifies organizations</li>
+<li>Person: identifies individuals (not necessarily tied to legal or citizen identity)</li>
+<li>User Agent: identifies user agents, such as browsers, mobile apps, and similar software</li>
+</ul>
+<p>With the Verifiable Trust concept now clearly established, we’re ready to dive into the specifications.</p>
+<h2 id="conformance"><a class="toc-anchor" href="#conformance" >§</a> Conformance</h2>
+<p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this specification are non-normative. Everything else in this specification is normative.
+The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and SHOULD NOT in this document are to be interpreted as described in <a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="bcp14"href="https://datatracker.ietf.org/doc/html/bcp14" >BCP 14</a> <a path-0="w3c.github.io"path-1="vc-data-model"path-2="#bib-rfc2119"href="https://w3c.github.io/vc-data-model/#bib-rfc2119" >RFC2119</a> <a path-0="w3c.github.io"path-1="vc-data-model"path-2="#bib-rfc8174"href="https://w3c.github.io/vc-data-model/#bib-rfc8174" >RFC8174</a> when, and only when, they appear in all capitals, as shown here.</p>
+<h2 id="terminology"><a class="toc-anchor" href="#terminology" >§</a> Terminology</h2>
+<dl>
+<dt><span id="term:credential-schemas"><span id="term:credential-schema">credential schema</span></span>:</dt>
+<dd>An <a class="term-reference" href="#term:vpr">VPR</a> resource which represents a verifiable credential definition and the associated permissions and business rules for issuing, verifying or holding a credential linked to this credential schema.</dd>
+<dt><span id="term:dids"><span id="term:did"><span id="term:decentralized-identifier">decentralized identifier</span></span></span>:</dt>
+<dd>A decentralized identifier, as specified in [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>].</dd>
+<dt><span id="term:didcomm"><span id="term:decentralized-identifier-communication">decentralized identifier communication</span></span>:</dt>
+<dd><a path-0="identity.foundation"path-1="didcomm-messaging"path-2="spec"path-3=""href="https://identity.foundation/didcomm-messaging/spec/" >DIDComm</a> uses <a class="term-reference" href="#term:dids">DIDs</a> to establish confidential, ongoing connections.</dd>
+<dt><span id="term:dwn"><span id="term:dwn"><span id="term:decentralized-web-nodes">decentralized web nodes</span></span></span>:</dt>
+<dd>Decentralized web nodes, see <a path-0="identity.foundation"path-1="decentralized-web-node"path-2="spec"path-3=""href="https://identity.foundation/decentralized-web-node/spec/" >DIF spec</a></dd>
+<dt><span id="term:did-documents"><span id="term:did-document"><span id="term:decentralized-identifier-document">decentralized identifier document</span></span></span>:</dt>
+<dd>A DID Document, as specified in [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>].</dd>
+<dt><span id="term:vprs"><span id="term:vpr"><span id="term:verifiable-public-registry">verifiable public registry</span></span></span>:</dt>
+<dd>a public, normally decentralized network, which provides: trust registry features, that can be used by all its <a class="term-reference" href="#term:participants">participants</a>: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,… For more information, please refer to <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >VPR Spec</a>.</dd>
+<dt><span id="term:vss"><span id="term:vs"><span id="term:verifiable-service">verifiable service</span></span></span>:</dt>
+<dd>A service, identified by a resolvable <a class="term-reference" href="#term:did">DID</a> that can be deployed anywhere by its owner, and that is conforming to this spec and has a resolvable <a class="term-reference" href="#term:proof-of-trust">proof of trust</a>. This can be a <a class="term-reference" href="#term:didcomm">DIDComm</a> service, a <a class="term-reference" href="#term:dwn">DWN</a> service, o any other service.</dd>
+<dt><span id="term:vuas"><span id="term:vua"><span id="term:verifiable-user-agent">verifiable user agent</span></span></span>:</dt>
+<dd>A user agent for accessing and using <a class="term-reference" href="#term:vss">VSs</a>. To be considered a <a class="term-reference" href="#term:vua">VUA</a>, a user agent must conform and enforce this spec, such as presenting a proof of trust to end user before accepting connecting to <a class="term-reference" href="#term:vs">VS</a> compliant services, and refuse connecting to not compliant services.</dd>
+<dt><span id="term:essential-credential-schemas"><span id="term:essential-credential-schema">essential credential schema</span></span>:</dt>
+<dd>Default <a class="term-reference" href="#term:credential-schema">credential schema</a>, owned by a <a class="term-reference" href="#term:trust-registry">trust registry</a>, that provide the basis for a trust layer to exist in the ecosystem so that <a class="term-reference" href="#term:vua">VUA</a> can generate a <a class="term-reference" href="#term:proof-of-trust">proof of trust</a>.</dd>
+<dt><span id="term:holders"><span id="term:holder">holder</span></span>:</dt>
+<dd>A role an entity might perform by possessing one or more verifiable credentials and generating verifiable presentations from them. A holder is often, but not always, a <a class="term-reference" href="#term:subject">subject</a> of the verifiable credentials they are holding. Holders store their credentials in credential repositories. Example holders include organizations, persons, things.</dd>
+<dt><span id="term:issuers"><span id="term:issuer">issuer</span></span>:</dt>
+<dd>A role an entity can perform by asserting claims about one or more <a class="term-reference" href="#term:subjects">subjects</a>, creating a verifiable credential from these claims, and transmitting the verifiable credential to a <a class="term-reference" href="#term:holder">holder</a>. Example issuers include corporations, non-profit organizations, trade associations, governments, and individuals.</dd>
+<dt><span id="term:json-schemas"><span id="term:json-schema">json schema</span></span>:</dt>
+<dd>A json schema as defined in <a path-0="json-schema.org"href="https://json-schema.org" >JSON-SCHEMA</a>.</dd>
+<dt><span id="term:json-schema-credentials"><span id="term:json-schema-credential">json schema credential</span></span>:</dt>
+<dd>A json schema credential as defined in [<a class="spec-reference" href="#ref:VC-JSON-SCHEMA">VC-JSON-SCHEMA</a>].</dd>
+<dt><span id="term:linked-vp">linked-vp</span>:</dt>
+<dd>A presentation of a <a class="term-reference" href="#term:verifiable-credential">verifiable credential</a> as specified in <a path-0="identity.foundation"path-1="linked-vp"path-2=""href="https://identity.foundation/linked-vp/" >LINKED-VP</a>.</dd>
+<dt><span id="term:participants"><span id="term:participant">participant</span></span>:</dt>
+<dd>An entity that uses an <a class="term-reference" href="#term:vpr">VPR</a> and its trust layer to provide or use services.</dd>
+<dt><span id="term:proof-of-trust">proof of trust</span>:</dt>
+<dd>Visual representation using <a class="term-reference" href="#term:essential-credential-schemas">essential credential schemas</a> of a <a class="term-reference" href="#term:trust-resolution">trust resolution</a> process of a <a class="term-reference" href="#term:verifiable-service">Verifiable Service</a>, for identifying the <a class="term-reference" href="#term:vs">VS</a>, its owner, and the <a class="term-reference" href="#term:issuer">issuer</a> of the verifiable credential of its owner.</dd>
+<dt><span id="term:session">session</span>:</dt>
+<dd>A session defines a connection to a DID Document provided service from a third party VS or VUA.</dd>
+<dt><span id="term:subjects"><span id="term:subject">subject</span></span>:</dt>
+<dd>A thing about which claims are made. Example subjects include human beings, animals, things, and organization, a <a class="term-reference" href="#term:did">DID</a>…</dd>
+<dt><span id="term:trust-registries"><span id="term:trust-registry">trust registry</span></span></dt>
+<dd>An approved list of <a class="term-reference" href="#term:issuers">issuers</a> and <a class="term-reference" href="#term:verifiers">verifiers</a> that are authorized to issue/verify certain credentials in an ecosystem.</dd>
+<dt><span id="term:trust-resolution">trust resolution</span>:</dt>
+<dd>Process run by, for example a <a class="term-reference" href="#term:vua">VUA</a> or a <a class="term-reference" href="#term:vs">VS</a>, which purpose is to recursively resolve <a class="term-reference" href="#term:did">DID</a> by digging into <a class="term-reference" href="#term:did-documents">DID Documents</a> and look for <a class="term-reference" href="#term:linked-vp">linked-vp</a> entries and their <a class="term-reference" href="#term:issuer">issuer</a> <a class="term-reference" href="#term:dids">DIDs</a>, and trust-registry entries to gather whether the service provided by the <a class="term-reference" href="#term:did">DID</a> is trustable (and legitimate), or not.</dd>
+<dt><span id="term:verifiers"><span id="term:verifier">verifier</span></span>:</dt>
+<dd>A role an entity performs by receiving one or more verifiable credentials, optionally inside a verifiable presentation for processing. Example verifiers include service providers.</dd>
+<dt><span id="term:verifiable-credentials"><span id="term:verifiable-credential">verifiable credential</span></span>:</dt>
+<dd>A verifiable credential as defined in [<a class="spec-reference" href="#ref:VC-DATA-MODEL">VC-DATA-MODEL</a>].</dd>
+</dl>
+<h2 id="specification"><a class="toc-anchor" href="#specification" >§</a> Specification</h2>
+<h3 id="vt-json-schema-cred-verifiable-trust-json-schema-credential"><a class="toc-anchor" href="#vt-json-schema-cred-verifiable-trust-json-schema-credential" >§</a> [VT-JSON-SCHEMA-CRED] Verifiable Trust Json Schema Credential</h3>
+<p>A Verifiable Trust Json Schema Credential is a <a class="term-reference" href="#term:json-schema-credential">json schema credential</a> self-issued by a Trust Registry Ecosystem DID, that MUST refer to the json schema of a <code>CredentialSchema</code> entry created in a <code>VPR</code>. Issuer of the Verifiable Trust Json Schema Credential MUST be the same DID that the Ecosystem DID of the <code>TrustRegistry</code> entry created in the <a class="term-reference" href="#term:vpr">VPR</a> than owns the <code>CredentialSchema</code> entry in the <a class="term-reference" href="#term:vpr">VPR</a>.</p>
+<p>A Verifiable Trust Json Schema Credential MUST have a <code>credentialSchema</code> property that contains exactly the following:</p>
+<pre class="language-json"><code class="language-json">  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://w3c.github.io/vc-json-schema/schema/json-schema-credential-schema.json"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
+    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
+  <span class="token punctuation">}</span>
+</code></pre>
+<p>Additionally, it MUST have a <code>credentialSubject</code> object with:</p>
+<ul>
+<li>a <code>id</code> properties that is the URL to access the <a class="term-reference" href="#term:json-schema">json schema</a> in the VPR,</li>
+<li><code>type</code> MUST be set to “JsonSchema”,</li>
+<li>an object <code>jsonSchema</code> MUST be present with an <code>$ref</code> properties that is the URL to access the <a class="term-reference" href="#term:json-schema">json schema</a> in the VPR</li>
+<li>a digestSRI property that MUST match the <a class="term-reference" href="#term:json-schema">json schema</a> file content hash.</li>
+</ul>
+<p>Example of a Verifiable Trust Json Schema Credential:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem/example-json-schema-credential.json"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"JsonSchemaCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem"</span><span class="token punctuation">,</span>
+  <span class="token property">"issuanceDate"</span><span class="token operator">:</span> <span class="token string">"2024-01-01T19:23:24Z"</span><span class="token punctuation">,</span>
+  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://w3c.github.io/vc-json-schema/schema/json-schema-credential-schema.json"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
+    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem-vpr-node/vpr/cs/v1/js/12345678"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
+    <span class="token property">"jsonSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"$ref"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem-vpr-node/vpr/cs/v1/js/12345678"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ"</span> 
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<div id="note-311" class="notice note"><a class="notice-link" href="#note-311">NOTE</a><p>This is subject to a slight update of <a path-0="w3c.github.io"path-1="vc-json-schema"path-2=""href="https://w3c.github.io/vc-json-schema/" >vc-json-schema</a> as specified in this <a path-0="github.com"path-1="w3c"path-2="vc-json-schema"path-3="issues"path-4="235"href="https://github.com/w3c/vc-json-schema/issues/235" ></a></p>
+</div>
+<h3 id="vt-ecosystem-diddoc-ecosystem-did-document"><a class="toc-anchor" href="#vt-ecosystem-diddoc-ecosystem-did-document" >§</a> [VT-ECOSYSTEM-DIDDOC] Ecosystem DID Document</h3>
+<p>For each <code>CredentialSchema</code> entry a Trust Registry has created in a <a class="term-reference" href="#term:vpr">VPR</a>, the Trust Registry MUST self-issue the corresponding Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].</p>
+<p>Additionally, in MUST present (as a <a class="term-reference" href="#term:linked-vp">linked-vp</a>) the Verifiable Trust Json Schema Credential(s) in its DID Document, as well as the corresponding trust registry entry for verification. To do so, it MUST define the following entries in its DID Document:</p>
+<ul>
+<li>for each <code>CredentialSchema</code> entry it wants to be resolvable, a “LinkedVerifiablePresentation” service entry with a fragment that MUST start with <code>#vpr-schemas</code>, that MUST point to a self-issued Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].</li>
+<li>a “VerifiablePublicRegistry” service entry with fragment name equal to the concatenation of  <code>#vpr-schemas-trust-registry</code> and the id of the Trust Registry in the VPR, that MUST point to the API of the DID’s trust registry in the VPR.</li>
+</ul>
+<p>Example:</p>
+<pre class="language-json"><code class="language-json"><span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-schemas-example-jsc-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/example-json-schema-credential-presentation.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:trust-registry#vpr-schemas-trust-registry-1234"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiablePublicRegistry"</span><span class="token punctuation">,</span>
+      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem-vpr-node/vpr"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+    ...
+  <span class="token punctuation">]</span>
+</code></pre>
+<h3 id="vt-cred-verifiable-trust-credential"><a class="toc-anchor" href="#vt-cred-verifiable-trust-credential" >§</a> [VT-CRED] Verifiable Trust Credential</h3>
+<p>A Verifiable Trust Credential MUST have a <code>credentialSchema</code> property:</p>
+<ul>
+<li><code>id</code> must point to a <a class="term-reference" href="#term:json-schema-credential">json schema credential</a> issued by the trust registry <a class="term-reference" href="#term:did">DID</a> owner of the schema in the VPR;</li>
+<li><code>type</code> MUST be <code>JsonSchemaCredential</code>.</li>
+</ul>
+<p>As a matter of fact, a Verifiable Trust Credential MUST conform to the dereferenced <a class="term-reference" href="#term:json-schema">json schema</a> of the <code>JsonSchemaCredential</code>.</p>
+<p>Example:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:holder"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"VerifiableTrustCredential"</span><span class="token punctuation">,</span> <span class="token string">"ExampleCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:authorized-issuer"</span><span class="token punctuation">,</span>
+  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:holder"</span><span class="token punctuation">,</span>
+    ...
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  ...
+  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem/example-json-schema-credential.json"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchemaCredential"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
 <h3 id="ecs-essential-credential-schemas"><a class="toc-anchor" href="#ecs-essential-credential-schemas" >§</a> [ECS] Essential Credential Schemas</h3>
 <p>Essential Credential Schemas are the Verifiable Trust basic needed schemas for enabling a minimum trust resolution in Services and User Agents by answering these questions:</p>
 <ul>
 <li>who is the provider of this Verifiable Service?</li>
-<li>what is the minimum age required to access this service?</li>
+<li>what is the minimum age required to access this Verifiable Service?</li>
 <li>is the User Agent trying to connect to a Verifiable Service a Verifiable User Agent?</li>
 <li>…</li>
 </ul>
-<p>Essential Credential Schemas (ECS) are created and linked to a Trust Registry in a <a class="term-reference" href="#term:vpr">VPR</a>. There are 4 kinds of ECS:</p>
+<p>Ecosystems can create Essential Credential Schemas (ECS) by creating a Trust Registry in a <a class="term-reference" href="#term:vpr">VPR</a>. There are 4 kinds of ECS:</p>
 <ul>
 <li>Service;</li>
 <li>Organization;</li>
 <li>Person;</li>
 <li>UserAgent.</li>
 </ul>
-<p>A Trust Registry creates itself in a <a class="term-reference" href="#term:vpr">VPR</a> by creating a <code>TrustRegistry</code> entry <code>tr</code>. For this Trust Registry to qualify for being used for trust resolution in <a class="term-reference" href="#term:vss">VSs</a> and <a class="term-reference" href="#term:vuas">VUAs</a>, it MUST provide, associated to the <code>TrustRegistry</code> entry <code>tr</code>, all 4 <code>CredentialSchema</code> entries, with a respective <code>json_schema</code> attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSON], [ECS-USER-AGENT].</p>
+<p>A Trust Registry creates itself in a <a class="term-reference" href="#term:vpr">VPR</a> by creating a <code>TrustRegistry</code> entry <code>tr</code>. For this Trust Registry to qualify for being used for trust resolution in <a class="term-reference" href="#term:vss">VSs</a> and <a class="term-reference" href="#term:vuas">VUAs</a>, it MUST provide, associated to the <code>TrustRegistry</code> entry <code>tr</code>, all 4 <code>CredentialSchema</code> entries, with a respective <code>json_schema</code> attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSON], [ECS-UA].</p>
 <h4 id="ecs-service-service-credential-json-schema"><a class="toc-anchor" href="#ecs-service-service-credential-json-schema" >§</a> [ECS-SERVICE] Service Credential Json Schema</h4>
 <p>Credential subject object of schema MUST contain the following attributes:</p>
 <ul>
@@ -229,7 +571,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li><code>VPR_CREDENTIAL_SCHEMA_ID</code> is replaced by the <code>schema_id</code> of the created <code>CredentialSchema</code> entry in the VPR.</li>
 </ul>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem-vpr-node/vpr/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
   <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
   <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"ServiceCredential"</span><span class="token punctuation">,</span>
   <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"ServiceCredential using JsonSchema"</span><span class="token punctuation">,</span>
@@ -315,7 +657,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li><code>VPR_CREDENTIAL_SCHEMA_ID</code> is replaced by the <code>schema_id</code> of the created <code>CredentialSchema</code> entry in the VPR.</li>
 </ul>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem-vpr-node/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
   <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
   <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"OrganizationCredential"</span><span class="token punctuation">,</span>
   <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"OrganizationCredential using JsonSchema"</span><span class="token punctuation">,</span>
@@ -392,7 +734,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li><code>VPR_CREDENTIAL_SCHEMA_ID</code> is replaced by the <code>schema_id</code> of the created <code>CredentialSchema</code> entry in the VPR.</li>
 </ul>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem-vpr-node/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
   <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
   <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"PersonCredential"</span><span class="token punctuation">,</span>
   <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"PersonCredential using JsonSchema"</span><span class="token punctuation">,</span>
@@ -440,7 +782,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h4 id="ecs-user-agent-user-agent-credential-json-schema"><a class="toc-anchor" href="#ecs-user-agent-user-agent-credential-json-schema" >§</a> [ECS-USER-AGENT] User Agent Credential Json Schema</h4>
+<h4 id="ecs-ua-user-agent-credential-json-schema"><a class="toc-anchor" href="#ecs-ua-user-agent-credential-json-schema" >§</a> [ECS-UA] User Agent Credential Json Schema</h4>
 <p>Credential subject object of schema MUST contain the following attributes:</p>
 <ul>
 <li><code>id</code> (string) (<em>mandatory</em>): the <a class="term-reference" href="#term:did">DID</a> of the user agent the credential will be issued to.</li>
@@ -459,7 +801,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li><code>VPR_CREDENTIAL_SCHEMA_ID</code> is replaced by the <code>schema_id</code> of the created <code>CredentialSchema</code> entry in the VPR.</li>
 </ul>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem-vpr-node/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
   <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
   <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"UserAgentCredential"</span><span class="token punctuation">,</span>
   <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"UserAgentCredential using JsonSchema"</span><span class="token punctuation">,</span>
@@ -526,160 +868,69 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h3 id="vt-json-schema-cred-verifiable-trust-json-schema-credential"><a class="toc-anchor" href="#vt-json-schema-cred-verifiable-trust-json-schema-credential" >§</a> [VT-JSON-SCHEMA-CRED] Verifiable Trust Json Schema Credential</h3>
-<p>A Verifiable Trust Json Schema Credential is a <a class="term-reference" href="#term:json-schema-credential">json schema credential</a> self-issued by a Trust Registry DID, that MUST refer to the json schema of a <code>CredentialSchema</code> entry created in a <code>VPR</code>. Issuer of the Verifiable Trust Json Schema Credential MUST be the same DID that the DID of the <code>TrustRegistry</code> entry created in the <a class="term-reference" href="#term:vpr">VPR</a> than owns the <code>CredentialSchema</code> entry in the <a class="term-reference" href="#term:vpr">VPR</a>.</p>
-<p>A Verifiable Trust Json Schema Credential MUST have a <code>credentialSchema</code> property that contains exactly the following:</p>
-<pre class="language-json"><code class="language-json">  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://w3c.github.io/vc-json-schema/schema/json-schema-credential-schema.json"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
-    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
-  <span class="token punctuation">}</span>
-</code></pre>
-<p>Additionally, it MUST have a <code>credentialSubject</code> object with:</p>
+<h3 id="vt-ecs-json-schema-cred-essential-schema-json-schema-credentials"><a class="toc-anchor" href="#vt-ecs-json-schema-cred-essential-schema-json-schema-credentials" >§</a> [VT-ECS-JSON-SCHEMA-CRED] Essential Schema Json Schema Credentials</h3>
 <ul>
-<li>a <code>id</code> properties that is the URL to access the <a class="term-reference" href="#term:json-schema">json schema</a> in the VPR,</li>
-<li><code>type</code> MUST be set to “JsonSchema”,</li>
-<li>an object <code>jsonSchema</code> MUST be present with an <code>$ref</code> properties that is the URL to access the <a class="term-reference" href="#term:json-schema">json schema</a> in the VPR</li>
-<li>a digestSRI property that MUST match the <a class="term-reference" href="#term:json-schema">json schema</a> file content hash.</li>
+<li>Json Schema Credential [VT-ECS-SERVICE-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].</li>
+<li>Json Schema Credential [VT-ECS-ORG-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG].</li>
+<li>Json Schema Credential [VT-ECS-PERSON-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSON].</li>
+<li>Json Schema Credential [VT-ECS-UA-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-UA].</li>
 </ul>
-<p>Example of a Verifiable Trust Json Schema Credential:</p>
-<p>VtJsonSchemaCredential.json:</p>
-<pre class="language-json"><code class="language-json">
-<span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-      <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecs-trust-registry/vt-credential-schema-credential.json"</span><span class="token punctuation">,</span>
-  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"JsonSchemaCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry"</span><span class="token punctuation">,</span>
-  <span class="token property">"issuanceDate"</span><span class="token operator">:</span> <span class="token string">"2024-01-01T19:23:24Z"</span><span class="token punctuation">,</span>
-  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://w3c.github.io/vc-json-schema/schema/json-schema-credential-schema.json"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
-    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://vpr-hostname/vpr/v1/cs/js/12345678"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
-    <span class="token property">"jsonSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">"$ref"</span><span class="token operator">:</span> <span class="token string">"https://vpr-hostname/vpr/v1/cs/js/12345678"</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ"</span> 
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-</code></pre>
-<div id="note-1" class="notice note"><a class="notice-link" href="#note-1">NOTE</a><p>This is subject to a slight update of <a path-0="w3c.github.io"path-1="vc-json-schema"path-2=""href="https://w3c.github.io/vc-json-schema/" >vc-json-schema</a> as specified in this <a path-0="github.com"path-1="w3c"path-2="vc-json-schema"path-3="issues"path-4="235"href="https://github.com/w3c/vc-json-schema/issues/235" ></a></p>
-</div>
-<h3 id="vt-tr-diddoc-trust-registry-did-document"><a class="toc-anchor" href="#vt-tr-diddoc-trust-registry-did-document" >§</a> [VT-TR-DIDDOC] Trust Registry DID Document</h3>
-<p>For each <code>CredentialSchema</code> entry a Trust Registry has created in a <a class="term-reference" href="#term:vpr">VPR</a>, the Trust Registry MUST self-issue the corresponding Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].</p>
-<p>Additionally, in MUST present the Verifiable Trust Json Schema Credential(s) in its DIDDocument, as well as the corresponding trust registry entry for verification. To do so, it MUST define the following entries in its DIDDocument:</p>
+<h3 id="vt-ecs-cred-verifiable-trust-essential-schema-credentials"><a class="toc-anchor" href="#vt-ecs-cred-verifiable-trust-essential-schema-credentials" >§</a> [VT-ECS-CRED] Verifiable Trust Essential Schema Credentials</h3>
 <ul>
-<li>for each <code>CredentialSchema</code> entry it wants to be resolvable, a “LinkedVerifiablePresentation” service entry with a fragment that MUST start with to <code>#vpr-schemas</code>, that MUST point to a self-issued Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].</li>
-<li>a “VerifiablePublicRegistry” service entry with fragment name equal to the concatenation of  <code>#vpr-schemas-trust-registry</code> and the id of the Trust Registry in the VPR, that MUST point to the API of the DID’s trust registry in the VPR.</li>
+<li>Service Credential [VT-ECS-SERVICE-CRED]: a [VT-CRED] linked to a [VT-ECS-SERVICE-JSON-SCHEMA-CRED].</li>
+<li>Organization Credential [VT-ECS-ORG-CRED]: a [VT-CRED] linked to a [VT-ECS-ORG-JSON-SCHEMA-CRED].</li>
+<li>Person Credential [VT-ECS-PERSON-CRED]: a [VT-CRED] linked to a [VT-ECS-PERSON-JSON-SCHEMA-CRED].</li>
+<li>User Agent Credential [VT-ECS-UA-CRED]: a [VT-CRED] linked to a [VT-ECS-UA-JSON-SCHEMA-CRED].</li>
+</ul>
+<h3 id="vt-ecs-ecosystem-diddoc-ecosystem-did-document-for-declaring-essential-credential-schemas"><a class="toc-anchor" href="#vt-ecs-ecosystem-diddoc-ecosystem-did-document-for-declaring-essential-credential-schemas" >§</a> [VT-ECS-ECOSYSTEM-DIDDOC] Ecosystem DID Document for declaring Essential Credential Schemas</h3>
+<p>If an Ecosystem Trust Registry wishes to provide ECS trust resolution, it MUST present 4 VT Json Schema Credentials of the 4 ECSs required for trust resolution, as well as the corresponding trust registry entry for verification. To do that, Ecosystem MUST define the following entries in its DID Document:</p>
+<ul>
+<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-service-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-SERVICE-JSON-SCHEMA-CRED].</li>
+<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-org-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-ORG-JSON-SCHEMA-CRED].</li>
+<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-person-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-PERSON-JSON-SCHEMA-CRED].</li>
+<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-ua-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-UA-JSON-SCHEMA-CRED].</li>
 </ul>
 <p>Example:</p>
 <pre class="language-json"><code class="language-json">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:dl-trust-registry#vpr-schemas-driving-license-credential-schema-credential"</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-ecs-service-jsc-vp"</span><span class="token punctuation">,</span>
       <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://dl-trust-registry/driving-license-credential-schema-presentation.json"</span><span class="token punctuation">]</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/ecs-service-json-schema-credential-presentation.json"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:dl-trust-registry#vpr-schemas-trust-registry-1234"</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-ecs-org-jsc-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/ecs-org-json-schema-credential-presentation.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-ecs-person-jsc-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/ecs-person-json-schema-credential-presentation.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-ecs-ua-jsc-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/ecs-ua-json-schema-credential-presentation.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-ecs-trust-registry-789041745"</span><span class="token punctuation">,</span>
       <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiablePublicRegistry"</span><span class="token punctuation">,</span>
       <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://vpr-hostname/vpr/v1/"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
-    ...
-  <span class="token punctuation">]</span>
-</code></pre>
-<p>If the Trust Registry wishes to provide ECS trust resolution, it MUST present 4 VT Json Credential Schemas of the 4 ECSs required for trust resolution, as well as the corresponding trust registry entry for verification. To do that, it MUST define the following entries in its DIDDocument:</p>
-<ul>
-<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-essential-schemas-service-credential-schema-credential</code>, that MUST point to a self-issued Service Verifiable Trust Json Schema Credential as specified in [SERVICE-JSON-SCHEMA-CRED] of a service json schema as specified in [ECS-SERVICE].</li>
-<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-essential-schemas-org-credential-schema-credential</code>, that MUST point to a self-issued <a class="term-reference" href="#term:json-schema-credential">json schema credential</a> of a VT json schema as specified in [ECS-ORG].</li>
-<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-essential-schemas-person-credential-schema-credential</code>, that MUST point to a self-issued <a class="term-reference" href="#term:json-schema-credential">json schema credential</a> of a VT json schema as specified in [ECS-PERSON].</li>
-<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-essential-schemas-user-agent-credential-schema-credential</code>, that MUST point to a self-issued <a class="term-reference" href="#term:json-schema-credential">json schema credential</a> of a VT json schema as specified in [ECS-USER-AGENT].</li>
-<li>a “VerifiablePublicRegistry” service entry with fragment name equal to <code>#vpr-essential-schemas-trust-registry</code>, that MUST point to the API URL of this DID’s trust registry in the VPR.</li>
-</ul>
-<p>Example:</p>
-<pre class="language-json"><code class="language-json">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-service-credential-schema-credential"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecs-trust-registry/service-credential-schema-presentation.json"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-organization-credential-schema-credential"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecs-trust-registry/org-credential-schema-presentation.json"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-person-credential-schema-credential"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecs-trust-registry/person-credential-schema-presentation.json"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-user-agent-credential-schema-credential"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecs-trust-registry/user-agent-credential-schema-presentation.json"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry-789041745"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiablePublicRegistry"</span><span class="token punctuation">,</span>
-      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://vpr-hostname/vpr/v1/"</span><span class="token punctuation">]</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem-vpr-node/vpr"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span>
     
     ...
   <span class="token punctuation">]</span>
 </code></pre>
-<h3 id="vt-cred-verifiable-trust-credential"><a class="toc-anchor" href="#vt-cred-verifiable-trust-credential" >§</a> [VT-CRED] Verifiable Trust Credential</h3>
-<p>A simple diagram for a clear understanding:</p>
-<img src="https://www.plantuml.com/plantuml/svg/fPDDRu9048Rl-oicj8Vs06W_h24zcFJcgT76QxCiqxA63xCpegRnltSNAQBIzD0Bi0lpliyxiqo8fU5rdeb9-qHAPWYvtC9uC82DJZWLPRn4nU2zcJNn33yriTd1ZIvWyJgxzK0Ii84l0P3e9Aelk9NvAiC85VdiodpJr8bzg_TYCC62jSpcAiLSdaeggYMTul3k_k5nz3IsooMLnJlLdqVm1TwrJhm8WY00ZpLdQ1VU74sb5HxblNt7TO56VsWPsvXr89XQIMW8EZMEOKaAhku_uYGUjJ0fyugYCBoC5bRagrR0Fr1sTW87xrI8rcZ-RDGXxBp9-cDRhOoVbiI5pD4jmceOAWgN5BPTselVmvu5hCZXdMRieRF1oas1veJfAFN_fbXaE-zdttSdAGBxMZ92TnvdHqIuqRZlRLa4jINyM3hqGmohCEtXXLYIJMt7tZbEa9NAcjhAujBMxd6ApbaqBNFUbY62nHpgtZIEcWaMRw1wp7fHwge4ubrF224cM2Jr3tguVmC0" alt="uml diagram">
-<p>A Verifiable Trust Credential MUST have a <code>credentialSchema</code> property:</p>
-<ul>
-<li><code>id</code> must point to a <a class="term-reference" href="#term:json-schema-credential">json schema credential</a> issued by the trust registry <a class="term-reference" href="#term:did">DID</a> owner of the schema in the VPR;</li>
-<li><code>type</code> MUST be <code>JsonSchemaCredential</code>.</li>
-</ul>
-<p>As a matter of fact, a Verifiable Trust Credential MUST conform to the dereferenced <a class="term-reference" href="#term:json-schema">json schema</a> of the <code>JsonSchemaCredential</code>.</p>
-<p>Example DTCredential.json:</p>
-<pre class="language-json"><code class="language-json">
-<span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"ServiceCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-    ...
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  ...
-  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecs-trust-registry/service-credential-schema-credential.json"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchemaCredential"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-</code></pre>
-<h3 id="vt-ec-vt-essential-credentials"><a class="toc-anchor" href="#vt-ec-vt-essential-credentials" >§</a> [VT-EC] VT Essential Credentials</h3>
-<ul>
-<li>VT Service Essential Credential [VT-EC-SERVICE]: a [VT-CRED] linked to a CredentialSchema entry that conforms to [ECS-SERVICE].</li>
-<li>VT Organization Essential Credential [VT-EC-ORG]: a [VT-CRED] linked to a CredentialSchema entry that conforms to [ECS-ORG].</li>
-<li>VT Person Essential Credential [VT-EC-PERSON]: a [VT-CRED] linked to a CredentialSchema entry that conforms to [ECS-PERSON].</li>
-<li>VT User Agent Essential Credential [VT-EC-USER-AGENT]: a [VT-CRED] linked to a CredentialSchema entry that conforms to [ECS-USER-AGENT].</li>
-</ul>
 <h3 id="vs-req-requirements-for-a-service-to-be-a-vs"><a class="toc-anchor" href="#vs-req-requirements-for-a-service-to-be-a-vs" >§</a> [VS-REQ] Requirements for a service to be a VS</h3>
 <ul>
 <li>[VS-REQ-1] A <a class="term-reference" href="#term:vs">VS</a> MUST be identified by a <a class="term-reference" href="#term:did">DID</a>. The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-reference" href="#term:vs">VS</a> MUST resolve to a <a class="term-reference" href="#term:did-document">DID Document</a>.</li>
-<li>[VS-REQ-2] A <a class="term-reference" href="#term:vs">VS</a> DID Document MUST present (linked-vp) a VT Service Essential Credential that conforms to [VT-EC-SERVICE].</li>
-<li>[VS-REQ-3] If the issuer of the VT Service Essential Credential of [VS-REQ-2] is the <a class="term-reference" href="#term:did">DID</a> of this service, service DID Document MUST present a credential that conforms to [VT-EC-ORG] or (exclusive) a [VT-EC-PERSON].</li>
+<li>[VS-REQ-2] A <a class="term-reference" href="#term:vs">VS</a> DID Document MUST present (linked-vp) a VT Service Essential Credential that conforms to [VT-ECS-SERVICE-CRED].</li>
+<li>[VS-REQ-3] If the issuer of the VT Service Essential Credential of [VS-REQ-2] is the <a class="term-reference" href="#term:did">DID</a> of this service, service DID Document MUST present a credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) a [VT-ECS-PERSON-CRED].</li>
 <li>[VS-REQ-4] If the issuer of the VT Service Credential of [VS-REQ-2] is not the <a class="term-reference" href="#term:did">DID</a> of this service, issuer service MUST be a [VS-REQ] <a class="term-reference" href="#term:vs">VS</a> that conforms to [VS-REQ-3].</li>
 <li>[VS-REQ-5] A compliant <a class="term-reference" href="#term:vs">VS</a> MUST dereference all service credentials, User Agent credentials, DID Documents, verify VS Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,… comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.</li>
 </ul>
-<div id="note-2" class="notice note"><a class="notice-link" href="#note-2">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
+<div id="note-312" class="notice note"><a class="notice-link" href="#note-312">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
 </div>
 <ul>
 <li>[VS-REQ-5] The service MAY issue, present through linked verifiable presentation entries, or request presentation of any additional VS Credential that conforms to [VT-CRED].</li>
@@ -698,23 +949,23 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <p>Linked verifiable presentations of credential CAN be present in service DID Document, if present, they MUST conform to the following:</p>
 <ul>
 <li>[VS-LVP-1] Verifiable presentation MUST be signed by the VS DID.</li>
-<li>[VS-LVP-2] if linked verifiable presentation id fragment start with <code>#vpr-schemas</code>, presented credential and DID Document MUST conform to [VT-CRED].</li>
-<li>[VS-LVP-3] if linked verifiable presentation id fragment is <code>#vpr-essential-schemas-service-credential</code>, presented credential MUST be a VT Service Essential Credential [VT-EC-SERVICE].</li>
-<li>[VS-LVP-4] if linked verifiable presentation id fragment is <code>#vpr-essential-schemas-org-credential</code>, presented credential MUST be a VT Organization Essential Credential [VT-EC-ORG].</li>
-<li>[VS-LVP-5] if linked verifiable presentation id fragment is <code>#vpr-essential-schemas-person-credential</code>, presented credential MUST be a VT Person Essential Credential [VT-EC-PERSON].</li>
+<li>[VS-LVP-2] if linked verifiable presentation id fragment start with <code>#vpr-schemas-</code> and ends with <code>-c-vp</code>, presented credential and DID Document MUST conform to [VT-CRED].</li>
+<li>[VS-LVP-3] if linked verifiable presentation id fragment is <code>#vpr-ecs-service-c-vp</code>, presented credential MUST be a VT Service Essential Credential [VT-ECS-SERVICE-CRED].</li>
+<li>[VS-LVP-4] if linked verifiable presentation id fragment is <code>#vpr-ecs-org-c-vp</code>, presented credential MUST be a VT Organization Essential Credential [VT-ECS-ORG-CRED].</li>
+<li>[VS-LVP-5] if linked verifiable presentation id fragment is <code>#vpr-ecs-person-c-vp</code>, presented credential MUST be a VT Person Essential Credential [VT-ECS-PERSON-CRED].</li>
 </ul>
 <h3 id="vua-req-requirements-for-a-user-agent-to-be-a-vua"><a class="toc-anchor" href="#vua-req-requirements-for-a-user-agent-to-be-a-vua" >§</a> [VUA-REQ] Requirements for a User Agent to be a VUA</h3>
-<div id="todo-1" class="notice todo"><a class="notice-link" href="#todo-1">TODO</a><p>ignore for now</p>
+<div id="todo-125" class="notice todo"><a class="notice-link" href="#todo-125">TODO</a><p>ignore for now</p>
 </div>
 <ul>
 <li>[VUA-REQ-1] A <a class="term-reference" href="#term:vua">VUA</a> MUST be identified by a <a class="term-reference" href="#term:did">DID</a>. The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-reference" href="#term:vua">VUA</a> MUST resolve to a <a class="term-reference" href="#term:did-document">DID Document</a>.</li>
 <li>[VUA-REQ-2] A <a class="term-reference" href="#term:vua">VUA</a> DID Document MUST present a VT Organization Essential Credential that conforms to [VT-EC-ORG] or (exclusive) to [VT-EC-PERSON].</li>
-<li>[VUA-REQ-3] A <a class="term-reference" href="#term:vua">VUA</a> The DID of a VUA MUST be an issuer of VT User Agent Essential Credential schema that conforms to [VT-EC-USER-AGENT].</li>
+<li>[VUA-REQ-3] A <a class="term-reference" href="#term:vua">VUA</a> The DID of a VUA MUST be an issuer of VT User Agent Essential Credential schema that conforms to [VT-EC-UA].</li>
 <li>[VUA-REQ-4] A compliant <a class="term-reference" href="#term:vua">VUA</a> MUST dereference all service credentials, User Agent credentials, DID Documents, verify Verifiable Trust Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,… comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.</li>
 </ul>
-<div id="note-3" class="notice note"><a class="notice-link" href="#note-3">NOTE</a><p>In other words, a to be a VUA, a User Agent MUST identify itself to the other end by sharing its DID, and the other end MUST verify it complies with [VUA-REQ]</p>
+<div id="note-313" class="notice note"><a class="notice-link" href="#note-313">NOTE</a><p>In other words, a to be a VUA, a User Agent MUST identify itself to the other end by sharing its DID, and the other end MUST verify it complies with [VUA-REQ]</p>
 </div>
-<div id="todo-2" class="notice todo"><a class="notice-link" href="#todo-2">TODO</a><p>This must be modified as each user agent instance will have its own credential issued.</p>
+<div id="todo-126" class="notice todo"><a class="notice-link" href="#todo-126">TODO</a><p>This must be modified as each user agent instance will have its own credential issued.</p>
 </div>
 <h3 id="vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service"><a class="toc-anchor" href="#vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service" >§</a> [VS-CONN-VS] Requirements for a VS to accept a connection from another service</h3>
 <p>When a <a class="term-reference" href="#term:vs">VS</a> VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-SPEC], else VS-1 MUST NOT accept the connection. Exception: if provided by VS-1 service Service-2 wants to connect to is an issuer of [VT-EC-ORG] or [VT-EC-PERSON] and Service-2 is just missing a [VT-EC-ORG] / [VT-EC-PERSON] for being compliant, connection CAN be accepted by VS-1.</p>
@@ -806,25 +1057,25 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <li>if schema is not open, we call “Get Permission Session” to verify requester paid using the <code>sessionId</code>.</li>
 <li>we present the selected credential to verifier.</li>
 </ul>
-<div id="note-4" class="notice note"><a class="notice-link" href="#note-4">NOTE</a><p>Services that will want to request presentation of credential will need a crypto wallet and keys if VPR is a blockchain</p>
+<div id="note-314" class="notice note"><a class="notice-link" href="#note-314">NOTE</a><p>Services that will want to request presentation of credential will need a crypto wallet and keys if VPR is a blockchain</p>
 </div>
 <h3 id="example"><a class="toc-anchor" href="#example" >§</a> Example</h3>
 <p>Let’s see a full example in action. Here is a DID Document of a compliant VS:</p>
 <pre class="language-json"><code class="language-json">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com#vpr-essential-schemas-service-credential"</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:gaia#vpr-ecs-service-c-vp"</span><span class="token punctuation">,</span>
       <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://user-vs.example.com/service-credential-presentation.json"</span><span class="token punctuation">]</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://gaia/ecs-service-c-vp.json"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com#vpr-essential-schemas-org-credential"</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:gaia#vpr-ecs-org-c-vp"</span><span class="token punctuation">,</span>
       <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://user-vs.example.com/org-credential-presentation.json"</span><span class="token punctuation">]</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://gaia/ecs-org-c-vp.json"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com#vpr-schemas-trademark-credential"</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:gaia#vpr-schemas-trademark-c-vp"</span><span class="token punctuation">,</span>
       <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://user-vs.example.com/trademark-credential-presentation.json"</span><span class="token punctuation">]</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://gaia/schemas-trademark-c-vp.json"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span>
     ...
   <span class="token punctuation">]</span>
@@ -894,7 +1145,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 <span class="token punctuation">}</span>
 
 </code></pre>
-<div id="note-5" class="notice note"><a class="notice-link" href="#note-5">NOTE</a><p>Here for trust resolution we need to get did:example:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)</p>
+<div id="note-315" class="notice note"><a class="notice-link" href="#note-315">NOTE</a><p>Here for trust resolution we need to get did:example:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)</p>
 </div>
 <p>org-credential-presentation.json:</p>
 <pre class="language-json"><code class="language-json">
@@ -1147,30 +1398,43 @@ Provide repo info
                         <ul class="toc">
 <li><a href="#abstract" >Abstract</a></li>
 <li><a href="#about-this-document" >About this Document</a></li>
-<li><a href="#introduction" >Introduction</a>
+<li><a href="#understanding-verifiable-trust" >Understanding Verifiable Trust</a>
 <ul>
 <li><a href="#what-is-a-verifiable-service-vs" >What is a Verifiable Service (VS)?</a></li>
 <li><a href="#what-is-a-verifiable-user-agent-vua" >What is a Verifiable User Agent (VUA)?</a></li>
-<li><a href="#what-is-a-verifiable-public-registry-vpr" >What is a Verifiable Public Registry (VPR)?</a></li>
-<li><a href="#conformance" >Conformance</a></li>
+<li><a href="#what-is-a-verifiable-public-registry-vpr" >What is a Verifiable Public Registry (VPR)?</a>
+<ul>
+<li><a href="#trust-registries" >Trust Registries</a></li>
+<li><a href="#credential-schemas" >Credential Schemas</a></li>
 </ul>
 </li>
+<li><a href="#verifiable-trust-credentials" >Verifiable Trust Credentials</a>
+<ul>
+<li><a href="#json-schema-credentials" >Json Schema Credentials</a></li>
+<li><a href="#issuing-verifiable-trust-credentials" >Issuing Verifiable Trust Credentials</a></li>
+</ul>
+</li>
+<li><a href="#essential-credential-schemas" >Essential Credential Schemas</a></li>
+</ul>
+</li>
+<li><a href="#conformance" >Conformance</a></li>
 <li><a href="#terminology" >Terminology</a></li>
 <li><a href="#specification" >Specification</a>
 <ul>
-<li><a href="#vpr-stored-verifiable-credential-json-schemas" >VPR stored Verifiable Credential Json Schemas</a></li>
+<li><a href="#vt-json-schema-cred-verifiable-trust-json-schema-credential" >[VT-JSON-SCHEMA-CRED] Verifiable Trust Json Schema Credential</a></li>
+<li><a href="#vt-ecosystem-diddoc-ecosystem-did-document" >[VT-ECOSYSTEM-DIDDOC] Ecosystem DID Document</a></li>
+<li><a href="#vt-cred-verifiable-trust-credential" >[VT-CRED] Verifiable Trust Credential</a></li>
 <li><a href="#ecs-essential-credential-schemas" >[ECS] Essential Credential Schemas</a>
 <ul>
 <li><a href="#ecs-service-service-credential-json-schema" >[ECS-SERVICE] Service Credential Json Schema</a></li>
 <li><a href="#ecs-org-organizationcredential-json-schema" >[ECS-ORG] OrganizationCredential Json Schema</a></li>
 <li><a href="#ecs-person-person-credential-json-schema" >[ECS-PERSON] Person Credential Json Schema</a></li>
-<li><a href="#ecs-user-agent-user-agent-credential-json-schema" >[ECS-USER-AGENT] User Agent Credential Json Schema</a></li>
+<li><a href="#ecs-ua-user-agent-credential-json-schema" >[ECS-UA] User Agent Credential Json Schema</a></li>
 </ul>
 </li>
-<li><a href="#vt-json-schema-cred-verifiable-trust-json-schema-credential" >[VT-JSON-SCHEMA-CRED] Verifiable Trust Json Schema Credential</a></li>
-<li><a href="#vt-tr-diddoc-trust-registry-did-document" >[VT-TR-DIDDOC] Trust Registry DID Document</a></li>
-<li><a href="#vt-cred-verifiable-trust-credential" >[VT-CRED] Verifiable Trust Credential</a></li>
-<li><a href="#vt-ec-vt-essential-credentials" >[VT-EC] VT Essential Credentials</a></li>
+<li><a href="#vt-ecs-json-schema-cred-essential-schema-json-schema-credentials" >[VT-ECS-JSON-SCHEMA-CRED] Essential Schema Json Schema Credentials</a></li>
+<li><a href="#vt-ecs-cred-verifiable-trust-essential-schema-credentials" >[VT-ECS-CRED] Verifiable Trust Essential Schema Credentials</a></li>
+<li><a href="#vt-ecs-ecosystem-diddoc-ecosystem-did-document-for-declaring-essential-credential-schemas" >[VT-ECS-ECOSYSTEM-DIDDOC] Ecosystem DID Document for declaring Essential Credential Schemas</a></li>
 <li><a href="#vs-req-requirements-for-a-service-to-be-a-vs" >[VS-REQ] Requirements for a service to be a VS</a></li>
 <li><a href="#vs-ci-credential-issuance" >[VS-CI] Credential Issuance</a></li>
 <li><a href="#vs-pr-presentation-request" >[VS-PR] Presentation Request</a></li>
