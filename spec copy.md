@@ -102,52 +102,35 @@ Let's explain how the Verifiable Trust does it.
 
 ![Verifiable Service](./img/vt-creds-explained.png)
 
-The core idea behind Verifiable Trust is simple: trust should not be implicit—it should be verifiable, transparent, and decentralized.
+Verifiable Trust (VT) introduces the following concepts:
 
-In this example, a Verifiable Service (VS) presents several Verifiable Credentials to prove:
+- Verifiable Service (VS),
+- Verifiable User Agent (VUA),
+- Verifiable Public Registry (VPR).
 
-- Who operates the service, using an Essential Credential Schema (ECS) Service Verifiable Trust Credential (data shown in red)
-- What the service offers, using another ECS Service Verifiable Trust Credential (data shown in blue)
-- Trademark information, using a Trademark Verifiable Trust Credential (data shown in green)
+The Proof-of-Trust is built by recursively resolving service presented credentials. What makes trust verifiable is the cryptography used in DIDs and Verifiable Credentials. This is the fourth concept:
 
-Additionally, the Verifiable Service presents computed reputation information (data shown in black). While this reputation data may support trust decisions, it is not directly defined by this specification. Refer to the [VPR Spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/) for more information.
-
-Verifiable Trust introduces the following core concepts:
-
-- Verifiable Service (VS)
-- Verifiable User Agent (VUA)
-- Verifiable Public Registry (VPR)
-- Verifiable Trust Credentials
-- Essential Credential Schemas (ECS)
-
-The Proof-of-Trust is established by recursively resolving the credentials presented by a service (the example above), a user agent... What makes this trust verifiable is the use of cryptographic mechanisms built into Decentralized Identifiers (DIDs) and Verifiable Credentials, as applied across these five key concepts.
-
-Because these concepts are deeply interdependent, you may need to explore them together, and revisit them several times to fully grasp the Verifiable Trust model.
+- Making Trust Verifiable.
 
 ### What is a Verifiable Service (VS)?
 
 *This section is non-normative.*
 
-A Verifiable Service (VS) is a service capable of identifying itself to a peer before any connection is established.
+A VS is a service that provides a way to identify itself to a peer, before the peer connects to it.
 
-Peers wishing to connect to a VS can review the Verifiable Credentials presented by the service, verify their legitimacy through trust resolution, and decide whether to proceed with the connection based on the outcome.
+Entities that want to connect to a VS can review its presented verifiable credentials, prove their legitimacy by performing a trust resolution, and based on the result, decide to connect or not.
 
-A VS is also required to verify the trustworthiness of peers attempting to connect to it—whether those peers are other Verifiable Services (VS) or Verifiable User Agents (VUA)—and must reject connections from non-verifiable peers.
+A VS must resolve trust of peers that attempt to connect to it (VS and/or VUA) and refuse connections from non-verifiable peers.
 
-Furthermore, if a Verifiable Service wants to issue credentials or request credential verification, it must first prove that it is authorized to perform these actions. Otherwise, the peer must refuse the request.
+Additionally, a verifiable service that would like to issue or request verification of credentials, must prove it is allowed to do so, else peer must refuse that action.
 
 ### What is a Verifiable User Agent (VUA)?
 
 *This section is non-normative.*
 
-A Verifiable User Agent (VUA) is software—such as a browser, app, or wallet—designed to connect with Verifiable Services (VS) and other VUAs. When establishing connections, a VUA must verify the identity and trustworthiness of its peers and allow connections only to compliant VS or VUA peers.
+A Verifiable User Agent (VUA) is a software (a browser, an app, a wallet…) for connecting to VSs and other VUAs. When establishing connections, a VUA must verify the connection peer(s) and allow connection(s) only to compliant VS and VUA peers.
 
-As part of this process, the VUA must perform trust resolution by:
-
-- Verifying the Verifiable Credentials presented by the peers
-- Querying Verifiable Public Registries (VPRs) to confirm that these credentials were issued by recognized and authorized issuers
-
-This ensures that all connections are based on verifiable trust, not assumptions.
+Additionally, VUAs must perform a trust resolution by verifying the credentials presented by the peers and query VPR(s) to check that these credentials have been issued by verified issuers.
 
 ### What is a Verifiable Public Registry (VPR)?
 
@@ -302,10 +285,10 @@ Example of a Json Schema credential schema:
 
 ```json
 {
-  "$id": "https://ecosystem-vpr-node/vpr/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "https://ecosystem-vpr-node/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "ExampleCredential",
-  "description": "ExampleCredential using JsonSchema",
+  "title": "SimpleExampleCredential",
+  "description": "SimpleExampleCredential using JsonSchema",
   "type": "object",
   "properties": {
     "credentialSubject": {
@@ -347,7 +330,7 @@ Example of a Json Schema credential schema:
 }
 ```
 
-### Verifiable Trust Credentials
+### Making Trust Verifiable
 
 Data stored in a VPR is not verified at the time of storage, nor does it need to be. Verification happens outside the scope of the VPR.
 
@@ -375,15 +358,14 @@ object "CredentialSchema (in VPR)" as cs {
   json_schema: { "$id": ... "title": "ExampleCredential"}
 }
 object "Verifiable Trust Json Schema Credential" as jsc #3fbdb6 {
-  id: https://ecosystem/shemas-example-jsc.json
+  id: https://ecosystem/example-credential-schema-credential.json
   issuer: did:example:ecosystem
-  jsonSchema: https://ecosystem-vpr-node/vpr/cs/v1/js/12345678
+  jsonSchema: https://ecosystem-vpr-node/vpr/v1/cs/js/12345678
 }
 
 object "Verifiable Trust Credential" as vscred #3fbdb6 {
   issuer: did:example:authorized-issuer
-  holder: did:example:holder
-  jsonSchemaCredential: https://ecosystem/shemas-example-jsc.json
+  jsonSchemaCredential: https://ecosystem/example-credential-schema-credential.json
 }
 
  jsc --> vscred: Authorized issuer issues a VT credential based on JsonSchemaCredential issued by ecosystem DID
@@ -410,7 +392,7 @@ This credential serves as a verifiable proof of:
   "@context": [
       "https://www.w3.org/ns/credentials/v2"
   ],
-  "id": "https://ecosystem/shemas-example-jsc.json",
+  "id": "https://ecosystem/example-credential-json-schema-credential.json",
   "type": ["VerifiableCredential", "JsonSchemaCredential"],
   "issuer": "did:example:ecosystem",
   "issuanceDate": "2024-01-01T19:23:24Z",
@@ -420,16 +402,15 @@ This credential serves as a verifiable proof of:
     "digestSRI": "sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"
   },
   "credentialSubject": {
-    "id": "https://ecosystem-vpr-node/vpr/cs/v1/js/12345678",
+    "id": "https://ecosystem-vpr-node/vpr/v1/cs/js/12345678",
     "type": "JsonSchema",
     "jsonSchema": {
-      "$ref": "https://ecosystem-vpr-node/vpr/cs/v1/js/12345678"
+      "$ref": "https://ecosystem-vpr-node/vpr/v1/cs/js/12345678"
     },
     "digestSRI": "sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ" 
   }
 }
 ```
-
 
 Finally, the Ecosystem must publish both the **JSON Schema Credential** and the **location of the Trust Registry** within the **DID Document** associated with the declared **Trust Registry Ecosystem DID** in the VPR.
 
@@ -438,21 +419,21 @@ This ensures that the Credential Schema and its controlling Trust Registry are p
 ```json
 "service": [
     {
-      "id": "did:example:ecosystem#vpr-schemas-example-jsc-vp",
+      "id": "did:example:ecosystem#vpr-schemas-example-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/schemas-example-jsc-vp.json"]
+      "serviceEndpoint": ["https://ecosystem/example-credential-schema-presentation.json"]
     },
     {
       "id": "did:example:trust-registry#vpr-schemas-trust-registry-1234",
       "type": "VerifiablePublicRegistry",
       "version": "1.0",
-      "serviceEndpoint": ["https://ecosystem-vpr-node/vpr"]
+      "serviceEndpoint": ["https://ecosystem-vpr-node/vpr/v1/"]
     }
     ...
   ]
 ```
 
-#### Issuing Verifiable Trust Credentials
+#### Issue Verifiable Credentials
 
 *This section is non-normative.*
 
@@ -482,21 +463,12 @@ In our previous example, that would mean and ExampleCredential should look like 
   },
   ...
   "credentialSchema": {
-    "id": "https://ecosystem/schemas-example-jsc.json",
+    "id": "https://ecosystem/example-credential-json-schema-credential.json",
     "type": "JsonSchemaCredential"
   }
 }
 
 ```
-
-### Essential Credential Schemas
-
-To enable fundamental trust operations—such as identifying service providers, service names, and related entities—we define a set of Essential Credential Schemas (ECS) specifically designed for these purposes:
-
-- Service: identifies services
-- Organization: identifies organizations
-- Person: identifies individuals (not necessarily tied to legal or citizen identity)
-- User Agent: identifies user agents, such as browsers, mobile apps, and similar software
 
 With the Verifiable Trust concept now clearly established, we’re ready to dive into the specifications.
 
@@ -575,9 +547,66 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 
 ## Specification
 
+### VPR stored Verifiable Credential Json Schemas
+
+*This section is not part of this specification and is provided for understanding only.*
+
+As specified in the [[ref:VPR]] spec, Credential Schemas (CS) are created by Ecosystems and linked to a Trust Registry in a [[ref: VPR]].
+
+An ecosystem creates a Trust Registry in a [[ref: VPR]] by creating a `TrustRegistry` entry `tr`, and create one or more `CredentialSchema` entry(ies), which definition are Json Schema(s).
+
+Example:
+
+```json
+{
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SimpleExampleCredential",
+  "description": "SimpleExampleCredential using JsonSchema",
+  "type": "object",
+  "properties": {
+    "credentialSubject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri"
+        },
+        "firstName": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 256
+        },
+        "lastName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "expirationDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "countryOfResidence": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2
+        }
+      },
+      "required": [
+        "id",
+        "lastName",
+        "birthDate",
+        "expirationDate",
+        "countryOfResidence"
+      ]
+    }
+  }
+}
+```
+
 ### [VT-JSON-SCHEMA-CRED] Verifiable Trust Json Schema Credential
 
-A Verifiable Trust Json Schema Credential is a [[ref: json schema credential]] self-issued by a Trust Registry Ecosystem DID, that MUST refer to the json schema of a `CredentialSchema` entry created in a `VPR`. Issuer of the Verifiable Trust Json Schema Credential MUST be the same DID that the Ecosystem DID of the `TrustRegistry` entry created in the [[ref: VPR]] than owns the `CredentialSchema` entry in the [[ref: VPR]].
+A Verifiable Trust Json Schema Credential is a [[ref: json schema credential]] self-issued by a Trust Registry DID, that MUST refer to the json schema of a `CredentialSchema` entry created in a `VPR`. Issuer of the Verifiable Trust Json Schema Credential MUST be the same DID that the DID of the `TrustRegistry` entry created in the [[ref: VPR]] than owns the `CredentialSchema` entry in the [[ref: VPR]].
 
 A Verifiable Trust Json Schema Credential MUST have a `credentialSchema` property that contains exactly the following:
 
@@ -598,14 +627,17 @@ Additionally, it MUST have a `credentialSubject` object with:
 
 Example of a Verifiable Trust Json Schema Credential:
 
+VtJsonSchemaCredential.json:
+
 ```json
+
 {
   "@context": [
       "https://www.w3.org/ns/credentials/v2"
   ],
-  "id": "https://ecosystem/example-json-schema-credential.json",
+  "id": "https://ecs-trust-registry/vt-credential-schema-credential.json",
   "type": ["VerifiableCredential", "JsonSchemaCredential"],
-  "issuer": "did:example:ecosystem",
+  "issuer": "did:example:ecs-trust-registry",
   "issuanceDate": "2024-01-01T19:23:24Z",
   "credentialSchema": {
     "id": "https://w3c.github.io/vc-json-schema/schema/json-schema-credential-schema.json",
@@ -613,49 +645,125 @@ Example of a Verifiable Trust Json Schema Credential:
     "digestSRI": "sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"
   },
   "credentialSubject": {
-    "id": "https://ecosystem-vpr-node/vpr/cs/v1/js/12345678",
+    "id": "https://vpr-hostname/vpr/v1/cs/js/12345678",
     "type": "JsonSchema",
     "jsonSchema": {
-      "$ref": "https://ecosystem-vpr-node/vpr/cs/v1/js/12345678"
+      "$ref": "https://vpr-hostname/vpr/v1/cs/js/12345678"
     },
     "digestSRI": "sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ" 
   }
 }
+
 ```
 
 :::note
 This is subject to a slight update of [vc-json-schema](https://w3c.github.io/vc-json-schema/) as specified in this [](https://github.com/w3c/vc-json-schema/issues/235)
 :::
 
-### [VT-ECOSYSTEM-DIDDOC] Ecosystem DID Document
+### [VT-TR-DIDDOC] Trust Registry DID Document
 
 For each `CredentialSchema` entry a Trust Registry has created in a [[ref: VPR]], the Trust Registry MUST self-issue the corresponding Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].
 
-Additionally, in MUST present (as a [[ref: linked-vp]]) the Verifiable Trust Json Schema Credential(s) in its DID Document, as well as the corresponding trust registry entry for verification. To do so, it MUST define the following entries in its DID Document:
+Additionally, in MUST present the Verifiable Trust Json Schema Credential(s) in its DIDDocument, as well as the corresponding trust registry entry for verification. To do so, it MUST define the following entries in its DIDDocument:
 
-- for each `CredentialSchema` entry it wants to be resolvable, a "LinkedVerifiablePresentation" service entry with a fragment that MUST start with `#vpr-schemas`, that MUST point to a self-issued Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].
+- for each `CredentialSchema` entry it wants to be resolvable, a "LinkedVerifiablePresentation" service entry with a fragment that MUST start with to `#vpr-schemas`, that MUST point to a self-issued Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].
 - a "VerifiablePublicRegistry" service entry with fragment name equal to the concatenation of  `#vpr-schemas-trust-registry` and the id of the Trust Registry in the VPR, that MUST point to the API of the DID's trust registry in the VPR.
 
 Example:
 
 ```json
-"service": [
+  "service": [
     {
-      "id": "did:example:ecosystem#vpr-schemas-example-jsc-vp",
+      "id": "did:example:dl-trust-registry#vpr-schemas-driving-license-credential-schema-credential",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/example-json-schema-credential-presentation.json"]
+      "serviceEndpoint": ["https://dl-trust-registry/driving-license-credential-schema-presentation.json"]
     },
     {
-      "id": "did:example:trust-registry#vpr-schemas-trust-registry-1234",
+      "id": "did:example:dl-trust-registry#vpr-schemas-trust-registry-1234",
       "type": "VerifiablePublicRegistry",
       "version": "1.0",
-      "serviceEndpoint": ["https://ecosystem-vpr-node/vpr"]
+      "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
     }
     ...
   ]
 ```
 
+If the Trust Registry wishes to provide ECS trust resolution, it MUST present 4 VT Json Credential Schemas of the 4 ECSs required for trust resolution, as well as the corresponding trust registry entry for verification. To do that, it MUST define the following entries in its DIDDocument:
+
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-service-credential-schema-credential`, that MUST point to a self-issued Service Verifiable Trust Json Schema Credential as specified in [SERVICE-JSON-SCHEMA-CRED] of a service json schema as specified in [ECS-SERVICE].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-org-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a VT json schema as specified in [ECS-ORG].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-person-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a VT json schema as specified in [ECS-PERSON].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-essential-schemas-user-agent-credential-schema-credential`, that MUST point to a self-issued [[ref: json schema credential]] of a VT json schema as specified in [ECS-USER-AGENT].
+- a "VerifiablePublicRegistry" service entry with fragment name equal to `#vpr-essential-schemas-trust-registry`, that MUST point to the API URL of this DID's trust registry in the VPR.
+
+Example:
+
+```json
+  "service": [
+    {
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-service-credential-schema-credential",
+      "type": "LinkedVerifiablePresentation",
+      "serviceEndpoint": ["https://ecs-trust-registry/service-credential-schema-presentation.json"]
+    },
+    {
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-organization-credential-schema-credential",
+      "type": "LinkedVerifiablePresentation",
+      "serviceEndpoint": ["https://ecs-trust-registry/org-credential-schema-presentation.json"]
+    },
+    {
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-person-credential-schema-credential",
+      "type": "LinkedVerifiablePresentation",
+      "serviceEndpoint": ["https://ecs-trust-registry/person-credential-schema-presentation.json"]
+    },
+    {
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-user-agent-credential-schema-credential",
+      "type": "LinkedVerifiablePresentation",
+      "serviceEndpoint": ["https://ecs-trust-registry/user-agent-credential-schema-presentation.json"]
+    },
+    {
+      "id": "did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry-789041745",
+      "type": "VerifiablePublicRegistry",
+      "version": "1.0",
+      "serviceEndpoint": ["https://vpr-hostname/vpr/v1/"]
+    }
+    
+    ...
+  ]
+```
+
 ### [VT-CRED] Verifiable Trust Credential
+
+A simple diagram for a clear understanding:
+
+```plantuml
+
+@startuml
+scale max 800 width
+object "TrustRegistry (in VPR)" as tr {
+  did: did:example:ecs-trust-registry
+}
+object "CredentialSchema (in VPR)" as cs {
+  id: 12345678
+  json_schema: { "$id": ... "title": "ServiceCredential"}
+}
+object "Verifiable Trust Json Schema Credential" as jsc #3fbdb6 {
+  id: https://ecs-trust-registry/vs-credential-schema-credential.json
+  issuer: did:example:ecs-trust-registry
+  jsonSchema: https://vpr-hostname/vpr/v1/cs/js/12345678
+}
+
+object "Verifiable Trust Credential" as vscred #3fbdb6 {
+  issuer: did:example:vs-owner
+  jsonSchemaCredential: https://ecs-trust-registry/vs-credential-schema-credential.json
+}
+
+cs <-- tr : create a CredentialSchema (in VPR)
+jsc <-- cs : trust registry did issue a JsonSchemaCredential based on json_schema located in CredentialSchema in the VPR
+vscred <-- jsc: VS owner issue its VT credential based on JsonSchemaCredential issued by trust registry did
+
+@enduml
+
+```
 
 A Verifiable Trust Credential MUST have a `credentialSchema` property:
 
@@ -664,23 +772,24 @@ A Verifiable Trust Credential MUST have a `credentialSchema` property:
 
 As a matter of fact, a Verifiable Trust Credential MUST conform to the dereferenced [[ref: json schema]] of the `JsonSchemaCredential`.
 
-Example:
+Example DTCredential.json:
 
 ```json
+
 {
   "@context": [
     "https://www.w3.org/ns/credentials/v2"
   ],
-  "id": "did:example:holder",
-  "type": ["VerifiableCredential", "VerifiableTrustCredential", "ExampleCredential"],
-  "issuer": "did:example:authorized-issuer",
+  "id": "did:example:user-vs.example.com",
+  "type": ["VerifiableCredential", "ServiceCredential"],
+  "issuer": "did:example:user-vs.example.com",
   "credentialSubject": {
-     "id": "did:example:holder",
+     "id": "did:example:user-vs.example.com",
     ...
   },
   ...
   "credentialSchema": {
-    "id": "https://ecosystem/example-json-schema-credential.json",
+    "id": "https://ecs-trust-registry/service-credential-schema-credential.json",
     "type": "JsonSchemaCredential"
   }
 }
@@ -692,18 +801,18 @@ Example:
 Essential Credential Schemas are the Verifiable Trust basic needed schemas for enabling a minimum trust resolution in Services and User Agents by answering these questions:
 
 - who is the provider of this Verifiable Service?
-- what is the minimum age required to access this Verifiable Service?
+- what is the minimum age required to access this service?
 - is the User Agent trying to connect to a Verifiable Service a Verifiable User Agent?
 - ...
 
-Ecosystems can create Essential Credential Schemas (ECS) by creating a Trust Registry in a [[ref: VPR]]. There are 4 kinds of ECS:
+Essential Credential Schemas (ECS) are created and linked to a Trust Registry in a [[ref: VPR]]. There are 4 kinds of ECS:
 
 - Service;
 - Organization;
 - Person;
 - UserAgent.
 
-A Trust Registry creates itself in a [[ref: VPR]] by creating a `TrustRegistry` entry `tr`. For this Trust Registry to qualify for being used for trust resolution in [[ref: VSs]] and [[ref: VUAs]], it MUST provide, associated to the `TrustRegistry` entry `tr`, all 4 `CredentialSchema` entries, with a respective `json_schema` attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSON], [ECS-UA].
+A Trust Registry creates itself in a [[ref: VPR]] by creating a `TrustRegistry` entry `tr`. For this Trust Registry to qualify for being used for trust resolution in [[ref: VSs]] and [[ref: VUAs]], it MUST provide, associated to the `TrustRegistry` entry `tr`, all 4 `CredentialSchema` entries, with a respective `json_schema` attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSON], [ECS-USER-AGENT].
 
 #### [ECS-SERVICE] Service Credential Json Schema
 
@@ -726,7 +835,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "https://ecosystem-vpr-node/vpr/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ServiceCredential",
   "description": "ServiceCredential using JsonSchema",
@@ -815,7 +924,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "https://ecosystem-vpr-node/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "OrganizationCredential",
   "description": "OrganizationCredential using JsonSchema",
@@ -895,7 +1004,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "https://ecosystem-vpr-node/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "PersonCredential",
   "description": "PersonCredential using JsonSchema",
@@ -944,7 +1053,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 }
 ```
 
-#### [ECS-UA] User Agent Credential Json Schema
+#### [ECS-USER-AGENT] User Agent Credential Json Schema
 
 Credential subject object of schema MUST contain the following attributes:
 
@@ -965,7 +1074,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "https://ecosystem-vpr-node/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr-mainnet:/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "UserAgentCredential",
   "description": "UserAgentCredential using JsonSchema",
@@ -1033,70 +1142,19 @@ the resulting `json_schema` attribute will be the following Json Schema.
 }
 ```
 
-### [VT-ECS-JSON-SCHEMA-CRED] Essential Schema Json Schema Credentials
 
-- Json Schema Credential [VT-ECS-SERVICE-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].
-- Json Schema Credential [VT-ECS-ORG-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG].
-- Json Schema Credential [VT-ECS-PERSON-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSON].
-- Json Schema Credential [VT-ECS-UA-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-UA].
+### [VT-EC] VT Essential Credentials
 
-### [VT-ECS-CRED] Verifiable Trust Essential Schema Credentials
-
-- Service Credential [VT-ECS-SERVICE-CRED]: a [VT-CRED] linked to a [VT-ECS-SERVICE-JSON-SCHEMA-CRED].
-- Organization Credential [VT-ECS-ORG-CRED]: a [VT-CRED] linked to a [VT-ECS-ORG-JSON-SCHEMA-CRED].
-- Person Credential [VT-ECS-PERSON-CRED]: a [VT-CRED] linked to a [VT-ECS-PERSON-JSON-SCHEMA-CRED].
-- User Agent Credential [VT-ECS-UA-CRED]: a [VT-CRED] linked to a [VT-ECS-UA-JSON-SCHEMA-CRED].
-
-
-### [VT-ECS-ECOSYSTEM-DIDDOC] Ecosystem DID Document for declaring Essential Credential Schemas
-
-If an Ecosystem Trust Registry wishes to provide ECS trust resolution, it MUST present 4 VT Json Schema Credentials of the 4 ECSs required for trust resolution, as well as the corresponding trust registry entry for verification. To do that, Ecosystem MUST define the following entries in its DID Document:
-
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-ecs-service-jsc-vp`, that MUST point to a self-issued and presented [VT-ECS-SERVICE-JSON-SCHEMA-CRED].
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-ecs-org-jsc-vp`, that MUST point to a self-issued and presented [VT-ECS-ORG-JSON-SCHEMA-CRED].
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-ecs-person-jsc-vp`, that MUST point to a self-issued and presented [VT-ECS-PERSON-JSON-SCHEMA-CRED].
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-ecs-ua-jsc-vp`, that MUST point to a self-issued and presented [VT-ECS-UA-JSON-SCHEMA-CRED].
-
-Example:
-
-```json
-  "service": [
-    {
-      "id": "did:example:ecosystem#vpr-ecs-service-jsc-vp",
-      "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/ecs-service-json-schema-credential-presentation.json"]
-    },
-    {
-      "id": "did:example:ecosystem#vpr-ecs-org-jsc-vp",
-      "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/ecs-org-json-schema-credential-presentation.json"]
-    },
-    {
-      "id": "did:example:ecosystem#vpr-ecs-person-jsc-vp",
-      "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/ecs-person-json-schema-credential-presentation.json"]
-    },
-    {
-      "id": "did:example:ecosystem#vpr-ecs-ua-jsc-vp",
-      "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/ecs-ua-json-schema-credential-presentation.json"]
-    },
-    {
-      "id": "did:example:ecosystem#vpr-ecs-trust-registry-789041745",
-      "type": "VerifiablePublicRegistry",
-      "version": "1.0",
-      "serviceEndpoint": ["https://ecosystem-vpr-node/vpr"]
-    }
-    
-    ...
-  ]
-```
+- VT Service Essential Credential [VT-EC-SERVICE]: a [VT-CRED] linked to a CredentialSchema entry that conforms to [ECS-SERVICE].
+- VT Organization Essential Credential [VT-EC-ORG]: a [VT-CRED] linked to a CredentialSchema entry that conforms to [ECS-ORG].
+- VT Person Essential Credential [VT-EC-PERSON]: a [VT-CRED] linked to a CredentialSchema entry that conforms to [ECS-PERSON].
+- VT User Agent Essential Credential [VT-EC-USER-AGENT]: a [VT-CRED] linked to a CredentialSchema entry that conforms to [ECS-USER-AGENT].
 
 ### [VS-REQ] Requirements for a service to be a VS
 
 - [VS-REQ-1] A [[ref: VS]] MUST be identified by a [[:ref DID]]. The [[:ref DID]] of a [[ref: VS]] MUST resolve to a [[ref: DID Document]].
-- [VS-REQ-2] A [[ref: VS]] DID Document MUST present (linked-vp) a VT Service Essential Credential that conforms to [VT-ECS-SERVICE-CRED].
-- [VS-REQ-3] If the issuer of the VT Service Essential Credential of [VS-REQ-2] is the [[ref: DID]] of this service, service DID Document MUST present a credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) a [VT-ECS-PERSON-CRED].
+- [VS-REQ-2] A [[ref: VS]] DID Document MUST present (linked-vp) a VT Service Essential Credential that conforms to [VT-EC-SERVICE].
+- [VS-REQ-3] If the issuer of the VT Service Essential Credential of [VS-REQ-2] is the [[ref: DID]] of this service, service DID Document MUST present a credential that conforms to [VT-EC-ORG] or (exclusive) a [VT-EC-PERSON].
 - [VS-REQ-4] If the issuer of the VT Service Credential of [VS-REQ-2] is not the [[ref: DID]] of this service, issuer service MUST be a [VS-REQ] [[ref: VS]] that conforms to [VS-REQ-3].
 - [VS-REQ-5] A compliant [[ref: VS]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify VS Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
 
@@ -1121,10 +1179,10 @@ In other words, to be a VS, a service MUST identify itself directly by presentin
 Linked verifiable presentations of credential CAN be present in service DID Document, if present, they MUST conform to the following:
 
 - [VS-LVP-1] Verifiable presentation MUST be signed by the VS DID.
-- [VS-LVP-2] if linked verifiable presentation id fragment start with `#vpr-schemas-` and ends with `-c-vp`, presented credential and DID Document MUST conform to [VT-CRED].
-- [VS-LVP-3] if linked verifiable presentation id fragment is `#vpr-ecs-service-c-vp`, presented credential MUST be a VT Service Essential Credential [VT-ECS-SERVICE-CRED].
-- [VS-LVP-4] if linked verifiable presentation id fragment is `#vpr-ecs-org-c-vp`, presented credential MUST be a VT Organization Essential Credential [VT-ECS-ORG-CRED].
-- [VS-LVP-5] if linked verifiable presentation id fragment is `#vpr-ecs-person-c-vp`, presented credential MUST be a VT Person Essential Credential [VT-ECS-PERSON-CRED].
+- [VS-LVP-2] if linked verifiable presentation id fragment start with `#vpr-schemas`, presented credential and DID Document MUST conform to [VT-CRED].
+- [VS-LVP-3] if linked verifiable presentation id fragment is `#vpr-essential-schemas-service-credential`, presented credential MUST be a VT Service Essential Credential [VT-EC-SERVICE].
+- [VS-LVP-4] if linked verifiable presentation id fragment is `#vpr-essential-schemas-org-credential`, presented credential MUST be a VT Organization Essential Credential [VT-EC-ORG].
+- [VS-LVP-5] if linked verifiable presentation id fragment is `#vpr-essential-schemas-person-credential`, presented credential MUST be a VT Person Essential Credential [VT-EC-PERSON].
 
 ### [VUA-REQ] Requirements for a User Agent to be a VUA
 
@@ -1134,7 +1192,7 @@ ignore for now
 
 - [VUA-REQ-1] A [[ref: VUA]] MUST be identified by a [[:ref DID]]. The [[:ref DID]] of a [[ref: VUA]] MUST resolve to a [[ref: DID Document]].
 - [VUA-REQ-2] A [[ref: VUA]] DID Document MUST present a VT Organization Essential Credential that conforms to [VT-EC-ORG] or (exclusive) to [VT-EC-PERSON].
-- [VUA-REQ-3] A [[ref: VUA]] The DID of a VUA MUST be an issuer of VT User Agent Essential Credential schema that conforms to [VT-EC-UA].
+- [VUA-REQ-3] A [[ref: VUA]] The DID of a VUA MUST be an issuer of VT User Agent Essential Credential schema that conforms to [VT-EC-USER-AGENT].
 - [VUA-REQ-4] A compliant [[ref: VUA]] MUST dereference all service credentials, User Agent credentials, DID Documents, verify Verifiable Trust Json Schema Credentials, Json Schema hashes, use the Verifiable Trust Registry API,... comply with [TR-WL] to resolve trust and ensure compliance by denying unauthorized actions.
 
 :::note
@@ -1267,19 +1325,19 @@ Let's see a full example in action. Here is a DID Document of a compliant VS:
 ```json
   "service": [
     {
-      "id": "did:example:gaia#vpr-ecs-service-c-vp",
+      "id": "did:example:user-vs.example.com#vpr-essential-schemas-service-credential",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://gaia/ecs-service-c-vp.json"]
+      "serviceEndpoint": ["https://user-vs.example.com/service-credential-presentation.json"]
     },
     {
-      "id": "did:example:gaia#vpr-ecs-org-c-vp",
+      "id": "did:example:user-vs.example.com#vpr-essential-schemas-org-credential",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://gaia/ecs-org-c-vp.json"]
+      "serviceEndpoint": ["https://user-vs.example.com/org-credential-presentation.json"]
     },
     {
-      "id": "did:example:gaia#vpr-schemas-trademark-c-vp",
+      "id": "did:example:user-vs.example.com#vpr-schemas-trademark-credential",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://gaia/schemas-trademark-c-vp.json"]
+      "serviceEndpoint": ["https://user-vs.example.com/trademark-credential-presentation.json"]
     }
     ...
   ]
