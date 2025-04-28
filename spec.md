@@ -1158,6 +1158,7 @@ Example:
 - [VS-REQ-3] If the issuer of the VT Service Essential Credential of [VS-REQ-2] is the [[ref: DID]] of this service, service DID Document MUST present a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) [VT-ECS-PERSON-CRED].
 - [VS-REQ-4] If the issuer of the VT Service Credential of [VS-REQ-2] is not the [[ref: DID]] of this service, DID Document of the VT Service Credential issuer MUST present a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) [VT-ECS-PERSON-CRED].
 - [VS-REQ-5] A [[ref: VS]] DID Document CAN present other Verifiable Trust Credentials as specified in [VT-LINKED-VP].
+- [VS-REQ-6] A [[ref: VS]] MUST always verify issuers of credentials as specified in [VT-PERM-QUERIES].
 
 ::: note
 In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.
@@ -1167,34 +1168,35 @@ In other words, to be a VS, a service MUST identify itself directly by presentin
 
 - [VUA-REQ-1] A [[ref: VUA]] that connects to a [[ref: VS]] MUST present a [VT-ECS-UA-CRED] ECS User Agent Verifiable Trust Credential when requested by the [[ref: VS]].
 - [VUA-REQ-2] A [[ref: VUA]] that connects to another [[ref: VUA]] MUST present a [VT-ECS-UA-CRED] ECS User Agent Verifiable Trust Credential when requested by the other [[ref: VUA]].
+- [VUA-REQ-3] A [[ref: VUA]] MUST always verify issuers (credential offer) and verifiers (presentation request) of credentials as specified in [VT-PERM-QUERIES].
 
 :::note
-It is RECOMMENDED to use selective disclosure for [VT-ECS-UA-CRED] presentations to prevent correlation.
+It is RECOMMENDED to use [anoncreds](https://hyperledger.github.io/anoncreds-spec/) plus selective disclosure for [VT-ECS-UA-CRED] and presentations to prevent correlation.
 :::
 
 ### [CIB] Credential Issuance by
 
 - [CIB-1] A [[ref: VS]] or a [[ref: VUA]] CAN issue [VT-CRED] VT Credentials.
 - [CIB-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT issue credentials that are not compliant with [VT-CRED].
-- [CIB-3] A [[ref: VS]] or a [[ref: VUA]] MUST NOT issue a credential if it cannot prove [VT-PROOF-ISSUER] it is authorized by the Ecosystem controller of the schema.
+- [CIB-3] A [[ref: VS]] or a [[ref: VUA]] MUST NOT issue a credential if it cannot prove [VT-PERM-QUERIES] it is authorized by the Ecosystem controller of the schema.
 
 ### [PRB] Presentation Requested by
 
 - [PRB-1] A [[ref: VS]] or a [[ref: VUA]] CAN request presentation of [VT-CRED] VT Credentials
 - [PRB-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of credentials that are not compliant with [VT-CRED].
-- [PRB-3] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of a credential if it cannot prove [VT-PROOF-VERIFIER] it is authorized by the Ecosystem controller of the schema.
+- [PRB-3] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of a credential if it cannot prove [VT-PERM-QUERIES] it is authorized by the Ecosystem controller of the schema.
 
 ### [CIT] Credential Issued to
 
 - [CIT-1] A [[ref: VS]] or a [[ref: VUA]] CAN be offered [VT-CRED] VT Credentials.
 - [CIT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT be offered credentials that are not compliant with [VT-CRED].
-- [CIT-3] When a [[ref: VS]] is offered a credential, it MUST verify [VT-PROOF-ISSUER] that the issuer is authorized by the Ecosystem that controls the schema to issue a credential of this schema.
+- [CIT-3] When a [[ref: VS]] is offered a credential, it MUST verify [VT-PERM-QUERIES] that the issuer is authorized by the Ecosystem that controls the schema to issue a credential of this schema.
 
 ### [PRT] Presentation Requested to
 
 - [PRT-1] A [[ref: VS]] or a [[ref: VUA]] CAN request presentation of [VT-CRED] VT Credentials
 - [PRT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of credentials that are not compliant with [VT-CRED].
-- [PRT-3] When a [[ref: VS]] receives a presentation request, before presenting a credential, it MUST verify [VT-PROOF-VERIFIER] that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema.
+- [PRT-3] When a [[ref: VS]] receives a presentation request, before presenting a credential, it MUST verify [VT-PERM-QUERIES] that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema.
 
 ### [VS-CONN-VS] Requirements for a VS to accept a connection from another service
 
@@ -1215,6 +1217,36 @@ When a [[ref: VUA]] receives a connection from a User Agent, it MUST request the
 When a [[ref: VUA]] initiates a connection to another User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED] credential before starting to provide the service, and verify the presented credential (if any).
 
 For communication channel between User Agents to be enabled, both User Agents MUST have requested and verified the  [VT-ECS-UA-CRED] credential presented by the peer.
+
+### [VT-PERM-QUERIES] Verification of permission(s) in Verifiable Public Registries
+
+For any **credential issuance** or **credential verification**, in addition to verifying the compliance of their peers ([[ref: VSs]] and [[ref: VUAs]]), entities MUST query the relevant **Verifiable Public Registry (VPR)** to ensure that the credential(s) are being issued or verified by **authorized entities**.
+
+Depending on the permissions registered in the VPR(s), the issuer or verifier MAY be required to execute a transaction in the VPR, which MAY involve the payment of **trust fees**, prior to offering or requesting the presentation of a credential.
+
+The receiving [[ref: VS]] or [[ref: VUA]] MUST deny the credential offer or presentation request if these preconditions are not met.
+
+*This section is non-normative and should be developed with examples and flow diagrams.*
+
+When a [[ref: VS]] or a [[ref: VUA]] receives a **credential offer** or a **presentation request**, it must use the appropriate **VPR endpoints** to verify the following:
+
+- Whether the **requesting party is authorized** to perform the action.  
+  Authorization CAN depend on factors such as **jurisdiction** or **assurance level**.
+
+- Whether a **payment (trust fee)** is required for the requested operation.  
+  If payment is required:
+  - The requesting party must obtain a **`uuid` token** from the requested party.
+  - The requesting party must execute a transaction in the VPR to pay the trust fees, referencing the provided `uuid`.
+  - The requesting party must notify the requested party that the payment has been completed.
+  - The requested party must verify the payment status by querying the VPR before proceeding.
+
+The requested [[ref: VS]] or [[ref: VUA]] must reject the credential offer or presentation request if these conditions are not fulfilled.
+
+Please refer to Permission Module in [[ref: VPR]] specs for more information.
+
+### [VT-TRQP] Trust Registry Query Protocol
+
+It is RECOMMENDED for implementations to support the [TRQP](https://trustoverip.github.io/tswg-trust-registry-protocol/). When TRQP stabilizes, they will likely become the default method for VPR queries.
 
 ### [WL] ECS Ecosystem whitelists and vpr: scheme resolution
 
@@ -1279,51 +1311,6 @@ Example:
 Everything below this point is outdated and should be ignored
 :::
 
-### [VT-RESOL] Verification of permission(s) in Verifiable Public Registries
-
-Please refer to Permission Module in [[ref: VPR]] specs.
-
-Process for verifying trust is always following the same rules. You'll find few examples below.
-
-#### Verify that an Organization Credential has been issued by an authorized issuer
-
-"We" refers to a VUA or a VS.
-
-- for a given service, get its Organization credential linked verifiable presentation in its DID Document.
-- get and load the linked `Json Schema Credential`. Verify that the issuer (the Trust Registry owner of this schema) of this `Json Schema Credential` is in your `essentialSchemaTrustRegistries` list. Verify the `digestSRI` of the `credentialSchema` and the `credentialSubject` properties.
-- get the credential schema id `schema_id` from the `credentialSubject` of the `Json Schema Credential`.
-- use the VPR API such as "Get a Credential Schema" and "Get Trust Registry" methods. Verify that the Trust Registry DID matches the DID of the `Json Schema Credential`. If schema is open for anyone to issue, no need to do any further check.
-- If schema is not open, call "Find Permissions With DID" method to verify that issuer of the organization credential had a valid permission for this schema at the time the credential was issued. If yes, credential has been issued by an authorized issuer.
-
-#### Verify that a VT Credential has been issued by an authorized issuer
-
-We consider presentation receiver has already performed the checks and credential schema has credential verification set to OPEN (anyone can verify). "We" refers to a VUA or a VS.
-
-- receive a credential presentation or get it as a linked verifiable presentation in a DID Document.
-- get and load the linked `Json Schema Credential`. Verify that the issuer (the Trust Registry owner of this schema) of this `Json Schema Credential` is in your `trustRegistries` list. Verify the `digestSRI` of the `credentialSchema` and the `credentialSubject` properties.
-- get the credential schema id `schema_id` from the `credentialSubject` of the `Json Schema Credential`.
-- use the VPR API such as "Get a Credential Schema" and "Get Trust Registry" methods. Verify that the Trust Registry DID matches the DID of the `Json Schema Credential`. If schema is open for anyone to issue, no need to do any further check.
-- If schema is not open, call "Find Permissions With DID" method to verify that issuer of the organization credential had a valid permission for this schema at the time the credential was issued. If yes, credential has been issued by an authorized issuer.
-
-#### Verify that a service has the right to request the presentation of a Credential of a given Issuer for a given schema
-
-We consider we verified that the service is complying with this spec before connecting to it. "We" refers to a VUA or a VS.
-
-A requester want to request the presentation of a credential.
-
-- the requester shares the `schemaId` to us;
-- we use the VPR API such as "Get a Credential Schema" and "Get Trust Registry" methods and check if verification is open for this schema. If schema is not open, then verifier MUST create a transaction. We share a `sessionId` (uuid) to requester;
-- we shared a list of found credential in the wallet(s) `(issuerPermId, walletAgentPermId)` (that implies we resolved the permIds by using the "Find Permissions With DID" method *at* issuance date)
-- requester chooses a credential, verifies `issuerPermId` and `walletAgentPermId`
-- if a payment is required, the verifier uses the "Create or update Permission Session" method to pay.
-- requester inform us which credential it wants.
-- if schema is not open, we call "Get Permission Session" to verify requester paid using the `sessionId`.
-- we present the selected credential to verifier.
-
-:::note
-Services that will want to request presentation of credential will need a crypto wallet and keys if VPR is a blockchain
-:::
-
 ## Implementations
 
 *This section is non-normative.*
@@ -1334,9 +1321,9 @@ Implementations are provided by the community, being the [Verana Foundation](htt
 
 #### Typescript Implementation
 
-::todo
-Provide repo info
-:::
+*This section is non-normative.*
+
+- The [Verre typescript library](https://github.com/verana-labs/verre) (WIP)
 
 ### VUAs Implementations
 
