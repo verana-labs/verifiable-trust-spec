@@ -214,7 +214,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 </ul>
 <p>This ensures that all connections are based on verifiable trust, not assumptions.</p>
 <h3 id="what-is-a-verifiable-public-registry-vpr"><a class="toc-anchor" href="#what-is-a-verifiable-public-registry-vpr" >§</a> What is a Verifiable Public Registry (VPR)?</h3>
-<div id="note-351" class="notice note"><a class="notice-link" href="#note-351">NOTE</a><p>There is a <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
+<div id="note-367" class="notice note"><a class="notice-link" href="#note-367">NOTE</a><p>There is a <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
 </div>
 <p><em>This section is non-normative.</em></p>
 <p>A <strong>Verifiable Public Registry (VPR)</strong> is a <strong>“registry of registries”</strong>, a public service that provides foundational infrastructure for decentralized trust ecosystems. It offers:</p>
@@ -491,7 +491,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <p>Additionally, in MUST present (as a <a class="term-reference" href="#term:linked-vp">linked-vp</a>) the Verifiable Trust Json Schema Credential(s) in its DID Document, as well as the corresponding VPR entry for verification. To do so, it MUST define the following entries in its DID Document:</p>
 <ul>
 <li>for each <code>CredentialSchema</code> entry it wants to be resolvable, a “LinkedVerifiablePresentation” service entry with a fragment that MUST start with <code>#vpr-schemas</code>, that MUST point to a self-issued Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].</li>
-<li>a <code>VerifiablePublicRegistry</code> service entry with fragment name equal to the concatenation of  <code>#vpr-schemas-trust-registry-</code> and the id of the Ecosystem’s Trust Registry in the VPR. If the VPR is decentralized, it is RECOMMENDED for the ecosystem to run its own VPR node in order to provide service endpoints under its control.</li>
+<li>a <code>VerifiablePublicRegistry</code> service entry with fragment name equal to the concatenation of  <code>#vpr-schemas-trust-registry-</code> and the id of the Ecosystem’s Trust Registry in the VPR.</li>
 </ul>
 <p>Example:</p>
 <pre class="language-json"><code class="language-json"><span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
@@ -563,7 +563,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <li>UserAgent.</li>
 </ul>
 <p>An Ecosystem creates its Trust Registry in a <a class="term-reference" href="#term:vpr">VPR</a> by creating a <code>TrustRegistry</code> entry <code>tr</code>. For this Trust Registry to qualify for being used for trust resolution in <a class="term-reference" href="#term:vss">VSs</a> and <a class="term-reference" href="#term:vuas">VUAs</a>, it MUST provide, associated to the <code>TrustRegistry</code> entry <code>tr</code>, at least one <code>CredentialSchema</code> entry, with a respective <code>json_schema</code> attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSON], [ECS-UA].</p>
-<div id="warning-6" class="notice warning"><a class="notice-link" href="#warning-6">WARNING</a><p>All ECS json schema are unstable and may change for v2 stable version of this spec</p>
+<div id="warning-14" class="notice warning"><a class="notice-link" href="#warning-14">WARNING</a><p>All ECS json schema are unstable and may change for v2 stable version of this spec</p>
 </div>
 <h4 id="ecs-service-service-credential-json-schema"><a class="toc-anchor" href="#ecs-service-service-credential-json-schema" >§</a> [ECS-SERVICE] Service Credential Json Schema</h4>
 <p>Used to identify Services.</p>
@@ -978,39 +978,41 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <li>[VS-REQ-3] If the issuer of the VT Service Essential Credential of [VS-REQ-2] is the <a class="term-reference" href="#term:did">DID</a> of this service, service DID Document MUST present a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) [VT-ECS-PERSON-CRED].</li>
 <li>[VS-REQ-4] If the issuer of the VT Service Credential of [VS-REQ-2] is not the <a class="term-reference" href="#term:did">DID</a> of this service, DID Document of the VT Service Credential issuer MUST present a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) [VT-ECS-PERSON-CRED].</li>
 <li>[VS-REQ-5] A <a class="term-reference" href="#term:vs">VS</a> DID Document CAN present other Verifiable Trust Credentials as specified in [VT-LINKED-VP].</li>
+<li>[VS-REQ-6] A <a class="term-reference" href="#term:vs">VS</a> MUST always verify issuers of credentials as specified in [VT-PERM-QUERIES].</li>
 </ul>
-<div id="note-352" class="notice note"><a class="notice-link" href="#note-352">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
+<div id="note-368" class="notice note"><a class="notice-link" href="#note-368">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
 </div>
 <h3 id="vua-req-requirements-for-a-user-agent-to-be-a-vua"><a class="toc-anchor" href="#vua-req-requirements-for-a-user-agent-to-be-a-vua" >§</a> [VUA-REQ] Requirements for a User Agent to be a VUA</h3>
 <ul>
 <li>[VUA-REQ-1] A <a class="term-reference" href="#term:vua">VUA</a> that connects to a <a class="term-reference" href="#term:vs">VS</a> MUST present a [VT-ECS-UA-CRED] ECS User Agent Verifiable Trust Credential when requested by the <a class="term-reference" href="#term:vs">VS</a>.</li>
 <li>[VUA-REQ-2] A <a class="term-reference" href="#term:vua">VUA</a> that connects to another <a class="term-reference" href="#term:vua">VUA</a> MUST present a [VT-ECS-UA-CRED] ECS User Agent Verifiable Trust Credential when requested by the other <a class="term-reference" href="#term:vua">VUA</a>.</li>
+<li>[VUA-REQ-3] A <a class="term-reference" href="#term:vua">VUA</a> MUST always verify issuers (credential offer) and verifiers (presentation request) of credentials as specified in [VT-PERM-QUERIES].</li>
 </ul>
-<div id="note-353" class="notice note"><a class="notice-link" href="#note-353">NOTE</a><p>It is RECOMMENDED to use selective disclosure for [VT-ECS-UA-CRED] presentations to prevent correlation.</p>
+<div id="note-369" class="notice note"><a class="notice-link" href="#note-369">NOTE</a><p>It is RECOMMENDED to use <a path-0="hyperledger.github.io"path-1="anoncreds-spec"path-2=""href="https://hyperledger.github.io/anoncreds-spec/" >anoncreds</a> plus selective disclosure for [VT-ECS-UA-CRED] and presentations to prevent correlation.</p>
 </div>
 <h3 id="cib-credential-issuance-by"><a class="toc-anchor" href="#cib-credential-issuance-by" >§</a> [CIB] Credential Issuance by</h3>
 <ul>
 <li>[CIB-1] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> CAN issue [VT-CRED] VT Credentials.</li>
 <li>[CIB-2] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT issue credentials that are not compliant with [VT-CRED].</li>
-<li>[CIB-3] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT issue a credential if it cannot prove it is authorized by the Ecosystem controller of the schema.</li>
+<li>[CIB-3] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT issue a credential if it cannot prove [VT-PERM-QUERIES] it is authorized by the Ecosystem controller of the schema.</li>
 </ul>
 <h3 id="prb-presentation-requested-by"><a class="toc-anchor" href="#prb-presentation-requested-by" >§</a> [PRB] Presentation Requested by</h3>
 <ul>
 <li>[PRB-1] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> CAN request presentation of [VT-CRED] VT Credentials</li>
 <li>[PRB-2] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT request presentation of credentials that are not compliant with [VT-CRED].</li>
-<li>[PRB-3] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT request presentation of a credential if it cannot prove it is authorized by the Ecosystem controller of the schema.</li>
+<li>[PRB-3] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT request presentation of a credential if it cannot prove [VT-PERM-QUERIES] it is authorized by the Ecosystem controller of the schema.</li>
 </ul>
 <h3 id="cit-credential-issued-to"><a class="toc-anchor" href="#cit-credential-issued-to" >§</a> [CIT] Credential Issued to</h3>
 <ul>
 <li>[CIT-1] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> CAN be offered [VT-CRED] VT Credentials.</li>
 <li>[CIT-2] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT be offered credentials that are not compliant with [VT-CRED].</li>
-<li>[CIT-3] When a <a class="term-reference" href="#term:vs">VS</a> is offered a credential, it MUST verify that the issuer is authorized by the Ecosystem that controls the schema to issue a credential of this schema.</li>
+<li>[CIT-3] When a <a class="term-reference" href="#term:vs">VS</a> is offered a credential, it MUST verify [VT-PERM-QUERIES] that the issuer is authorized by the Ecosystem that controls the schema to issue a credential of this schema.</li>
 </ul>
 <h3 id="prt-presentation-requested-to"><a class="toc-anchor" href="#prt-presentation-requested-to" >§</a> [PRT] Presentation Requested to</h3>
 <ul>
 <li>[PRT-1] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> CAN request presentation of [VT-CRED] VT Credentials</li>
 <li>[PRT-2] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT request presentation of credentials that are not compliant with [VT-CRED].</li>
-<li>[PRT-3] When a <a class="term-reference" href="#term:vs">VS</a> receives a presentation request, before presenting a credential, it MUST verify that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema.</li>
+<li>[PRT-3] When a <a class="term-reference" href="#term:vs">VS</a> receives a presentation request, before presenting a credential, it MUST verify [VT-PERM-QUERIES] that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema.</li>
 </ul>
 <h3 id="vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service"><a class="toc-anchor" href="#vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service" >§</a> [VS-CONN-VS] Requirements for a VS to accept a connection from another service</h3>
 <p>When a <a class="term-reference" href="#term:vs">VS</a> VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-REQ], else VS-1 MUST NOT accept the connection, unless purpose of the service provided by VS-1 is the issuance of [VT-ECS-ORG-CRED] or [VT-ECS-PERSON-CRED] credentials.</p>
@@ -1022,6 +1024,32 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <p>When a <a class="term-reference" href="#term:vua">VUA</a> receives a connection from a User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED] credential before starting to provide the service, and verify the presented credential (if any).</p>
 <p>When a <a class="term-reference" href="#term:vua">VUA</a> initiates a connection to another User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED] credential before starting to provide the service, and verify the presented credential (if any).</p>
 <p>For communication channel between User Agents to be enabled, both User Agents MUST have requested and verified the  [VT-ECS-UA-CRED] credential presented by the peer.</p>
+<h3 id="vt-perm-queries-verification-of-permissions-in-verifiable-public-registries"><a class="toc-anchor" href="#vt-perm-queries-verification-of-permissions-in-verifiable-public-registries" >§</a> [VT-PERM-QUERIES] Verification of permission(s) in Verifiable Public Registries</h3>
+<p>For any <strong>credential issuance</strong> or <strong>credential verification</strong>, in addition to verifying the compliance of their peers (<a class="term-reference" href="#term:vss">VSs</a> and <a class="term-reference" href="#term:vuas">VUAs</a>), entities MUST query the relevant <strong>Verifiable Public Registry (VPR)</strong> to ensure that the credential(s) are being issued or verified by <strong>authorized entities</strong>.</p>
+<p>Depending on the permissions registered in the VPR(s), the issuer or verifier MAY be required to execute a transaction in the VPR, which MAY involve the payment of <strong>trust fees</strong>, prior to offering or requesting the presentation of a credential.</p>
+<p>The receiving <a class="term-reference" href="#term:vs">VS</a> or <a class="term-reference" href="#term:vua">VUA</a> MUST deny the credential offer or presentation request if these preconditions are not met.</p>
+<p><em>This section is non-normative and should be developed with examples and flow diagrams.</em></p>
+<p>When a <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> receives a <strong>credential offer</strong> or a <strong>presentation request</strong>, it must use the appropriate <strong>VPR endpoints</strong> to verify the following:</p>
+<ul>
+<li>
+<p>Whether the <strong>requesting party is authorized</strong> to perform the action.<br>
+Authorization CAN depend on factors such as <strong>jurisdiction</strong> or <strong>assurance level</strong>.</p>
+</li>
+<li>
+<p>Whether a <strong>payment (trust fee)</strong> is required for the requested operation.<br>
+If payment is required:</p>
+<ul>
+<li>The requesting party must obtain a <strong><code>uuid</code> token</strong> from the requested party.</li>
+<li>The requesting party must execute a transaction in the VPR to pay the trust fees, referencing the provided <code>uuid</code>.</li>
+<li>The requesting party must notify the requested party that the payment has been completed.</li>
+<li>The requested party must verify the payment status by querying the VPR before proceeding.</li>
+</ul>
+</li>
+</ul>
+<p>The requested <a class="term-reference" href="#term:vs">VS</a> or <a class="term-reference" href="#term:vua">VUA</a> must reject the credential offer or presentation request if these conditions are not fulfilled.</p>
+<p>Please refer to Permission Module in <a class="term-reference" href="#term:vpr">VPR</a> specs for more information.</p>
+<h3 id="vt-trqp-trust-registry-query-protocol"><a class="toc-anchor" href="#vt-trqp-trust-registry-query-protocol" >§</a> [VT-TRQP] Trust Registry Query Protocol</h3>
+<p>It is RECOMMENDED for implementations to support the <a path-0="trustoverip.github.io"path-1="tswg-trust-registry-protocol"path-2=""href="https://trustoverip.github.io/tswg-trust-registry-protocol/" >TRQP</a>. When TRQP stabilizes, they will likely become the default method for VPR queries.</p>
 <h3 id="wl-ecs-ecosystem-whitelists-and-vpr-scheme-resolution"><a class="toc-anchor" href="#wl-ecs-ecosystem-whitelists-and-vpr-scheme-resolution" >§</a> [WL] ECS Ecosystem whitelists and vpr: scheme resolution</h3>
 <ul>
 <li>[WL-VPR] Compliant <a class="term-reference" href="#term:vss">VSs</a> and <a class="term-reference" href="#term:vuas">VUAs</a> MUST maintain a list of VPRs and how to access them (resolution). As VPRs are decentralized, this gives the option to the VUA vendor or VS provider to run a VPR node and use its own node endpoints for trust resolution.</li>
@@ -1076,52 +1104,17 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<div id="warning-7" class="notice warning"><a class="notice-link" href="#warning-7">WARNING</a><p>Everything below this point is outdated and should be ignored</p>
-</div>
-<h3 id="vt-resol-verification-of-permissions-in-verifiable-public-registries"><a class="toc-anchor" href="#vt-resol-verification-of-permissions-in-verifiable-public-registries" >§</a> [VT-RESOL] Verification of permission(s) in Verifiable Public Registries</h3>
-<p>Please refer to Permission Module in <a class="term-reference" href="#term:vpr">VPR</a> specs.</p>
-<p>Process for verifying trust is always following the same rules. You’ll find few examples below.</p>
-<h4 id="verify-that-an-organization-credential-has-been-issued-by-an-authorized-issuer"><a class="toc-anchor" href="#verify-that-an-organization-credential-has-been-issued-by-an-authorized-issuer" >§</a> Verify that an Organization Credential has been issued by an authorized issuer</h4>
-<p>“We” refers to a VUA or a VS.</p>
-<ul>
-<li>for a given service, get its Organization credential linked verifiable presentation in its DID Document.</li>
-<li>get and load the linked <code>Json Schema Credential</code>. Verify that the issuer (the Trust Registry owner of this schema) of this <code>Json Schema Credential</code> is in your <code>essentialSchemaTrustRegistries</code> list. Verify the <code>digestSRI</code> of the <code>credentialSchema</code> and the <code>credentialSubject</code> properties.</li>
-<li>get the credential schema id <code>schema_id</code> from the <code>credentialSubject</code> of the <code>Json Schema Credential</code>.</li>
-<li>use the VPR API such as “Get a Credential Schema” and “Get Trust Registry” methods. Verify that the Trust Registry DID matches the DID of the <code>Json Schema Credential</code>. If schema is open for anyone to issue, no need to do any further check.</li>
-<li>If schema is not open, call “Find Permissions With DID” method to verify that issuer of the organization credential had a valid permission for this schema at the time the credential was issued. If yes, credential has been issued by an authorized issuer.</li>
-</ul>
-<h4 id="verify-that-a-vt-credential-has-been-issued-by-an-authorized-issuer"><a class="toc-anchor" href="#verify-that-a-vt-credential-has-been-issued-by-an-authorized-issuer" >§</a> Verify that a VT Credential has been issued by an authorized issuer</h4>
-<p>We consider presentation receiver has already performed the checks and credential schema has credential verification set to OPEN (anyone can verify). “We” refers to a VUA or a VS.</p>
-<ul>
-<li>receive a credential presentation or get it as a linked verifiable presentation in a DID Document.</li>
-<li>get and load the linked <code>Json Schema Credential</code>. Verify that the issuer (the Trust Registry owner of this schema) of this <code>Json Schema Credential</code> is in your <code>trustRegistries</code> list. Verify the <code>digestSRI</code> of the <code>credentialSchema</code> and the <code>credentialSubject</code> properties.</li>
-<li>get the credential schema id <code>schema_id</code> from the <code>credentialSubject</code> of the <code>Json Schema Credential</code>.</li>
-<li>use the VPR API such as “Get a Credential Schema” and “Get Trust Registry” methods. Verify that the Trust Registry DID matches the DID of the <code>Json Schema Credential</code>. If schema is open for anyone to issue, no need to do any further check.</li>
-<li>If schema is not open, call “Find Permissions With DID” method to verify that issuer of the organization credential had a valid permission for this schema at the time the credential was issued. If yes, credential has been issued by an authorized issuer.</li>
-</ul>
-<h4 id="verify-that-a-service-has-the-right-to-request-the-presentation-of-a-credential-of-a-given-issuer-for-a-given-schema"><a class="toc-anchor" href="#verify-that-a-service-has-the-right-to-request-the-presentation-of-a-credential-of-a-given-issuer-for-a-given-schema" >§</a> Verify that a service has the right to request the presentation of a Credential of a given Issuer for a given schema</h4>
-<p>We consider we verified that the service is complying with this spec before connecting to it. “We” refers to a VUA or a VS.</p>
-<p>A requester want to request the presentation of a credential.</p>
-<ul>
-<li>the requester shares the <code>schemaId</code> to us;</li>
-<li>we use the VPR API such as “Get a Credential Schema” and “Get Trust Registry” methods and check if verification is open for this schema. If schema is not open, then verifier MUST create a transaction. We share a <code>sessionId</code> (uuid) to requester;</li>
-<li>we shared a list of found credential in the wallet(s) <code>(issuerPermId, walletAgentPermId)</code> (that implies we resolved the permIds by using the “Find Permissions With DID” method <em>at</em> issuance date)</li>
-<li>requester chooses a credential, verifies <code>issuerPermId</code> and <code>walletAgentPermId</code></li>
-<li>if a payment is required, the verifier uses the “Create or update Permission Session” method to pay.</li>
-<li>requester inform us which credential it wants.</li>
-<li>if schema is not open, we call “Get Permission Session” to verify requester paid using the <code>sessionId</code>.</li>
-<li>we present the selected credential to verifier.</li>
-</ul>
-<div id="note-354" class="notice note"><a class="notice-link" href="#note-354">NOTE</a><p>Services that will want to request presentation of credential will need a crypto wallet and keys if VPR is a blockchain</p>
+<div id="warning-15" class="notice warning"><a class="notice-link" href="#warning-15">WARNING</a><p>Everything below this point is outdated and should be ignored</p>
 </div>
 <h2 id="implementations"><a class="toc-anchor" href="#implementations" >§</a> Implementations</h2>
 <p><em>This section is non-normative.</em></p>
 <p>Implementations are provided by the community, being the <a path-0="verana.io"href="https://verana.io" >Verana Foundation</a> and <a path-0="2060.io"href="https://2060.io" >2060.io</a> the most active contributors at the moment.</p>
 <h3 id="trust-resolution"><a class="toc-anchor" href="#trust-resolution" >§</a> Trust Resolution</h3>
 <h4 id="typescript-implementation"><a class="toc-anchor" href="#typescript-implementation" >§</a> Typescript Implementation</h4>
-<p>::todo
-Provide repo info
-:::</p>
+<p><em>This section is non-normative.</em></p>
+<ul>
+<li>The <a path-0="github.com"path-1="verana-labs"path-2="verre"href="https://github.com/verana-labs/verre" >Verre typescript library</a> (WIP)</li>
+</ul>
 <h3 id="vuas-implementations"><a class="toc-anchor" href="#vuas-implementations" >§</a> VUAs Implementations</h3>
 <h4 id="hologram-messaging"><a class="toc-anchor" href="#hologram-messaging" >§</a> Hologram Messaging</h4>
 <p><em>This section is non-normative.</em></p>
@@ -1234,14 +1227,9 @@ Provide repo info
 <li><a href="#vs-conn-vua-requirements-for-a-vs-to-accept-a-connection-from-a-user-agent" >[VS-CONN-VUA] Requirements for a VS to accept a connection from a User Agent</a></li>
 <li><a href="#vua-conn-vs-requirements-for-a-vua-to-accept-connecting-to-a-service" >[VUA-CONN-VS] Requirements for a VUA to accept connecting to a service</a></li>
 <li><a href="#vua-conn-vua-requirements-for-two-vuas-to-connect" >[VUA-CONN-VUA] Requirements for two VUAs to connect</a></li>
+<li><a href="#vt-perm-queries-verification-of-permissions-in-verifiable-public-registries" >[VT-PERM-QUERIES] Verification of permission(s) in Verifiable Public Registries</a></li>
+<li><a href="#vt-trqp-trust-registry-query-protocol" >[VT-TRQP] Trust Registry Query Protocol</a></li>
 <li><a href="#wl-ecs-ecosystem-whitelists-and-vpr-scheme-resolution" >[WL] ECS Ecosystem whitelists and vpr: scheme resolution</a></li>
-<li><a href="#vt-resol-verification-of-permissions-in-verifiable-public-registries" >[VT-RESOL] Verification of permission(s) in Verifiable Public Registries</a>
-<ul>
-<li><a href="#verify-that-an-organization-credential-has-been-issued-by-an-authorized-issuer" >Verify that an Organization Credential has been issued by an authorized issuer</a></li>
-<li><a href="#verify-that-a-vt-credential-has-been-issued-by-an-authorized-issuer" >Verify that a VT Credential has been issued by an authorized issuer</a></li>
-<li><a href="#verify-that-a-service-has-the-right-to-request-the-presentation-of-a-credential-of-a-given-issuer-for-a-given-schema" >Verify that a service has the right to request the presentation of a Credential of a given Issuer for a given schema</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li><a href="#implementations" >Implementations</a>
