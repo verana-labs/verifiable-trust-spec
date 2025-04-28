@@ -633,7 +633,7 @@ For each `CredentialSchema` entry an Ecosystem has created in his Trust Registry
 Additionally, in MUST present (as a [[ref: linked-vp]]) the Verifiable Trust Json Schema Credential(s) in its DID Document, as well as the corresponding VPR entry for verification. To do so, it MUST define the following entries in its DID Document:
 
 - for each `CredentialSchema` entry it wants to be resolvable, a "LinkedVerifiablePresentation" service entry with a fragment that MUST start with `#vpr-schemas`, that MUST point to a self-issued Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].
-- a `VerifiablePublicRegistry` service entry with fragment name equal to the concatenation of  `#vpr-schemas-trust-registry-` and the id of the Ecosystem's Trust Registry in the VPR. If the VPR is decentralized, it is RECOMMENDED for the ecosystem to run its own VPR node in order to provide service endpoints under its control.
+- a `VerifiablePublicRegistry` service entry with fragment name equal to the concatenation of  `#vpr-schemas-trust-registry-` and the id of the Ecosystem's Trust Registry in the VPR.
 
 Example:
 
