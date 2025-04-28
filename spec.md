@@ -379,7 +379,7 @@ Example of a Json Schema credential schema:
 
 ```json
 {
-  "$id": "https://ecosystem-vpr-node/vpr/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:mainnet/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ExampleCredential",
   "description": "ExampleCredential using JsonSchema",
@@ -454,7 +454,7 @@ object "CredentialSchema (in VPR)" as cs {
 object "Verifiable Trust Json Schema Credential" as jsc #3fbdb6 {
   id: https://ecosystem/shemas-example-jsc.json
   issuer: did:example:ecosystem
-  jsonSchema: https://ecosystem-vpr-node/vpr/cs/v1/js/12345678
+  jsonSchema: vpr:verana:mainnet/cs/v1/js/12345678
 }
 
 object "Verifiable Trust Credential" as vscred #3fbdb6 {
@@ -497,10 +497,10 @@ This credential serves as a verifiable proof of:
     "digestSRI": "sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"
   },
   "credentialSubject": {
-    "id": "https://ecosystem-vpr-node/vpr/cs/v1/js/12345678",
+    "id": "vpr:verana:mainnet/cs/v1/js/12345678",
     "type": "JsonSchema",
     "jsonSchema": {
-      "$ref": "https://ecosystem-vpr-node/vpr/cs/v1/js/12345678"
+      "$ref": "vpr:verana:mainnet/cs/v1/js/12345678"
     },
     "digestSRI": "sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ" 
   }
@@ -522,7 +522,7 @@ This ensures that the Credential Schema and its controlling Trust Registry are p
       "id": "did:example:trust-registry#vpr-schemas-trust-registry-1234",
       "type": "VerifiablePublicRegistry",
       "version": "1.0",
-      "serviceEndpoint": ["https://ecosystem-vpr-node/vpr"]
+      "serviceEndpoint": ["vpr:verana:mainnet"]
     }
     ...
   ]
@@ -616,10 +616,10 @@ Example of a Verifiable Trust Json Schema Credential:
     "digestSRI": "sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"
   },
   "credentialSubject": {
-    "id": "https://ecosystem-vpr-node/vpr/cs/v1/js/12345678",
+    "id": "vpr:verana:mainnet/cs/v1/js/12345678",
     "type": "JsonSchema",
     "jsonSchema": {
-      "$ref": "https://ecosystem-vpr-node/vpr/cs/v1/js/12345678"
+      "$ref": "vpr:verana:mainnet/cs/v1/js/12345678"
     },
     "digestSRI": "sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ" 
   }
@@ -648,7 +648,7 @@ Example:
       "id": "did:example:ecosystem#vpr-schemas-trust-registry-1234",
       "type": "VerifiablePublicRegistry",
       "version": "1.0",
-      "serviceEndpoint": ["https://ecosystem-vpr-node/vpr"]
+      "serviceEndpoint": ["vpr:verana:mainnet"]
     }
     ...
   ]
@@ -746,7 +746,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "https://ecosystem-vpr-node/vpr/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:mainnet/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ServiceCredential",
   "description": "ServiceCredential using JsonSchema",
@@ -837,7 +837,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "https://ecosystem-vpr-node/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:mainnet/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "OrganizationCredential",
   "description": "OrganizationCredential using JsonSchema",
@@ -919,7 +919,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "https://ecosystem-vpr-node/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:mainnet/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "PersonCredential",
   "description": "PersonCredential using JsonSchema",
@@ -989,7 +989,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "https://ecosystem-vpr-node/vpr/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:mainnet/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "UserAgentCredential",
   "description": "UserAgentCredential using JsonSchema",
@@ -1066,40 +1066,40 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ### [VT-ECS-CRED] Verifiable Trust Essential Schema Credentials
 
-- Service Credential [VT-ECS-SERVICE-CRED]: a [VT-CRED] linked to a [VT-ECS-SERVICE-JSON-SCHEMA-CRED]. MUST be declared in DID Document with fragment `#vpr-ecs-service-c-vp`. Example:
+- Service Credential [VT-ECS-SERVICE-CRED]: a [VT-CRED] linked to a [VT-ECS-SERVICE-JSON-SCHEMA-CRED]. MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-ecs-service-c-vp`. Example:
 
 ```json
   "service": [
     {
-      "id": "did:example:ecosystem#vpr-ecs-service-c-vp",
+      "id": "did:example:service#vpr-ecs-service-c-vp",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/ecs-service-c-vp.json"]
+      "serviceEndpoint": ["https://service/ecs-service-c-vp.json"]
     }
     ...
   ]
 ```
 
-- Organization Credential [VT-ECS-ORG-CRED]: a [VT-CRED] linked to a [VT-ECS-ORG-JSON-SCHEMA-CRED]. MUST be declared in DID Document with fragment `#vpr-ecs-org-c-vp`. Example:
+- Organization Credential [VT-ECS-ORG-CRED]: a [VT-CRED] linked to a [VT-ECS-ORG-JSON-SCHEMA-CRED]. MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-ecs-org-c-vp`. Example:
 
 ```json
   "service": [
     {
-      "id": "did:example:ecosystem#vpr-ecs-org-c-vp",
+      "id": "did:example:service#vpr-ecs-org-c-vp",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/ecs-org-c-vp.json"]
+      "serviceEndpoint": ["https://service/ecs-org-c-vp.json"]
     }
     ...
   ]
 ```
 
-- Person Credential [VT-ECS-PERSON-CRED]: a [VT-CRED] linked to a [VT-ECS-PERSON-JSON-SCHEMA-CRED]. MUST be declared in DID Document with fragment `#vpr-ecs-person-c-vp`. Example:
+- Person Credential [VT-ECS-PERSON-CRED]: a [VT-CRED] linked to a [VT-ECS-PERSON-JSON-SCHEMA-CRED]. MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-ecs-person-c-vp`. Example:
 
 ```json
   "service": [
     {
-      "id": "did:example:ecosystem#vpr-ecs-person-c-vp",
+      "id": "did:example:service#vpr-ecs-person-c-vp",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://ecosystem/ecs-person-c-vp.json"]
+      "serviceEndpoint": ["https://service/ecs-person-c-vp.json"]
     }
     ...
   ]
@@ -1144,7 +1144,7 @@ Example:
       "id": "did:example:ecosystem#vpr-ecs-trust-registry-789041745",
       "type": "VerifiablePublicRegistry",
       "version": "1.0",
-      "serviceEndpoint": ["https://ecosystem-vpr-node/vpr"]
+      "serviceEndpoint": ["vpr:verana:mainnet"]
     }
     
     ...
@@ -1166,9 +1166,10 @@ In other words, to be a VS, a service MUST identify itself directly by presentin
 ### [VUA-REQ] Requirements for a User Agent to be a VUA
 
 - [VUA-REQ-1] A [[ref: VUA]] that connects to a [[ref: VS]] MUST present a [VT-ECS-UA-CRED] ECS User Agent Verifiable Trust Credential when requested by the [[ref: VS]].
+- [VUA-REQ-2] A [[ref: VUA]] that connects to another [[ref: VUA]] MUST present a [VT-ECS-UA-CRED] ECS User Agent Verifiable Trust Credential when requested by the other [[ref: VUA]].
 
 :::note
-It is RECOMMENDED to use selective disclosure
+It is RECOMMENDED to use selective disclosure for [VT-ECS-UA-CRED] presentations to prevent correlation.
 :::
 
 ### [CIB] Credential Issuance by
@@ -1215,11 +1216,9 @@ When a [[ref: VUA]] initiates a connection to another User Agent, it MUST reques
 
 For communication channel between User Agents to be enabled, both User Agents MUST have requested and verified the  [VT-ECS-UA-CRED] credential presented by the peer.
 
-### [TR-WL] VPR and Trust Registry whitelists
+### [WL] ECS Ecosystem whitelists and vpr: scheme resolution
 
-Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of trusted VPRs and trusted VT Essential Credential issuers, and ignore VPRs and VT ECS issuers that are not in these lists when resolving trust:
-
-- [TR-WL-VPR]: A list of prefix URLs of trusted VPRs (registry of registries).
+- [WL-VPR] Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of VPRs and how to access them (resolution). As VPRs are decentralized, this gives the option to the VUA vendor or VS provider to run a VPR node and use its own node endpoints for trust resolution.
 
 Example:
 
@@ -1228,42 +1227,49 @@ Example:
 { 
   verifiablePublicRegistries: [ 
     { 
-      "name": "vpr-mainnet",
-      "baseurl": "https://vpr-mainnet/vpr/v1",
+      "name": "vpr:verana:mainnet",
+      "baseurls": [
+        "https://user-agent-vpr-node-1/vpr/",
+        "https://user-agent-vpr-node-2/vpr/",
+      ]
       "version": "1"
       "production": true
     },
     { 
-      "name": "vpr-testnet",
-      "baseurl": "https://vpr-testnet/vpr/v1",
+      "name": "vpr:verana:testnet",
+      "baseurls": [
+        "https://user-agent-vpr-node-testnet/vpr/"
+      ]
       "version": "1"
       "production": false
     },
     { 
-      "name": "vpr-devnet",
-      "baseurl": "https://vpr-devnet/vpr/v2",
+      "name": "vpr:verana:devnet",
+      "baseurls": [
+        "https://user-agent-vpr-node-devnet/vpr/"
+      ]
       "version": "2"
       "production": false
-    },
+    }
   ]
 }
 ```
 
-- [TR-WL-ES-TR]: A list of DIDs of trusted Trust Registries for providing essential credential schemas.
+- [WL-ECS]: Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of DIDs of Ecosystems they trust for providing essential credential schemas.
 
 Example:
 
 ```json
 
 { 
-  essentialSchemaTrustRegistries: [ 
+  ecsEcosystems: [ 
     { 
-      "tr": "did:example:ecosystem",
-      "vpr": "vpr-mainnet"
+      "did": "did:example:ecosystem",
+      "vpr": "vpr:verana:mainnet"
     },
     { 
-      "tr": "did:example:ecosystem-test",
-      "vpr": "vpr-testnet"
+      "did": "did:example:ecosystem-test",
+      "vpr": "vpr:verana:testnet"
     }
   ]
 }
