@@ -214,7 +214,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 </ul>
 <p>This ensures that all connections are based on verifiable trust, not assumptions.</p>
 <h3 id="what-is-a-verifiable-public-registry-vpr"><a class="toc-anchor" href="#what-is-a-verifiable-public-registry-vpr" >§</a> What is a Verifiable Public Registry (VPR)?</h3>
-<div id="note-346" class="notice note"><a class="notice-link" href="#note-346">NOTE</a><p>There is a <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
+<div id="note-351" class="notice note"><a class="notice-link" href="#note-351">NOTE</a><p>There is a <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
 </div>
 <p><em>This section is non-normative.</em></p>
 <p>A <strong>Verifiable Public Registry (VPR)</strong> is a <strong>“registry of registries”</strong>, a public service that provides foundational infrastructure for decentralized trust ecosystems. It offers:</p>
@@ -563,7 +563,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <li>UserAgent.</li>
 </ul>
 <p>An Ecosystem creates its Trust Registry in a <a class="term-reference" href="#term:vpr">VPR</a> by creating a <code>TrustRegistry</code> entry <code>tr</code>. For this Trust Registry to qualify for being used for trust resolution in <a class="term-reference" href="#term:vss">VSs</a> and <a class="term-reference" href="#term:vuas">VUAs</a>, it MUST provide, associated to the <code>TrustRegistry</code> entry <code>tr</code>, at least one <code>CredentialSchema</code> entry, with a respective <code>json_schema</code> attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSON], [ECS-UA].</p>
-<div id="warning-5" class="notice warning"><a class="notice-link" href="#warning-5">WARNING</a><p>All ECS json schema are unstable and may change for v2 stable version of this spec</p>
+<div id="warning-6" class="notice warning"><a class="notice-link" href="#warning-6">WARNING</a><p>All ECS json schema are unstable and may change for v2 stable version of this spec</p>
 </div>
 <h4 id="ecs-service-service-credential-json-schema"><a class="toc-anchor" href="#ecs-service-service-credential-json-schema" >§</a> [ECS-SERVICE] Service Credential Json Schema</h4>
 <p>Used to identify Services.</p>
@@ -979,14 +979,14 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <li>[VS-REQ-4] If the issuer of the VT Service Credential of [VS-REQ-2] is not the <a class="term-reference" href="#term:did">DID</a> of this service, DID Document of the VT Service Credential issuer MUST present a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) [VT-ECS-PERSON-CRED].</li>
 <li>[VS-REQ-5] A <a class="term-reference" href="#term:vs">VS</a> DID Document CAN present other Verifiable Trust Credentials as specified in [VT-LINKED-VP].</li>
 </ul>
-<div id="note-347" class="notice note"><a class="notice-link" href="#note-347">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
+<div id="note-352" class="notice note"><a class="notice-link" href="#note-352">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
 </div>
 <h3 id="vua-req-requirements-for-a-user-agent-to-be-a-vua"><a class="toc-anchor" href="#vua-req-requirements-for-a-user-agent-to-be-a-vua" >§</a> [VUA-REQ] Requirements for a User Agent to be a VUA</h3>
 <ul>
 <li>[VUA-REQ-1] A <a class="term-reference" href="#term:vua">VUA</a> that connects to a <a class="term-reference" href="#term:vs">VS</a> MUST present a [VT-ECS-UA-CRED] ECS User Agent Verifiable Trust Credential when requested by the <a class="term-reference" href="#term:vs">VS</a>.</li>
 <li>[VUA-REQ-2] A <a class="term-reference" href="#term:vua">VUA</a> that connects to another <a class="term-reference" href="#term:vua">VUA</a> MUST present a [VT-ECS-UA-CRED] ECS User Agent Verifiable Trust Credential when requested by the other <a class="term-reference" href="#term:vua">VUA</a>.</li>
 </ul>
-<div id="note-348" class="notice note"><a class="notice-link" href="#note-348">NOTE</a><p>It is RECOMMENDED to use selective disclosure for [VT-ECS-UA-CRED] presentations to prevent correlation.</p>
+<div id="note-353" class="notice note"><a class="notice-link" href="#note-353">NOTE</a><p>It is RECOMMENDED to use selective disclosure for [VT-ECS-UA-CRED] presentations to prevent correlation.</p>
 </div>
 <h3 id="cib-credential-issuance-by"><a class="toc-anchor" href="#cib-credential-issuance-by" >§</a> [CIB] Credential Issuance by</h3>
 <ul>
@@ -1076,6 +1076,8 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<div id="warning-7" class="notice warning"><a class="notice-link" href="#warning-7">WARNING</a><p>Everything below this point is outdated and should be ignored</p>
+</div>
 <h3 id="vt-resol-verification-of-permissions-in-verifiable-public-registries"><a class="toc-anchor" href="#vt-resol-verification-of-permissions-in-verifiable-public-registries" >§</a> [VT-RESOL] Verification of permission(s) in Verifiable Public Registries</h3>
 <p>Please refer to Permission Module in <a class="term-reference" href="#term:vpr">VPR</a> specs.</p>
 <p>Process for verifying trust is always following the same rules. You’ll find few examples below.</p>
@@ -1110,275 +1112,8 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <li>if schema is not open, we call “Get Permission Session” to verify requester paid using the <code>sessionId</code>.</li>
 <li>we present the selected credential to verifier.</li>
 </ul>
-<div id="note-349" class="notice note"><a class="notice-link" href="#note-349">NOTE</a><p>Services that will want to request presentation of credential will need a crypto wallet and keys if VPR is a blockchain</p>
+<div id="note-354" class="notice note"><a class="notice-link" href="#note-354">NOTE</a><p>Services that will want to request presentation of credential will need a crypto wallet and keys if VPR is a blockchain</p>
 </div>
-<h3 id="example"><a class="toc-anchor" href="#example" >§</a> Example</h3>
-<p>Let’s see a full example in action. Here is a DID Document of a compliant VS:</p>
-<pre class="language-json"><code class="language-json">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:gaia#vpr-ecs-service-c-vp"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://gaia/ecs-service-c-vp.json"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:gaia#vpr-ecs-org-c-vp"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://gaia/ecs-org-c-vp.json"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:gaia#vpr-schemas-trademark-c-vp"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://gaia/schemas-trademark-c-vp.json"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
-    ...
-  <span class="token punctuation">]</span>
-</code></pre>
-<p>Let’s dereference…</p>
-<p>service-credential-presentation.json:</p>
-<pre class="language-json"><code class="language-json">
-<span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"holder"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiablePresentation"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"verifiableCredential"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-        <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
-      <span class="token punctuation">]</span><span class="token punctuation">,</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"ServiceCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-      <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-      <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-        ...
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      ...
-      <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecs-trust-registry/service-credential-schema-credential.json"</span><span class="token punctuation">,</span>
-        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchemaCredential"</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://user-vs.example.com/service-credential-presentation.json"</span><span class="token punctuation">,</span>
-  <span class="token property">"proof"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Ed25519Signature2018"</span><span class="token punctuation">,</span>
-    <span class="token property">"created"</span><span class="token operator">:</span> <span class="token string">"2024-02-08T17:38:46Z"</span><span class="token punctuation">,</span>
-    <span class="token property">"verificationMethod"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A"</span><span class="token punctuation">,</span>
-    <span class="token property">"proofPurpose"</span><span class="token operator">:</span> <span class="token string">"assertionMethod"</span><span class="token punctuation">,</span>
-    <span class="token property">"jws"</span><span class="token operator">:</span> <span class="token string">"eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..6_k6Dbgug-XvksZvDVi9UxUTAmQ0J76pjdrQyNaQL7eVMmP_SUPZCqso6EN3aEKFSsJrjDJoPJa9rBK99mXvDw"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-</code></pre>
-<p>service-credential-schema-credential.json:</p>
-<pre class="language-json"><code class="language-json">
-<span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-      <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecs-trust-registry/service-credential-schema-credential.json"</span><span class="token punctuation">,</span>
-  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"JsonSchemaCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry"</span><span class="token punctuation">,</span>
-  <span class="token property">"issuanceDate"</span><span class="token operator">:</span> <span class="token string">"2024-01-01T19:23:24Z"</span><span class="token punctuation">,</span>
-  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://www.w3.org/ns/credentials/json-schema/v2.json"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
-    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://vpr-hostname/vpr/v1/cs/js/12345678"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
-    <span class="token property">"jsonSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">"$ref"</span><span class="token operator">:</span> <span class="token string">"https://vpr-hostname/vpr/v1/cs/js/12345678"</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span> 
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-</code></pre>
-<div id="note-350" class="notice note"><a class="notice-link" href="#note-350">NOTE</a><p>Here for trust resolution we need to get did:example:ecs-trust-registry DIDDocument and verify its TrustRegistry entry (see DID Doc below)</p>
-</div>
-<p>org-credential-presentation.json:</p>
-<pre class="language-json"><code class="language-json">
-<span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"holder"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiablePresentation"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"verifiableCredential"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-        <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
-      <span class="token punctuation">]</span><span class="token punctuation">,</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"OrganizationCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-      <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:certivera.com"</span><span class="token punctuation">,</span>
-      <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-        ...
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      ...
-      <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecs-trust-registry/org-credential-schema-credential.json"</span><span class="token punctuation">,</span>
-        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchemaCredential"</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://user-vs.example.com/org-credential-presentation.json"</span><span class="token punctuation">,</span>
-  <span class="token property">"proof"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Ed25519Signature2018"</span><span class="token punctuation">,</span>
-    <span class="token property">"created"</span><span class="token operator">:</span> <span class="token string">"2024-02-08T17:38:46Z"</span><span class="token punctuation">,</span>
-    <span class="token property">"verificationMethod"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A"</span><span class="token punctuation">,</span>
-    <span class="token property">"proofPurpose"</span><span class="token operator">:</span> <span class="token string">"assertionMethod"</span><span class="token punctuation">,</span>
-    <span class="token property">"jws"</span><span class="token operator">:</span> <span class="token string">"eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..6_k6Dbgug-XvksZvDVi9UxUTAmQ0J76pjdrQyNaQL7eVMmP_SUPZCqso6EN3aEKFSsJrjDJoPJa9rBK99mXvDw"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-</code></pre>
-<p>org-credential-schema-credential.json:</p>
-<pre class="language-json"><code class="language-json">
-<span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-      <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://example.tr/credentials/OrganizationJsonSchemaCredential"</span><span class="token punctuation">,</span>
-  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"JsonSchemaCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry"</span><span class="token punctuation">,</span>
-  <span class="token property">"issuanceDate"</span><span class="token operator">:</span> <span class="token string">"2024-01-01T19:23:24Z"</span><span class="token punctuation">,</span>
-  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://www.w3.org/ns/credentials/json-schema/v2.json"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
-    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://vpr-hostname/vpr/v1/cs/js/78901234"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
-    <span class="token property">"jsonSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">"$ref"</span><span class="token operator">:</span> <span class="token string">"https://vpr-hostname/vpr/v1/cs/js/78901234"</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>  
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-</code></pre>
-<p>trademark-credential-presentation.json:</p>
-<pre class="language-json"><code class="language-json">
-<span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"holder"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiablePresentation"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"verifiableCredential"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-        <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
-      <span class="token punctuation">]</span><span class="token punctuation">,</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"TrademarkCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-      <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:trademark.abc"</span><span class="token punctuation">,</span>
-      <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com"</span><span class="token punctuation">,</span>
-        ...
-      <span class="token punctuation">}</span><span class="token punctuation">,</span>
-      ...
-      <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://trademark.abc/credentials/TrademarkJsonSchemaCredential"</span><span class="token punctuation">,</span>
-        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchemaCredential"</span>
-      <span class="token punctuation">}</span>
-      <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://vpr-hostname/vpr/v1/cs/js/7358717246"</span><span class="token punctuation">,</span>
-        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
-        <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://user-vs.example.com/trademark-credential-presentation.json"</span><span class="token punctuation">,</span>
-  <span class="token property">"proof"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Ed25519Signature2018"</span><span class="token punctuation">,</span>
-    <span class="token property">"created"</span><span class="token operator">:</span> <span class="token string">"2024-02-08T17:38:46Z"</span><span class="token punctuation">,</span>
-    <span class="token property">"verificationMethod"</span><span class="token operator">:</span> <span class="token string">"did:example:user-vs.example.com#_Qq0UL2Fq651Q0Fjd6TvnYE-faHiOpRlPVQcY_-tA4A"</span><span class="token punctuation">,</span>
-    <span class="token property">"proofPurpose"</span><span class="token operator">:</span> <span class="token string">"assertionMethod"</span><span class="token punctuation">,</span>
-    <span class="token property">"jws"</span><span class="token operator">:</span> <span class="token string">"eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..6_k6Dbgug-XvksZvDVi9UxUTAmQ0J76pjdrQyNaQL7eVMmP_SUPZCqso6EN3aEKFSsJrjDJoPJa9rBK99mXvDw"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-</code></pre>
-<p>TrademarkJsonSchemaCredential.json:</p>
-<pre class="language-json"><code class="language-json">
-<span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-      <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
-  <span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://trademark.abc/credentials/TrademarkJsonSchemaCredential"</span><span class="token punctuation">,</span>
-  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"JsonSchemaCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:trademark-trust-registry"</span><span class="token punctuation">,</span>
-  <span class="token property">"issuanceDate"</span><span class="token operator">:</span> <span class="token string">"2024-01-01T19:23:24Z"</span><span class="token punctuation">,</span>
-  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://www.w3.org/ns/credentials/json-schema/v2.json"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
-    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://example-vpr/cs/js/7358717246"</span><span class="token punctuation">,</span>
-    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
-    <span class="token property">"jsonSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-       <span class="token property">"$ref"</span><span class="token operator">:</span> <span class="token string">"https://example-vpr/vpr/v1/cs/js/7358717246"</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span>
-    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-GHJSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-
-</code></pre>
-<p>DID Document of did:example:ecs-trust-registry:</p>
-<pre class="language-json"><code class="language-json">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-service-credential-schema-credential"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecs-trust-registry/service-credential-schema-presentation.json"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-organization-credential-schema-credential"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecs-trust-registry/org-credential-schema-presentation.json"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-person-credential-schema-credential"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecs-trust-registry/person-credential-schema-presentation.json"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecs-trust-registry#vpr-essential-schemas-trust-registry-8721547851287"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiablePublicRegistry"</span><span class="token punctuation">,</span>
-      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://vpr-hostname/vpr/v1/"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
-    
-    ...
-  <span class="token punctuation">]</span>
-</code></pre>
-<p>DID Document of did:example:trademark-trust-registry:</p>
-<pre class="language-json"><code class="language-json">  ...
-  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:trademark-trust-registry#vpr-schemas-trademark-credential-schema-credential"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://trademark.abc/credentials/TrademarkJsonSchemaCredential"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:trademark-trust-registry#vpr-schemas-trust-registry-7890"</span><span class="token punctuation">,</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"VerifiablePublicRegistry"</span><span class="token punctuation">,</span>
-      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://vpr-hostname/vpr/v1/"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span>
-    
-    ...
-  <span class="token punctuation">]</span>
-  ...
-</code></pre>
 <h2 id="implementations"><a class="toc-anchor" href="#implementations" >§</a> Implementations</h2>
 <p><em>This section is non-normative.</em></p>
 <p>Implementations are provided by the community, being the <a path-0="verana.io"href="https://verana.io" >Verana Foundation</a> and <a path-0="2060.io"href="https://2060.io" >2060.io</a> the most active contributors at the moment.</p>
@@ -1507,7 +1242,6 @@ Provide repo info
 <li><a href="#verify-that-a-service-has-the-right-to-request-the-presentation-of-a-credential-of-a-given-issuer-for-a-given-schema" >Verify that a service has the right to request the presentation of a Credential of a given Issuer for a given schema</a></li>
 </ul>
 </li>
-<li><a href="#example" >Example</a></li>
 </ul>
 </li>
 <li><a href="#implementations" >Implementations</a>
