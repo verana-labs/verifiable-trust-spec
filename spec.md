@@ -1176,25 +1176,25 @@ It is RECOMMENDED to use selective disclosure for [VT-ECS-UA-CRED] presentations
 
 - [CIB-1] A [[ref: VS]] or a [[ref: VUA]] CAN issue [VT-CRED] VT Credentials.
 - [CIB-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT issue credentials that are not compliant with [VT-CRED].
-- [CIB-3] A [[ref: VS]] or a [[ref: VUA]] MUST NOT issue a credential if it cannot prove it is authorized by the Ecosystem controller of the schema.
+- [CIB-3] A [[ref: VS]] or a [[ref: VUA]] MUST NOT issue a credential if it cannot prove [VT-PROOF-ISSUER] it is authorized by the Ecosystem controller of the schema.
 
 ### [PRB] Presentation Requested by
 
 - [PRB-1] A [[ref: VS]] or a [[ref: VUA]] CAN request presentation of [VT-CRED] VT Credentials
 - [PRB-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of credentials that are not compliant with [VT-CRED].
-- [PRB-3] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of a credential if it cannot prove it is authorized by the Ecosystem controller of the schema.
+- [PRB-3] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of a credential if it cannot prove [VT-PROOF-VERIFIER] it is authorized by the Ecosystem controller of the schema.
 
 ### [CIT] Credential Issued to
 
 - [CIT-1] A [[ref: VS]] or a [[ref: VUA]] CAN be offered [VT-CRED] VT Credentials.
 - [CIT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT be offered credentials that are not compliant with [VT-CRED].
-- [CIT-3] When a [[ref: VS]] is offered a credential, it MUST verify that the issuer is authorized by the Ecosystem that controls the schema to issue a credential of this schema.
+- [CIT-3] When a [[ref: VS]] is offered a credential, it MUST verify [VT-PROOF-ISSUER] that the issuer is authorized by the Ecosystem that controls the schema to issue a credential of this schema.
 
 ### [PRT] Presentation Requested to
 
 - [PRT-1] A [[ref: VS]] or a [[ref: VUA]] CAN request presentation of [VT-CRED] VT Credentials
 - [PRT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of credentials that are not compliant with [VT-CRED].
-- [PRT-3] When a [[ref: VS]] receives a presentation request, before presenting a credential, it MUST verify that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema.
+- [PRT-3] When a [[ref: VS]] receives a presentation request, before presenting a credential, it MUST verify [VT-PROOF-VERIFIER] that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema.
 
 ### [VS-CONN-VS] Requirements for a VS to accept a connection from another service
 
