@@ -214,7 +214,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 </ul>
 <p>This ensures that all connections are based on verifiable trust, not assumptions.</p>
 <h3 id="what-is-a-verifiable-public-registry-vpr"><a class="toc-anchor" href="#what-is-a-verifiable-public-registry-vpr" >§</a> What is a Verifiable Public Registry (VPR)?</h3>
-<div id="note-1" class="notice note"><a class="notice-link" href="#note-1">NOTE</a><p>There is a <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
+<div id="note-7" class="notice note"><a class="notice-link" href="#note-7">NOTE</a><p>There is a <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
 </div>
 <p><em>This section is non-normative.</em></p>
 <p>A <strong>Verifiable Public Registry (VPR)</strong> is a <strong>“registry of registries”</strong>, a public service that provides foundational infrastructure for decentralized trust ecosystems. It offers:</p>
@@ -236,8 +236,9 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <img src="https://www.plantuml.com/plantuml/svg/fT5D2i8m40NWVKunj1Se2EAo_kr5nFqacTPeQqioLOjuTzCQYg0BYxD8idZl8p2fOxJSb8L8XvTJM12KU8DPai3LQ3u843Mg4-O4qPwioGnAdzaqiZ0AjfGRnxQD01rSQWjt8S1F9O-a6AATRHmFAQWoMAlAjOwfX7ZUjzWYn9DCQZdrxQxy664iWY7VZD78CY3g7sGL4Fs9_6oiWq7VZUuG_ayYfRFkD_Uwdm00" alt="uml diagram">
 <h4 id="trust-registries"><a class="toc-anchor" href="#trust-registries" >§</a> Trust Registries</h4>
 <p><em>This section is non-normative.</em></p>
-<p>Each <strong>Ecosystem Trust Registry</strong> is uniquely identified by a <strong>resolvable DID</strong> and must provide, at a minimum:</p>
+<p>Each <strong>Trust Registry</strong> must provide, at a minimum:</p>
 <ul>
+<li>an Ecosystem controlled <strong>resolvable DID</strong></li>
 <li>One or more <strong>Governance Framework</strong> document(s)</li>
 <li>Zero or more <strong>Credential Schemas</strong></li>
 </ul>
@@ -245,21 +246,21 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <img src="https://www.plantuml.com/plantuml/svg/NOv12i9040Jlyuf6Fn0Gn6FU87vWiZj9LhExC3Cn1l7lYeA7zAMBfWxTchFwd2Tg_sI19q7c1qvDWoL57mbKkwi4n-wYipdECYHpNNTWWojZV-Yxs1tn97mYeTfgBXannSqILA8KJpp1mYYPRICCzIvQk0H1hvnbgNf3hC7eHTHAYT-xltu3" alt="uml diagram">
 <h4 id="credential-schemas"><a class="toc-anchor" href="#credential-schemas" >§</a> Credential Schemas</h4>
 <p><em>This section is non-normative.</em></p>
-<p><strong>Credential Schemas</strong> are created and managed by <strong>Trust Registry owners</strong> (Ecosystems). Each Credential Schema includes, at a minimum:</p>
+<p><strong>Credential Schemas</strong> are created and managed by <strong>trust registry</strong> controller (Ecosystems). Each Credential Schema includes, at a minimum:</p>
 <ul>
 <li>A <strong>JSON Schema</strong> that defines the structure of the corresponding <strong>Verifiable Credential</strong></li>
 <li>A <strong>PermissionManagementMode</strong> for <strong>issuance policy</strong>, which determines how <code>Issuer</code> permissions are granted. Modes include:
 <ul>
 <li><code>OPEN</code>: Anyone can become an Issuer</li>
-<li><code>ECOSYSTEM</code>: Permissions are granted directly by the Ecosystem, the Trust Registry controller</li>
-<li><code>GRANTOR_VALIDATION</code>: Permissions are granted by one or several <code>Issuer Grantor(s)</code> (Trust Registry operator(s) responsible for selecting issuers for the ecosystem), selected by the Ecosystem.</li>
+<li><code>ECOSYSTEM</code>: Permissions are granted directly by the Ecosystem, the trust registry controller</li>
+<li><code>GRANTOR_VALIDATION</code>: Permissions are granted by one or several <code>Issuer Grantor(s)</code> (trust registry operator(s) responsible for selecting issuers for the ecosystem), selected by the Ecosystem.</li>
 </ul>
 </li>
 <li>A <strong>PermissionManagementMode</strong> for <strong>verification policy</strong>, which determines how <code>Verifier</code> permissions are granted. Modes include:
 <ul>
 <li><code>OPEN</code>: Anyone can act as a Verifier</li>
-<li><code>ECOSYSTEM</code>: Permissions are granted directly by the Ecosystem, the Trust Registry controller</li>
-<li><code>GRANTOR_VALIDATION</code>: Permissions are granted by one or several <code>Verifier Grantor(s)</code> (Trust Registry operator(s) responsible for selecting verifiers for the ecosystem), selected by the Ecosystem.</li>
+<li><code>ECOSYSTEM</code>: Permissions are granted directly by the Ecosystem, the trust registry controller</li>
+<li><code>GRANTOR_VALIDATION</code>: Permissions are granted by one or several <code>Verifier Grantor(s)</code> (trust registry operator(s) responsible for selecting verifiers for the ecosystem), selected by the Ecosystem.</li>
 </ul>
 </li>
 <li>A <strong>Permission Tree</strong> that defines the roles and relationships involved in managing the schema’s lifecycle.</li>
@@ -275,8 +276,8 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 </thead>
 <tbody>
 <tr>
-<td><strong>Trust Registry</strong></td>
-<td>Create and control Credential Schemas. Grant other roles.</td>
+<td><strong>Ecosystem</strong></td>
+<td>Create and control trust registries and credential Schemas. Recognize other participants by granting permission(s) to them.</td>
 </tr>
 <tr>
 <td><strong>Issuer Grantor</strong></td>
@@ -296,7 +297,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 </tr>
 <tr>
 <td><strong>Holder</strong></td>
-<td>Special role used for selected business models.</td>
+<td>Holds a credential.</td>
 </tr>
 </tbody>
 </table>
@@ -563,7 +564,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <li>UserAgent.</li>
 </ul>
 <p>An Ecosystem creates its Trust Registry in a <a class="term-reference" href="#term:vpr">VPR</a> by creating a <code>TrustRegistry</code> entry <code>tr</code>. For this Trust Registry to qualify for being used for trust resolution in <a class="term-reference" href="#term:vss">VSs</a> and <a class="term-reference" href="#term:vuas">VUAs</a>, it MUST provide, associated to the <code>TrustRegistry</code> entry <code>tr</code>, at least one <code>CredentialSchema</code> entry, with a respective <code>json_schema</code> attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSON], [ECS-UA].</p>
-<div id="warning-1" class="notice warning"><a class="notice-link" href="#warning-1">WARNING</a><p>All ECS json schema are unstable and may change for v2 stable version of this spec</p>
+<div id="warning-5" class="notice warning"><a class="notice-link" href="#warning-5">WARNING</a><p>All ECS json schema are unstable and may change for v2 stable version of this spec</p>
 </div>
 <h4 id="ecs-service-service-credential-json-schema"><a class="toc-anchor" href="#ecs-service-service-credential-json-schema" >§</a> [ECS-SERVICE] Service Credential Json Schema</h4>
 <p>Used to identify Services.</p>
@@ -980,7 +981,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <li>[VS-REQ-5] A <a class="term-reference" href="#term:vs">VS</a> DID Document CAN present other Verifiable Trust Credentials as specified in [VT-LINKED-VP].</li>
 <li>[VS-REQ-6] A <a class="term-reference" href="#term:vs">VS</a> MUST always verify issuers of credentials as specified in [VT-PERM-QUERIES].</li>
 </ul>
-<div id="note-2" class="notice note"><a class="notice-link" href="#note-2">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
+<div id="note-8" class="notice note"><a class="notice-link" href="#note-8">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
 </div>
 <h3 id="vua-req-requirements-for-a-user-agent-to-be-a-vua"><a class="toc-anchor" href="#vua-req-requirements-for-a-user-agent-to-be-a-vua" >§</a> [VUA-REQ] Requirements for a User Agent to be a VUA</h3>
 <ul>
@@ -988,7 +989,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <li>[VUA-REQ-2] A <a class="term-reference" href="#term:vua">VUA</a> that connects to another <a class="term-reference" href="#term:vua">VUA</a> MUST present a [VT-ECS-UA-CRED] ECS User Agent Verifiable Trust Credential when requested by the other <a class="term-reference" href="#term:vua">VUA</a>.</li>
 <li>[VUA-REQ-3] A <a class="term-reference" href="#term:vua">VUA</a> MUST always verify issuers (credential offer) and verifiers (presentation request) of credentials as specified in [VT-PERM-QUERIES].</li>
 </ul>
-<div id="note-3" class="notice note"><a class="notice-link" href="#note-3">NOTE</a><p>It is RECOMMENDED to use <a path-0="hyperledger.github.io"path-1="anoncreds-spec"path-2=""href="https://hyperledger.github.io/anoncreds-spec/" >anoncreds</a> plus selective disclosure for [VT-ECS-UA-CRED] and presentations to prevent correlation.</p>
+<div id="note-9" class="notice note"><a class="notice-link" href="#note-9">NOTE</a><p>It is RECOMMENDED to use <a path-0="hyperledger.github.io"path-1="anoncreds-spec"path-2=""href="https://hyperledger.github.io/anoncreds-spec/" >anoncreds</a> plus selective disclosure for [VT-ECS-UA-CRED] and presentations to prevent correlation.</p>
 </div>
 <h3 id="cib-credential-issuance-by"><a class="toc-anchor" href="#cib-credential-issuance-by" >§</a> [CIB] Credential Issuance by</h3>
 <ul>
@@ -1104,7 +1105,7 @@ If payment is required:</p>
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<div id="warning-2" class="notice warning"><a class="notice-link" href="#warning-2">WARNING</a><p>Everything below this point is outdated and should be ignored</p>
+<div id="warning-6" class="notice warning"><a class="notice-link" href="#warning-6">WARNING</a><p>Everything below this point is outdated and should be ignored</p>
 </div>
 <h2 id="implementations"><a class="toc-anchor" href="#implementations" >§</a> Implementations</h2>
 <p><em>This section is non-normative.</em></p>

@@ -278,8 +278,9 @@ package "Verifiable Public Registry" as vpr {
 
 *This section is non-normative.*
 
-Each **Ecosystem Trust Registry** is uniquely identified by a **resolvable DID** and must provide, at a minimum:
+Each **Trust Registry** must provide, at a minimum:
 
+- an Ecosystem controlled **resolvable DID**
 - One or more **Governance Framework** document(s)
 - Zero or more **Credential Schemas**
 
@@ -304,17 +305,17 @@ object "Trust Registry" as tra #3fbdb6 {
 
 *This section is non-normative.*
 
-**Credential Schemas** are created and managed by **Trust Registry owners** (Ecosystems). Each Credential Schema includes, at a minimum:
+**Credential Schemas** are created and managed by **trust registry** controller (Ecosystems). Each Credential Schema includes, at a minimum:
 
 - A **JSON Schema** that defines the structure of the corresponding **Verifiable Credential**
 - A **PermissionManagementMode** for **issuance policy**, which determines how `Issuer` permissions are granted. Modes include:
   - `OPEN`: Anyone can become an Issuer
-  - `ECOSYSTEM`: Permissions are granted directly by the Ecosystem, the Trust Registry controller
-  - `GRANTOR_VALIDATION`: Permissions are granted by one or several `Issuer Grantor(s)` (Trust Registry operator(s) responsible for selecting issuers for the ecosystem), selected by the Ecosystem.
+  - `ECOSYSTEM`: Permissions are granted directly by the Ecosystem, the trust registry controller
+  - `GRANTOR_VALIDATION`: Permissions are granted by one or several `Issuer Grantor(s)` (trust registry operator(s) responsible for selecting issuers for the ecosystem), selected by the Ecosystem.
 - A **PermissionManagementMode** for **verification policy**, which determines how `Verifier` permissions are granted. Modes include:
   - `OPEN`: Anyone can act as a Verifier
-  - `ECOSYSTEM`: Permissions are granted directly by the Ecosystem, the Trust Registry controller
-  - `GRANTOR_VALIDATION`: Permissions are granted by one or several `Verifier Grantor(s)` (Trust Registry operator(s) responsible for selecting verifiers for the ecosystem), selected by the Ecosystem.
+  - `ECOSYSTEM`: Permissions are granted directly by the Ecosystem, the trust registry controller
+  - `GRANTOR_VALIDATION`: Permissions are granted by one or several `Verifier Grantor(s)` (trust registry operator(s) responsible for selecting verifiers for the ecosystem), selected by the Ecosystem.
 - A **Permission Tree** that defines the roles and relationships involved in managing the schema’s lifecycle.
 
 ```plantuml
@@ -368,12 +369,12 @@ Participant roles are defined in the table below:
 
 | **Participant Role**   | **Description**                                                  |
 |-----------------------|------------------------------------------------------------------|
-| **Trust Registry**    | Create and control Credential Schemas. Grant other roles.        |
+| **Ecosystem**    | Create and control trust registries and credential Schemas. Recognize other participants by granting permission(s) to them.        |
 | **Issuer Grantor**    | Trust Registry operator that grants Issuer permissions to candidate issuers.                   |
 | **Verifier Grantor**  | Trust Registry operator that grants Verifier permissions to candidate verifiers.               |
 | **Issuer**            | Can issue credentials of this schema.                            |
 | **Verifier**          | Can request presentation of credentials of this schema.          |
-| **Holder**            | Special role used for selected business models.          |
+| **Holder**            | Holds a credential.   |
 
 Example of a Json Schema credential schema:
 
