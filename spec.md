@@ -6,12 +6,12 @@
 
 **Editors:**
 
-~ [Fabrice Rochette](https://www.linkedin.com/in/fabricerochette) (The Verana Foundation, 2060.io)
+~ [Fabrice Rochette](https://www.linkedin.com/in/fabricerochette), ([The Verana Foundation](https://verana.foundation), [2060.io](https://2060.io))
 
 **Contributors:**
 
-~ [Ariel Gentile](https://www.linkedin.com/in/aogentile/) (The Verana Foundation, 2060.io)
-~ [Andres Vallecilla](https://www.linkedin.com/in/andres-felipe-vallecilla-puentes/) (Mobiera)
+~ [Ariel Gentile](https://www.linkedin.com/in/aogentile/), ([The Verana Foundation](https://verana.foundation), [2060.io](https://2060.io))
+~ [Andres Vallecilla](https://www.linkedin.com/in/andres-felipe-vallecilla-puentes/), ([Mobiera](https://mobiera.com))
 
 **Participate:**
 
