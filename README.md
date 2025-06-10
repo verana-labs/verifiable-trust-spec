@@ -2,7 +2,7 @@
 
 ## About
 
-Specification for adding a trust verification layer to the internet. It proposes a system using verifiable credentials and Verifiable Public Registries (VPRs) to establish secure, zero-trust communication channels. The specification details requirements for verifiable services and user agents, including essential credential schemas for various entities (services, organizations, persons, user agents). It outlines procedures for credential issuance, presentation requests, and trust resolution, aiming to create a more trustworthy and interoperable internet. The specification also addresses aspects like DID Documents and whitelists of trusted VPRs.
+Specification for adding a trust verification layer to the internet, essential for agentic infrastructures. It proposes a system using verifiable credentials and Verifiable Public Registries (VPRs) to establish secure, zero-trust communication channels. The specification details requirements for verifiable services and user agents, including essential credential schemas for various entities (services, organizations, persons, user agents). It outlines procedures for credential issuance, presentation requests, and trust resolution, aiming to create a more trustworthy and interoperable internet. The specification also addresses aspects like DID Documents and whitelists of trusted VPRs.
 
 Browsable spec: [https://verana-labs.github.io/verifiable-trust-spec/](https://verana-labs.github.io/verifiable-trust-spec/)
 
