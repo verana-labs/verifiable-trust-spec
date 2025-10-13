@@ -1,4 +1,4 @@
-# Verifiable Trust v2 Specification
+# Verifiable Trust v3 Specification
 
 **Specification Status:** *Draft*
 
@@ -6,11 +6,11 @@
 
 **Editors:**
 
-~ [Fabrice Rochette](https://www.linkedin.com/in/fabricerochette), ([The Verana Foundation](https://verana.foundation), [2060.io](https://2060.io))
+~ [Fabrice Rochette](https://www.linkedin.com/in/fabricerochette), ([The Verana Foundation](https://verana.io))
 
 **Contributors:**
 
-~ [Ariel Gentile](https://www.linkedin.com/in/aogentile/), ([The Verana Foundation](https://verana.foundation), [2060.io](https://2060.io))
+~ [Ariel Gentile](https://www.linkedin.com/in/aogentile/), ([The Verana Foundation](https://verana.io))
 ~ [Andres Vallecilla](https://www.linkedin.com/in/andres-felipe-vallecilla-puentes/), ([Mobiera](https://mobiera.com))
 
 **Participate:**
@@ -380,7 +380,7 @@ Example of a Json Schema credential schema:
 
 ```json
 {
-  "$id": "vpr:verana:mainnet/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:vna-mainnet-1/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ExampleCredential",
   "description": "ExampleCredential using JsonSchema",
@@ -455,7 +455,7 @@ object "CredentialSchema (in VPR)" as cs {
 object "Verifiable Trust Json Schema Credential" as jsc #3fbdb6 {
   id: https://ecosystem/shemas-example-jsc.json
   issuer: did:example:ecosystem
-  jsonSchema: vpr:verana:mainnet/cs/v1/js/12345678
+  jsonSchema: vpr:verana:vna-mainnet-1/cs/v1/js/12345678
 }
 
 object "Verifiable Trust Credential" as vscred #3fbdb6 {
@@ -498,17 +498,17 @@ This credential serves as a verifiable proof of:
     "digestSRI": "sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"
   },
   "credentialSubject": {
-    "id": "vpr:verana:mainnet/cs/v1/js/12345678",
+    "id": "vpr:verana:vna-mainnet-1/cs/v1/js/12345678",
     "type": "JsonSchema",
     "jsonSchema": {
-      "$ref": "vpr:verana:mainnet/cs/v1/js/12345678"
+      "$ref": "vpr:verana:vna-mainnet-1/cs/v1/js/12345678"
     },
     "digestSRI": "sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ" 
   }
 }
 ```
 
-Finally, the Ecosystem must publish both the **JSON Schema Credential** and the **location of the Trust Registry** within the **DID Document** associated with the declared **Trust Registry Ecosystem DID** in the VPR.
+Finally, the Ecosystem must publish the **JSON Schema Credential** within the **DID Document** associated with the declared **Trust Registry Ecosystem DID** in the VPR.
 
 This ensures that the Credential Schema and its controlling Trust Registry are publicly discoverable and cryptographically verifiable.
 
@@ -518,12 +518,6 @@ This ensures that the Credential Schema and its controlling Trust Registry are p
       "id": "did:example:ecosystem#vpr-schemas-example-jsc-vp",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecosystem/schemas-example-jsc-vp.json"]
-    },
-    {
-      "id": "did:example:trust-registry#vpr-schemas-trust-registry-1234",
-      "type": "VerifiablePublicRegistry",
-      "version": "1.0",
-      "serviceEndpoint": ["vpr:verana:mainnet"]
     }
     ...
   ]
@@ -617,10 +611,10 @@ Example of a Verifiable Trust Json Schema Credential:
     "digestSRI": "sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"
   },
   "credentialSubject": {
-    "id": "vpr:verana:mainnet/cs/v1/js/12345678",
+    "id": "vpr:verana:vna-mainnet-1/cs/v1/js/12345678",
     "type": "JsonSchema",
     "jsonSchema": {
-      "$ref": "vpr:verana:mainnet/cs/v1/js/12345678"
+      "$ref": "vpr:verana:vna-mainnet-1/cs/v1/js/12345678"
     },
     "digestSRI": "sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ" 
   }
@@ -634,7 +628,6 @@ For each `CredentialSchema` entry an Ecosystem has created in his Trust Registry
 Additionally, in MUST present (as a [[ref: linked-vp]]) the Verifiable Trust Json Schema Credential(s) in its DID Document, as well as the corresponding VPR entry for verification. To do so, it MUST define the following entries in its DID Document:
 
 - for each `CredentialSchema` entry it wants to be resolvable, a "LinkedVerifiablePresentation" service entry with a fragment that MUST start with `#vpr-schemas`, that MUST point to a self-issued Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].
-- a `VerifiablePublicRegistry` service entry with fragment name equal to the concatenation of  `#vpr-schemas-trust-registry-` and the id of the Ecosystem's Trust Registry in the VPR.
 
 Example:
 
@@ -644,12 +637,6 @@ Example:
       "id": "did:example:ecosystem#vpr-schemas-example-jsc-vp",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecosystem/schemas-example-jsc-vp.json"]
-    },
-    {
-      "id": "did:example:ecosystem#vpr-schemas-trust-registry-1234",
-      "type": "VerifiablePublicRegistry",
-      "version": "1.0",
-      "serviceEndpoint": ["vpr:verana:mainnet"]
     }
     ...
   ]
@@ -747,7 +734,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "vpr:verana:mainnet/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:vna-mainnet-1/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ServiceCredential",
   "description": "ServiceCredential using JsonSchema",
@@ -838,7 +825,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "vpr:verana:mainnet/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:vna-mainnet-1/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "OrganizationCredential",
   "description": "OrganizationCredential using JsonSchema",
@@ -920,7 +907,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "vpr:verana:mainnet/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:vna-mainnet-1/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "PersonCredential",
   "description": "PersonCredential using JsonSchema",
@@ -990,7 +977,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "vpr:verana:mainnet/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:vna-mainnet-1/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "UserAgentCredential",
   "description": "UserAgentCredential using JsonSchema",
@@ -1140,12 +1127,6 @@ Example:
       "id": "did:example:ecosystem#vpr-ecs-ua-jsc-vp",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecosystem/ecs-ua-jsc-vp.json"]
-    },
-    {
-      "id": "did:example:ecosystem#vpr-ecs-trust-registry-789041745",
-      "type": "VerifiablePublicRegistry",
-      "version": "1.0",
-      "serviceEndpoint": ["vpr:verana:mainnet"]
     }
     
     ...
@@ -1260,26 +1241,26 @@ Example:
 { 
   verifiablePublicRegistries: [ 
     { 
-      "name": "vpr:verana:mainnet",
+      "name": "vpr:verana:vna-mainnet-1",
       "baseurls": [
-        "https://user-agent-vpr-node-1/vpr/",
-        "https://user-agent-vpr-node-2/vpr/",
+        "https://user-agent-vpr-node-1/",
+        "https://user-agent-vpr-node-2/",
       ]
       "version": "1"
       "production": true
     },
     { 
-      "name": "vpr:verana:testnet",
+      "name": "vpr:verana:vna-testnet-1",
       "baseurls": [
-        "https://user-agent-vpr-node-testnet/vpr/"
+        "https://user-agent-vpr-node-testnet/"
       ]
       "version": "1"
       "production": false
     },
     { 
-      "name": "vpr:verana:devnet",
+      "name": "vpr:acme:purple-3",
       "baseurls": [
-        "https://user-agent-vpr-node-devnet/vpr/"
+        "https://user-agent-vpr-node-devnet/"
       ]
       "version": "2"
       "production": false
@@ -1298,25 +1279,15 @@ Example:
   ecsEcosystems: [ 
     { 
       "did": "did:example:ecosystem",
-      "vpr": "vpr:verana:mainnet"
+      "vpr": "vpr:verana:vna-mainnet-1"
     },
     { 
       "did": "did:example:ecosystem-test",
-      "vpr": "vpr:verana:testnet"
+      "vpr": "vpr:verana:vna-testnet-1"
     }
   ]
 }
 ```
-
-:::warning
-Everything below this point is outdated and should be ignored
-:::
-
-## Implementations
-
-*This section is non-normative.*
-
-Implementations are provided by the community, being the [Verana Foundation](https://verana.io) and [2060.io](https://2060.io) the most active contributors at the moment.
 
 ### Trust Resolution
 
