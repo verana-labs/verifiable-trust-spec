@@ -2,10 +2,10 @@
     "specs": [
       
       {
-        "title": "Verifiable Trust v2 Specification",
+        "title": "Verifiable Trust v3 Specification",
         "spec_directory": "./",
-        "logo": "https://verana.foundation/img/logo.svg",
-        "logo_link": "https://verana.foundation",
+        "logo": "https://verana.io/images/slides-logo.svg",
+        "logo_link": "https://verana.io",
         "source": {
           "host": "github",
           "account": "verana-labs",
