@@ -207,7 +207,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 </ul>
 <p>This ensures that all connections are based on verifiable trust, not assumptions.</p>
 <h3 id="what-is-a-verifiable-public-registry-vpr"><a class="toc-anchor" href="#what-is-a-verifiable-public-registry-vpr">§</a> What is a Verifiable Public Registry (VPR)?</h3>
-<div id="note-4" class="notice note"><a class="notice-link" href="#note-4">NOTE</a><p>There is a <a href="https://verana-labs.github.io/verifiable-trust-vpr-spec/">separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
+<div id="note-1" class="notice note"><a class="notice-link" href="#note-1">NOTE</a><p>There is a <a href="https://verana-labs.github.io/verifiable-trust-vpr-spec/">separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
 </div>
 <p><em>This section is non-normative.</em></p>
 <p>A <strong>Verifiable Public Registry (VPR)</strong> is a <strong>“registry of registries”</strong>, a public service that provides foundational infrastructure for decentralized trust ecosystems. It offers:</p>
@@ -544,7 +544,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <li>UserAgent.</li>
 </ul>
 <p>An Ecosystem creates its Trust Registry in a [[ref: VPR]] by creating a <code>TrustRegistry</code> entry <code>tr</code>. For this Trust Registry to qualify for being used for trust resolution in [[ref: VSs]] and [[ref: VUAs]], it MUST provide, associated to the <code>TrustRegistry</code> entry <code>tr</code>, at least one <code>CredentialSchema</code> entry, with a respective <code>json_schema</code> attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSON], [ECS-UA].</p>
-<div id="warning-2" class="notice warning"><a class="notice-link" href="#warning-2">WARNING</a><p>All ECS json schema are unstable and may change for v2 stable version of this spec</p>
+<div id="warning-1" class="notice warning"><a class="notice-link" href="#warning-1">WARNING</a><p>All ECS json schema are unstable and may change for v2 stable version of this spec</p>
 </div>
 <h4 id="ecs-service-service-credential-json-schema"><a class="toc-anchor" href="#ecs-service-service-credential-json-schema">§</a> [ECS-SERVICE] Service Credential Json Schema</h4>
 <p>Used to identify Services.</p>
@@ -955,7 +955,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <li>[VS-REQ-5] A [[ref: VS]] DID Document CAN present other Verifiable Trust Credentials as specified in [VT-LINKED-VP].</li>
 <li>[VS-REQ-6] A [[ref: VS]] MUST always verify issuers of credentials as specified in [VT-PERM-QUERIES].</li>
 </ul>
-<div id="note-5" class="notice note"><a class="notice-link" href="#note-5">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
+<div id="note-2" class="notice note"><a class="notice-link" href="#note-2">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
 </div>
 <h3 id="vua-req-requirements-for-a-user-agent-to-be-a-vua"><a class="toc-anchor" href="#vua-req-requirements-for-a-user-agent-to-be-a-vua">§</a> [VUA-REQ] Requirements for a User Agent to be a VUA</h3>
 <ul>
@@ -963,7 +963,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <li>[VUA-REQ-2] A [[ref: VUA]] that connects to another [[ref: VUA]] MUST present a [VT-ECS-UA-CRED] ECS User Agent Verifiable Trust Credential when requested by the other [[ref: VUA]].</li>
 <li>[VUA-REQ-3] A [[ref: VUA]] MUST always verify issuers (credential offer) and verifiers (presentation request) of credentials as specified in [VT-PERM-QUERIES].</li>
 </ul>
-<div id="note-6" class="notice note"><a class="notice-link" href="#note-6">NOTE</a><p>It is RECOMMENDED to use <a href="https://hyperledger.github.io/anoncreds-spec/">anoncreds</a> plus selective disclosure for [VT-ECS-UA-CRED] and presentations to prevent correlation.</p>
+<div id="note-3" class="notice note"><a class="notice-link" href="#note-3">NOTE</a><p>It is RECOMMENDED to use <a href="https://hyperledger.github.io/anoncreds-spec/">anoncreds</a> plus selective disclosure for [VT-ECS-UA-CRED] and presentations to prevent correlation.</p>
 </div>
 <h3 id="cib-credential-issuance-by"><a class="toc-anchor" href="#cib-credential-issuance-by">§</a> [CIB] Credential Issuance by</h3>
 <ul>
@@ -1233,7 +1233,7 @@ If payment is required:</p>
             </slide-panels>
 
           </body>
-          <script>window.specConfig = {"title":"Verifiable Trust v3 Specification","spec_directory":"./","logo":"https://verana.io/images/slides-logo.svg","logo_link":"https://verana.io","source":{"host":"github","account":"verana-labs","repo":"verifiable-trust-specs"},"destination":"./","rootResourcePrefix":"./","destinationResourcePrefix":"./"}</script>
+          <script>window.specConfig = {"title":"Verifiable Trust v3 Specification","spec_directory":"./","logo":"https://verana.io/images/slides-logo.svg","logo_link":"https://verana.io","source":{"host":"github","account":"verana-labs","repo":"verifiable-trust-spec"},"destination":"./","rootResourcePrefix":"./","destinationResourcePrefix":"./"}</script>
           <script src="./spec-up/js/markdown-it.js"></script>
           <script src="./spec-up/js/prism.js" data-manual></script>
           <script src="./spec-up/js/mermaid.js"></script>
