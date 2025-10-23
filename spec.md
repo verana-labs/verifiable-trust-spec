@@ -707,10 +707,6 @@ Ecosystems can create Essential Credential Schemas (ECS) by creating a Trust Reg
 
 An Ecosystem creates its Trust Registry in a [[ref: VPR]] by creating a `TrustRegistry` entry `tr`. For this Trust Registry to qualify for being used for trust resolution in [[ref: VSs]] and [[ref: VUAs]], it MUST provide, associated to the `TrustRegistry` entry `tr`, at least one `CredentialSchema` entry, with a respective `json_schema` attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSONA], [ECS-UA].
 
-:::warning
-All ECS json schema are unstable and may change for v2 stable version of this spec
-:::
-
 #### [ECS-SERVICE] Service Credential Json Schema
 
 Used to identify Services.
