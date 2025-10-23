@@ -427,10 +427,10 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <h3 id="essential-credential-schemas"><a class="toc-anchor" href="#essential-credential-schemas">§</a> Essential Credential Schemas</h3>
 <p>Finally, the last concept: to enable fundamental trust operations, such as identifying service providers, service names, and related entities, we define a set of <strong>Essential Credential Schemas (ECS)</strong> specifically designed for these purposes:</p>
 <ul>
-<li>Service: identifies <strong>services</strong></li>
-<li>Organization: identifies <strong>organizations</strong></li>
-<li>Person: identifies <strong>individuals</strong> (not necessarily tied to legal or citizen identity)</li>
-<li>User Agent: identifies <strong>user agents</strong>, such as browsers, mobile apps, and similar software</li>
+<li>Service: describes <strong>services</strong>;</li>
+<li>Organization: identifies <strong>organizations</strong>, used to identify owner of a Service;</li>
+<li>Persona: identifies <strong>individuals</strong> used to identify owner of a Service;</li>
+<li>User Agent: describes <strong>user agents</strong>, such as browsers, mobile apps, and similar software</li>
 </ul>
 <p>With the Verifiable Trust concept now clearly established, we’re ready to dive into the specifications.</p>
 <h2 id="specification"><a class="toc-anchor" href="#specification">§</a> Specification</h2>
@@ -456,7 +456,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
       <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
   <span class="token punctuation">]</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem/schemas-example-jsc.json"</span><span class="token punctuation">,</span>
-  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"JsonSchemaCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"JsonSchemaCredential"</span><span class="token punctuation">,</span> <span class="token string">"VerifiableTrustJsonSchemaCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem"</span><span class="token punctuation">,</span>
   <span class="token property">"issuanceDate"</span><span class="token operator">:</span> <span class="token string">"2024-01-01T19:23:24Z"</span><span class="token punctuation">,</span>
   <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
@@ -540,10 +540,10 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <ul>
 <li>Service;</li>
 <li>Organization;</li>
-<li>Person;</li>
+<li>Persona;</li>
 <li>UserAgent.</li>
 </ul>
-<p>An Ecosystem creates its Trust Registry in a [[ref: VPR]] by creating a <code>TrustRegistry</code> entry <code>tr</code>. For this Trust Registry to qualify for being used for trust resolution in [[ref: VSs]] and [[ref: VUAs]], it MUST provide, associated to the <code>TrustRegistry</code> entry <code>tr</code>, at least one <code>CredentialSchema</code> entry, with a respective <code>json_schema</code> attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSON], [ECS-UA].</p>
+<p>An Ecosystem creates its Trust Registry in a [[ref: VPR]] by creating a <code>TrustRegistry</code> entry <code>tr</code>. For this Trust Registry to qualify for being used for trust resolution in [[ref: VSs]] and [[ref: VUAs]], it MUST provide, associated to the <code>TrustRegistry</code> entry <code>tr</code>, at least one <code>CredentialSchema</code> entry, with a respective <code>json_schema</code> attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSONA], [ECS-UA].</p>
 <div id="warning-1" class="notice warning"><a class="notice-link" href="#warning-1">WARNING</a><p>All ECS json schema are unstable and may change for v2 stable version of this spec</p>
 </div>
 <h4 id="ecs-service-service-credential-json-schema"><a class="toc-anchor" href="#ecs-service-service-credential-json-schema">§</a> [ECS-SERVICE] Service Credential Json Schema</h4>
@@ -715,16 +715,15 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h4 id="ecs-person-person-credential-json-schema"><a class="toc-anchor" href="#ecs-person-person-credential-json-schema">§</a> [ECS-PERSON] Person Credential Json Schema</h4>
-<p>Used to identify Verifiable Services run by Persons.</p>
+<h4 id="ecs-persona-persona-credential-json-schema"><a class="toc-anchor" href="#ecs-persona-persona-credential-json-schema">§</a> [ECS-PERSONA] Persona Credential Json Schema</h4>
+<p>Used to identify Verifiable Services run by Personas.</p>
 <p>Credential subject object of schema MUST contain the following attributes:</p>
 <ul>
 <li><code>id</code> (string) (<em>mandatory</em>): the [[ref: DID]] the credential has been issued to.</li>
-<li><code>firstName</code> (string) (<em>optional</em>): first name of the person.</li>
-<li><code>lastName</code> (string) (<em>mandatory</em>): last name of the person.</li>
+<li><code>name</code> (string) (<em>mandatory</em>): name of the persona.</li>
+<li><code>description</code> (string) (<em>optional</em>): description of the persona.</li>
 <li><code>avatar</code> (image) (<em>optional</em>): the avatar of this person, as it will be shown in browsers and search engines.</li>
-<li><code>birthDate</code> (date) (<em>mandatory</em>): date of birth.</li>
-<li><code>countryOfResidence</code> (string) (<em>mandatory</em>): the country of residence.</li>
+<li><code>countryOfResidence</code> (string[2]) (<em>mandatory</em>): country of residence, for jurisdiction rule enforcement (moderation related).</li>
 </ul>
 <p>the resulting <code>json_schema</code> attribute will be the following Json Schema.</p>
 <ul>
@@ -733,8 +732,8 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:vna-mainnet-1/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
   <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
-  <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"PersonCredential"</span><span class="token punctuation">,</span>
-  <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"PersonCredential using JsonSchema"</span><span class="token punctuation">,</span>
+  <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"PersonaCredential"</span><span class="token punctuation">,</span>
+  <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"PersonaCredential using JsonSchema"</span><span class="token punctuation">,</span>
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
   <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
@@ -744,24 +743,20 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
           <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
           <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"uri"</span>
         <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token property">"firstName"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
-          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
-          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">256</span>
-        <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token property">"lastName"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
           <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
           <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
           <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">256</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"description"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">16384</span>
         <span class="token punctuation">}</span><span class="token punctuation">,</span>
         <span class="token property">"avatar"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
           <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
           <span class="token property">"contentEncoding"</span><span class="token operator">:</span> <span class="token string">"base64"</span><span class="token punctuation">,</span>
           <span class="token property">"contentMediaType"</span><span class="token operator">:</span> <span class="token string">"image/png"</span>
-        <span class="token punctuation">}</span><span class="token punctuation">,</span>
-        <span class="token property">"birthDate"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
-          <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"date"</span>
         <span class="token punctuation">}</span><span class="token punctuation">,</span>
         <span class="token property">"countryOfResidence"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
           <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
@@ -771,8 +766,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
       <span class="token punctuation">}</span><span class="token punctuation">,</span>
       <span class="token property">"required"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
         <span class="token string">"id"</span><span class="token punctuation">,</span>
-        <span class="token string">"lastName"</span><span class="token punctuation">,</span>
-        <span class="token string">"birthDate"</span><span class="token punctuation">,</span>
+        <span class="token string">"name"</span><span class="token punctuation">,</span>
         <span class="token string">"countryOfResidence"</span>
       <span class="token punctuation">]</span>
     <span class="token punctuation">}</span>
@@ -869,7 +863,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <ul>
 <li>Json Schema Credential [VT-ECS-SERVICE-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].</li>
 <li>Json Schema Credential [VT-ECS-ORG-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG].</li>
-<li>Json Schema Credential [VT-ECS-PERSON-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSON].</li>
+<li>Json Schema Credential [VT-ECS-PERSONA-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSONA].</li>
 <li>Json Schema Credential [VT-ECS-UA-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-UA].</li>
 </ul>
 <h3 id="vt-ecs-cred-verifiable-trust-essential-schema-credentials"><a class="toc-anchor" href="#vt-ecs-cred-verifiable-trust-essential-schema-credentials">§</a> [VT-ECS-CRED] Verifiable Trust Essential Schema Credentials</h3>
@@ -898,13 +892,13 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
   <span class="token punctuation">]</span>
 </code></pre>
 <ul>
-<li>Person Credential [VT-ECS-PERSON-CRED]: a [VT-CRED] linked to a [VT-ECS-PERSON-JSON-SCHEMA-CRED]. MUST be declared in DID Document with a “LinkedVerifiablePresentation” service entry with fragment <code>#vpr-ecs-person-c-vp</code>. Example:</li>
+<li>Persona Credential [VT-ECS-PERSONA-CRED]: a [VT-CRED] linked to a [VT-ECS-PERSONA-JSON-SCHEMA-CRED]. MUST be declared in DID Document with a “LinkedVerifiablePresentation” service entry with fragment <code>#vpr-ecs-persona-c-vp</code>. Example:</li>
 </ul>
 <pre class="language-json"><code class="language-json">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:service#vpr-ecs-person-c-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:service#vpr-ecs-persona-c-vp"</span><span class="token punctuation">,</span>
       <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://service/ecs-person-c-vp.json"</span><span class="token punctuation">]</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://service/ecs-persona-c-vp.json"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span>
     ...
   <span class="token punctuation">]</span>
@@ -917,7 +911,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <ul>
 <li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-service-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-SERVICE-JSON-SCHEMA-CRED].</li>
 <li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-org-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-ORG-JSON-SCHEMA-CRED].</li>
-<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-person-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-PERSON-JSON-SCHEMA-CRED].</li>
+<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-persona-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-PERSONA-JSON-SCHEMA-CRED].</li>
 <li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-ua-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-UA-JSON-SCHEMA-CRED].</li>
 </ul>
 <p>Example:</p>
@@ -933,9 +927,9 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
       <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/ecs-org-jsc-vp.json"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-ecs-person-jsc-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-ecs-persona-jsc-vp"</span><span class="token punctuation">,</span>
       <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
-      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/ecs-person-jsc-vp.json"</span><span class="token punctuation">]</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/ecs-persona-jsc-vp.json"</span><span class="token punctuation">]</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>
       <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-ecs-ua-jsc-vp"</span><span class="token punctuation">,</span>
@@ -950,12 +944,12 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <ul>
 <li>[VS-REQ-1] A [[ref: VS]] MUST be identified by a [[:ref DID]]. The [[:ref DID]] of a [[ref: VS]] MUST resolve to a [[ref: DID Document]].</li>
 <li>[VS-REQ-2] A [[ref: VS]] DID Document MUST present (linked-vp) a Verifiable Trust Credential that conforms to [VT-ECS-SERVICE-CRED].</li>
-<li>[VS-REQ-3] If the issuer of the VT Service Essential Credential of [VS-REQ-2] is the [[ref: DID]] of this service, service DID Document MUST present a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) [VT-ECS-PERSON-CRED].</li>
-<li>[VS-REQ-4] If the issuer of the VT Service Credential of [VS-REQ-2] is not the [[ref: DID]] of this service, DID Document of the VT Service Credential issuer MUST present a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) [VT-ECS-PERSON-CRED].</li>
+<li>[VS-REQ-3] If the issuer of the VT Service Essential Credential of [VS-REQ-2] is the [[ref: DID]] of this service, service DID Document MUST present a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) [VT-ECS-PERSONA-CRED].</li>
+<li>[VS-REQ-4] If the issuer of the VT Service Credential of [VS-REQ-2] is not the [[ref: DID]] of this service, DID Document of the VT Service Credential issuer MUST present a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) [VT-ECS-PERSONA-CRED].</li>
 <li>[VS-REQ-5] A [[ref: VS]] DID Document CAN present other Verifiable Trust Credentials as specified in [VT-LINKED-VP].</li>
 <li>[VS-REQ-6] A [[ref: VS]] MUST always verify issuers of credentials as specified in [VT-PERM-QUERIES].</li>
 </ul>
-<div id="note-2" class="notice note"><a class="notice-link" href="#note-2">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Person Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Person Essential Credential.</p>
+<div id="note-2" class="notice note"><a class="notice-link" href="#note-2">NOTE</a><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Persona Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Persona Essential Credential.</p>
 </div>
 <h3 id="vua-req-requirements-for-a-user-agent-to-be-a-vua"><a class="toc-anchor" href="#vua-req-requirements-for-a-user-agent-to-be-a-vua">§</a> [VUA-REQ] Requirements for a User Agent to be a VUA</h3>
 <ul>
@@ -990,7 +984,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <li>[PRT-3] When a [[ref: VS]] receives a presentation request, before presenting a credential, it MUST verify [VT-PERM-QUERIES] that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema.</li>
 </ul>
 <h3 id="vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service"><a class="toc-anchor" href="#vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service">§</a> [VS-CONN-VS] Requirements for a VS to accept a connection from another service</h3>
-<p>When a [[ref: VS]] VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-REQ], else VS-1 MUST NOT accept the connection, unless purpose of the service provided by VS-1 is the issuance of [VT-ECS-ORG-CRED] or [VT-ECS-PERSON-CRED] credentials.</p>
+<p>When a [[ref: VS]] VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-REQ], else VS-1 MUST NOT accept the connection, unless purpose of the service provided by VS-1 is the issuance of [VT-ECS-ORG-CRED] or [VT-ECS-PERSONA-CRED] credentials.</p>
 <h3 id="vs-conn-vua-requirements-for-a-vs-to-accept-a-connection-from-a-user-agent"><a class="toc-anchor" href="#vs-conn-vua-requirements-for-a-vs-to-accept-a-connection-from-a-user-agent">§</a> [VS-CONN-VUA] Requirements for a VS to accept a connection from a User Agent</h3>
 <p>When a [[ref: VS]] receives a connection from a User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED] credential before starting to provide the service, and verify the presented credential (if any). If no credential is presented or presented credential is not verifiable, [[ref: VS]] MUST NOT provide the service.</p>
 <h3 id="vua-conn-vs-requirements-for-a-vua-to-accept-connecting-to-a-service"><a class="toc-anchor" href="#vua-conn-vs-requirements-for-a-vua-to-accept-connecting-to-a-service">§</a> [VUA-CONN-VS] Requirements for a VUA to accept connecting to a service</h3>
@@ -1180,7 +1174,7 @@ If payment is required:</p>
 <ul>
 <li><a href="#ecs-service-service-credential-json-schema">[ECS-SERVICE] Service Credential Json Schema</a></li>
 <li><a href="#ecs-org-organizationcredential-json-schema">[ECS-ORG] OrganizationCredential Json Schema</a></li>
-<li><a href="#ecs-person-person-credential-json-schema">[ECS-PERSON] Person Credential Json Schema</a></li>
+<li><a href="#ecs-persona-persona-credential-json-schema">[ECS-PERSONA] Persona Credential Json Schema</a></li>
 <li><a href="#ecs-ua-user-agent-credential-json-schema">[ECS-UA] User Agent Credential Json Schema</a></li>
 </ul>
 </li>
