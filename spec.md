@@ -380,7 +380,7 @@ Example of a Json Schema credential schema:
 
 ```json
 {
-  "$id": "vpr:verana:vna-mainnet-1/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ExampleCredential",
   "description": "ExampleCredential using JsonSchema",
@@ -730,7 +730,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "vpr:verana:vna-mainnet-1/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ServiceCredential",
   "description": "ServiceCredential using JsonSchema",
@@ -818,10 +818,11 @@ Credential subject object of schema MUST contain the following attributes:
 the resulting `json_schema` attribute will be the following Json Schema.
 
 - `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
+- `VPR_CHAIN_ID` is replaced by the network name
 
 ```json
 {
-  "$id": "vpr:verana:vna-mainnet-1/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "OrganizationCredential",
   "description": "OrganizationCredential using JsonSchema",
@@ -902,7 +903,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "vpr:verana:vna-mainnet-1/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "PersonaCredential",
   "description": "PersonaCredential using JsonSchema",
@@ -967,7 +968,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "vpr:verana:vna-mainnet-1/v1/cs/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "UserAgentCredential",
   "description": "UserAgentCredential using JsonSchema",
