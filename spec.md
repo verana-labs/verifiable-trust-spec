@@ -650,6 +650,8 @@ A W3C Verifiable Trust Credential MUST include, at a minimum, the following attr
 - `@context`: MUST include `https://www.w3.org/ns/credentials/v2`
 - `id`: a globally unique identifier for the credential (e.g., a `urn:uuid:`)
 - `type`: MUST include `VerifiableCredential` and `VerifiableTrustCredential`, and MAY include one or more schema-specific types
+- `validFrom`: optional
+- `validUntil`: optional
 - `issuer`: the DID of the authorized issuer issuing the credential
 - `credentialSubject`: an object containing:
   - `id`: the DID of the credential holder
@@ -667,6 +669,8 @@ A W3C Verifiable Trust Credential MUST include, at a minimum, the following attr
     "https://www.w3.org/ns/credentials/v2"
   ],
   "id": "urn:uuid:7f3c9a2e-9c8e-4f6e-9c0b-1e3f2d8a91ab",
+  "validFrom": "2010-01-01T19:23:24Z",
+  "validUntil": "2020-01-01T19:23:24Z",
   "type": [
     "VerifiableCredential",
     "VerifiableTrustCredential",
@@ -1166,8 +1170,8 @@ The resulting `json_schema` attribute will be the following Json Schema.
 ### [VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema VTJSCs
 
 - VTJSC [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].
-- VTJSC [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG].
-- VTJSC [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSONA].
+- VTJSC [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG]. MUST have `validFrom` and `validUntil` properties.
+- VTJSC [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSONA]. MUST have `validFrom` and `validUntil` properties.
 - VTJSC [VT-ECS-UA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-UA].
 
 ### [VT-ECS-CRED] Essential Schema Verifiable Trust Credentials
