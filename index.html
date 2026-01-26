@@ -210,7 +210,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 </ul>
 <p>This ensures that all connections are based on verifiable trust, not assumptions.</p>
 <h3 id="what-is-a-verifiable-public-registry-vpr"><a class="toc-anchor" href="#what-is-a-verifiable-public-registry-vpr" >§</a> What is a Verifiable Public Registry (VPR)?</h3>
-<div id="note-127" class="notice note"><a class="notice-link" href="#note-127">NOTE</a><p>There is a <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
+<div id="note-132" class="notice note"><a class="notice-link" href="#note-132">NOTE</a><p>There is a <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
 </div>
 <p><em>This section is non-normative.</em></p>
 <p>A <strong>Verifiable Public Registry (VPR)</strong> is a <strong>“registry of registries”</strong>, a public service that provides foundational infrastructure for decentralized trust ecosystems. It offers:</p>
@@ -229,7 +229,7 @@ Ecosystems can create and manage their own <strong>Trust Registries</strong>, ea
 A standardized API used by <strong>Verifiable Services (VSs)</strong> and <strong>Verifiable User Agents (VUAs)</strong> to perform trust resolution, enabling them to query registry data and validate roles and permissions in real time. Query API must include support for the <a path-0="trustoverip.github.io"path-1="tswg-trust-registry-protocol"path-2=""href="https://trustoverip.github.io/tswg-trust-registry-protocol/" >TRQP</a>.</p>
 </li>
 </ul>
-<img src="https://www.plantuml.com/plantuml/svg/fT5D2i8m40NWVKunj1Se2EAo_kr5nFqacTPeQqioLOjuTzCQYg0BYxD8idZl8p2fOxJSb8L8XvTJM12KU8DPai3LQ3u843Mg4-O4qPwioGnAdzaqiZ0AjfGRnxQD01rSQWjt8S1F9O-a6AATRHmFAQWoMAlAjOwfX7ZUjzWYn9DCQZdrxQxy664iWY7VZD78CY3g7sGL4Fs9_6oiWq7VZUuG_ayYfRFkD_Uwdm00" alt="uml diagram">
+<img src="https://www.plantuml.com/plantuml/svg/fT5D2i8m40NWVKunj1Se2EAo_kr5nFqacTPeQqioLOjuTzCQYg0BYxD8idZl8p2fOxJSb8L8XvTJM12KU8DPai3LQ3u843Mg4-O4qPwioGnAdzaqiZ0AjfGRnxQD01rSQWjt8S1F9O-a6AATRHmFAQWoMAlAjOwfX7ZUjzWYn9DCQZdrxQxy664iWY7VZD78CY3g7sGL4Fs9_6oiWq7VZUuG_ayfdNM_kDVz1000" alt="uml diagram">
 <h4 id="trust-registries"><a class="toc-anchor" href="#trust-registries" >§</a> Trust Registries</h4>
 <p><em>This section is non-normative.</em></p>
 <p>Each <strong>Trust Registry</strong> must provide, at a minimum:</p>
@@ -391,7 +391,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 </li>
 <li>a valid cryptographic proof, as defined by the Verifiable Credentials specification</li>
 </ul>
-<div id="note-128" class="notice note"><a class="notice-link" href="#note-128">NOTE</a><p><a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3="#jsonschemacredential"href="https://www.w3.org/TR/vc-json-schema/#jsonschemacredential" >vc-json-schema</a> defines the <code>credentialSchema</code> attribute content. It MUST be exactly as specified in <a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3="#jsonschemacredential"href="https://www.w3.org/TR/vc-json-schema/#jsonschemacredential" >vc-json-schema</a>.</p>
+<div id="note-133" class="notice note"><a class="notice-link" href="#note-133">NOTE</a><p><a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3="#jsonschemacredential"href="https://www.w3.org/TR/vc-json-schema/#jsonschemacredential" >vc-json-schema</a> defines the <code>credentialSchema</code> attribute content. It MUST be exactly as specified in <a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3="#jsonschemacredential"href="https://www.w3.org/TR/vc-json-schema/#jsonschemacredential" >vc-json-schema</a>.</p>
 </div>
 <p>This credential provides verifiable evidence of:</p>
 <ul>
@@ -1132,7 +1132,7 @@ The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-refer
 <p>[VS-REQ-6] A <a class="term-reference" href="#term:vs">VS</a> MUST verify issuers of Verifiable Trust Credentials.</p>
 </li>
 </ul>
-<div id="note-129" class="notice note"><a class="notice-link" href="#note-129">NOTE</a><p>In other words, to qualify as a Verifiable Service:</p>
+<div id="note-134" class="notice note"><a class="notice-link" href="#note-134">NOTE</a><p>In other words, to qualify as a Verifiable Service:</p>
 <ul>
 <li>the service MAY directly identify itself by presenting an Organization or Persona Essential Credential; <strong>or</strong></li>
 <li>the issuer of the Service Essential Credential MUST identify itself by presenting an Organization or Persona Essential Credential.</li>
@@ -1155,9 +1155,9 @@ The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-refer
 </ul>
 </li>
 </ul>
-<div id="note-130" class="notice note"><a class="notice-link" href="#note-130">NOTE</a><p>Using <a path-0="hyperledger.github.io"path-1="anoncreds-spec"path-2=""href="https://hyperledger.github.io/anoncreds-spec/" >anoncreds</a> for ECS User Agent VTCs is REQUIRED to reduce correlation and tracking risks, together with selective disclosure and unlinkable presentations.</p>
+<div id="note-135" class="notice note"><a class="notice-link" href="#note-135">NOTE</a><p>Using <a path-0="hyperledger.github.io"path-1="anoncreds-spec"path-2=""href="https://hyperledger.github.io/anoncreds-spec/" >anoncreds</a> for ECS User Agent VTCs is REQUIRED to reduce correlation and tracking risks, together with selective disclosure and unlinkable presentations.</p>
 </div>
-<div id="note-131" class="notice note"><a class="notice-link" href="#note-131">NOTE</a><p>These requirements ensure that a Verifiable User Agent can cryptographically prove the identity and authenticity of the software it represents, while preserving user privacy and enabling policy-based trust decisions by services and peer user agents.</p>
+<div id="note-136" class="notice note"><a class="notice-link" href="#note-136">NOTE</a><p>These requirements ensure that a Verifiable User Agent can cryptographically prove the identity and authenticity of the software it represents, while preserving user privacy and enabling policy-based trust decisions by services and peer user agents.</p>
 </div>
 <h3 id="cib-credential-issuance-by"><a class="toc-anchor" href="#cib-credential-issuance-by" >§</a> [CIB] Credential Issuance by</h3>
 <ul>
