@@ -210,7 +210,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 </ul>
 <p>This ensures that all connections are based on verifiable trust, not assumptions.</p>
 <h3 id="what-is-a-verifiable-public-registry-vpr"><a class="toc-anchor" href="#what-is-a-verifiable-public-registry-vpr" >§</a> What is a Verifiable Public Registry (VPR)?</h3>
-<div id="note-122" class="notice note"><a class="notice-link" href="#note-122">NOTE</a><p>There is a <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
+<div id="note-127" class="notice note"><a class="notice-link" href="#note-127">NOTE</a><p>There is a <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
 </div>
 <p><em>This section is non-normative.</em></p>
 <p>A <strong>Verifiable Public Registry (VPR)</strong> is a <strong>“registry of registries”</strong>, a public service that provides foundational infrastructure for decentralized trust ecosystems. It offers:</p>
@@ -343,7 +343,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h3 id="verifiable-trust-json-schema-credentials-and-verifiable-trust-credentials"><a class="toc-anchor" href="#verifiable-trust-json-schema-credentials-and-verifiable-trust-credentials" >§</a> Verifiable Trust Json Schema Credentials and Verifiable Trust Credentials</h3>
+<h3 id="verifiable-trust-json-schema-credentials-vtjscs-and-verifiable-trust-credentials-vtcs"><a class="toc-anchor" href="#verifiable-trust-json-schema-credentials-vtjscs-and-verifiable-trust-credentials-vtcs" >§</a> Verifiable Trust Json Schema Credentials (VTJSCs) and Verifiable Trust Credentials (VTCs)</h3>
 <p>Data stored in a VPR is not verified at the time of storage, nor does it need to be. Verification happens outside the scope of the VPR.</p>
 <p>This is not a limitation, it’s a feature. For example, any DID method can be used, and the VPR will never attempt to resolve or validate DIDs itself.</p>
 <p>The VPR provides registrations, not validations, leaving trust decisions and verification where they belong: <strong>with the relying parties</strong>.</p>
@@ -366,9 +366,9 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <p>With the Verifiable Trust concept now clearly established, we’re ready to dive into the specifications.</p>
 <h2 id="specification"><a class="toc-anchor" href="#specification" >§</a> Specification</h2>
 <h3 id="vt-json-schema-cred-w3c-verifiable-trust-json-schema-credential"><a class="toc-anchor" href="#vt-json-schema-cred-w3c-verifiable-trust-json-schema-credential" >§</a> [VT-JSON-SCHEMA-CRED-W3C] Verifiable Trust Json Schema Credential</h3>
-<p>To provide cryptographic evidence that data stored in a VPR (e.g., a credential JSON Schema) is authored and controlled by the Ecosystem that operates the corresponding Trust Registry, the <strong>Ecosystem controller</strong> of the Trust Registry issues a Verifiable Trust Json Schema Credential (which is a <a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3=""href="https://www.w3.org/TR/vc-json-schema/" >JSON Schema Credential</a>) <strong>after</strong> creating the <code>CredentialSchema</code> entry in the VPR.</p>
+<p>To provide cryptographic evidence that data stored in a VPR (e.g., a credential JSON Schema) is authored and controlled by the Ecosystem that operates the corresponding Trust Registry, the <strong>Ecosystem controller</strong> of the Trust Registry issues a VTJSC (which is a <a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3=""href="https://www.w3.org/TR/vc-json-schema/" >JSON Schema Credential</a>) <strong>after</strong> creating the <code>CredentialSchema</code> entry in the VPR.</p>
 <p>The Json Schema Credential MUST be issued using the <strong>Ecosystem DID recorded as the Trust Registry’s Ecosystem identifier</strong> in the VPR, and MUST reference the corresponding <code>CredentialSchema</code> entry.</p>
-<p>A Verifiable Trust Json Schema Credential MUST include, at a minimum, the following attributes:</p>
+<p>A VTJSC MUST include, at a minimum, the following attributes:</p>
 <ul>
 <li><code>@context</code>: MUST include <code>https://www.w3.org/ns/credentials/v2</code></li>
 <li><code>id</code>: URL of the credential (e.g., a <code>https://example/vtjsc.json</code>)</li>
@@ -391,7 +391,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 </li>
 <li>a valid cryptographic proof, as defined by the Verifiable Credentials specification</li>
 </ul>
-<div id="note-123" class="notice note"><a class="notice-link" href="#note-123">NOTE</a><p><a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3="#jsonschemacredential"href="https://www.w3.org/TR/vc-json-schema/#jsonschemacredential" >vc-json-schema</a> defines the <code>credentialSchema</code> attribute content. It MUST be exactly as specified in <a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3="#jsonschemacredential"href="https://www.w3.org/TR/vc-json-schema/#jsonschemacredential" >vc-json-schema</a>.</p>
+<div id="note-128" class="notice note"><a class="notice-link" href="#note-128">NOTE</a><p><a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3="#jsonschemacredential"href="https://www.w3.org/TR/vc-json-schema/#jsonschemacredential" >vc-json-schema</a> defines the <code>credentialSchema</code> attribute content. It MUST be exactly as specified in <a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3="#jsonschemacredential"href="https://www.w3.org/TR/vc-json-schema/#jsonschemacredential" >vc-json-schema</a>.</p>
 </div>
 <p>This credential provides verifiable evidence of:</p>
 <ul>
@@ -423,14 +423,14 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <span class="token punctuation">}</span>
 </code></pre>
 <h3 id="vt-ecosystem-diddoc-ecosystem-did-document"><a class="toc-anchor" href="#vt-ecosystem-diddoc-ecosystem-did-document" >§</a> [VT-ECOSYSTEM-DIDDOC] Ecosystem DID Document</h3>
-<p>Finally, the Ecosystem MUST publish each <strong>JSON Schema Credential</strong> as a <strong>Linked Verifiable Presentation</strong> in the <strong>DID Document</strong> associated with the <strong>Trust Registry Ecosystem DID</strong> registered in the VPR.</p>
-<p>Publishing JSON Schema Credentials in the Ecosystem DID Document ensures that:</p>
+<p>Finally, the Ecosystem MUST publish each <strong>VTJSC</strong> as a <strong>Linked Verifiable Presentation</strong> in the <strong>DID Document</strong> associated with the <strong>Trust Registry Ecosystem DID</strong> registered in the VPR.</p>
+<p>Publishing VTJSC in the Ecosystem DID Document ensures that:</p>
 <ul>
 <li>Credential Schemas defined in the VPR are <strong>publicly discoverable</strong></li>
 <li>The binding between a Credential Schema and its <strong>controlling Ecosystem DID</strong> is <strong>cryptographically verifiable</strong></li>
 <li>Wallets, issuers, and verifiers can <strong>resolve and validate schema trust roots</strong> without relying on off-chain registries or implicit trust assumptions</li>
 </ul>
-<p>The Ecosystem DID Document MUST include a <code>service</code> entry of type <code>LinkedVerifiablePresentation</code> that references a Verifiable Presentation containing one or more JSON Schema Credentials issued by the Ecosystem DID.</p>
+<p>The Ecosystem DID Document MUST include a <code>service</code> entry of type <code>LinkedVerifiablePresentation</code> that references a Verifiable Presentation containing one or more VTJSC issued by the Ecosystem DID.</p>
 <p>Example:</p>
 <pre class="language-json"><code class="language-json"><span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
@@ -445,18 +445,18 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 <p>Once an Ecosystem has:</p>
 <ul>
 <li>Created its <strong>Credential Schemas</strong> in the VPR</li>
-<li>Issued the corresponding <strong>JSON Schema Credentials</strong> using the Ecosystem DID</li>
-<li>Published those JSON Schema Credentials as <strong>Linked Verifiable Presentations</strong> in the Ecosystem DID Document</li>
+<li>Issued the corresponding <strong>VTJSC</strong> using the Ecosystem DID</li>
+<li>Published those VTJSC as <strong>Linked Verifiable Presentations</strong> in the Ecosystem DID Document</li>
 </ul>
 <p>authorized issuers MAY issue Verifiable Credentials that conform to those schemas.</p>
 <p>Verifiable Credentials that comply with the Verifiable Trust Specification are referred to as <strong>Verifiable Trust Credentials (VTCs)</strong>.</p>
-<p>A Verifiable Trust Credential MUST reference the applicable <strong>Verifiable Trust Json Schema Credential</strong> issued by the Trust Registry Ecosystem DID via its <code>credentialSchema</code> property. This reference establishes a verifiable and discoverable trust chain between:</p>
+<p>A Verifiable Trust Credential MUST reference the applicable <strong>VTJSC</strong> issued by the Trust Registry Ecosystem DID via its <code>credentialSchema</code> property. This reference establishes a verifiable and discoverable trust chain between:</p>
 <ul>
 <li>the issued credential,</li>
 <li>the governing schema definition,</li>
 <li>and the Ecosystem that controls the Trust Registry in which the schema is defined.</li>
 </ul>
-<p>During verification, wallets and verifiers can resolve the referenced Verifiable Trust Json Schema Credential, verify its authenticity, and determine whether the issuing DID was authorized to issue credentials under that schema at the time of issuance.</p>
+<p>During verification, wallets and verifiers can resolve the referenced VTJSC, verify its authenticity, and determine whether the issuing DID was authorized to issue credentials under that schema at the time of issuance.</p>
 <h4 id="issuance-time-and-unlinkability-considerations"><a class="toc-anchor" href="#issuance-time-and-unlinkability-considerations" >§</a> Issuance Time and Unlinkability Considerations</h4>
 <p><em>This section is non-normative.</em></p>
 <p>Verifiable Trust Credentials are designed to support multiple credential container formats and proof systems in order to balance <strong>auditability</strong>, <strong>interoperability</strong>, and <strong>privacy</strong>. Two recurring challenges must be considered when issuing and presenting credentials: <strong>proving issuance time</strong> and <strong>preventing linkability</strong>.</p>
@@ -1032,12 +1032,12 @@ UTF8 charset, min length: 1 char, max length: 128 chars.</p>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h3 id="vt-ecs-json-schema-cred-w3c-essential-schema-verifiable-trust-json-schema-credentials"><a class="toc-anchor" href="#vt-ecs-json-schema-cred-w3c-essential-schema-verifiable-trust-json-schema-credentials" >§</a> [VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema Verifiable Trust Json Schema Credentials</h3>
+<h3 id="vt-ecs-json-schema-cred-w3c-essential-schema-vtjscs"><a class="toc-anchor" href="#vt-ecs-json-schema-cred-w3c-essential-schema-vtjscs" >§</a> [VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema VTJSCs</h3>
 <ul>
-<li>Json Schema Credential [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].</li>
-<li>Json Schema Credential [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG].</li>
-<li>Json Schema Credential [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSONA].</li>
-<li>Json Schema Credential [VT-ECS-UA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-UA].</li>
+<li>VTJSC [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].</li>
+<li>VTJSC [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG].</li>
+<li>VTJSC [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSONA].</li>
+<li>VTJSC [VT-ECS-UA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-UA].</li>
 </ul>
 <h3 id="vt-ecs-cred-essential-schema-verifiable-trust-credentials"><a class="toc-anchor" href="#vt-ecs-cred-essential-schema-verifiable-trust-credentials" >§</a> [VT-ECS-CRED] Essential Schema Verifiable Trust Credentials</h3>
 <ul>
@@ -1132,7 +1132,7 @@ The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-refer
 <p>[VS-REQ-6] A <a class="term-reference" href="#term:vs">VS</a> MUST verify issuers of Verifiable Trust Credentials.</p>
 </li>
 </ul>
-<div id="note-124" class="notice note"><a class="notice-link" href="#note-124">NOTE</a><p>In other words, to qualify as a Verifiable Service:</p>
+<div id="note-129" class="notice note"><a class="notice-link" href="#note-129">NOTE</a><p>In other words, to qualify as a Verifiable Service:</p>
 <ul>
 <li>the service MAY directly identify itself by presenting an Organization or Persona Essential Credential; <strong>or</strong></li>
 <li>the issuer of the Service Essential Credential MUST identify itself by presenting an Organization or Persona Essential Credential.</li>
@@ -1155,9 +1155,9 @@ The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-refer
 </ul>
 </li>
 </ul>
-<div id="note-125" class="notice note"><a class="notice-link" href="#note-125">NOTE</a><p>Using <a path-0="hyperledger.github.io"path-1="anoncreds-spec"path-2=""href="https://hyperledger.github.io/anoncreds-spec/" >anoncreds</a> for ECS User Agent VTCs is REQUIRED to reduce correlation and tracking risks, together with selective disclosure and unlinkable presentations.</p>
+<div id="note-130" class="notice note"><a class="notice-link" href="#note-130">NOTE</a><p>Using <a path-0="hyperledger.github.io"path-1="anoncreds-spec"path-2=""href="https://hyperledger.github.io/anoncreds-spec/" >anoncreds</a> for ECS User Agent VTCs is REQUIRED to reduce correlation and tracking risks, together with selective disclosure and unlinkable presentations.</p>
 </div>
-<div id="note-126" class="notice note"><a class="notice-link" href="#note-126">NOTE</a><p>These requirements ensure that a Verifiable User Agent can cryptographically prove the identity and authenticity of the software it represents, while preserving user privacy and enabling policy-based trust decisions by services and peer user agents.</p>
+<div id="note-131" class="notice note"><a class="notice-link" href="#note-131">NOTE</a><p>These requirements ensure that a Verifiable User Agent can cryptographically prove the identity and authenticity of the software it represents, while preserving user privacy and enabling policy-based trust decisions by services and peer user agents.</p>
 </div>
 <h3 id="cib-credential-issuance-by"><a class="toc-anchor" href="#cib-credential-issuance-by" >§</a> [CIB] Credential Issuance by</h3>
 <ul>
@@ -1202,7 +1202,7 @@ The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-refer
 <li>VPR entries (Trust Registries, Credential Schemas, Permissions, …)</li>
 <li>Ecosystem DID Documents</li>
 <li>Linked Verifiable Presentations published in DID Documents</li>
-<li>Verifiable Trust Credentials and Verifiable Trust JSON Schema Credentials</li>
+<li>Verifiable Trust Credentials and Verifiable Trust Json Schema Credentials</li>
 <li>On-chain digestSRI anchoring data</li>
 </ul>
 <p>Using this indexed data, a relying party (or a wallet acting on its behalf) can answer higher-level trust questions such as the following.</p>
@@ -1398,7 +1398,7 @@ The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-refer
 <li><a href="#credential-schemas" >Credential Schemas</a></li>
 </ul>
 </li>
-<li><a href="#verifiable-trust-json-schema-credentials-and-verifiable-trust-credentials" >Verifiable Trust Json Schema Credentials and Verifiable Trust Credentials</a></li>
+<li><a href="#verifiable-trust-json-schema-credentials-vtjscs-and-verifiable-trust-credentials-vtcs" >Verifiable Trust Json Schema Credentials (VTJSCs) and Verifiable Trust Credentials (VTCs)</a></li>
 <li><a href="#essential-credential-schemas" >Essential Credential Schemas</a></li>
 </ul>
 </li>
@@ -1430,7 +1430,7 @@ The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-refer
 <li><a href="#ecs-ua-user-agent-credential-json-schema" >[ECS-UA] User Agent Credential Json Schema</a></li>
 </ul>
 </li>
-<li><a href="#vt-ecs-json-schema-cred-w3c-essential-schema-verifiable-trust-json-schema-credentials" >[VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema Verifiable Trust Json Schema Credentials</a></li>
+<li><a href="#vt-ecs-json-schema-cred-w3c-essential-schema-vtjscs" >[VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema VTJSCs</a></li>
 <li><a href="#vt-ecs-cred-essential-schema-verifiable-trust-credentials" >[VT-ECS-CRED] Essential Schema Verifiable Trust Credentials</a></li>
 <li><a href="#vt-ecs-ecosystem-diddoc-ecosystem-did-document-for-declaring-essential-credential-schemas" >[VT-ECS-ECOSYSTEM-DIDDOC] Ecosystem DID Document for declaring Essential Credential Schemas</a></li>
 <li><a href="#vs-req-verifiable-service-basic-requirements-and-linked-vps" >[VS-REQ] Verifiable Service Basic Requirements and Linked VPs</a></li>

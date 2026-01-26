@@ -419,7 +419,7 @@ Example of a Json Schema credential schema:
 }
 ```
 
-### Verifiable Trust Json Schema Credentials and Verifiable Trust Credentials
+### Verifiable Trust Json Schema Credentials (VTJSCs) and Verifiable Trust Credentials (VTCs)
 
 Data stored in a VPR is not verified at the time of storage, nor does it need to be. Verification happens outside the scope of the VPR.
 
@@ -480,11 +480,11 @@ With the Verifiable Trust concept now clearly established, we’re ready to dive
 
 ### [VT-JSON-SCHEMA-CRED-W3C] Verifiable Trust Json Schema Credential
 
-To provide cryptographic evidence that data stored in a VPR (e.g., a credential JSON Schema) is authored and controlled by the Ecosystem that operates the corresponding Trust Registry, the **Ecosystem controller** of the Trust Registry issues a Verifiable Trust Json Schema Credential (which is a [JSON Schema Credential](https://www.w3.org/TR/vc-json-schema/)) **after** creating the `CredentialSchema` entry in the VPR.
+To provide cryptographic evidence that data stored in a VPR (e.g., a credential JSON Schema) is authored and controlled by the Ecosystem that operates the corresponding Trust Registry, the **Ecosystem controller** of the Trust Registry issues a VTJSC (which is a [JSON Schema Credential](https://www.w3.org/TR/vc-json-schema/)) **after** creating the `CredentialSchema` entry in the VPR.
 
 The Json Schema Credential MUST be issued using the **Ecosystem DID recorded as the Trust Registry’s Ecosystem identifier** in the VPR, and MUST reference the corresponding `CredentialSchema` entry.
 
-A Verifiable Trust Json Schema Credential MUST include, at a minimum, the following attributes:
+A VTJSC MUST include, at a minimum, the following attributes:
 
 - `@context`: MUST include `https://www.w3.org/ns/credentials/v2`
 - `id`: URL of the credential (e.g., a `https://example/vtjsc.json`)
@@ -538,15 +538,15 @@ This credential provides verifiable evidence of:
 
 ### [VT-ECOSYSTEM-DIDDOC] Ecosystem DID Document
 
-Finally, the Ecosystem MUST publish each **JSON Schema Credential** as a **Linked Verifiable Presentation** in the **DID Document** associated with the **Trust Registry Ecosystem DID** registered in the VPR.
+Finally, the Ecosystem MUST publish each **VTJSC** as a **Linked Verifiable Presentation** in the **DID Document** associated with the **Trust Registry Ecosystem DID** registered in the VPR.
 
-Publishing JSON Schema Credentials in the Ecosystem DID Document ensures that:
+Publishing VTJSC in the Ecosystem DID Document ensures that:
 
 - Credential Schemas defined in the VPR are **publicly discoverable**
 - The binding between a Credential Schema and its **controlling Ecosystem DID** is **cryptographically verifiable**
 - Wallets, issuers, and verifiers can **resolve and validate schema trust roots** without relying on off-chain registries or implicit trust assumptions
 
-The Ecosystem DID Document MUST include a `service` entry of type `LinkedVerifiablePresentation` that references a Verifiable Presentation containing one or more JSON Schema Credentials issued by the Ecosystem DID.
+The Ecosystem DID Document MUST include a `service` entry of type `LinkedVerifiablePresentation` that references a Verifiable Presentation containing one or more VTJSC issued by the Ecosystem DID.
 
 Example:
 
@@ -566,20 +566,20 @@ Example:
 Once an Ecosystem has:
 
 - Created its **Credential Schemas** in the VPR
-- Issued the corresponding **JSON Schema Credentials** using the Ecosystem DID
-- Published those JSON Schema Credentials as **Linked Verifiable Presentations** in the Ecosystem DID Document
+- Issued the corresponding **VTJSC** using the Ecosystem DID
+- Published those VTJSC as **Linked Verifiable Presentations** in the Ecosystem DID Document
 
 authorized issuers MAY issue Verifiable Credentials that conform to those schemas.
 
 Verifiable Credentials that comply with the Verifiable Trust Specification are referred to as **Verifiable Trust Credentials (VTCs)**.
 
-A Verifiable Trust Credential MUST reference the applicable **Verifiable Trust Json Schema Credential** issued by the Trust Registry Ecosystem DID via its `credentialSchema` property. This reference establishes a verifiable and discoverable trust chain between:
+A Verifiable Trust Credential MUST reference the applicable **VTJSC** issued by the Trust Registry Ecosystem DID via its `credentialSchema` property. This reference establishes a verifiable and discoverable trust chain between:
 
 - the issued credential,
 - the governing schema definition,
 - and the Ecosystem that controls the Trust Registry in which the schema is defined.
 
-During verification, wallets and verifiers can resolve the referenced Verifiable Trust Json Schema Credential, verify its authenticity, and determine whether the issuing DID was authorized to issue credentials under that schema at the time of issuance.
+During verification, wallets and verifiers can resolve the referenced VTJSC, verify its authenticity, and determine whether the issuing DID was authorized to issue credentials under that schema at the time of issuance.
 
 #### Issuance Time and Unlinkability Considerations
 
@@ -1164,12 +1164,12 @@ The resulting `json_schema` attribute will be the following Json Schema.
 }
 ```
 
-### [VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema Verifiable Trust Json Schema Credentials
+### [VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema VTJSCs
 
-- Json Schema Credential [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].
-- Json Schema Credential [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG].
-- Json Schema Credential [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSONA].
-- Json Schema Credential [VT-ECS-UA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-UA].
+- VTJSC [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].
+- VTJSC [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG].
+- VTJSC [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSONA].
+- VTJSC [VT-ECS-UA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-UA].
 
 ### [VT-ECS-CRED] Essential Schema Verifiable Trust Credentials
 
@@ -1348,7 +1348,7 @@ Such services typically ingest and index:
 - VPR entries (Trust Registries, Credential Schemas, Permissions, ...)
 - Ecosystem DID Documents
 - Linked Verifiable Presentations published in DID Documents
-- Verifiable Trust Credentials and Verifiable Trust JSON Schema Credentials
+- Verifiable Trust Credentials and Verifiable Trust Json Schema Credentials
 - On-chain digestSRI anchoring data
 
 Using this indexed data, a relying party (or a wallet acting on its behalf) can answer higher-level trust questions such as the following.
