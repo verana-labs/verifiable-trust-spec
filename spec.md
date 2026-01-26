@@ -263,7 +263,6 @@ package "Verifiable Public Registry" as vpr {
    
 }
 
-
 @enduml
 
 ```
