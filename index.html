@@ -210,7 +210,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 </ul>
 <p>This ensures that all connections are based on verifiable trust, not assumptions.</p>
 <h3 id="what-is-a-verifiable-public-registry-vpr"><a class="toc-anchor" href="#what-is-a-verifiable-public-registry-vpr" >§</a> What is a Verifiable Public Registry (VPR)?</h3>
-<div id="note-132" class="notice note"><a class="notice-link" href="#note-132">NOTE</a><p>There is a <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
+<div id="note-142" class="notice note"><a class="notice-link" href="#note-142">NOTE</a><p>There is a <a path-0="verana-labs.github.io"path-1="verifiable-trust-vpr-spec"path-2=""href="https://verana-labs.github.io/verifiable-trust-vpr-spec/" >separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
 </div>
 <p><em>This section is non-normative.</em></p>
 <p>A <strong>Verifiable Public Registry (VPR)</strong> is a <strong>“registry of registries”</strong>, a public service that provides foundational infrastructure for decentralized trust ecosystems. It offers:</p>
@@ -391,7 +391,7 @@ A standardized API used by <strong>Verifiable Services (VSs)</strong> and <stron
 </li>
 <li>a valid cryptographic proof, as defined by the Verifiable Credentials specification</li>
 </ul>
-<div id="note-133" class="notice note"><a class="notice-link" href="#note-133">NOTE</a><p><a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3="#jsonschemacredential"href="https://www.w3.org/TR/vc-json-schema/#jsonschemacredential" >vc-json-schema</a> defines the <code>credentialSchema</code> attribute content. It MUST be exactly as specified in <a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3="#jsonschemacredential"href="https://www.w3.org/TR/vc-json-schema/#jsonschemacredential" >vc-json-schema</a>.</p>
+<div id="note-143" class="notice note"><a class="notice-link" href="#note-143">NOTE</a><p><a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3="#jsonschemacredential"href="https://www.w3.org/TR/vc-json-schema/#jsonschemacredential" >vc-json-schema</a> defines the <code>credentialSchema</code> attribute content. It MUST be exactly as specified in <a path-0="www.w3.org"path-1="TR"path-2="vc-json-schema"path-3="#jsonschemacredential"href="https://www.w3.org/TR/vc-json-schema/#jsonschemacredential" >vc-json-schema</a>.</p>
 </div>
 <p>This credential provides verifiable evidence of:</p>
 <ul>
@@ -517,6 +517,8 @@ Suitable for private credentials where:</p>
 <li><code>@context</code>: MUST include <code>https://www.w3.org/ns/credentials/v2</code></li>
 <li><code>id</code>: a globally unique identifier for the credential (e.g., a <code>urn:uuid:</code>)</li>
 <li><code>type</code>: MUST include <code>VerifiableCredential</code> and <code>VerifiableTrustCredential</code>, and MAY include one or more schema-specific types</li>
+<li><code>validFrom</code>: optional</li>
+<li><code>validUntil</code>: optional</li>
 <li><code>issuer</code>: the DID of the authorized issuer issuing the credential</li>
 <li><code>credentialSubject</code>: an object containing:
 <ul>
@@ -538,6 +540,8 @@ Suitable for private credentials where:</p>
     <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
   <span class="token punctuation">]</span><span class="token punctuation">,</span>
   <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"urn:uuid:7f3c9a2e-9c8e-4f6e-9c0b-1e3f2d8a91ab"</span><span class="token punctuation">,</span>
+  <span class="token property">"validFrom"</span><span class="token operator">:</span> <span class="token string">"2010-01-01T19:23:24Z"</span><span class="token punctuation">,</span>
+  <span class="token property">"validUntil"</span><span class="token operator">:</span> <span class="token string">"2020-01-01T19:23:24Z"</span><span class="token punctuation">,</span>
   <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span>
     <span class="token string">"VerifiableTrustCredential"</span><span class="token punctuation">,</span>
@@ -1035,8 +1039,8 @@ UTF8 charset, min length: 1 char, max length: 128 chars.</p>
 <h3 id="vt-ecs-json-schema-cred-w3c-essential-schema-vtjscs"><a class="toc-anchor" href="#vt-ecs-json-schema-cred-w3c-essential-schema-vtjscs" >§</a> [VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema VTJSCs</h3>
 <ul>
 <li>VTJSC [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].</li>
-<li>VTJSC [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG].</li>
-<li>VTJSC [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSONA].</li>
+<li>VTJSC [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG]. MUST have <code>validFrom</code> and <code>validUntil</code> properties.</li>
+<li>VTJSC [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSONA]. MUST have <code>validFrom</code> and <code>validUntil</code> properties.</li>
 <li>VTJSC [VT-ECS-UA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-UA].</li>
 </ul>
 <h3 id="vt-ecs-cred-essential-schema-verifiable-trust-credentials"><a class="toc-anchor" href="#vt-ecs-cred-essential-schema-verifiable-trust-credentials" >§</a> [VT-ECS-CRED] Essential Schema Verifiable Trust Credentials</h3>
@@ -1132,7 +1136,7 @@ The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-refer
 <p>[VS-REQ-6] A <a class="term-reference" href="#term:vs">VS</a> MUST verify issuers of Verifiable Trust Credentials.</p>
 </li>
 </ul>
-<div id="note-134" class="notice note"><a class="notice-link" href="#note-134">NOTE</a><p>In other words, to qualify as a Verifiable Service:</p>
+<div id="note-144" class="notice note"><a class="notice-link" href="#note-144">NOTE</a><p>In other words, to qualify as a Verifiable Service:</p>
 <ul>
 <li>the service MAY directly identify itself by presenting an Organization or Persona Essential Credential; <strong>or</strong></li>
 <li>the issuer of the Service Essential Credential MUST identify itself by presenting an Organization or Persona Essential Credential.</li>
@@ -1155,9 +1159,9 @@ The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-refer
 </ul>
 </li>
 </ul>
-<div id="note-135" class="notice note"><a class="notice-link" href="#note-135">NOTE</a><p>Using <a path-0="hyperledger.github.io"path-1="anoncreds-spec"path-2=""href="https://hyperledger.github.io/anoncreds-spec/" >anoncreds</a> for ECS User Agent VTCs is REQUIRED to reduce correlation and tracking risks, together with selective disclosure and unlinkable presentations.</p>
+<div id="note-145" class="notice note"><a class="notice-link" href="#note-145">NOTE</a><p>Using <a path-0="hyperledger.github.io"path-1="anoncreds-spec"path-2=""href="https://hyperledger.github.io/anoncreds-spec/" >anoncreds</a> for ECS User Agent VTCs is REQUIRED to reduce correlation and tracking risks, together with selective disclosure and unlinkable presentations.</p>
 </div>
-<div id="note-136" class="notice note"><a class="notice-link" href="#note-136">NOTE</a><p>These requirements ensure that a Verifiable User Agent can cryptographically prove the identity and authenticity of the software it represents, while preserving user privacy and enabling policy-based trust decisions by services and peer user agents.</p>
+<div id="note-146" class="notice note"><a class="notice-link" href="#note-146">NOTE</a><p>These requirements ensure that a Verifiable User Agent can cryptographically prove the identity and authenticity of the software it represents, while preserving user privacy and enabling policy-based trust decisions by services and peer user agents.</p>
 </div>
 <h3 id="cib-credential-issuance-by"><a class="toc-anchor" href="#cib-credential-issuance-by" >§</a> [CIB] Credential Issuance by</h3>
 <ul>
