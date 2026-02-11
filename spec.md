@@ -1,8 +1,6 @@
 # Verifiable Trust v4 Specification
 
-**Specification Status:** *Draft*
-
-**Latest Draft:** [verana-labs/verifiable-trust-spec](https://github.com/verana-labs/verifiable-trust-spec)
+**Latest Draft:** [spec v4-draft4](https://github.com/verana-labs/verifiable-trust-spec)
 
 **Editors:**
 
@@ -396,10 +394,6 @@ Example of a Json Schema credential schema:
           "minLength": 1,
           "maxLength": 256
         },
-        "expirationDate": {
-          "type": "string",
-          "format": "date"
-        },
         "countryOfResidence": {
           "type": "string",
           "minLength": 2,
@@ -409,8 +403,6 @@ Example of a Json Schema credential schema:
       "required": [
         "id",
         "lastName",
-        "birthDate",
-        "expirationDate",
         "countryOfResidence"
       ]
     }
@@ -431,8 +423,6 @@ To make things verifiable, for a given credential schema:
 - Ecosystem creates a Credential Json Schema in a VPR, linked to its Ecosystem DID.
 - Ecosystem issues, with its DID, a **Json Schema Credential** linked to its credential **Json Schema** in the VPR
 - Then, authorized issuers can issue **Verifiable Trust Credentials** linked to the **Json Schema Credential** issued by Ecosystem DID.
-
-.
 
 ```plantuml
 
@@ -534,7 +524,6 @@ This credential provides verifiable evidence of:
 }
 ```
 
-
 ### [VT-ECOSYSTEM-DIDDOC] Ecosystem DID Document
 
 Finally, the Ecosystem MUST publish each **VTJSC** as a **Linked Verifiable Presentation** in the **DID Document** associated with the **Trust Registry Ecosystem DID** registered in the VPR.
@@ -572,13 +561,13 @@ authorized issuers MAY issue Verifiable Credentials that conform to those schema
 
 Verifiable Credentials that comply with the Verifiable Trust Specification are referred to as **Verifiable Trust Credentials (VTCs)**.
 
-A Verifiable Trust Credential MUST reference the applicable **VTJSC** issued by the Trust Registry Ecosystem DID via its `credentialSchema` property. This reference establishes a verifiable and discoverable trust chain between:
+A Verifiable Trust Credential MUST be linked to the applicable **VTJSC** issued by the Trust Registry Ecosystem DID. For W3C VTCs ([VT-CRED-W3C]), this link is established directly via the `credentialSchema` property. For AnonCreds VTCs ([VT-CRED-ANON]), the link is indirect: the AnonCreds Credential Definition references the VTJSC via `relatedJsonSchemaCredentialId`. In both cases, this establishes a verifiable and discoverable trust chain between:
 
 - the issued credential,
 - the governing schema definition,
 - and the Ecosystem that controls the Trust Registry in which the schema is defined.
 
-During verification, wallets and verifiers can resolve the referenced VTJSC, verify its authenticity, and determine whether the issuing DID was authorized to issue credentials under that schema at the time of issuance.
+During verification, wallets and verifiers can resolve the referenced VTJSC, verify its authenticity, and determine whether the issuing DID was authorized to issue credentials under that schema. For W3C VTCs, authorization is checked at the objectively determined issuance time (see [VT-CRED-W3C]). For AnonCreds VTCs, authorization is checked at credential reception time (see [VT-CRED-ANON] and [CIT]).
 
 #### Issuance Time and Unlinkability Considerations
 
@@ -592,7 +581,7 @@ Verifiable Trust Credentials are designed to support multiple credential contain
 
 In decentralized systems, relying on issuer-asserted timestamps (such as `issuanceDate`) is insufficient, as such values can be forged or backdated by the issuer.
 
-To address this, the Verifiable Trust architecture enables **objective issuance-time determination** by anchoring a deterministic cryptographic digest of the credential in the VPR at issuance time. Verifiers can recompute this digest from the presented credential and use the corresponding VPR registration timestamp as the effective issuance time.
+To address this, the Verifiable Trust architecture enables **objective issuance-time determination** for W3C VTCs by anchoring a deterministic cryptographic digest of the credential in the VPR at issuance time. Verifiers can recompute this digest from the presented credential and use the corresponding VPR registration timestamp as the effective issuance time. Note that this mechanism does not apply to AnonCreds VTCs, where unlinkability takes precedence over objective issuance-time anchoring (see [VT-CRED-ANON]).
 
 This approach is:
 
@@ -629,7 +618,7 @@ The Verifiable Trust Specification is **container-agnostic** and supports multip
   Suitable for private credentials where:
   - selective disclosure is required
   - multiple presentations must not be linkable
-  - issuer authorization and issuance-time constraints can be enforced via zero-knowledge proofs rather than stable identifiers
+  - issuer authorization is verified by the holder's wallet at credential reception time rather than anchored via stable identifiers
 
 Depending on the credential format and proof system used, ecosystems can achieve different trade-offs between:
 
@@ -704,14 +693,18 @@ Instead, the issuance time of a Verifiable Trust Credential is **objectively det
 
 When issuing a Verifiable Trust Credential, the issuer MUST:
 
-- Compute a deterministic **Subresource Integrity digest** (`digestSRI`) of the issued credential, using the algorithm mandated by the issuer’s authorization policy
-- Register this `digestSRI` in the VPR as part of the issuance process, as explained [here in the VPR spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-perm-msg-10-create-or-update-permission-session).
+1. **Canonicalize** the credential using the [JSON Canonicalization Scheme (JCS)](https://www.rfc-editor.org/rfc/rfc8785) as defined in RFC 8785
+
+2. **Compute** a deterministic **Subresource Integrity digest** (`digestSRI`) of the canonicalized credential using the `digest_algorithm` specified in the [CredentialSchema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema) (`SHA384` or `SHA512`)
+
+3. **Register** this `digestSRI` in the VPR by calling [CreateOrUpdatePermissionSession](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-perm-msg-10-create-or-update-permission-session) with the `digest_sri` parameter. The VPR stores the digest with the block timestamp via [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest).
 
 During verification, a trust resolution process MUST:
 
-1. Recompute the `digestSRI` from the received credential
-2. Locate the corresponding digest entry in the VPR
-3. Use the VPR record timestamp associated with that digest as the **effective issuance time** of the credential
+1. **Canonicalize** the received credential using [JCS (RFC 8785)](https://www.rfc-editor.org/rfc/rfc8785)
+2. **Recompute** the `digestSRI` from the canonicalized credential using the `digest_algorithm` from the [CredentialSchema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema)
+3. **Query** the VPR using [Get Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-qry-1-get-digest) to locate the corresponding digest entry
+4. **Use** the `created` timestamp from the returned `Digest` entry as the **effective issuance time** of the credential
 
 This mechanism provides a verifiable, tamper-resistant issuance-time signal that:
 
@@ -735,9 +728,130 @@ A DID Document MAY present an unlimited number of Verifiable Trust Credential as
 
 > The `example` component of the fragment identifier is an **arbitrary, controller-defined qualifier** and MAY be any value chosen by the DID controller to prevent fragment collisions within the same DID Document (e.g., a schema name, logical grouping, version label, or sequence identifier). It has no normative meaning beyond uniqueness within the DID Document.
 
-### [VT-CRED-ANON] Anoncreds Verifiable Trust Credential (VTC)
+### [VT-CRED-ANON] AnonCreds Verifiable Trust Credential (VTC)
 
-TBW
+An AnonCreds Verifiable Trust Credential is a Verifiable Trust Credential issued using the [AnonCreds](https://anoncreds.github.io/anoncreds-spec/) specification. AnonCreds credentials provide **zero-knowledge proof (ZKP)** capabilities that are essential for credentials requiring strong privacy guarantees.
+
+AnonCreds VTCs are REQUIRED when:
+
+- **Selective disclosure** is needed — the holder reveals only the requested attributes, not the full credential.
+- **Unlinkability** is needed — multiple presentations of the same credential MUST NOT be linkable by verifiers or colluding parties.
+- **Predicate proofs** are needed — the holder proves a boolean expression (e.g., `age >= 18`) without revealing the underlying claim value.
+- **Holder correlation resistance** is needed — no correlatable identifier is shared during issuance or presentation.
+
+::: note
+Using AnonCreds for ECS User Agent VTCs is REQUIRED as specified in [VUA-REQ]. See also [VT-ECS-UA-CRED-ANON].
+:::
+
+#### AnonCreds VTC Setup
+
+In the Verifiable Trust concept, AnonCreds VTCs do **not** require publishing a separate [AnonCreds Schema](https://anoncreds.github.io/anoncreds-spec/#schema-publisher-publish-schema-object) to a VDR. Instead, the credential schema is already defined by the [VT-JSON-SCHEMA-CRED-W3C] (VTJSC) issued by the Ecosystem DID, and the AnonCreds Credential Definition references it.
+
+Before issuing AnonCreds VTCs, the following setup MUST be completed:
+
+1. **Credential Definition**: The issuer MUST create and publish a [Credential Definition](https://anoncreds.github.io/anoncreds-spec/#issuer-create-and-publish-credential-definition-object). The Credential Definition contains the issuer's public keys used for signing credentials and is required by holders and verifiers for presentation generation and verification. The Credential Definition MUST include a `relatedJsonSchemaCredentialId` that references the VTJSC issued by the Ecosystem DID for the corresponding `CredentialSchema`. The `attributes` list MUST match the attributes defined in the referenced VTJSC.
+
+2. **Revocation Registry** (optional): If credential revocation is needed, the issuer MUST create and publish a [Revocation Registry Definition](https://anoncreds.github.io/anoncreds-spec/#issuer-create-and-publish-revocation-registry-objects) and an initial Revocation Status List.
+
+3. **Link Secret**: Each holder MUST create and store a [link secret](https://anoncreds.github.io/anoncreds-spec/#holder-create-and-store-link-secret), a private value that enables credential-to-holder binding across multiple credentials without revealing a correlatable identifier.
+
+##### AnonCreds Credential Definition Example
+
+```json
+[
+  {
+    "id": "did:example:issuer/resources/creddef-123",
+    "name": "gov-id",
+    "version": "1.0",
+    "attributes": [
+      "birthDate",
+      "documentNumber",
+      "documentType",
+      "firstName",
+      "lastName",
+      "nationality"
+    ],
+    "revocationSupported": false,
+    "relatedJsonSchemaCredentialId": "https://example-ecosystem/vt/schemas-gov-id-jsc.json"
+  }
+]
+```
+
+In this example, `relatedJsonSchemaCredentialId` points to the VTJSC issued by the Ecosystem DID. This establishes the trust chain between the AnonCreds Credential Definition and the ecosystem-governed schema, without duplicating the schema definition in a separate AnonCreds-specific registry.
+
+#### AnonCreds VTC Issuance
+
+AnonCreds credential issuance follows the [AnonCreds Issuance Data Flow](https://anoncreds.github.io/anoncreds-spec/#anoncreds-issuance-data-flow):
+
+1. The issuer sends a **Credential Offer** referencing the Credential Definition.
+2. The holder evaluates the offer, retrieves the Credential Definition from the VDR, and sends a **Credential Request** that includes a blinded commitment to the holder's link secret.
+3. The issuer verifies the request and issues the credential with a **blind signature** over the credential attributes and the blinded link secret.
+4. The holder unblinds the signature, verifies it, and stores the credential.
+
+The issuer never learns the holder's link secret, and only the holder can unblind the final credential signature.
+
+#### AnonCreds VTC Presentation
+
+AnonCreds holders never present the raw signed credential to verifiers. Instead, the holder derives a **verifiable presentation** — a zero-knowledge proof that demonstrates:
+
+- Knowledge of a valid credential signature from a specific issuer (identified by Credential Definition).
+- The values of selectively disclosed attributes.
+- The truth of requested predicate expressions over undisclosed integer attributes.
+- That the credential has not been revoked (if applicable), without revealing a correlatable revocation identifier.
+- That all source credentials in a multi-credential presentation are bound to the same link secret.
+
+Presentations follow the [AnonCreds Presentation Data Flow](https://anoncreds.github.io/anoncreds-spec/#anoncreds-presentation-data-flow). Verifiers create a **Presentation Request** specifying requested attributes, predicates, and non-revocation intervals.
+
+#### AnonCreds VTCs: Issuance Time
+
+Unlike W3C VTCs, AnonCreds VTCs do **not** anchor a `digestSRI` in the VPR to establish issuance time. Because AnonCreds presentations are derived zero-knowledge proofs — not the original credential — a verifier cannot independently recompute a digest from the presentation, making a VPR-anchored digest binding impractical without introducing correlation risks that conflict with AnonCreds' privacy goals.
+
+Issuer authorization checks at credential reception time are covered by [CIT].
+
+#### AnonCreds VTC W3C Representation
+
+AnonCreds credentials MAY be represented in the [W3C Verifiable Credentials format](https://anoncreds.github.io/anoncreds-spec/#w3c-verifiable-credentials-representation). In this representation:
+
+- `@context` MUST include the AnonCreds W3C context
+- `type` MUST include `VerifiableCredential` and `AnonCredsCredential`
+- `credentialSchema` MUST reference the AnonCreds Credential Definition. The Credential Definition itself links back to the VTJSC via `relatedJsonSchemaCredentialId`.
+- `proof` MUST include an `AnonCredsProof2023` entry
+
+```json
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://raw.githubusercontent.com/anoncreds/anoncreds-spec/main/data/anoncreds-w3c-context.json"
+  ],
+  "type": [
+    "VerifiableCredential",
+    "AnonCredsCredential"
+  ],
+  "issuer": "did:example:authorized-issuer",
+  "credentialSchema": {
+    "type": "AnonCredsDefinition",
+    "definition": "did:example:authorized-issuer/resources/creddef-123"
+  },
+  "credentialSubject": {
+    "userAgentType": "mobile-wallet"
+  },
+  "proof": {
+    "type": "AnonCredsProof2023",
+    "signature": "AAAgf9w5.....8Z_x3FqdwRHoWruiF0FlM"
+  }
+}
+```
+
+#### AnonCreds VTC Privacy Properties
+
+AnonCreds VTCs provide the following privacy properties relevant to the Verifiable Trust framework:
+
+- **No correlatable holder identifier**: The link secret is never revealed; presentations prove knowledge of it via ZKP.
+- **Unlinkable presentations**: Each presentation generates unique proof values, preventing verifiers from linking multiple presentations of the same credential.
+- **Selective disclosure**: Only requested attributes are revealed; unrequested attributes remain hidden.
+- **Predicate proofs**: Integer attributes (e.g., dates, ages) can be proven via boolean expressions without revealing the actual values.
+- **Non-revocation proofs**: Revocation status is proven without disclosing a correlatable credential index.
+- **Multi-credential binding**: A holder can prove that multiple credentials were issued to the same entity (same link secret) without revealing the link secret itself.
 
 ### [ECS] Essential Credential Schemas
 
@@ -1176,74 +1290,74 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 ### [VT-ECS-CRED] Essential Schema Verifiable Trust Credentials
 
-- Service Credential [VT-ECS-SERVICE-CRED-W3C]: a [VT-CRED-W3C] linked to a [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C]. [VT-ECS-SERVICE-CRED-W3C-LINKED-VP] MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-ecs-service-vtc-vp`. Example:
+- Service Credential [VT-ECS-SERVICE-CRED-W3C]: a [VT-CRED-W3C] linked to a [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C]. [VT-ECS-SERVICE-CRED-W3C-LINKED-VP] MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-schemas-service-vtc-vp`. Example:
 
 ```json
   "service": [
     {
-      "id": "did:example:service#vpr-ecs-service-vtc-vp",
+      "id": "did:example:service#vpr-schemas-service-vtc-vp",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://example.com/vpr-ecs-service-vtc-vp.json"]
+      "serviceEndpoint": ["https://example.com/vpr-schemas-service-vtc-vp.json"]
     }
   ]
 ```
 
-- Organization Credential [VT-ECS-ORG-CRED-W3C]: a [VT-CRED-W3C] linked to a [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]. [VT-ECS-ORG-CRED-W3C-LINKED-VP] MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-ecs-org-vtc-vp`. Example:
+- Organization Credential [VT-ECS-ORG-CRED-W3C]: a [VT-CRED-W3C] linked to a [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]. [VT-ECS-ORG-CRED-W3C-LINKED-VP] MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-schemas-org-vtc-vp`. Example:
 
 ```json
   "service": [
     {
-      "id": "did:example:organization#vpr-ecs-org-vtc-vp",
+      "id": "did:example:organization#vpr-schemas-org-vtc-vp",
       "type": "LinkedVerifiablePresentation",
-      "serviceEndpoint": ["https://example.com/vpr-ecs-org-vtc-vp.json"]
+      "serviceEndpoint": ["https://example.com/vpr-schemas-org-vtc-vp.json"]
     }
   ]
 ```
 
-- Persona Credential [VT-ECS-PERSONA-CRED-W3C]: a [VT-CRED-W3C] linked to a [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]. [VT-ECS-PERSONA-CRED-W3C-LINKED-VP] MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-ecs-persona-vtc-vp`. Example:
+- Persona Credential [VT-ECS-PERSONA-CRED-W3C]: a [VT-CRED-W3C] linked to a [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]. [VT-ECS-PERSONA-CRED-W3C-LINKED-VP] MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-schemas-persona-vtc-vp`. Example:
 
 ```json
   "service": [
    {
-    "id": "did:example:persona#vpr-ecs-persona-vtc-vp",
+    "id": "did:example:persona#vpr-schemas-persona-vtc-vp",
     "type": "LinkedVerifiablePresentation",
-    "serviceEndpoint": ["https://example.com/vpr-ecs-persona-vtc-vp.json"]
+    "serviceEndpoint": ["https://example.com/vpr-schemas-persona-vtc-vp.json"]
    }
   ]
 ```
 
-- User Agent Credential [VT-ECS-UA-CRED]: a [VT-CRED] linked to a [VT-ECS-UA-JSON-SCHEMA-CRED-W3C]. MUST NOT be declared in a DID Document, as it is issued to User Agent instances.
+- User Agent Credential [VT-ECS-UA-CRED-ANON]: a [VT-CRED-ANON] linked to a [VT-ECS-UA-JSON-SCHEMA-CRED-W3C]. MUST NOT be declared in a DID Document, as it is issued to User Agent instances.
 
 ### [VT-ECS-ECOSYSTEM-DIDDOC] Ecosystem DID Document for declaring Essential Credential Schemas
 
 If an Ecosystem Trust Registry wishes to provide ECS trust resolution, it MUST present VT Json Schema Credential(s) of all ECSs, as well as the corresponding VPR entry for verification. To do that, Ecosystem MUST define the following entries in its DID Document, for each ECS:
 
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-ecs-service-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C].
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-ecs-org-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C].
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-ecs-persona-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C].
-- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-ecs-ua-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-UA-JSON-SCHEMA-CRED-W3C].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-schemas-service-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-schemas-org-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-schemas-persona-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-schemas-ua-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-UA-JSON-SCHEMA-CRED-W3C].
 
 Example:
 
 ```json
   "service": [
     {
-      "id": "did:example:ecosystem#vpr-ecs-service-vtjsc-vp",
+      "id": "did:example:ecosystem#vpr-schemas-service-vtjsc-vp",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecosystem/ecs-service-vtjsc-vp.json"]
     },
     {
-      "id": "did:example:ecosystem#vpr-ecs-org-vtjsc-vp",
+      "id": "did:example:ecosystem#vpr-schemas-org-vtjsc-vp",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecosystem/ecs-org-vtjsc-vp.json"]
     },
     {
-      "id": "did:example:ecosystem#vpr-ecs-persona-vtjsc-vp",
+      "id": "did:example:ecosystem#vpr-schemas-persona-vtjsc-vp",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecosystem/ecs-persona-vtjsc-vp.json"]
     },
     {
-      "id": "did:example:ecosystem#vpr-ecs-ua-vtjsc-vp",
+      "id": "did:example:ecosystem#vpr-schemas-ua-vtjsc-vp",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecosystem/ecs-ua-vtjsc-vp.json"]
     }
@@ -1287,7 +1401,7 @@ This ensures that every Verifiable Service is ultimately bound to a legally or n
   - credential verifiers when receiving presentation requests.  
 
 ::: note
-Using [anoncreds](https://hyperledger.github.io/anoncreds-spec/) for ECS User Agent VTCs is REQUIRED to reduce correlation and tracking risks, together with selective disclosure and unlinkable presentations.
+Using [anoncreds](https://anoncreds.github.io/anoncreds-spec/) for ECS User Agent VTCs is REQUIRED to reduce correlation and tracking risks, together with selective disclosure and unlinkable presentations.
 :::
 
 ::: note
@@ -1310,13 +1424,13 @@ These requirements ensure that a Verifiable User Agent can cryptographically pro
 
 - [CIT-1] A [[ref: VS]] or a [[ref: VUA]] CAN be offered [VT-CRED] VT Credentials.
 - [CIT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT be offered credentials that are not compliant with [VT-CRED].
-- [CIT-3] When a [[ref: VS]] is offered a credential, it MUST verify that the issuer is authorized by the Ecosystem that controls the schema to issue a credential of this schema.
+- [CIT-3] When a [[ref: VS]] or a [[ref: VUA]] is offered a credential, it MUST verify that the issuer is authorized by the Ecosystem that controls the schema to issue a credential of this schema.
 
 ### [PRT] Presentation Requested to
 
 - [PRT-1] A [[ref: VS]] or a [[ref: VUA]] CAN request presentation of [VT-CRED] VT Credentials
 - [PRT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of credentials that are not compliant with [VT-CRED].
-- [PRT-3] When a [[ref: VS]] receives a presentation request, before presenting a credential, it MUST verify that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema.
+- [PRT-3] When a [[ref: VS]] or a [[ref: VUA]] receives a presentation request, before presenting a credential, it MUST verify that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema.
 
 ### [VS-CONN-VS] Requirements for a VS to accept a connection from another service
 
@@ -1336,7 +1450,7 @@ When a [[ref: VUA]] receives a connection from a User Agent, it MUST request the
 
 When a [[ref: VUA]] initiates a connection to another User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED-ANON] credential before starting to provide the service, and verify the presented credential (if any).
 
-For communication channel between User Agents to be enabled, both User Agents MUST have requested and verified the  [VT-ECS-UA-CRED-ANON] credential presented by the peer.
+For communication channel between User Agents to be enabled, both User Agents MUST have requested and verified the [VT-ECS-UA-CRED-ANON] credential presented by the peer.
 
 ### Trust Resolution
 
@@ -1352,7 +1466,7 @@ Such services typically ingest and index:
 - Ecosystem DID Documents
 - Linked Verifiable Presentations published in DID Documents
 - Verifiable Trust Credentials and Verifiable Trust Json Schema Credentials
-- On-chain digestSRI anchoring data
+- On-chain digestSRI anchoring data (for W3C VTCs)
 
 Using this indexed data, a relying party (or a wallet acting on its behalf) can answer higher-level trust questions such as the following.
 
@@ -1369,32 +1483,32 @@ Examples below illustrates how trust resolution is performed assuming that all r
 
 #### Verify the credential is cryptographically valid
 
-- Verify the credential signature using the issuer’s DID Document
-- Ensure the credential conforms to W3C Verifiable Credentials v2.0 processing rules
+- For W3C VTCs: verify the credential signature using the issuer's DID Document and ensure the credential conforms to W3C Verifiable Credentials v2.0 processing rules
+- For AnonCreds VTCs: verify the zero-knowledge proof using the issuer's Credential Definition
 
 #### Resolve the referenced JSON Schema Credential
 
-- Read `credentialSchema.id` from the credential
-- Resolve the corresponding **Verifiable Trust JSON Schema Credential (vtjsc)**
+- For W3C VTCs: read `credentialSchema.id` from the credential to locate the VTJSC directly
+- For AnonCreds VTCs: resolve the Credential Definition referenced in the credential, then read its `relatedJsonSchemaCredentialId` to locate the VTJSC
 - Verify:
   - the vtjsc signature
   - that it is issued by an Ecosystem DID
   - that it binds to a valid `CredentialSchema` entry in the VPR
 
-#### Determine the issuance time of the credential
+#### Determine the issuance time of the credential (W3C VTCs only)
+
+This step applies to W3C VTCs only. AnonCreds VTCs do not support objective issuance-time determination (see [VT-CRED-ANON]).
 
 - Recompute the credential’s deterministic `digestSRI`
 - Locate the corresponding digest entry in the VPR
 - Use the timestamp associated with that digest as the **effective issuance time**
 
-#### Verify issuer authorization at issuance time
+#### Verify issuer authorization
 
 - Identify the Ecosystem DID that issued the vtjsc
 - Query the Trust Registry governed by that Ecosystem
-- Verify that:
-  - the credential issuer DID was authorized
-  - for the referenced vtjsc
-  - at the effective issuance time determined above
+- For W3C VTCs: verify that the credential issuer DID was authorized for the referenced vtjsc **at the effective issuance time** determined above
+- For AnonCreds VTCs: verify that the credential issuer DID is currently authorized for the referenced vtjsc. Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
 
 If this check fails, the credential MUST be rejected.
 
@@ -1425,9 +1539,9 @@ This Ecosystem is the ultimate trust root for the credential.
 A relying party can therefore answer the following questions deterministically:
 
 - Is this credential authentic?
-- When was it issued?
+- When was it issued? (W3C VTCs only)
 - I have a session with `uuid=7e55834f-5a81-4029-9121-2cab1268fb43` with Verifiable Service `did=did:Example:123`. Can this DID request the presentation of a credential of vtjsc with `id=https://example/vtjsc.json` to me?
-- Was the issuer authorized at that time?
+- Was the issuer authorized? (at issuance time for W3C VTCs; at reception time for AnonCreds VTCs)
 - Which Ecosystem governs this credential?
 - Is the issuer itself a Verifiable Service (if required)?
 
@@ -1457,26 +1571,26 @@ All trust decisions are derived from verifiable artifacts and cryptographic proo
       "resolver": [
         "https://rsv-mainnet-node-1/",
         "https://rsv-mainnet-node-2/"
-      ]
-      "version": "1"
+      ],
+      "version": "1",
       "production": true
     },
     { 
       "id": "vna-testnet-1",
       "scheme": "vpr:verana:vna-testnet-1",
       "api": [
-        "https://idx-mainnet-node-1/",
-        "https://idx-mainnet-node-2/"
+        "https://idx-testnet-node-1/",
+        "https://idx-testnet-node-2/"
       ],
       "rpc": [
-        "https://rpc-mainnet-node-1/",
-        "https://rpc-mainnet-node-2/"
+        "https://rpc-testnet-node-1/",
+        "https://rpc-testnet-node-2/"
       ],
       "resolver": [
-        "https://rsv-mainnet-node-1/",
-        "https://rsv-mainnet-node-2/"
-      ]
-      "version": "1"
+        "https://rsv-testnet-node-1/",
+        "https://rsv-testnet-node-2/"
+      ],
+      "version": "1",
       "production": true
     }
   ]
