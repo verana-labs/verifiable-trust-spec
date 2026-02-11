@@ -1452,100 +1452,30 @@ When a [[ref: VUA]] initiates a connection to another User Agent, it MUST reques
 
 For communication channel between User Agents to be enabled, both User Agents MUST have requested and verified the [VT-ECS-UA-CRED-ANON] credential presented by the peer.
 
-### Trust Resolution
+### [TR] Trust Resolution
 
-*This section is non-normative.*
+- [TR-1] Trust resolution MUST be **recursive**. When a [[ref: VS]] or a [[ref: VUA]] encounters a DID during trust resolution — whether as a credential issuer, a service operator, or a credential subject — it MUST resolve that DID and verify its associated credentials using the same trust resolution process.
 
-Trust resolution in the Verifiable Trust ecosystem is performed **outside the VPR itself** and relies on auxiliary services (indexers, crawlers, resolvers) that continuously crawl, cache, and index public Verifiable Trust artifacts.
+- [TR-2] Every Verifiable Trust Credential encountered during trust resolution MUST be verified as follows:
+  - For W3C VTCs ([VT-CRED-W3C]): verify the credential signature using the issuer's DID Document.
+  - For AnonCreds VTCs ([VT-CRED-ANON]): verify the zero-knowledge proof using the issuer's Credential Definition.
 
-These services do **not create trust**; they merely **make trust resolvable**. All trust decisions remain cryptographically verifiable and independently reproducible by relying parties.
+- [TR-3] For every Verifiable Trust Credential encountered during trust resolution, the referenced VTJSC MUST be resolved and verified:
+  - For W3C VTCs: the VTJSC is located directly via `credentialSchema.id`.
+  - For AnonCreds VTCs: the VTJSC is located indirectly via the Credential Definition's `relatedJsonSchemaCredentialId`.
+  - The VTJSC signature MUST be verified, and it MUST be confirmed that the VTJSC is issued by an Ecosystem DID and binds to a valid `CredentialSchema` entry in the VPR.
 
-Such services typically ingest and index:
+- [TR-4] For W3C VTCs, the **effective issuance time** MUST be determined by recomputing the credential's `digestSRI` and locating the corresponding digest entry in the VPR. The timestamp associated with that digest entry is the effective issuance time. This step does not apply to AnonCreds VTCs (see [VT-CRED-ANON]).
 
-- VPR entries (Trust Registries, Credential Schemas, Permissions, ...)
-- Ecosystem DID Documents
-- Linked Verifiable Presentations published in DID Documents
-- Verifiable Trust Credentials and Verifiable Trust Json Schema Credentials
-- On-chain digestSRI anchoring data (for W3C VTCs)
+- [TR-5] The issuer of every Verifiable Trust Credential encountered during trust resolution MUST be verified as authorized:
+  - For W3C VTCs: the issuer MUST have been authorized by the Ecosystem for the referenced VTJSC **at the effective issuance time** determined by [TR-4].
+  - For AnonCreds VTCs: the issuer MUST be currently authorized by the Ecosystem for the referenced VTJSC. Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
 
-Using this indexed data, a relying party (or a wallet acting on its behalf) can answer higher-level trust questions such as the following.
+- [TR-6] Every DID that appears as an issuer of a credential during trust resolution MUST itself be verified as a **Verifiable Service** conforming to [VS-REQ]. The credentials presented by that issuer's DID Document MUST themselves be verified by recursively applying [TR-1] through [TR-6].
 
-Examples below illustrates how trust resolution is performed assuming that all required Verifiable Trust artifacts are already available to the relying party. No assumptions are made about how the data was obtained; only the logical resolution steps are described.
+- [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at the **Ecosystem DID**, which is the issuer of the VTJSC and the controller of the Trust Registry. The Ecosystem DID is the trust root.
 
-#### Get the credential with `id = "xxxx"`
-
-- Retrieve the Verifiable Credential identified by `xxxx`
-- Extract:
-  - the credential `issuer`
-  - the `credentialSchema.id`
-  - the `credentialSubject.id`
-  - the cryptographic proof
-
-#### Verify the credential is cryptographically valid
-
-- For W3C VTCs: verify the credential signature using the issuer's DID Document and ensure the credential conforms to W3C Verifiable Credentials v2.0 processing rules
-- For AnonCreds VTCs: verify the zero-knowledge proof using the issuer's Credential Definition
-
-#### Resolve the referenced JSON Schema Credential
-
-- For W3C VTCs: read `credentialSchema.id` from the credential to locate the VTJSC directly
-- For AnonCreds VTCs: resolve the Credential Definition referenced in the credential, then read its `relatedJsonSchemaCredentialId` to locate the VTJSC
-- Verify:
-  - the vtjsc signature
-  - that it is issued by an Ecosystem DID
-  - that it binds to a valid `CredentialSchema` entry in the VPR
-
-#### Determine the issuance time of the credential (W3C VTCs only)
-
-This step applies to W3C VTCs only. AnonCreds VTCs do not support objective issuance-time determination (see [VT-CRED-ANON]).
-
-- Recompute the credential’s deterministic `digestSRI`
-- Locate the corresponding digest entry in the VPR
-- Use the timestamp associated with that digest as the **effective issuance time**
-
-#### Verify issuer authorization
-
-- Identify the Ecosystem DID that issued the vtjsc
-- Query the Trust Registry governed by that Ecosystem
-- For W3C VTCs: verify that the credential issuer DID was authorized for the referenced vtjsc **at the effective issuance time** determined above
-- For AnonCreds VTCs: verify that the credential issuer DID is currently authorized for the referenced vtjsc. Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
-
-If this check fails, the credential MUST be rejected.
-
-#### Verify the issuer is a Verifiable Service (if applicable)
-
-If the relying party requires assurance about the issuer itself:
-
-- Resolve the issuer DID Document
-- Verify that the issuer qualifies as a **Verifiable Service** by checking that:
-  - it presents a valid VT-ECS-SERVICE-CRED-W3C; and
-  - either:
-    - the service DID itself presents a valid VT-ECS-ORG-CRED-W3C or VT-ECS-PERSONA-CRED-W3C, or
-    - the issuer of the service credential presents such a credential
-- Verify all issuer permissions.
-
-#### Determine the governing Ecosystem
-
-- From the vtjsc, read the `issuer` field
-- This DID identifies the Ecosystem that:
-  - controls the Trust Registry
-  - defines the credential schema
-  - governs issuer authorization rules
-
-This Ecosystem is the ultimate trust root for the credential.
-
-#### Summary
-
-A relying party can therefore answer the following questions deterministically:
-
-- Is this credential authentic?
-- When was it issued? (W3C VTCs only)
-- I have a session with `uuid=7e55834f-5a81-4029-9121-2cab1268fb43` with Verifiable Service `did=did:Example:123`. Can this DID request the presentation of a credential of vtjsc with `id=https://example/vtjsc.json` to me?
-- Was the issuer authorized? (at issuance time for W3C VTCs; at reception time for AnonCreds VTCs)
-- Which Ecosystem governs this credential?
-- Is the issuer itself a Verifiable Service (if required)?
-
-All trust decisions are derived from verifiable artifacts and cryptographic proofs, without relying on issuer-asserted claims or implicit trust.
+- [TR-8] If any verification step in [TR-1] through [TR-7] fails for any credential or DID encountered during trust resolution, the trust resolution MUST be considered failed, and the connection or credential MUST be rejected.
 
 ### [WL] ECS Ecosystem whitelists and vpr: scheme resolution
 
@@ -1616,3 +1546,104 @@ Example:
   ]
 }
 ```
+
+## Trust Resolution Examples
+
+*This section is non-normative.*
+
+Trust resolution in the Verifiable Trust ecosystem is performed **outside the VPR itself** and relies on auxiliary services (indexers, crawlers, resolvers) that continuously crawl, cache, and index public Verifiable Trust artifacts.
+
+These services do **not create trust**; they merely **make trust resolvable**. All trust decisions remain cryptographically verifiable and independently reproducible by relying parties.
+
+Such services typically ingest and index:
+
+- VPR entries (Trust Registries, Credential Schemas, Permissions, ...)
+- Ecosystem DID Documents
+- Linked Verifiable Presentations published in DID Documents
+- Verifiable Trust Credentials and Verifiable Trust Json Schema Credentials
+- On-chain digestSRI anchoring data (for W3C VTCs)
+
+Using this indexed data, a relying party (or a wallet acting on its behalf) can answer higher-level trust questions such as the following.
+
+### Recursive Resolution Principle
+
+Trust resolution is inherently **recursive**. Every DID encountered during resolution — whether as a credential issuer, a service operator, or a schema controller — MUST itself be resolved and verified. Specifically, any DID that appears as an issuer of a credential MUST be verified as a **Verifiable Service** (see [VS-REQ]), and all credentials it presents MUST themselves undergo the same resolution steps. This recursion terminates at the **Ecosystem DID**, which serves as the trust root: it is the issuer of the VTJSC and the controller of the Trust Registry.
+
+Examples below illustrate how trust resolution is performed assuming that all required Verifiable Trust artifacts are already available to the relying party. No assumptions are made about how the data was obtained; only the logical resolution steps are described.
+
+### Get the credential with `id = "xxxx"`
+
+- Retrieve the Verifiable Credential identified by `xxxx`
+- Extract:
+  - the credential `issuer`
+  - the `credentialSchema.id`
+  - the `credentialSubject.id`
+  - the cryptographic proof
+
+### Verify the credential is cryptographically valid
+
+- For W3C VTCs: verify the credential signature using the issuer's DID Document and ensure the credential conforms to W3C Verifiable Credentials v2.0 processing rules
+- For AnonCreds VTCs: verify the zero-knowledge proof using the issuer's Credential Definition
+
+### Resolve the referenced JSON Schema Credential
+
+- For W3C VTCs: read `credentialSchema.id` from the credential to locate the VTJSC directly
+- For AnonCreds VTCs: resolve the Credential Definition referenced in the credential, then read its `relatedJsonSchemaCredentialId` to locate the VTJSC
+- Verify:
+  - the vtjsc signature
+  - that it is issued by an Ecosystem DID
+  - that it binds to a valid `CredentialSchema` entry in the VPR
+
+### Determine the issuance time of the credential (W3C VTCs only)
+
+This step applies to W3C VTCs only. AnonCreds VTCs do not support objective issuance-time determination (see [VT-CRED-ANON]).
+
+- Recompute the credential’s deterministic `digestSRI`
+- Locate the corresponding digest entry in the VPR
+- Use the timestamp associated with that digest as the **effective issuance time**
+
+### Verify issuer authorization
+
+- Identify the Ecosystem DID that issued the vtjsc
+- Query the Trust Registry governed by that Ecosystem
+- For W3C VTCs: verify that the credential issuer DID was authorized for the referenced vtjsc **at the effective issuance time** determined above
+- For AnonCreds VTCs: verify that the credential issuer DID is currently authorized for the referenced vtjsc. Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
+
+If this check fails, the credential MUST be rejected.
+
+### Verify the issuer is a Verifiable Service
+
+The credential issuer MUST be a Verifiable Service. To verify this:
+
+- Resolve the issuer DID Document
+- Verify that the issuer qualifies as a **Verifiable Service** by checking that:
+  - it presents a valid VT-ECS-SERVICE-CRED-W3C; and
+  - either:
+    - the service DID itself presents a valid VT-ECS-ORG-CRED-W3C or VT-ECS-PERSONA-CRED-W3C, or
+    - the issuer of the service credential presents such a credential
+- Verify all issuer permissions
+- **Recursively apply the same trust resolution steps** to each credential found in the issuer's DID Document (verify signature, resolve VTJSC, determine issuance time, verify authorization, verify that *its* issuer is also a Verifiable Service)
+
+### Determine the governing Ecosystem
+
+- From the vtjsc, read the `issuer` field
+- This DID identifies the Ecosystem that:
+  - controls the Trust Registry
+  - defines the credential schema
+  - governs issuer authorization rules
+
+This Ecosystem is the ultimate trust root for the credential.
+
+### Summary
+
+A relying party can therefore answer the following questions deterministically:
+
+- Is this credential authentic?
+- When was it issued? (W3C VTCs only)
+- I have a session with `uuid=7e55834f-5a81-4029-9121-2cab1268fb43` with Verifiable Service `did=did:Example:123`. Can this DID request the presentation of a credential of vtjsc with `id=https://example/vtjsc.json` to me?
+- Was the issuer authorized? (at issuance time for W3C VTCs; at reception time for AnonCreds VTCs)
+- Which Ecosystem governs this credential?
+- Is the issuer itself a Verifiable Service (if required)?
+
+All trust decisions are derived from verifiable artifacts and cryptographic proofs, without relying on issuer-asserted claims or implicit trust.
+
