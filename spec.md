@@ -881,6 +881,8 @@ Additional CredentialSchema entries MAY be provided by the Trust Registry.
 
 Used to identify Verifiable Services.
 
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/service.json)
+
 Credential subject object of schema MUST contain the following attributes:
 
 - `id` (string) (mandatory): the [[ref: DID]] of the service the credential will be issued to. URI format, max length: 2048 chars.
@@ -990,6 +992,8 @@ the resulting `json_schema` attribute will be the following Json Schema.
 #### [ECS-ORG] OrganizationCredential Json Schema
 
 Used to identify Organizations that operate Verifiable Services.
+
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/org.json)
 
 Credential subject object of schema MUST contain the following attributes:
 
@@ -1120,6 +1124,8 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 Used to identify Personas (human-controlled avatars) that operate Verifiable Services.
 
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/persona.json)
+
 Credential subject object of schema MUST contain the following attributes:
 
 - `id` (string) (*mandatory*): the [[ref: DID]] of the Persona the credential has been issued to, which is the subject of the [[ref: verifiable credential]].  
@@ -1222,6 +1228,8 @@ The resulting `json_schema` attribute will be the following Json Schema.
 ```
 
 #### [ECS-UA] User Agent Credential Json Schema
+
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/ua.json)
 
 Credential subject object of schema MUST contain the following attributes:
 

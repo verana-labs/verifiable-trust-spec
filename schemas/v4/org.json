@@ -1,0 +1,78 @@
+{
+  "$id": "https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/org.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OrganizationCredential",
+  "description": "Identifies a legal organization that operates one or more Verifiable Services.",
+  "type": "object",
+  "properties": {
+    "credentialSubject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 2048
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "logo": {
+          "type": "string",
+          "contentEncoding": "base64",
+          "maxLength": 1400000,
+          "oneOf": [
+            { "contentMediaType": "image/png" },
+            { "contentMediaType": "image/jpeg" },
+            { "contentMediaType": "image/svg+xml" }
+          ]
+        },
+        "registryId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "registryUri": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 4096
+        },
+        "address": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "countryCode": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2,
+          "pattern": "^[A-Z]{2}$"
+        },
+        "legalJurisdiction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[A-Z]{2}(-[A-Z0-9]{1,3})?$"
+        },
+        "organizationKind": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "lei": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{20}$"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "logo",
+        "registryId",
+        "address",
+        "countryCode"
+      ]
+    }
+  }
+}
