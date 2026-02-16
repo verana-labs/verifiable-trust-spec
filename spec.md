@@ -695,14 +695,14 @@ When issuing a Verifiable Trust Credential, the issuer MUST:
 
 1. **Canonicalize** the credential using the [JSON Canonicalization Scheme (JCS)](https://www.rfc-editor.org/rfc/rfc8785) as defined in RFC 8785
 
-2. **Compute** a deterministic **Subresource Integrity digest** (`digestSRI`) of the canonicalized credential using the `digest_algorithm` specified in the [CredentialSchema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema) (`SHA384` or `SHA512`)
+2. **Compute** a deterministic **JCS Digest** (`digestJCS`) of the canonicalized credential using the `digest_algorithm` specified in the [CredentialSchema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema) (`SHA384` or `SHA512`)
 
-3. **Register** this `digestSRI` in the VPR by calling [CreateOrUpdatePermissionSession](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-perm-msg-10-create-or-update-permission-session) with the `digest_sri` parameter. The VPR stores the digest with the block timestamp via [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest).
+3. **Register** this `digestJCS` in the VPR by calling [CreateOrUpdatePermissionSession](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-perm-msg-10-create-or-update-permission-session) with the `digest` parameter. The VPR stores the digest with the block timestamp via [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest).
 
 During verification, a trust resolution process MUST:
 
 1. **Canonicalize** the received credential using [JCS (RFC 8785)](https://www.rfc-editor.org/rfc/rfc8785)
-2. **Recompute** the `digestSRI` from the canonicalized credential using the `digest_algorithm` from the [CredentialSchema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema)
+2. **Recompute** the `digestJCS` from the canonicalized credential using the `digest_algorithm` from the [CredentialSchema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema)
 3. **Query** the VPR using [Get Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-qry-1-get-digest) to locate the corresponding digest entry
 4. **Use** the `created` timestamp from the returned `Digest` entry as the **effective issuance time** of the credential
 
@@ -804,7 +804,7 @@ Presentations follow the [AnonCreds Presentation Data Flow](https://anoncreds.gi
 
 #### AnonCreds VTCs: Issuance Time
 
-Unlike W3C VTCs, AnonCreds VTCs do **not** anchor a `digestSRI` in the VPR to establish issuance time. Because AnonCreds presentations are derived zero-knowledge proofs — not the original credential — a verifier cannot independently recompute a digest from the presentation, making a VPR-anchored digest binding impractical without introducing correlation risks that conflict with AnonCreds' privacy goals.
+Unlike W3C VTCs, AnonCreds VTCs do **not** anchor a `digest` in the VPR to establish issuance time. Because AnonCreds presentations are derived zero-knowledge proofs — not the original credential — a verifier cannot independently recompute a digest from the presentation, making a VPR-anchored digest binding impractical without introducing correlation risks that conflict with AnonCreds' privacy goals.
 
 Issuer authorization checks at credential reception time are covered by [CIT].
 
@@ -1473,7 +1473,7 @@ For communication channel between User Agents to be enabled, both User Agents MU
   - For AnonCreds VTCs: the VTJSC is located indirectly via the Credential Definition's `relatedJsonSchemaCredentialId`.
   - The VTJSC signature MUST be verified, and it MUST be confirmed that the VTJSC is issued by an Ecosystem DID and binds to a valid `CredentialSchema` entry in the VPR.
 
-- [TR-4] For W3C VTCs, the **effective issuance time** MUST be determined by recomputing the credential's `digestSRI` and locating the corresponding digest entry in the VPR. The timestamp associated with that digest entry is the effective issuance time. This step does not apply to AnonCreds VTCs (see [VT-CRED-ANON]).
+- [TR-4] For W3C VTCs, the **effective issuance time** MUST be determined by recomputing the credential's `digestJCS` and locating the corresponding digest entry in the VPR. The timestamp associated with that digest entry is the effective issuance time. This step does not apply to AnonCreds VTCs (see [VT-CRED-ANON]).
 
 - [TR-5] The issuer of every Verifiable Trust Credential encountered during trust resolution MUST be verified as authorized:
   - For W3C VTCs: the issuer MUST have been authorized by the Ecosystem for the referenced VTJSC **at the effective issuance time** determined by [TR-4].
@@ -1569,7 +1569,7 @@ Such services typically ingest and index:
 - Ecosystem DID Documents
 - Linked Verifiable Presentations published in DID Documents
 - Verifiable Trust Credentials and Verifiable Trust Json Schema Credentials
-- On-chain digestSRI anchoring data (for W3C VTCs)
+- On-chain digestJCS anchoring data (for W3C VTCs)
 
 Using this indexed data, a relying party (or a wallet acting on its behalf) can answer higher-level trust questions such as the following.
 
@@ -1606,7 +1606,7 @@ Examples below illustrate how trust resolution is performed assuming that all re
 
 This step applies to W3C VTCs only. AnonCreds VTCs do not support objective issuance-time determination (see [VT-CRED-ANON]).
 
-- Recompute the credential’s deterministic `digestSRI`
+- Recompute the credential’s deterministic `digestJCS`
 - Locate the corresponding digest entry in the VPR
 - Use the timestamp associated with that digest as the **effective issuance time**
 
