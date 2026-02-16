@@ -945,9 +945,9 @@ the resulting `json_schema` attribute will be the following Json Schema.
           "contentEncoding": "base64",
           "maxLength": 1400000,
           "oneOf": [
-            { "contentMediaType": "image/png" },
-            { "contentMediaType": "image/jpeg" },
-            { "contentMediaType": "image/svg+xml" }
+            { "contentMediaType": "image/png", "pattern": "^iVBORw0KGgo" },
+            { "contentMediaType": "image/jpeg", "pattern": "^/9j/" },
+            { "contentMediaType": "image/svg+xml", "pattern": "^PH" }
           ]
         },
         "minimumAgeRequired": {
@@ -1065,9 +1065,9 @@ The resulting `json_schema` attribute will be the following Json Schema.
           "contentEncoding": "base64",
           "maxLength": 1400000,
           "oneOf": [
-            { "contentMediaType": "image/png" },
-            { "contentMediaType": "image/jpeg" },
-            { "contentMediaType": "image/svg+xml" }
+            { "contentMediaType": "image/png", "pattern": "^iVBORw0KGgo" },
+            { "contentMediaType": "image/jpeg", "pattern": "^/9j/" },
+            { "contentMediaType": "image/svg+xml", "pattern": "^PH" }
           ]
         },
         "registryId": {
@@ -1199,9 +1199,9 @@ The resulting `json_schema` attribute will be the following Json Schema.
           "contentEncoding": "base64",
           "maxLength": 1400000,
           "oneOf": [
-            { "contentMediaType": "image/png" },
-            { "contentMediaType": "image/jpeg" },
-            { "contentMediaType": "image/svg+xml" }
+            { "contentMediaType": "image/png", "pattern": "^iVBORw0KGgo" },
+            { "contentMediaType": "image/jpeg", "pattern": "^/9j/" },
+            { "contentMediaType": "image/svg+xml", "pattern": "^PH" }
           ]
         },
         "controllerCountryCode": {
