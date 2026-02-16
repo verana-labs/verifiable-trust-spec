@@ -1,0 +1,33 @@
+{
+  "$id": "https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/ua.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "UserAgentCredential",
+  "description": "Identifies a User Agent instance and the software version it runs. The issuer identifies the software product line.",
+  "type": "object",
+  "properties": {
+    "credentialSubject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 2048
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "build": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "id",
+        "version"
+      ]
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "$id": "https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/persona.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PersonaCredential",
+  "description": "Identifies a Persona (human-controlled avatar) that operates one or more Verifiable Services.",
+  "type": "object",
+  "properties": {
+    "credentialSubject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 2048
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "description": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 16384
+        },
+        "descriptionFormat": {
+          "type": "string",
+          "enum": ["text/plain", "text/markdown"],
+          "default": "text/plain"
+        },
+        "avatar": {
+          "type": "string",
+          "contentEncoding": "base64",
+          "maxLength": 1400000,
+          "oneOf": [
+            { "contentMediaType": "image/png" },
+            { "contentMediaType": "image/jpeg" },
+            { "contentMediaType": "image/svg+xml" }
+          ]
+        },
+        "controllerCountryCode": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 2,
+          "pattern": "^[A-Z]{2}$"
+        },
+        "controllerJurisdiction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[A-Z]{2}(-[A-Z0-9]{1,3})?$"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "controllerCountryCode"
+      ]
+    }
+  }
+}
