@@ -887,9 +887,9 @@ To verify that a `CredentialSchema` entry in a VPR is an Essential Credential Sc
 
 | Schema | Digest |
 |---|---|
-| ServiceCredential | `sha384-J1P6W/1l5SRTxgSS/xy77483ExX4B7q/jASopHGfSF7ukc5O5gDIuBZ2LgTy3ciF` |
-| OrganizationCredential | `sha384-AGoEYxikvRetPg6YNqr1rSeEFwb5iqE6JkI+fnb8TnQidtSK5Nn83tuDaWZvkxZc` |
-| PersonaCredential | `sha384-yFrM55tOMgwAFez/LireJJyg9sSGVUu/WLMp8drL6+du+mflRM3JXgi76BY12ear` |
+| ServiceCredential | `sha384-PVseqJJjEGMVRcht77rE2yLqRnCiLBRLOklSuAshSEXK3eyITmUpDBhpQryJ/XIx` |
+| OrganizationCredential | `sha384-XF10SsOaav+i+hBaXP29coZWZeaCZocFvfP9ZeHh9B7++q7YGA2QLTbFZqtYs/zA` |
+| PersonaCredential | `sha384-4vkQl6Ro6fudr+g5LL2NQJWVxaSTaYkyf0yVPVUmzA2leNNn0sJIsM07NlOAG/2I` |
 | UserAgentCredential | `sha384-yLRK2mCokVjRlGX0nVzdEYQ1o6YWpQqgdg6+HlSxCePP+D7wvs0+70TJACLZfbF/` |
 
 The `$id` property is excluded because it contains the VPR-specific schema identifier, which varies across deployments. The remaining schema content is identical for all conforming ECS Trust Registries.
@@ -911,7 +911,7 @@ Credential subject object of schema MUST contain the following attributes:
   - `text/plain`
   - `text/markdown`  
   If omitted, `text/plain` MUST be assumed.
-- `logo` (image) (mandatory): base64-encoded image of the service logo (as shown in browsers/apps/search engines). Allowed media types: image/png, image/jpeg, image/svg+xml. Max length: 1,400,000 chars (≈ 1 MiB decoded).
+- `logo` (string) (mandatory): Data URI containing the service logo image (as shown in browsers/apps/search engines). The value MUST be a `data:` URI with a base64-encoded payload. Allowed media types: `image/png`, `image/jpeg`, `image/svg+xml`. Max length: 1,400,000 chars.
 - `minimumAgeRequired` (integer) (mandatory): minimum required age to connect to service. Allowed values: 0 to 255 (inclusive).
 - `termsAndConditions` (string) (mandatory): URI of the terms and conditions of the service. URI format, max length: 4096 chars.
 - `termsAndConditionsDigestSri` (string) (optional): Subresource Integrity digest of the termsAndConditions resource, encoded as <algorithm>-<base64-digest> (SRI format). Max length: 256 chars.
@@ -959,13 +959,9 @@ the resulting `json_schema` attribute will be the following Json Schema.
         },
         "logo": {
           "type": "string",
-          "contentEncoding": "base64",
-          "maxLength": 1400000,
-          "oneOf": [
-            { "contentMediaType": "image/png", "pattern": "^iVBORw0KGgo" },
-            { "contentMediaType": "image/jpeg", "pattern": "^/9j/" },
-            { "contentMediaType": "image/svg+xml", "pattern": "^PH" }
-          ]
+          "format": "uri",
+          "pattern": "^data:image/(png|jpeg|svg\\+xml);base64,",
+          "maxLength": 1400000
         },
         "minimumAgeRequired": {
           "type": "integer",
@@ -1020,9 +1016,9 @@ Credential subject object of schema MUST contain the following attributes:
 - `name` (string) (*mandatory*): name of the organization.  
   UTF8 charset, min length: 1 char, max length: 512 chars.
 
-- `logo` (image) (*mandatory*): base64-encoded image of the organization logo (as shown in browsers and search engines).  
-  Allowed media types: `image/png`, `image/jpeg`, `image/svg+xml`.  
-  Max length: 1,400,000 chars (≈ 1 MiB decoded).
+- `logo` (string) (*mandatory*): Data URI containing the organization logo image (as shown in browsers and search engines).  
+  The value MUST be a `data:` URI with a base64-encoded payload. Allowed media types: `image/png`, `image/jpeg`, `image/svg+xml`.  
+  Max length: 1,400,000 chars.
 
 - `registryId` (string) (*mandatory*): identifier of the organization in an external authoritative registry (e.g., company register).  
   UTF8 charset, min length: 1 char, max length: 256 chars.
@@ -1079,13 +1075,9 @@ The resulting `json_schema` attribute will be the following Json Schema.
         },
         "logo": {
           "type": "string",
-          "contentEncoding": "base64",
-          "maxLength": 1400000,
-          "oneOf": [
-            { "contentMediaType": "image/png", "pattern": "^iVBORw0KGgo" },
-            { "contentMediaType": "image/jpeg", "pattern": "^/9j/" },
-            { "contentMediaType": "image/svg+xml", "pattern": "^PH" }
-          ]
+          "format": "uri",
+          "pattern": "^data:image/(png|jpeg|svg\\+xml);base64,",
+          "maxLength": 1400000
         },
         "registryId": {
           "type": "string",
@@ -1160,9 +1152,9 @@ Credential subject object of schema MUST contain the following attributes:
   - `text/markdown`  
   If omitted, `text/plain` MUST be assumed.
 
-- `avatar` (image) (*optional*): base64-encoded image of the Persona avatar (as shown in browsers and search engines).  
-  Allowed media types: `image/png`, `image/jpeg`, `image/svg+xml`.  
-  Max length: 1,400,000 chars (≈ 1 MiB decoded).
+- `avatar` (string) (*optional*): Data URI containing the Persona avatar image (as shown in browsers and search engines).  
+  The value MUST be a `data:` URI with a base64-encoded payload. Allowed media types: `image/png`, `image/jpeg`, `image/svg+xml`.  
+  Max length: 1,400,000 chars.
 
 - `controllerCountryCode` (string) (*mandatory*): primary country of residence of the Persona controller (the human), expressed as an ISO 3166-1 alpha-2 country code.  
   Pattern: `^[A-Z]{2}$`.
@@ -1213,13 +1205,9 @@ The resulting `json_schema` attribute will be the following Json Schema.
         },
         "avatar": {
           "type": "string",
-          "contentEncoding": "base64",
-          "maxLength": 1400000,
-          "oneOf": [
-            { "contentMediaType": "image/png", "pattern": "^iVBORw0KGgo" },
-            { "contentMediaType": "image/jpeg", "pattern": "^/9j/" },
-            { "contentMediaType": "image/svg+xml", "pattern": "^PH" }
-          ]
+          "format": "uri",
+          "pattern": "^data:image/(png|jpeg|svg\\+xml);base64,",
+          "maxLength": 1400000
         },
         "controllerCountryCode": {
           "type": "string",
