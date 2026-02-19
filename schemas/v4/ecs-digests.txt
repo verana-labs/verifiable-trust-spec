@@ -1,0 +1,4 @@
+service.json -> sha384-J1P6W/1l5SRTxgSS/xy77483ExX4B7q/jASopHGfSF7ukc5O5gDIuBZ2LgTy3ciF
+org.json -> sha384-AGoEYxikvRetPg6YNqr1rSeEFwb5iqE6JkI+fnb8TnQidtSK5Nn83tuDaWZvkxZc
+persona.json -> sha384-yFrM55tOMgwAFez/LireJJyg9sSGVUu/WLMp8drL6+du+mflRM3JXgi76BY12ear
+ua.json -> sha384-yLRK2mCokVjRlGX0nVzdEYQ1o6YWpQqgdg6+HlSxCePP+D7wvs0+70TJACLZfbF/
