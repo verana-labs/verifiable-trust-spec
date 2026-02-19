@@ -1,6 +1,6 @@
 # Verifiable Trust v4 Specification
 
-**Latest Draft:** [spec v4-draft4](https://github.com/verana-labs/verifiable-trust-spec)
+**Latest Draft:** [spec v4-draft5](https://github.com/verana-labs/verifiable-trust-spec)
 
 **Editors:**
 
@@ -876,6 +876,23 @@ To provide an Essential Credential Schemas Trust Registry, an Ecosystem creates 
 For this Trust Registry to qualify as an ECS Trust Registry and to be used for trust resolution in [[ref: VSs]] and [[ref: VUAs]], it MUST provide, associated to the `TrustRegistry` entry `tr`, one `CredentialSchema` entry for each of [ECS-SERVICE], [ECS-ORG], [ECS-PERSONA], and [ECS-UA], each with a `json_schema` attribute as defined in the corresponding section.
 
 Additional CredentialSchema entries MAY be provided by the Trust Registry.
+
+To verify that a `CredentialSchema` entry in a VPR is an Essential Credential Schema, a verifier MUST:
+
+1. Retrieve the `json_schema` attribute of the `CredentialSchema` entry.
+2. Remove the `$id` property from the object.
+3. Canonicalize it using the [JSON Canonicalization Scheme (JCS)](https://www.rfc-editor.org/rfc/rfc8785) as defined in RFC 8785.
+4. Compute the SHA-384 digest of the canonicalized output.
+5. Compare the resulting digest against the following reference values:
+
+| Schema | Digest |
+|---|---|
+| ServiceCredential | `sha384-J1P6W/1l5SRTxgSS/xy77483ExX4B7q/jASopHGfSF7ukc5O5gDIuBZ2LgTy3ciF` |
+| OrganizationCredential | `sha384-AGoEYxikvRetPg6YNqr1rSeEFwb5iqE6JkI+fnb8TnQidtSK5Nn83tuDaWZvkxZc` |
+| PersonaCredential | `sha384-yFrM55tOMgwAFez/LireJJyg9sSGVUu/WLMp8drL6+du+mflRM3JXgi76BY12ear` |
+| UserAgentCredential | `sha384-yLRK2mCokVjRlGX0nVzdEYQ1o6YWpQqgdg6+HlSxCePP+D7wvs0+70TJACLZfbF/` |
+
+The `$id` property is excluded because it contains the VPR-specific schema identifier, which varies across deployments. The remaining schema content is identical for all conforming ECS Trust Registries.
 
 #### [ECS-SERVICE] Service Credential Json Schema
 
