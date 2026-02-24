@@ -1,6 +1,6 @@
 # Verifiable Trust v4 Specification
 
-**Latest Draft:** [spec v4-draft5](https://github.com/verana-labs/verifiable-trust-spec)
+**Latest Draft:** [spec v4-draft6](https://github.com/verana-labs/verifiable-trust-spec)
 
 **Editors:**
 
@@ -1447,7 +1447,7 @@ These requirements ensure that a Verifiable User Agent can cryptographically pro
 
 ### [VS-CONN-VS] Requirements for a VS to accept a connection from another service
 
-When a [[ref: VS]] VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-REQ], else VS-1 MUST NOT accept the connection, unless purpose of the service provided by VS-1 is the issuance of [VT-ECS-ORG-CRED-W3C] or [VT-ECS-PERSONA-CRED-W3C] credentials.
+When a [[ref: VS]] VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-REQ], else VS-1 MUST NOT accept the connection, unless purpose of the service provided by VS-1 is the issuance of [VT-ECS-ORG-CRED-W3C] or [VT-ECS-PERSONA-CRED-W3C] or [VT-ECS-SERVICE-CRED-W3C] credentials.
 
 ### [VS-CONN-VUA] Requirements for a VS to accept a connection from a User Agent
 
