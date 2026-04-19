@@ -1,6 +1,6 @@
 # Verifiable Trust v4 Specification
 
-**Latest Draft:** [spec v4-draft6](https://github.com/verana-labs/verifiable-trust-spec)
+**Latest Draft:** [spec v4-draft7](https://github.com/verana-labs/verifiable-trust-spec)
 
 **Editors:**
 
@@ -33,6 +33,8 @@ The rapid expansion of AI agents makes this even more urgent. Autonomous agents 
 
 The core idea is straightforward: a **Verifiable Service** presents verifiable credentials that identify its operator, describe its purpose, and prove its authorization within a governed ecosystem. A **Verifiable User Agent** resolves and verifies these credentials, queries a **Verifiable Public Registry** to confirm that they were issued by recognized authorities, and displays a **Proof-of-Trust** to the user — all before the first interaction takes place.
 
+A key consequence is that a Verifiable Service is not identified by an opaque URL, but by a **resolvable DID**. Its DID Document declares one or more service endpoints — at minimum a **DIDComm** channel used to establish trust and to bootstrap access to the rest of the service, and optionally additional endpoints such as **MCP**, **A2A**, or a plain **website**. A peer resolves the DID, performs trust resolution, and opens a DIDComm session over which it obtains any credentials or access tokens it needs; only then does it consume the other declared endpoints. This inverts the familiar "connect first, verify later" pattern of today's internet into a "verify first, then connect" model that applies uniformly to humans, applications, and AI agents.
+
 This enables mutual authentication without passwords, verifiable service discovery without centralized directories, privacy-preserving credential exchange with selective disclosure and unlinkability, and ecosystem governance that is transparent, auditable, and decentralized.
 
 Verifiable Trust is container-agnostic, supporting both W3C Verifiable Credentials and Anonymous Credentials to balance transparency with privacy depending on the use case. It is also DID-method-agnostic, allowing ecosystems to operate across different decentralized identifier infrastructures.
@@ -59,9 +61,6 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 [[def: decentralized identifier communication, DIDComm]]:
 ~ [DIDComm](https://identity.foundation/didcomm-messaging/spec/) uses [[ref: DIDs]] to establish confidential, ongoing connections.
 
-[[def: decentralized web nodes, DWN, dwn]]:
-~ Decentralized web nodes, see [DIF spec](https://identity.foundation/decentralized-web-node/spec/)
-
 [[def: decentralized identifier document, DID Document, DID Documents]]:
 ~ A DID Document, as specified in [[spec-norm:DID-CORE]].
 
@@ -69,7 +68,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ a public, normally decentralized network, which provides: trust registry features, that can be used by all its [[ref: participants]]: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,... For more information, please refer to [VPR Spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/).
 
 [[def: verifiable service, VS, VSs]]:
-~ A service, identified by a resolvable [[ref: DID]] that can be deployed anywhere by its owner, and that is conforming to this spec and has a resolvable [[ref: proof of trust]]. This can be a [[ref: DIDComm]] service, a [[ref: DWN]] service, o any other service.
+~ A service, identified by a resolvable [[ref: DID]], that can be deployed anywhere by its owner, that conforms to this spec, and that has a resolvable [[ref: proof of trust]]. A VS declares its service endpoints in its [[ref: DID Document]] (see [VS-SVC]); it MUST declare at least a [[ref: DIDComm]] endpoint and MAY declare additional services such as MCP, A2A, a website, or any other service type.
 
 [[def: verifiable user agent, VUA, VUAs]]:
 ~ A user agent for accessing and using [[ref: VSs]]. To be considered a [[ref: VUA]], a user agent must conform and enforce this spec, such as presenting a proof of trust to end user before accepting connecting to [[ref: VS]] compliant services, and refuse connecting to not compliant services.
@@ -200,6 +199,44 @@ Peers wishing to connect to a VS can review the Verifiable Credentials presented
 A VS is also required to verify the trustworthiness of peers attempting to connect to it, whether those peers are other Verifiable Services (VS) or Verifiable User Agents (VUA), and must reject connections from non-verifiable peers.
 
 Furthermore, if a Verifiable Service wants to issue credentials or request credential presentation, it must first prove that it is authorized to perform these actions. Otherwise, the peer must refuse the request.
+
+#### Service Declaration
+
+*This section is non-normative.*
+
+A fundamental principle of Verifiable Trust is that **services are identified by DIDs, not by URLs**. Instead of a consumer pointing its client at an opaque endpoint — where neither the identity of the operator nor the legitimacy of the service can be verified — the consumer starts with a resolvable **DID** and discovers everything it needs from the corresponding **DID Document**.
+
+The DID Document of a Verifiable Service declares two complementary things:
+
+- **Identity material**, in the form of Linked Verifiable Presentations, used to prove who operates the service and under which ecosystem governance (see [VS-REQ]).
+- **Service endpoints**, expressed as standard [DID Core `service` entries](https://www.w3.org/TR/did-core/#services), used to actually consume the service.
+
+Every Verifiable Service MUST declare at least a **DIDComm** service endpoint. DIDComm plays a very specific role in the Verifiable Trust architecture: it is the **bootstrapping channel** of the service. Over DIDComm, a peer:
+
+- completes mutual identity proof and trust resolution;
+- negotiates higher-level protocols such as credential issuance, credential presentation, and secure messaging; and
+- obtains whatever credentials, access tokens, or session artifacts are required to authenticate its later calls to the *other* declared endpoints.
+
+In addition to DIDComm, a Verifiable Service MAY declare any number of other service endpoints, for example:
+
+- an **MCP** endpoint exposing tools consumable by AI agents;
+- an **A2A** endpoint for agent-to-agent interoperability;
+- a **website** endpoint pointing to a traditional HTTP(S) resource;
+- any other protocol type defined by the ecosystem.
+
+These non-DIDComm endpoints form the **data plane** of the service; DIDComm is the **control plane** that authenticates access to them.
+
+Regardless of the protocol used, the interaction flow is always the same:
+
+1. A peer obtains the service's **DID** (via a link, QR code, directory, or any other means).
+2. The peer **resolves** the DID and fetches its DID Document.
+3. The peer performs **trust resolution**: it verifies the Linked Verifiable Presentations, checks issuer authorization in the VPR, and recursively resolves the DIDs of the service's operator and credential issuers.
+4. Once trust is established, the peer opens a **DIDComm session** with the service. This session is the bootstrap channel: it is used to exchange further credentials, issue access tokens, or otherwise negotiate whatever authentication material is needed to reach the other declared endpoints.
+5. Armed with the artifacts obtained over DIDComm, the peer finally **consumes** the non-DIDComm endpoint it is interested in (MCP, A2A, website, …), presenting the obtained tokens or credentials as required by that endpoint's protocol.
+
+Because service endpoints are declared inside a cryptographically controlled DID Document, because the DID itself has been trust-resolved, and because the authentication material for non-DIDComm endpoints originates from the verified DIDComm handshake, any URL reached via those endpoints inherits the trust context of the DID. An MCP call, an A2A message, or a plain website fetch performed through a service entry declared in a verified DID Document is, by construction, an interaction with an identified and accountable operator — not with an anonymous server behind a random URL.
+
+This reverses the common "connect first, verify later" model of today's internet into a "verify first, then connect" model. The normative requirements for Service Declaration are defined in [VS-SVC].
 
 ### What is a Verifiable User Agent (VUA)?
 
@@ -1403,6 +1440,94 @@ In other words, to qualify as a Verifiable Service:
 This ensures that every Verifiable Service is ultimately bound to a legally or naturally accountable entity.
 :::
 
+### [VS-SVC] Service Declaration
+
+A Verifiable Service is consumed via service endpoints declared in its [[ref: DID Document]], not via URLs exchanged out of band. This section specifies how a [[ref: VS]] MUST declare those endpoints and how peers MUST interact with them.
+
+- [VS-SVC-1] A [[ref: VS]] MUST declare its consumable service endpoints in its [[ref: DID Document]] using standard `service` entries, as specified in [[spec-norm:DID-CORE]].
+
+- [VS-SVC-2] A [[ref: VS]] [[ref: DID Document]] MUST declare **at least one** service entry of type `DIDCommMessaging`. DIDComm is the **bootstrapping channel** of the service: it is the primary channel over which trust is established, over which protocols such as credential issuance, credential presentation and secure messaging are performed, and over which the authentication material required to consume other declared endpoints is obtained (see [VS-SVC-7]).
+
+- [VS-SVC-3] A [[ref: VS]] [[ref: DID Document]] MAY declare **any number of additional service entries**, including but not limited to:
+  - an `MCP` service, exposing tools consumable by AI agents;
+  - an `A2A` service, for agent-to-agent interoperability;
+  - a `LinkedDomains` service (or equivalent), pointing to a plain website or other HTTP(S) resource;
+  - any other service type defined by the ecosystem.
+
+- [VS-SVC-4] A peer (whether a [[ref: VS]] or a [[ref: VUA]]) MUST perform trust resolution of the [[ref: VS]] DID — in particular, it MUST verify the Linked Verifiable Presentations required by [VS-REQ] and apply [TR] — **before** using any of the consumable service endpoints declared in the DID Document.
+
+- [VS-SVC-5] A peer MUST NOT consume a service endpoint URL declared in a DID Document unless trust resolution of the corresponding DID has succeeded. Once trust resolution succeeds, any URL reached through a declared service entry is considered an endpoint of the identified, credentialed operator of the DID, and inherits its trust context.
+
+- [VS-SVC-6] `LinkedVerifiablePresentation` entries declared in a DID Document for the purpose of presenting Verifiable Trust Credentials (see [VT-CRED-W3C-LINKED-VP] and [VT-ECS-CRED]) are part of the **identity layer** and are consumed during trust resolution itself. They are not considered "consumable service endpoints" for the purposes of [VS-SVC-2], [VS-SVC-3], [VS-SVC-4] and [VS-SVC-5].
+
+- [VS-SVC-7] When a non-DIDComm service endpoint declared under [VS-SVC-3] requires authentication (access tokens, authorization credentials, session artifacts, capability tokens, etc.), a peer SHOULD obtain the required authentication material over the DIDComm channel declared under [VS-SVC-2], **after** trust resolution has succeeded. The specific authentication scheme is protocol- and ecosystem-specific, but its establishment MUST NOT bypass trust resolution of the [[ref: VS]] DID. This ensures that authentication material for every declared endpoint is cryptographically rooted in the same verified identity handshake.
+
+::: note
+In practice, this means DIDComm acts as the **control plane** of a Verifiable Service and non-DIDComm endpoints act as its **data plane**: a peer first performs trust resolution and opens a DIDComm session, uses that session to obtain any credentials or tokens it needs (e.g., bearer tokens for an MCP endpoint, verifiable presentations for an A2A endpoint, signed session cookies for a website), and only then calls the target endpoint with those artifacts.
+:::
+
+#### Example: VS DID Document with Multiple Service Endpoints
+
+The following example shows a Verifiable Service DID Document that declares the mandatory DIDComm endpoint alongside optional MCP, A2A and website endpoints, in addition to the identity-layer Linked Verifiable Presentations required by [VS-REQ]:
+
+```json
+"service": [
+  {
+    "id": "did:example:service#vpr-schemas-service-vtc-vp",
+    "type": "LinkedVerifiablePresentation",
+    "serviceEndpoint": ["https://example.com/vpr-schemas-service-vtc-vp.json"]
+  },
+  {
+    "id": "did:example:service#vpr-schemas-org-vtc-vp",
+    "type": "LinkedVerifiablePresentation",
+    "serviceEndpoint": ["https://example.com/vpr-schemas-org-vtc-vp.json"]
+  },
+  {
+    "id": "did:example:service#didcomm",
+    "type": "DIDCommMessaging",
+    "serviceEndpoint": {
+      "uri": "https://example.com/didcomm",
+      "accept": ["didcomm/v2"],
+      "routingKeys": []
+    }
+  },
+  {
+    "id": "did:example:service#mcp",
+    "type": "MCP",
+    "serviceEndpoint": "https://example.com/mcp"
+  },
+  {
+    "id": "did:example:service#a2a",
+    "type": "A2A",
+    "serviceEndpoint": "https://example.com/a2a"
+  },
+  {
+    "id": "did:example:service#website",
+    "type": "LinkedDomains",
+    "serviceEndpoint": "https://example.com/"
+  }
+]
+```
+
+In this example:
+
+- `#vpr-schemas-service-vtc-vp` and `#vpr-schemas-org-vtc-vp` are **identity-layer** entries used during trust resolution (see [VS-REQ]).
+- `#didcomm` is the **mandatory** DIDComm endpoint required by [VS-SVC-2]; it is the bootstrap channel for the service.
+- `#mcp`, `#a2a` and `#website` are **optional** consumable endpoints declared under [VS-SVC-3].
+
+A conforming peer would interact with this service as follows:
+
+1. Trust-resolve `did:example:service` (per [VS-SVC-4] and [TR]).
+2. Open a DIDComm session to `#didcomm`.
+3. Over that session, obtain any credentials, access tokens, or other authentication material required by `#mcp`, `#a2a` or `#website` (per [VS-SVC-7]).
+4. Call the target endpoint(s) — `#mcp`, `#a2a` or `#website` — presenting the artifacts obtained in step 3 as that endpoint's protocol requires.
+
+Per [VS-SVC-5], none of `#didcomm`, `#mcp`, `#a2a` or `#website` may be used before trust resolution of `did:example:service` has succeeded.
+
+::: note
+The `MCP` and `A2A` service type strings used above are illustrative. Ecosystems are free to standardize type names for emerging protocols; this specification only requires that service entries follow DID Core `service` syntax and that at least one entry of type `DIDCommMessaging` is present.
+:::
+
 ### [VUA-REQ] Requirements for a User Agent to qualify as a Verifiable User Agent (VUA)
 
 - [VUA-REQ-1] When a [[ref: VUA]] initiates or accepts a connection with a [[ref: VS]], the VUA MUST be able to present a [VT-ECS-UA-CRED-ANON] (ECS User Agent Verifiable Trust Credential) upon request by the [[ref: VS]].
@@ -1447,7 +1572,7 @@ These requirements ensure that a Verifiable User Agent can cryptographically pro
 
 ### [VS-CONN-VS] Requirements for a VS to accept a connection from another service
 
-When a [[ref: VS]] VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-REQ], else VS-1 MUST NOT accept the connection, unless purpose of the service provided by VS-1 is the issuance of [VT-ECS-ORG-CRED-W3C] or [VT-ECS-PERSONA-CRED-W3C] or [VT-ECS-SERVICE-CRED-W3C] credentials.
+When a [[ref: VS]] VS-1 receives a connection request from a service Service-2 to one of the service endpoints declared in its DID Document (see [VS-SVC]), VS-1 MUST verify that Service-2 complies with [VS-REQ] and [VS-SVC], else VS-1 MUST NOT accept the connection, unless the purpose of the service provided by VS-1 is the issuance of [VT-ECS-ORG-CRED-W3C] or [VT-ECS-PERSONA-CRED-W3C] or [VT-ECS-SERVICE-CRED-W3C] credentials.
 
 ### [VS-CONN-VUA] Requirements for a VS to accept a connection from a User Agent
 
@@ -1455,7 +1580,7 @@ When a [[ref: VS]] receives a connection from a User Agent, it MUST request the 
 
 ### [VUA-CONN-VS] Requirements for a VUA to accept connecting to a service
 
-When a [[ref: VUA]] start a [[ref: session]] with a service, [[ref: VUA]] MUST verify VS complies with [VS-REQ], else VUA MUST NOT connect to VS.
+When a [[ref: VUA]] starts a [[ref: session]] with a service, the [[ref: VUA]] MUST verify that the service complies with [VS-REQ] and [VS-SVC], else the VUA MUST NOT connect to the VS.
 
 ### [VUA-CONN-VUA] Requirements for two VUAs to connect
 
