@@ -1797,8 +1797,8 @@ This example shows the action sequence for a holder VS-Agent obtaining a public 
 
 **Preconditions:**
 
-- The Ecosystem has defined a `CredentialSchema` `cs` for the credential (e.g., a service, organisation, or persona credential), with an associated VTJSC published by the Ecosystem DID.
-- The issuer has an active ISSUER permission on `cs` (`perm_issuer`), and its DID Document presents the corresponding issuer credentials so that it itself resolves as a Verifiable Service up to the Ecosystem DID.
+- The Ecosystem has defined a `CredentialSchema` `cs` for the credential (e.g., a service, organisation, or persona credential), with an associated VTJSC published by the Ecosystem trust registry DID.
+- The issuer has an active ISSUER permission on `cs` (`perm_issuer`), and issuer service is a Verifiable Service.
 - The holder VS-Agent knows the issuer's DID and the schema `cs` it wants to be issued a credential against.
 
 **Sequence:**
@@ -1815,7 +1815,7 @@ This example shows the action sequence for a holder VS-Agent obtaining a public 
 
 6. **Holder publishes the credential in its DID Document.** The holder VS-Agent updates its DID Document to publish (or update) a `linked-vp` entry containing the newly received credential, alongside any previously held public credentials.
 
-7. **Holder triggers the resolver.** As soon as the updated DID Document is resolvable, the holder VS-Agent submits `MsgTriggerResolver` (`MOD-PERM-MSG-15`) for one of its active permissions whose `did` equals the holder DID. The signing parameters use Path 1 of the TriggerResolver authorization model: `corporation = holder.authority`, `operator = holder.vs_operator`. The Msg makes no on-chain state change; it only emits an event.
+7. **Holder triggers the resolver.** As soon as the updated DID Document is updated, the holder VS-Agent submits `MsgTriggerResolver` (`MOD-PERM-MSG-15`) for one of its active permissions whose `did` equals the holder DID. The signing parameters use Path 1 of the TriggerResolver authorization model: `corporation = holder.corporation`, `operator = holder.vs_operator`. The Msg makes no on-chain state change; it only emits an event.
 
 8. **Trust resolution.** The [[ref: VPR]] resolver pipeline observes the `MsgTriggerResolver` event, fetches the latest holder DID Document, validates each linked-vp credential per [TR-1] through [TR-7], and records the holder DID's trust state. Subsequent queries to the resolver return `trustStatus = TRUSTED` for the holder DID.
 
