@@ -1,6 +1,6 @@
 # Verifiable Trust v4 Specification
 
-**Latest Draft:** [spec v4-draft8](https://github.com/verana-labs/verifiable-trust-spec)
+**Latest Draft:** [spec v4-draft9](https://github.com/verana-labs/verifiable-trust-spec)
 
 **Editors:**
 
@@ -1331,6 +1331,10 @@ The resulting `json_schema` attribute will be the following Json Schema.
 }
 ```
 
+### [VT-ECS-JSON-SCHEMA-VPR-CONFIG] Essential Schema VPR Configuration
+
+To be considered compliant, CredentialSchema entries for [ECS-SERVICE], [ECS-ORG], and [ECS-PERSONA] MUST set `holder_onboarding_mode` to `ISSUER_VALIDATION_PROCESS`. See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema).
+
 ### [VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema VTJSCs
 
 - VTJSC [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].
@@ -1817,7 +1821,7 @@ This example shows the action sequence for a holder VS-Agent obtaining a public 
 
 7. **Holder triggers the resolver.** As soon as the updated DID Document is updated, the holder VS-Agent submits `MsgTriggerResolver` (`MOD-PERM-MSG-15`) for one of its active permissions whose `did` equals the holder DID. The signing parameters use Path 1 of the TriggerResolver authorization model: `corporation = holder.corporation`, `operator = holder.vs_operator`. The Msg makes no on-chain state change; it only emits an event.
 
-8. **Trust resolution.** The [[ref: VPR]] resolver pipeline observes the `MsgTriggerResolver` event, fetches the latest holder DID Document, validates each linked-vp credential per [TR-1] through [TR-7], and records the holder DID's trust state. Subsequent queries to the resolver return `trustStatus = TRUSTED` for the holder DID.
+8. **Trust resolution.** The [[ref: VPR]] resolver pipeline observes the `MsgTriggerResolver` event, and trigger the resolver module that fetches the latest holder DID Document, validates each linked-vp credential per [TR-1] through [TR-7], and records the holder DID's trust state. Subsequent queries to the resolver return `trustStatus = TRUSTED` for the holder DID.
 
 ```mermaid
 sequenceDiagram
@@ -1849,15 +1853,15 @@ This example shows the symmetric flow for revoking a previously issued credentia
 
 **Sequence:**
 
-1. **Issuer revokes on-chain.** The issuer VS-Agent submits `MsgRevokePermission` (`MOD-PERM-MSG-9`) against `holder_perm`. On confirmation, `holder_perm.revoked = now` and the permission ceases to be active.
+1. **Issuer revokes on-chain.** The issuer VS-Agent submits `MsgRevokePermission` (`MOD-PERM-MSG-9`) against `holder_perm`. On confirmation, `holder_perm.revoked = now` and the permission ceases to be active, which revokes the corresponding credential.
 
-2. **Resolver auto-re-resolves.** The [[ref: VPR]] resolver pipeline treats `MsgRevokePermission` as an implicit re-resolution signal for the holder DID and re-runs trust resolution. With `holder_perm` no longer active, the credential it backed is no longer authorised at the current time, so trust resolution against the holder DID's currently-published linked-vp fails for that credential. The resolver records `trustStatus = UNTRUSTED` for the holder DID (or downgrades it accordingly if it still presents other valid credentials).
+2. **Resolver auto-re-resolves.** The [[ref: VPR]] resolver pipeline treats `MsgRevokePermission` as an implicit re-resolution signal for the holder DID and re-runs trust resolution. With `holder_perm` no longer active, the credential it backed is no longer authorised at the current time, so trust resolution against the holder DID's currently-published linked-vp fails for that credential. The resolver eventually updates the `trustStatus = UNTRUSTED` for the holder DID (or downgrades it accordingly if it still presents other valid credentials).
 
 3. **Issuer notifies the holder over DIDComm.** The issuer's VS-Agent sends a credential-state-change message to the holder VS-Agent over the existing DIDComm session, informing it that the credential has been revoked. The holder VS-Agent reacts in user-land (display the revocation, request a new credential, stop offering the affected service, etc.).
 
 4. **Holder removes the credential from its DID Document.** The holder VS-Agent updates its `linked-vp` entry to remove the revoked credential. Until the DID Document is updated, the resolver continues to see the (now untrusted) credential.
 
-5. **Holder triggers the resolver again.** The holder VS-Agent submits `MsgTriggerResolver` so the resolver picks up the updated DID Document. After this final trigger, the resolver no longer observes the revoked credential at all; the holder DID's overall trust status is determined by whatever public credentials remain in linked-vp.
+5. **Holder may trigger the resolver again.** The holder VS-Agent may submit `MsgTriggerResolver` so the resolver picks up the updated DID Document. After this final trigger, the resolver no longer observes the revoked credential at all; the holder DID's overall trust status is determined by whatever public credentials remain in linked-vp.
 
 ```mermaid
 sequenceDiagram
