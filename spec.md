@@ -1331,6 +1331,10 @@ The resulting `json_schema` attribute will be the following Json Schema.
 }
 ```
 
+### [VT-ECS-JSON-SCHEMA-VPR-CONFIG] Essential Schema VPR Configuration
+
+To be considered compliant, CredentialSchema entries for [ECS-SERVICE], [ECS-ORG], and [ECS-PERSONA] MUST set `holder_onboarding_mode` to `ISSUER_VALIDATION_PROCESS`. See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema).
+
 ### [VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema VTJSCs
 
 - VTJSC [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].
