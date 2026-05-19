@@ -1,6 +1,6 @@
 # Verifiable Trust v4 Specification
 
-**Latest Draft:** [spec v4-draft9](https://github.com/verana-labs/verifiable-trust-spec)
+**Latest Draft:** [spec v4-draft10](https://github.com/verana-labs/verifiable-trust-spec)
 
 **Editors:**
 
@@ -43,7 +43,7 @@ This specification defines the Verifiable Trust architecture, its core concepts 
 
 ## About this Document
 
-In order to fully understand the concepts developed in this document, you should have some basic knowledge of the [ToIP stack](https://www.trustoverip.org/toip-model/), [[ref:DID]], [[ref:DIDComm]], [[ref:trust registry]], and more generally, all terms present in the [Terminology](#terminology) section.
+In order to fully understand the concepts developed in this document, you should have some basic knowledge of the [ToIP stack](https://www.trustoverip.org/toip-model/), [[ref:DID]], [[ref:DIDComm]], [[ref: ecosystem]], and more generally, all terms present in the [Terminology](#terminology) section.
 
 ## Conformance
 
@@ -65,7 +65,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ A DID Document, as specified in [[spec-norm:DID-CORE]].
 
 [[def: verifiable public registry, VPR, VPRs]]:
-~ a public, normally decentralized network, which provides: trust registry features, that can be used by all its [[ref: participants]]: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,... For more information, please refer to [VPR Spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/).
+~ a public, normally decentralized network, which provides: ecosystem features, that can be used by all its [[ref: participants]]: create ecosystems, for each ecosystem, define its credential schemas, who can issue, verify credential of a specific credential schema,... For more information, please refer to [VPR Spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/).
 
 [[def: verifiable service, VS, VSs]]:
 ~ A service, identified by a resolvable [[ref: DID]], that can be deployed anywhere by its owner, that conforms to this spec, and that has a resolvable [[ref: proof of trust]]. A VS declares its service endpoints in its [[ref: DID Document]] (see [VS-SVC]); it MUST declare at least a [[ref: DIDComm]] endpoint and MAY declare additional services such as MCP, A2A, a website, or any other service type.
@@ -74,7 +74,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ A user agent for accessing and using [[ref: VSs]]. To be considered a [[ref: VUA]], a user agent must conform and enforce this spec, such as presenting a proof of trust to end user before accepting connecting to [[ref: VS]] compliant services, and refuse connecting to not compliant services.
 
 [[def: essential credential schema, essential credential schemas]]:
-~ Default [[ref: credential schema]], owned by a [[ref: trust registry]], that provide the basis for a trust layer to exist in the ecosystem so that [[ref: VUA]] can generate a [[ref: proof of trust]].
+~ Default [[ref: credential schema]], owned by an [[ref: ecosystem]], that provide the basis for a trust layer to exist in the ecosystem so that [[ref: VUA]] can generate a [[ref: proof of trust]].
 
 [[def: holder, holders]]:
 ~ A role an entity might perform by possessing one or more verifiable credentials and generating verifiable presentations from them. A holder is often, but not always, a [[ref: subject]] of the verifiable credentials they are holding. Holders store their credentials in credential repositories. Example holders include organizations, persons, things.
@@ -97,11 +97,17 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 [[def: subject, subjects]]:
 ~ A thing about which claims are made. Example subjects include human beings, animals, things, and organization, a [[ref: DID]]...
 
-[[def:trust registry, trust registries]]
-~ An approved list of [[ref: issuers]] and [[ref: verifiers]] that are authorized to issue/verify certain credentials in an ecosystem.
+[[def: ecosystem, ecosystems]]:
+~ A [[ref: VPR]] resource, controlled by a [[ref: corporation]], that defines an approved list of [[ref: participants]] (issuers, verifiers, grantors, holders) authorized to issue, verify or hold credentials for a given set of credential schemas. The Ecosystem entry plays the role formerly known as "trust registry". For the canonical data model, see [Ecosystem](https://verana-labs.github.io/verifiable-trust-vpr-spec/#ecosystem) in the VPR spec.
+
+[[def: corporation, corporations]]:
+~ A [[ref: VPR]] resource representing a legal/organizational entity that controls one or more [[ref: ecosystems]] and/or holds one or more [[ref: participants]] in ecosystems. See [Corporation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#corporation) in the VPR spec.
+
+[[def: participant, participants]]:
+~ A [[ref: VPR]] resource, linked to a [[ref: credential schema]] in an [[ref: ecosystem]], that records the role (ISSUER, VERIFIER, ISSUER_GRANTOR, VERIFIER_GRANTOR, ECOSYSTEM, HOLDER) granted to a [[ref: corporation]] for that schema. The Participant entry replaces what earlier drafts called a "Permission". See [Participant](https://verana-labs.github.io/verifiable-trust-vpr-spec/#participant) in the VPR spec.
 
 [[def: trust resolution]]:
-~ Process run by, for example a [[ref: VUA]] or a [[ref: VS]], which purpose is to recursively resolve [[ref: DID]] by digging into [[ref: DID Documents]] and look for [[ref: linked-vp]] entries and their [[ref: issuer]] [[ref: DIDs]], and trust-registry entries to gather whether the service provided by the [[ref: DID]] is trustable (and legitimate), or not.
+~ Process run by, for example a [[ref: VUA]] or a [[ref: VS]], which purpose is to recursively resolve [[ref: DID]] by digging into [[ref: DID Documents]] and look for [[ref: linked-vp]] entries and their [[ref: issuer]] [[ref: DIDs]], and [[ref: ecosystem]] entries to gather whether the service provided by the [[ref: DID]] is trustable (and legitimate), or not.
 
 [[def: verifier, verifiers]]:
 ~ A role an entity performs by receiving one or more verifiable credentials, optionally inside a verifiable presentation for processing. Example verifiers include service providers.
@@ -146,8 +152,8 @@ and receive a response similar to this one:
   },
   "service": {
       "name": "Gaia Registry",
-      "termsAndConditions": "http://example.com",
-      "privacyPolicy": "http://example.com",
+      "termsAndConditionsUri": "http://example.com",
+      "privacyPolicyUri": "http://example.com",
       "minimumAgeRequired": 16,
       "description": "Create your Metaverse ID at Gaia Registry! Protect your identity with biometrics and easily recover it if you loose your phone. Use your Gaia Identity to connect to fancy services with no password."
       ...
@@ -261,14 +267,14 @@ There is a [separated VPR spec](https://verana-labs.github.io/verifiable-trust-v
 
 A **Verifiable Public Registry (VPR)** is a **“registry of registries”**, a public service that provides foundational infrastructure for decentralized trust ecosystems. It offers:
 
-- **Trust Registry Management**:  
-  Ecosystems can create and manage their own **Trust Registries**, each with:
+- **Ecosystem Management**:  
+  [[ref: Corporations]] can create and manage their own [[ref: Ecosystems]], each with:
   - Defined **Credential Schemas**
-  - Assigned roles for **Issuers**, **Verifiers**, and **Grantors** (Trust Registry Operators)
-  - Custom **business models** and permission policies
+  - Assigned roles for **Issuers**, **Verifiers**, and **Grantors** (Ecosystem Operators), modeled as `Participant` entries
+  - Custom **business models** and onboarding policies
 
 - **Query API for Trust Resolution**:  
-  A standardized API used by **Verifiable Services (VSs)** and **Verifiable User Agents (VUAs)** to perform trust resolution, enabling them to query registry data and validate roles and permissions in real time. Query API must include support for the [TRQP](https://trustoverip.github.io/tswg-trust-registry-protocol/).
+  A standardized API used by **Verifiable Services (VSs)** and **Verifiable User Agents (VUAs)** to perform trust resolution, enabling them to query registry data and validate roles and `Participant` entries in real time. Query API must include support for the [TRQP](https://trustoverip.github.io/tswg-trust-registry-protocol/).
 
 ```plantuml
 
@@ -277,21 +283,21 @@ scale max 800 width
  
 package "Verifiable Public Registry" as vpr {
 
-    object "Trust Registry of Ecosystem #A" as tra #3fbdb6 {
+    object "Ecosystem #A" as tra #3fbdb6 {
     }
 
-    object "Trust Registry of Ecosystem #B" as trb #3fbdb6 {
-
-    }
-
-    object "Trust Registry of Ecosystem #C" as trc #3fbdb6 {
+    object "Ecosystem #B" as trb #3fbdb6 {
 
     }
 
-    object "Trust Registry of Ecosystem #D" as trd #3fbdb6 {
+    object "Ecosystem #C" as trc #3fbdb6 {
 
     }
-    object "Trust Registry of Ecosystem #E" as tre #3fbdb6 {
+
+    object "Ecosystem #D" as trd #3fbdb6 {
+
+    }
+    object "Ecosystem #E" as tre #3fbdb6 {
 
     }
     
@@ -302,14 +308,14 @@ package "Verifiable Public Registry" as vpr {
 
 ```
 
-#### Trust Registries
+#### Ecosystems
 
 *This section is non-normative.*
 
-Each **Trust Registry** must provide, at a minimum:
+Each [[ref: Ecosystem]] must provide, at a minimum:
 
-- an Ecosystem controlled **resolvable DID**
-- One or more **Governance Framework** document(s)
+- a **resolvable DID** controlled by the [[ref: corporation]] that controls the ecosystem
+- One or more **Governance Framework** document(s) (EGF)
 - Zero or more **Credential Schemas**
 
 The **Verifiable Public Registry (VPR)** is agnostic to the specific **DID methods** used. Trust resolution is performed externally, outside the VPR, allowing flexibility and interoperability across ecosystems.
@@ -319,7 +325,7 @@ The **Verifiable Public Registry (VPR)** is agnostic to the specific **DID metho
 @startuml
 scale max 800 width
  
-object "Trust Registry" as tra #3fbdb6 {
+object "Ecosystem" as tra #3fbdb6 {
     ecosystem did
     ecosystem credential schemas
     ecosystem governance framework docs
@@ -333,61 +339,64 @@ object "Trust Registry" as tra #3fbdb6 {
 
 *This section is non-normative.*
 
-**Credential Schemas** are created and managed by **trust registry** controller (Ecosystems). Each Credential Schema includes, at a minimum:
+**Credential Schemas** are created and managed by [[ref: Ecosystems]] (which are themselves controlled by [[ref: corporations]]). Each Credential Schema includes, at a minimum:
 
 - A **JSON Schema** that defines the structure of the corresponding **Verifiable Credential**
-- A **PermissionManagementMode** for **issuance policy**, which determines how `Issuer` permissions are granted. Modes include:
-  - `OPEN`: Anyone can become an Issuer
-  - `ECOSYSTEM`: Permissions are granted directly by the Ecosystem, the trust registry controller
-  - `GRANTOR_VALIDATION`: Permissions are granted by one or several `Issuer Grantor(s)` (trust registry operator(s) responsible for selecting issuers for the ecosystem), selected by the Ecosystem.
-- A **PermissionManagementMode** for **verification policy**, which determines how `Verifier` permissions are granted. Modes include:
-  - `OPEN`: Anyone can act as a Verifier
-  - `ECOSYSTEM`: Permissions are granted directly by the Ecosystem, the trust registry controller
-  - `GRANTOR_VALIDATION`: Permissions are granted by one or several `Verifier Grantor(s)` (trust registry operator(s) responsible for selecting verifiers for the ecosystem), selected by the Ecosystem.
-- A **Permission Tree** that defines the roles and relationships involved in managing the schema’s lifecycle.
+- An **IssuerOnboardingMode** for **issuance policy**, which determines how `ISSUER` `Participant` entries are created. Modes include:
+  - `OPEN`: `ISSUER` `Participant` entries can be self-created by any [[ref: corporation]].
+  - `ECOSYSTEM_ONBOARDING_PROCESS`: `ISSUER` `Participant` entries are created directly by the controlling [[ref: ecosystem]] through an onboarding process.
+  - `GRANTOR_ONBOARDING_PROCESS`: `ISSUER` `Participant` entries are created by one or several `Issuer Grantor(s)` (ecosystem operators responsible for onboarding issuers for the schema), selected by the [[ref: ecosystem]] through an onboarding process.
+- A **VerifierOnboardingMode** for **verification policy**, which determines how `VERIFIER` `Participant` entries are created. Modes include:
+  - `OPEN`: `VERIFIER` `Participant` entries can be self-created by any [[ref: corporation]].
+  - `ECOSYSTEM_ONBOARDING_PROCESS`: `VERIFIER` `Participant` entries are created directly by the controlling [[ref: ecosystem]] through an onboarding process.
+  - `GRANTOR_ONBOARDING_PROCESS`: `VERIFIER` `Participant` entries are created by one or several `Verifier Grantor(s)` (ecosystem operators responsible for onboarding verifiers for the schema), selected by the [[ref: ecosystem]] through an onboarding process.
+- A **HolderOnboardingMode** for **holder policy**, which determines how `HOLDER` `Participant` entries are created. Modes include:
+  - `ISSUER_ONBOARDING_PROCESS`: `HOLDER` `Participant` entries are created directly by issuers for holders, through an onboarding process.
+  - `PERMISSIONLESS`: a holder that wants to obtain credentials from an issuer does not require a `Participant` entry in the VPR.
+- A **Participant Tree** that defines the roles and relationships involved in managing the schema’s lifecycle.
 
 ```plantuml
 
 @startuml
 scale max 800 width
  
-package "Example Credential Schema Permission Tree" as cs {
+package "Example Credential Schema Participant Tree" as cs {
 
     object "Ecosystem A" as tr #3fbdb6 {
-        permissionType: ECOSYSTEM (Root)
+        role: ECOSYSTEM (Root)
         did:example:ecosystemA
     }
     object "Issuer Grantor B" as ig {
-        permissionType: ISSUER_GRANTOR
+        role: ISSUER_GRANTOR
         did:example:igB
     }
     object "Issuer C" as issuer #7677ed  {
-        permissionType: ISSUER
+        role: ISSUER
         did:example:iC
     }
     object "Verifier Grantor D" as vg {
-        permissionType: VERIFIER_GRANTOR
+        role: VERIFIER_GRANTOR
         did:example:vgD
     }
     object "Verifier E" as verifier #00b0f0 {
-        permissionType: VERIFIER
+        role: VERIFIER
         did:example:vE
     }
 
     object "Holder Z " as holder #FFB073 {
-        permissionType: HOLDER
+        role: HOLDER
     }
 }
 
 
 
-tr --> ig : granted schema permission
-ig --> issuer : granted schema permission
+tr --> ig : granted schema participant
+ig --> issuer : granted schema participant
 
-tr --> vg : granted schema permission
-vg --> verifier : granted schema permission
+tr --> vg : granted schema participant
+vg --> verifier : granted schema participant
 
-issuer --> holder: granted schema permission
+issuer --> holder: granted schema participant
 
 @enduml
 
@@ -397,9 +406,9 @@ Participant roles are defined in the table below:
 
 | **Participant Role**   | **Description**                                                  |
 |-----------------------|------------------------------------------------------------------|
-| **Ecosystem**    | Create and control trust registries and credential Schemas. Recognize other participants by granting permission(s) to them.        |
-| **Issuer Grantor**    | Trust Registry operator that grants Issuer permissions to candidate issuers.                   |
-| **Verifier Grantor**  | Trust Registry operator that grants Verifier permissions to candidate verifiers.               |
+| **Ecosystem**    | Create and control Ecosystems and Credential Schemas. Recognize other corporations by creating `Participant` entries for them.        |
+| **Issuer Grantor**    | Ecosystem operator that creates Issuer `Participant` entries for candidate issuers.                   |
+| **Verifier Grantor**  | Ecosystem operator that creates Verifier `Participant` entries for candidate verifiers.               |
 | **Issuer**            | Can issue credentials of this schema.                            |
 | **Verifier**          | Can request presentation of credentials of this schema.          |
 | **Holder**            | Holds a credential.   |
@@ -465,7 +474,7 @@ To make things verifiable, for a given credential schema:
 
 @startuml
 scale max 800 width
-object "Ecosystem Trust Registry (created in VPR)" as es {
+object "Ecosystem (created in VPR)" as es {
   ecosystem did: did:example:ecosystem
 }
 object "CredentialSchema (in VPR)" as cs {
@@ -506,16 +515,16 @@ With the Verifiable Trust concept now clearly established, we’re ready to dive
 
 ### [VT-JSON-SCHEMA-CRED-W3C] Verifiable Trust Json Schema Credential
 
-To provide cryptographic evidence that data stored in a VPR (e.g., a credential JSON Schema) is authored and controlled by the Ecosystem that operates the corresponding Trust Registry, the **Ecosystem controller** of the Trust Registry issues a VTJSC (which is a [JSON Schema Credential](https://www.w3.org/TR/vc-json-schema/)) **after** creating the `CredentialSchema` entry in the VPR.
+To provide cryptographic evidence that data stored in a VPR (e.g., a credential JSON Schema) is authored and controlled by the Ecosystem that governs it, the **[[ref: corporation]] controlling the Ecosystem** issues a VTJSC (which is a [JSON Schema Credential](https://www.w3.org/TR/vc-json-schema/)) **after** creating the `CredentialSchema` entry in the VPR.
 
-The Json Schema Credential MUST be issued using the **Ecosystem DID recorded as the Trust Registry’s Ecosystem identifier** in the VPR, and MUST reference the corresponding `CredentialSchema` entry.
+The Json Schema Credential MUST be issued using the **Ecosystem DID recorded in the VPR** and MUST reference the corresponding `CredentialSchema` entry.
 
 A VTJSC MUST include, at a minimum, the following attributes:
 
 - `@context`: MUST include `https://www.w3.org/ns/credentials/v2`
 - `id`: URL of the credential (e.g., a `https://example/vtjsc.json`)
 - `type`: MUST include `VerifiableCredential`, `JsonSchemaCredential` and `VerifiableTrustJsonSchemaCredential`
-- `issuer`: the Ecosystem DID that controls the Trust Registry
+- `issuer`: the Ecosystem DID
 - `credentialSchema`: an object containing:
   - `id`: `https://www.w3.org/ns/credentials/json-schema/v2.json`
   - `type`: `JsonSchema`
@@ -532,7 +541,7 @@ A VTJSC MUST include, at a minimum, the following attributes:
 :::
 This credential provides verifiable evidence of:
 
-- **Control of the Trust Registry Ecosystem DID** (because it is the issuer of the credential)
+- **Control of the Ecosystem DID** (because it is the issuer of the credential)
 - **Authenticity of the CredentialSchema declaration** (because the credential binds the Ecosystem DID to the VPR `CredentialSchema` entry)
 
 ```json
@@ -563,7 +572,7 @@ This credential provides verifiable evidence of:
 
 ### [VT-ECOSYSTEM-DIDDOC] Ecosystem DID Document
 
-Finally, the Ecosystem MUST publish each **VTJSC** as a **Linked Verifiable Presentation** in the **DID Document** associated with the **Trust Registry Ecosystem DID** registered in the VPR.
+Finally, the Ecosystem MUST publish each **VTJSC** as a **Linked Verifiable Presentation** in the **DID Document** associated with the **Ecosystem DID** registered in the VPR.
 
 Publishing VTJSC in the Ecosystem DID Document ensures that:
 
@@ -598,11 +607,11 @@ authorized issuers MAY issue Verifiable Credentials that conform to those schema
 
 Verifiable Credentials that comply with the Verifiable Trust Specification are referred to as **Verifiable Trust Credentials (VTCs)**.
 
-A Verifiable Trust Credential MUST be linked to the applicable **VTJSC** issued by the Trust Registry Ecosystem DID. For W3C VTCs ([VT-CRED-W3C]), this link is established directly via the `credentialSchema` property. For AnonCreds VTCs ([VT-CRED-ANON]), the link is indirect: the AnonCreds Credential Definition references the VTJSC via `relatedJsonSchemaCredentialId`. In both cases, this establishes a verifiable and discoverable trust chain between:
+A Verifiable Trust Credential MUST be linked to the applicable **VTJSC** issued by the Ecosystem DID. For W3C VTCs ([VT-CRED-W3C]), this link is established directly via the `credentialSchema` property. For AnonCreds VTCs ([VT-CRED-ANON]), the link is indirect: the AnonCreds Credential Definition references the VTJSC via `relatedJsonSchemaCredentialId`. In both cases, this establishes a verifiable and discoverable trust chain between:
 
 - the issued credential,
 - the governing schema definition,
-- and the Ecosystem that controls the Trust Registry in which the schema is defined.
+- and the Ecosystem under which the schema is defined.
 
 During verification, wallets and verifiers can resolve the referenced VTJSC, verify its authenticity, and determine whether the issuing DID was authorized to issue credentials under that schema. For W3C VTCs, authorization is checked at the objectively determined issuance time (see [VT-CRED-W3C]). For AnonCreds VTCs, authorization is checked at credential reception time (see [VT-CRED-ANON] and [CIT]).
 
@@ -683,7 +692,7 @@ A W3C Verifiable Trust Credential MUST include, at a minimum, the following attr
   - `id`: the DID of the credential holder
   - all attributes required by the referenced Credential Schema
 - `credentialSchema`: an object containing:
-  - `id`: the identifier of the VTJSC issued by the Trust Registry Ecosystem DID
+  - `id`: the identifier of the VTJSC issued by the Ecosystem DID
   - `type`: `JsonSchemaCredential`
 - a valid cryptographic proof, as defined by the Verifiable Credentials specification
 
@@ -716,9 +725,9 @@ A W3C Verifiable Trust Credential MUST include, at a minimum, the following attr
 
 In this example:
 
-- credentialSchema.id references the JSON Schema Credential issued by the Trust Registry Ecosystem DID.
+- credentialSchema.id references the JSON Schema Credential issued by the Ecosystem DID.
 - The JSON Schema Credential itself is discoverable via a LinkedVerifiablePresentation in the Ecosystem DID Document.
-- Authorization of the issuer is determined by evaluating VPR state (e.g., issuer permissions) at the issuance time evidenced by the credential’s anchored digest.
+- Authorization of the issuer is determined by evaluating VPR state (e.g., issuer `Participant` entries) at the issuance time evidenced by the credential’s anchored digest.
 
 This design ensures that trust decisions remain fully verifiable, ecosystem-governed, and independent of centralized validation services.
 
@@ -734,7 +743,7 @@ When issuing a Verifiable Trust Credential, the issuer MUST:
 
 2. **Compute** a deterministic **JCS Digest** (`digestJCS`) of the canonicalized credential using the `digest_algorithm` specified in the [CredentialSchema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema) (`SHA384` or `SHA512`)
 
-3. **Register** this `digestJCS` in the VPR by calling [CreateOrUpdatePermissionSession](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-perm-msg-10-create-or-update-permission-session) with the `digest` parameter. The VPR stores the digest with the block timestamp via [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest).
+3. **Register** this `digestJCS` in the VPR by calling [CreateOrUpdateParticipantSession](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-10-create-or-update-participant-session) with the `digest` parameter. The VPR stores the digest with the block timestamp via [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest).
 
 During verification, a trust resolution process MUST:
 
@@ -899,20 +908,20 @@ Essential Credential Schemas are the Verifiable Trust basic needed schemas for e
 - is the User Agent trying to connect to a Verifiable Service a Verifiable User Agent?
 - ...
 
-Ecosystems can create Essential Credential Schemas (ECS) by creating a Trust Registry in a [[ref: VPR]]. There are 4 kinds of ECS:
+Ecosystems can create Essential Credential Schemas (ECS) by creating an [[ref: Ecosystem]] in a [[ref: VPR]]. There are 4 kinds of ECS:
 
 - Service;
 - Organization;
 - Persona;
 - UserAgent.
 
-#### [ECS-TR] Essential Credential Schemas Trust Registry
+#### [ECS-EC] Essential Credential Schemas Ecosystem
 
-To provide an Essential Credential Schemas Trust Registry, an Ecosystem creates its Trust Registry in a [[ref: VPR]] by creating a `TrustRegistry` entry `tr`.
+To provide an Essential Credential Schemas Ecosystem, a [[ref: corporation]] creates an `Ecosystem` entry `es` in a [[ref: VPR]].
 
-For this Trust Registry to qualify as an ECS Trust Registry and to be used for trust resolution in [[ref: VSs]] and [[ref: VUAs]], it MUST provide, associated to the `TrustRegistry` entry `tr`, one `CredentialSchema` entry for each of [ECS-SERVICE], [ECS-ORG], [ECS-PERSONA], and [ECS-UA], each with a `json_schema` attribute as defined in the corresponding section.
+For this Ecosystem to qualify as an ECS Ecosystem and to be used for trust resolution in [[ref: VSs]] and [[ref: VUAs]], it MUST provide, associated to the `Ecosystem` entry `es`, one `CredentialSchema` entry for each of [ECS-SERVICE], [ECS-ORG], [ECS-PERSONA], and [ECS-UA], each with a `json_schema` attribute as defined in the corresponding section.
 
-Additional CredentialSchema entries MAY be provided by the Trust Registry.
+Additional CredentialSchema entries MAY be provided by the Ecosystem.
 
 To verify that a `CredentialSchema` entry in a VPR is an Essential Credential Schema, a verifier MUST:
 
@@ -924,12 +933,12 @@ To verify that a `CredentialSchema` entry in a VPR is an Essential Credential Sc
 
 | Schema | Digest |
 |---|---|
-| ServiceCredential | `sha384-PVseqJJjEGMVRcht77rE2yLqRnCiLBRLOklSuAshSEXK3eyITmUpDBhpQryJ/XIx` |
-| OrganizationCredential | `sha384-XF10SsOaav+i+hBaXP29coZWZeaCZocFvfP9ZeHh9B7++q7YGA2QLTbFZqtYs/zA` |
-| PersonaCredential | `sha384-4vkQl6Ro6fudr+g5LL2NQJWVxaSTaYkyf0yVPVUmzA2leNNn0sJIsM07NlOAG/2I` |
+| ServiceCredential | `sha384-0v+BAFGpnBX/RVqH9dUlMglxMrD4AKy4qUtb1lMN4iW9I2gO7XjcUfmGOf0oInP3` |
+| OrganizationCredential | `sha384-UPn4TDqS1nMBAN3FyMzTAZOWp99zBjBD69OjpbhwOKZj7iOrS5qPwJ2SArRz0yzu` |
+| PersonaCredential | `sha384-VfXTfuks02OkoR5USaTfEdc4NU25m4+vNrLATnjC0r0Pn1S3tFTdOvGCfSYdjE2I` |
 | UserAgentCredential | `sha384-yLRK2mCokVjRlGX0nVzdEYQ1o6YWpQqgdg6+HlSxCePP+D7wvs0+70TJACLZfbF/` |
 
-The `$id` property is excluded because it contains the VPR-specific schema identifier, which varies across deployments. The remaining schema content is identical for all conforming ECS Trust Registries.
+The `$id` property is excluded because it contains the VPR-specific schema identifier, which varies across deployments. The remaining schema content is identical for all conforming ECS Ecosystems.
 
 #### [ECS-SERVICE] Service Credential Json Schema
 
@@ -948,12 +957,13 @@ Credential subject object of schema MUST contain the following attributes:
   - `text/plain`
   - `text/markdown`  
   If omitted, `text/plain` MUST be assumed.
-- `logo` (string) (mandatory): Data URI containing the service logo image (as shown in browsers/apps/search engines). The value MUST be a `data:` URI with a base64-encoded payload. Allowed media types: `image/png`, `image/jpeg`, `image/svg+xml`. Max length: 1,400,000 chars.
+- `logoUri` (string) (mandatory): URI of the service logo image (as shown in browsers/apps/search engines). Allowed media types of the dereferenced resource: `image/png`, `image/jpeg`, `image/svg+xml`. URI format, max length: 4096 chars.
+- `logoDigestSri` (string) (mandatory): Subresource Integrity digest of the `logoUri` resource, encoded as <algorithm>-<base64-digest> (SRI format). Max length: 256 chars.
 - `minimumAgeRequired` (integer) (mandatory): minimum required age to connect to service. Allowed values: 0 to 255 (inclusive).
-- `termsAndConditions` (string) (mandatory): URI of the terms and conditions of the service. URI format, max length: 4096 chars.
-- `termsAndConditionsDigestSri` (string) (optional): Subresource Integrity digest of the termsAndConditions resource, encoded as <algorithm>-<base64-digest> (SRI format). Max length: 256 chars.
-- `privacyPolicy` (string) (mandatory): URI of the privacy policy of the service. URI format, max length: 4096 chars.
-- `privacyPolicyDigestSri` (string) (optional): Subresource Integrity digest of the privacyPolicy resource, encoded as <algorithm>-<base64-digest> (SRI format). Max length: 256 chars.
+- `termsAndConditionsUri` (string) (mandatory): URI of the terms and conditions of the service. URI format, max length: 4096 chars.
+- `termsAndConditionsDigestSri` (string) (mandatory): Subresource Integrity digest of the `termsAndConditionsUri` resource, encoded as <algorithm>-<base64-digest> (SRI format). Max length: 256 chars.
+- `privacyPolicyUri` (string) (mandatory): URI of the privacy policy of the service. URI format, max length: 4096 chars.
+- `privacyPolicyDigestSri` (string) (mandatory): Subresource Integrity digest of the `privacyPolicyUri` resource, encoded as <algorithm>-<base64-digest> (SRI format). Max length: 256 chars.
 
 the resulting `json_schema` attribute will be the following Json Schema.
 
@@ -994,18 +1004,21 @@ the resulting `json_schema` attribute will be the following Json Schema.
           "enum": ["text/plain", "text/markdown"],
           "default": "text/plain"
         },
-        "logo": {
+        "logoUri": {
           "type": "string",
           "format": "uri",
-          "pattern": "^data:image/(png|jpeg|svg\\+xml);base64,",
-          "maxLength": 1400000
+          "maxLength": 4096
+        },
+        "logoDigestSri": {
+          "type": "string",
+          "maxLength": 256
         },
         "minimumAgeRequired": {
           "type": "integer",
           "minimum": 0,
           "maximum": 255
         },
-        "termsAndConditions": {
+        "termsAndConditionsUri": {
           "type": "string",
           "format": "uri",
           "maxLength": 4096
@@ -1014,7 +1027,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
           "type": "string",
           "maxLength": 256
         },
-        "privacyPolicy": {
+        "privacyPolicyUri": {
           "type": "string",
           "format": "uri",
           "maxLength": 4096
@@ -1029,10 +1042,13 @@ the resulting `json_schema` attribute will be the following Json Schema.
         "name",
         "type",
         "description",
-        "logo",
+        "logoUri",
+        "logoDigestSri",
         "minimumAgeRequired",
-        "termsAndConditions",
-        "privacyPolicy"
+        "termsAndConditionsUri",
+        "termsAndConditionsDigestSri",
+        "privacyPolicyUri",
+        "privacyPolicyDigestSri"
       ]
     }
   }
@@ -1053,9 +1069,12 @@ Credential subject object of schema MUST contain the following attributes:
 - `name` (string) (*mandatory*): name of the organization.  
   UTF8 charset, min length: 1 char, max length: 512 chars.
 
-- `logo` (string) (*mandatory*): Data URI containing the organization logo image (as shown in browsers and search engines).  
-  The value MUST be a `data:` URI with a base64-encoded payload. Allowed media types: `image/png`, `image/jpeg`, `image/svg+xml`.  
-  Max length: 1,400,000 chars.
+- `logoUri` (string) (*mandatory*): URI of the organization logo image (as shown in browsers and search engines).  
+  Allowed media types of the dereferenced resource: `image/png`, `image/jpeg`, `image/svg+xml`.  
+  URI format, max length: 4096 chars.
+
+- `logoDigestSri` (string) (*mandatory*): Subresource Integrity digest of the `logoUri` resource, encoded as <algorithm>-<base64-digest> (SRI format).  
+  Max length: 256 chars.
 
 - `registryId` (string) (*mandatory*): identifier of the organization in an external authoritative registry (e.g., company register).  
   UTF8 charset, min length: 1 char, max length: 256 chars.
@@ -1110,11 +1129,14 @@ The resulting `json_schema` attribute will be the following Json Schema.
           "minLength": 1,
           "maxLength": 512
         },
-        "logo": {
+        "logoUri": {
           "type": "string",
           "format": "uri",
-          "pattern": "^data:image/(png|jpeg|svg\\+xml);base64,",
-          "maxLength": 1400000
+          "maxLength": 4096
+        },
+        "logoDigestSri": {
+          "type": "string",
+          "maxLength": 256
         },
         "registryId": {
           "type": "string",
@@ -1156,7 +1178,8 @@ The resulting `json_schema` attribute will be the following Json Schema.
       "required": [
         "id",
         "name",
-        "logo",
+        "logoUri",
+        "logoDigestSri",
         "registryId",
         "address",
         "countryCode"
@@ -1189,9 +1212,12 @@ Credential subject object of schema MUST contain the following attributes:
   - `text/markdown`  
   If omitted, `text/plain` MUST be assumed.
 
-- `avatar` (string) (*optional*): Data URI containing the Persona avatar image (as shown in browsers and search engines).  
-  The value MUST be a `data:` URI with a base64-encoded payload. Allowed media types: `image/png`, `image/jpeg`, `image/svg+xml`.  
-  Max length: 1,400,000 chars.
+- `avatarUri` (string) (*optional*): URI of the Persona avatar image (as shown in browsers and search engines).  
+  Allowed media types of the dereferenced resource: `image/png`, `image/jpeg`, `image/svg+xml`.  
+  URI format, max length: 4096 chars.
+
+- `avatarDigestSri` (string) (*conditional*): Subresource Integrity digest of the `avatarUri` resource, encoded as <algorithm>-<base64-digest> (SRI format).  
+  MUST be present when `avatarUri` is present (enforced via JSON Schema `dependentRequired`). Max length: 256 chars.
 
 - `controllerCountryCode` (string) (*mandatory*): primary country of residence of the Persona controller (the human), expressed as an ISO 3166-1 alpha-2 country code.  
   Pattern: `^[A-Z]{2}$`.
@@ -1240,11 +1266,14 @@ The resulting `json_schema` attribute will be the following Json Schema.
           "enum": ["text/plain", "text/markdown"],
           "default": "text/plain"
         },
-        "avatar": {
+        "avatarUri": {
           "type": "string",
           "format": "uri",
-          "pattern": "^data:image/(png|jpeg|svg\\+xml);base64,",
-          "maxLength": 1400000
+          "maxLength": 4096
+        },
+        "avatarDigestSri": {
+          "type": "string",
+          "maxLength": 256
         },
         "controllerCountryCode": {
           "type": "string",
@@ -1263,7 +1292,10 @@ The resulting `json_schema` attribute will be the following Json Schema.
         "id",
         "name",
         "controllerCountryCode"
-      ]
+      ],
+      "dependentRequired": {
+        "avatarUri": ["avatarDigestSri"]
+      }
     }
   }
 }
@@ -1333,7 +1365,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 ### [VT-ECS-JSON-SCHEMA-VPR-CONFIG] Essential Schema VPR Configuration
 
-To be considered compliant, CredentialSchema entries for [ECS-SERVICE], [ECS-ORG], and [ECS-PERSONA] MUST set `holder_onboarding_mode` to `ISSUER_VALIDATION_PROCESS`. See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema).
+To be considered compliant, CredentialSchema entries for [ECS-SERVICE], [ECS-ORG], and [ECS-PERSONA] MUST set `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`. See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema).
 
 ### [VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema VTJSCs
 
@@ -1384,7 +1416,7 @@ To be considered compliant, CredentialSchema entries for [ECS-SERVICE], [ECS-ORG
 
 ### [VT-ECS-ECOSYSTEM-DIDDOC] Ecosystem DID Document for declaring Essential Credential Schemas
 
-If an Ecosystem Trust Registry wishes to provide ECS trust resolution, it MUST present VT Json Schema Credential(s) of all ECSs, as well as the corresponding VPR entry for verification. To do that, Ecosystem MUST define the following entries in its DID Document, for each ECS:
+If an Ecosystem wishes to provide ECS trust resolution, it MUST present VT Json Schema Credential(s) of all ECSs, as well as the corresponding VPR entry for verification. To do that, Ecosystem MUST define the following entries in its DID Document, for each ECS:
 
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-schemas-service-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C].
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-schemas-org-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C].
@@ -1615,7 +1647,7 @@ For communication channel between User Agents to be enabled, both User Agents MU
 
 - [TR-6] Every DID that appears as an issuer of a credential during trust resolution MUST itself be verified as a **Verifiable Service** conforming to [VS-REQ]. The credentials presented by that issuer's DID Document MUST themselves be verified by recursively applying [TR-1] through [TR-6].
 
-- [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at the **Ecosystem DID**, which is the issuer of the VTJSC and the controller of the Trust Registry. The Ecosystem DID is the trust root.
+- [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at the **Ecosystem DID**, which is the issuer of the VTJSC and the identifier of the Ecosystem itself. The Ecosystem DID is the trust root.
 
 - [TR-8] If any verification step in [TR-1] through [TR-7] fails for any credential or DID encountered during trust resolution, the trust resolution MUST be considered failed, and the connection or credential MUST be rejected.
 
@@ -1699,7 +1731,7 @@ These services do **not create trust**; they merely **make trust resolvable**. A
 
 Such services typically ingest and index:
 
-- VPR entries (Trust Registries, Credential Schemas, Permissions, ...)
+- VPR entries (Ecosystems, Credential Schemas, Participants, ...)
 - Ecosystem DID Documents
 - Linked Verifiable Presentations published in DID Documents
 - Verifiable Trust Credentials and Verifiable Trust Json Schema Credentials
@@ -1709,7 +1741,7 @@ Using this indexed data, a relying party (or a wallet acting on its behalf) can 
 
 ### Recursive Resolution Principle
 
-Trust resolution is inherently **recursive**. Every DID encountered during resolution — whether as a credential issuer, a service operator, or a schema controller — MUST itself be resolved and verified. Specifically, any DID that appears as an issuer of a credential MUST be verified as a **Verifiable Service** (see [VS-REQ]), and all credentials it presents MUST themselves undergo the same resolution steps. This recursion terminates at the **Ecosystem DID**, which serves as the trust root: it is the issuer of the VTJSC and the controller of the Trust Registry.
+Trust resolution is inherently **recursive**. Every DID encountered during resolution — whether as a credential issuer, a service operator, or a schema controller — MUST itself be resolved and verified. Specifically, any DID that appears as an issuer of a credential MUST be verified as a **Verifiable Service** (see [VS-REQ]), and all credentials it presents MUST themselves undergo the same resolution steps. This recursion terminates at the **Ecosystem DID**, which serves as the trust root: it is the issuer of the VTJSC and identifies the Ecosystem itself.
 
 Examples below illustrate how trust resolution is performed assuming that all required Verifiable Trust artifacts are already available to the relying party. No assumptions are made about how the data was obtained; only the logical resolution steps are described.
 
@@ -1747,7 +1779,7 @@ This step applies to W3C VTCs only. AnonCreds VTCs do not support objective issu
 ### Verify issuer authorization
 
 - Identify the Ecosystem DID that issued the vtjsc
-- Query the Trust Registry governed by that Ecosystem
+- Query the Ecosystem entry and its `Participant` entries
 - For W3C VTCs: verify that the credential issuer DID was authorized for the referenced vtjsc **at the effective issuance time** determined above
 - For AnonCreds VTCs: verify that the credential issuer DID is currently authorized for the referenced vtjsc. Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
 
@@ -1763,14 +1795,14 @@ The credential issuer MUST be a Verifiable Service. To verify this:
   - either:
     - the service DID itself presents a valid VT-ECS-ORG-CRED-W3C or VT-ECS-PERSONA-CRED-W3C, or
     - the issuer of the service credential presents such a credential
-- Verify all issuer permissions
+- Verify all issuer `Participant` entries
 - **Recursively apply the same trust resolution steps** to each credential found in the issuer's DID Document (verify signature, resolve VTJSC, determine issuance time, verify authorization, verify that *its* issuer is also a Verifiable Service)
 
 ### Determine the governing Ecosystem
 
 - From the vtjsc, read the `issuer` field
 - This DID identifies the Ecosystem that:
-  - controls the Trust Registry
+  - controls the registry entry
   - defines the credential schema
   - governs issuer authorization rules
 
@@ -1801,25 +1833,25 @@ This example shows the action sequence for a holder VS-Agent obtaining a public 
 
 **Preconditions:**
 
-- The Ecosystem has defined a `CredentialSchema` `cs` for the credential (e.g., a service, organisation, or persona credential), with an associated VTJSC published by the Ecosystem trust registry DID.
-- The issuer has an active ISSUER permission on `cs` (`perm_issuer`), and issuer service is a Verifiable Service.
+- The Ecosystem has defined a `CredentialSchema` `cs` for the credential (e.g., a service, organisation, or persona credential), with an associated VTJSC published by the Ecosystem DID.
+- The issuer has an active `ISSUER` `Participant` entry on `cs` (`issuer_participant`), and issuer service is a Verifiable Service.
 - The holder VS-Agent knows the issuer's DID and the schema `cs` it wants to be issued a credential against.
 
 **Sequence:**
 
-1. **Start the validation process (holder side).** The holder VS-Agent submits `MsgStartPermissionVP` (`MOD-PERM-MSG-1`) on the [[ref: VPR]], targeting the issuer as validator of the requested HOLDER permission against `cs`. The on-chain entry creates an applicant permission `holder_perm` in `vp_state = PENDING` whose `validator_perm_id` points at `perm_issuer`.
+1. **Start the onboarding process (holder side).** The holder VS-Agent submits `MsgStartParticipantOP` (`MOD-PP-MSG-1`) on the [[ref: VPR]], targeting the issuer as validator of the requested `HOLDER` `Participant` entry against `cs`. The on-chain entry creates an applicant `Participant` entry `holder_participant` in `op_state = PENDING` whose `validator_participant_id` points at `issuer_participant`.
 
-2. **Indexer notifies both parties.** Both the holder and the issuer VS-Agents receive an indexer notification for the new validation process via their respective DID-scoped subscriptions.
+2. **Indexer notifies both parties.** Both the holder and the issuer VS-Agents receive an indexer notification for the new onboarding process via their respective DID-scoped subscriptions.
 
 3. **DIDComm session.** The holder VS-Agent opens a DIDComm session to the issuer and follows the agent-level credential acquisition protocol (validation request, optional out-of-band steps to provide additional evidence, etc.). The issuer's VS-Agent collects and validates the evidence on its side.
 
-4. **Validator approves on-chain.** Once the issuer is satisfied, its VS-Agent submits `MsgSetPermissionVPToValidated` (`MOD-PERM-MSG-3`) on the [[ref: VPR]]. `holder_perm` transitions to `vp_state = VALIDATED` and its `effective_until` is set per the schema's policy.
+4. **Validator approves on-chain.** Once the issuer is satisfied, its VS-Agent submits `MsgSetParticipantOPToValidated` (`MOD-PP-MSG-3`) on the [[ref: VPR]]. `holder_participant` transitions to `op_state = VALIDATED` and its `effective_until` is set per the schema's policy.
 
 5. **Credential issuance over DIDComm.** The issuer's VS-Agent issues a W3C Verifiable Trust Credential to the holder over the existing DIDComm session, using the schema's VTJSC as `credentialSchema.id` and anchoring the deterministic `digestJCS` per [VT-CRED-W3C] and [TR-4].
 
 6. **Holder publishes the credential in its DID Document.** The holder VS-Agent updates its DID Document to publish (or update) a `linked-vp` entry containing the newly received credential, alongside any previously held public credentials.
 
-7. **Holder triggers the resolver.** As soon as the updated DID Document is updated, the holder VS-Agent submits `MsgTriggerResolver` (`MOD-PERM-MSG-15`) for one of its active permissions whose `did` equals the holder DID. The signing parameters use Path 1 of the TriggerResolver authorization model: `corporation = holder.corporation`, `operator = holder.vs_operator`. The Msg makes no on-chain state change; it only emits an event.
+7. **Holder triggers the resolver.** As soon as the updated DID Document is updated, the holder VS-Agent submits `MsgTriggerResolver` (`MOD-PP-MSG-15`) for one of its active `Participant` entries whose `did` equals the holder DID. The signing parameters use Path 1 of the TriggerResolver authorization model: `corporation = holder.corporation`, `operator = holder.vs_operator`. The Msg makes no on-chain state change; it only emits an event.
 
 8. **Trust resolution.** The [[ref: VPR]] resolver pipeline observes the `MsgTriggerResolver` event, and trigger the resolver module that fetches the latest holder DID Document, validates each linked-vp credential per [TR-1] through [TR-7], and records the holder DID's trust state. Subsequent queries to the resolver return `trustStatus = TRUSTED` for the holder DID.
 
@@ -1830,12 +1862,12 @@ sequenceDiagram
     participant VPR as VPR (ledger)
     participant Idx as Indexer + Resolver
 
-    Holder->>VPR: MsgStartPermissionVP (validator = issuer)
-    VPR-->>Idx: perm-pending event
+    Holder->>VPR: MsgStartParticipantOP (validator = issuer)
+    VPR-->>Idx: participant-pending event
     Idx-->>Holder: notify
     Idx-->>Issuer: notify
-    Holder->>Issuer: DIDComm validation flow
-    Issuer->>VPR: MsgSetPermissionVPToValidated
+    Holder->>Issuer: DIDComm onboarding flow
+    Issuer->>VPR: MsgSetParticipantOPToValidated
     Issuer->>Holder: DIDComm credential issuance
     Holder->>Holder: update DID Document (linked-vp)
     Holder->>VPR: MsgTriggerResolver
@@ -1853,9 +1885,9 @@ This example shows the symmetric flow for revoking a previously issued credentia
 
 **Sequence:**
 
-1. **Issuer revokes on-chain.** The issuer VS-Agent submits `MsgRevokePermission` (`MOD-PERM-MSG-9`) against `holder_perm`. On confirmation, `holder_perm.revoked = now` and the permission ceases to be active, which revokes the corresponding credential.
+1. **Issuer revokes on-chain.** The issuer VS-Agent submits `MsgRevokeParticipant` (`MOD-PP-MSG-9`) against `holder_participant`. On confirmation, `holder_participant.revoked = now` and the `Participant` entry ceases to be active, which revokes the corresponding credential.
 
-2. **Resolver auto-re-resolves.** The [[ref: VPR]] resolver pipeline treats `MsgRevokePermission` as an implicit re-resolution signal for the holder DID and re-runs trust resolution. With `holder_perm` no longer active, the credential it backed is no longer authorised at the current time, so trust resolution against the holder DID's currently-published linked-vp fails for that credential. The resolver eventually updates the `trustStatus = UNTRUSTED` for the holder DID (or downgrades it accordingly if it still presents other valid credentials).
+2. **Resolver auto-re-resolves.** The [[ref: VPR]] resolver pipeline treats `MsgRevokeParticipant` as an implicit re-resolution signal for the holder DID and re-runs trust resolution. With `holder_participant` no longer active, the credential it backed is no longer authorised at the current time, so trust resolution against the holder DID's currently-published linked-vp fails for that credential. The resolver eventually updates the `trustStatus = UNTRUSTED` for the holder DID (or downgrades it accordingly if it still presents other valid credentials).
 
 3. **Issuer notifies the holder over DIDComm.** The issuer's VS-Agent sends a credential-state-change message to the holder VS-Agent over the existing DIDComm session, informing it that the credential has been revoked. The holder VS-Agent reacts in user-land (display the revocation, request a new credential, stop offering the affected service, etc.).
 
@@ -1870,7 +1902,7 @@ sequenceDiagram
     participant VPR as VPR (ledger)
     participant Idx as Indexer + Resolver
 
-    Issuer->>VPR: MsgRevokePermission (holder_perm)
+    Issuer->>VPR: MsgRevokeParticipant (holder_participant)
     VPR-->>Idx: revoke event (implicit trigger)
     Idx->>Idx: re-resolve holder DID -> UNTRUSTED
     Issuer->>Holder: DIDComm credential-state-change (revoked)
