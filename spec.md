@@ -1,6 +1,6 @@
 # Verifiable Trust v4 Specification
 
-**Latest Draft:** [spec v4-draft10](https://github.com/verana-labs/verifiable-trust-spec)
+**Latest Draft:** [spec v4-rc1](https://github.com/verana-labs/verifiable-trust-spec)
 
 **Editors:**
 
@@ -417,7 +417,7 @@ Example of a Json Schema credential schema:
 
 ```json
 {
-  "$id": "vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:VPR_CHAIN_ID:cs:VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ExampleCredential",
   "description": "ExampleCredential using JsonSchema",
@@ -483,7 +483,7 @@ object "CredentialSchema (in VPR)" as cs {
 }
 object "Verifiable Trust Json Schema Credential" as jsc #3fbdb6 {
   issuer: did:example:ecosystem
-  jsonSchema: vpr:verana:vna-mainnet-1/cs/v1/js/12345678
+  jsonSchema: vpr:verana:vna-mainnet-1:cs:12345678
 }
 
 object "Verifiable Trust Credential" as vscred #3fbdb6 {
@@ -560,10 +560,10 @@ This credential provides verifiable evidence of:
   },
 
   "credentialSubject": {
-    "id": "vpr:verana:vna-mainnet-1/cs/v1/js/12345678",
+    "id": "vpr:verana:vna-mainnet-1:cs:12345678",
     "type": "JsonSchema",
     "jsonSchema": {
-      "$ref": "vpr:verana:vna-mainnet-1/cs/v1/js/12345678"
+      "$ref": "vpr:verana:vna-mainnet-1:cs:12345678"
     },
     "digestSRI": "sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ"
   }
@@ -971,7 +971,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:VPR_CHAIN_ID:cs:VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ServiceCredential",
   "description": "Identifies a Verifiable Service and defines the minimum trust and access requirements required to interact with it.",
@@ -1110,7 +1110,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:VPR_CHAIN_ID:cs:VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "OrganizationCredential",
   "description": "Identifies a legal organization that operates one or more Verifiable Services.",
@@ -1237,7 +1237,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:VPR_CHAIN_ID:cs:VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "PersonaCredential",
   "description": "Identifies a Persona (human-controlled avatar) that operates one or more Verifiable Services.",
@@ -1329,7 +1329,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 ```json
 {
-  "$id": "vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID",
+  "$id": "vpr:verana:VPR_CHAIN_ID:cs:VPR_CREDENTIAL_SCHEMA_ID",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "UserAgentCredential",
   "description": "Identifies a User Agent instance and the software version it runs. The issuer identifies the software product line.",
