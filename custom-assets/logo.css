@@ -1,0 +1,11 @@
+/* The Verana Foundation wordmark (341x48) is much wider than the default
+   brand-mark caps (max-width: 5em, max-height: 2em) allow, which renders it
+   tiny. Let it fill the header height instead. */
+.spec-up-brand-mark--logo {
+  height: auto;
+}
+
+.spec-up-brand-mark img {
+  max-width: none;
+  max-height: 2rem;
+}
