@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "spec-up": "^0.10.8"
+    "spec-up": "^0.12.2"
   },
   "name": "verifiable-trust-spec",
   "version": "4.0",
@@ -18,9 +18,9 @@
     "render": "npm run build",
     "edit": "npm run dev",
     "build": "npm run clean && npm run build:specs",
-    "build:specs": "node -e \"require('spec-up')({ nowatch: true })\"",
+    "build:specs": "node -e \"import('spec-up').then(m => m.default({ nowatch: true }))\"",
     "dev": "npm run clean && npm run dev:specs",
-    "dev:specs": "node -e \"require('spec-up')()\"",
+    "dev:specs": "node -e \"import('spec-up').then(m => m.default())\"",
     "clean": "rm -rf build && mkdir build"
   }
 }

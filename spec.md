@@ -1,14 +1,14 @@
 # Verifiable Trust v4 Specification
 
-**Latest Draft:** [spec v4-rc1](https://github.com/verana-labs/verifiable-trust-spec)
+**Latest Draft:** [spec v4-rc2](https://github.com/verana-labs/verifiable-trust-spec)
 
 **Editors:**
 
-~ [Fabrice Rochette](https://www.linkedin.com/in/fabricerochette), ([The Verana Foundation](https://verana.io))
+~ [Fabrice Rochette](https://www.linkedin.com/in/fabricerochette), ([The Verana Foundation](https://veranafoundation.org))
 
 **Contributors:**
 
-~ [Ariel Gentile](https://www.linkedin.com/in/aogentile/), ([The Verana Foundation](https://verana.io))
+~ [Ariel Gentile](https://www.linkedin.com/in/aogentile/), ([The Verana Foundation](https://veranafoundation.org))
 ~ [Andres Vallecilla](https://www.linkedin.com/in/andres-felipe-vallecilla-puentes/), ([Mobiera](https://mobiera.com))
 
 **Participate:**
@@ -507,7 +507,8 @@ Finally, the last concept: to enable fundamental trust operations, such as ident
 - Service: describes **services**;
 - Organization: identifies **organizations**, used to identify owner of a Service;
 - Persona: identifies **individuals** used to identify owner of a Service;
-- User Agent: describes **user agents**, such as browsers, mobile apps, and similar software
+- User Agent: describes **user agents**, such as browsers, mobile apps, and similar software;
+- Badge: identifies **humans**, such as the employees or members of the organization that operates a Service.
 
 With the Verifiable Trust concept now clearly established, we’re ready to dive into the specifications.
 
@@ -786,7 +787,7 @@ AnonCreds VTCs are REQUIRED when:
 - **Holder correlation resistance** is needed — no correlatable identifier is shared during issuance or presentation.
 
 ::: note
-Using AnonCreds for ECS User Agent VTCs is REQUIRED as specified in [VUA-REQ]. See also [VT-ECS-UA-CRED-ANON].
+Using AnonCreds for ECS User Agent VTCs is REQUIRED as specified in [VUA-REQ], and for ECS Badge VTCs as specified in [VT-ECS-CRED]. See also [VT-ECS-UA-CRED-ANON] and [VT-ECS-BADGE-CRED-ANON].
 :::
 
 #### AnonCreds VTC Setup
@@ -906,20 +907,22 @@ Essential Credential Schemas are the Verifiable Trust basic needed schemas for e
 - who is the provider of this Verifiable Service?
 - what is the minimum age required to access this Verifiable Service?
 - is the User Agent trying to connect to a Verifiable Service a Verifiable User Agent?
+- who is the human operating this Verifiable User Agent, and whom do they represent?
 - ...
 
-Ecosystems can create Essential Credential Schemas (ECS) by creating an [[ref: Ecosystem]] in a [[ref: VPR]]. There are 4 kinds of ECS:
+Ecosystems can create Essential Credential Schemas (ECS) by creating an [[ref: Ecosystem]] in a [[ref: VPR]]. There are 5 kinds of ECS:
 
 - Service;
 - Organization;
 - Persona;
-- UserAgent.
+- UserAgent;
+- Badge.
 
 #### [ECS-EC] Essential Credential Schemas Ecosystem
 
 To provide an Essential Credential Schemas Ecosystem, a [[ref: corporation]] creates an `Ecosystem` entry `es` in a [[ref: VPR]].
 
-For this Ecosystem to qualify as an ECS Ecosystem and to be used for trust resolution in [[ref: VSs]] and [[ref: VUAs]], it MUST provide, associated to the `Ecosystem` entry `es`, one `CredentialSchema` entry for each of [ECS-SERVICE], [ECS-ORG], [ECS-PERSONA], and [ECS-UA], each with a `json_schema` attribute as defined in the corresponding section.
+For this Ecosystem to qualify as an ECS Ecosystem and to be used for trust resolution in [[ref: VSs]] and [[ref: VUAs]], it MUST provide, associated to the `Ecosystem` entry `es`, one `CredentialSchema` entry for each of [ECS-SERVICE], [ECS-ORG], [ECS-PERSONA], [ECS-UA], and [ECS-BADGE], each with a `json_schema` attribute as defined in the corresponding section.
 
 Additional CredentialSchema entries MAY be provided by the Ecosystem.
 
@@ -936,7 +939,8 @@ To verify that a `CredentialSchema` entry in a VPR is an Essential Credential Sc
 | ServiceCredential | `sha384-0v+BAFGpnBX/RVqH9dUlMglxMrD4AKy4qUtb1lMN4iW9I2gO7XjcUfmGOf0oInP3` |
 | OrganizationCredential | `sha384-UPn4TDqS1nMBAN3FyMzTAZOWp99zBjBD69OjpbhwOKZj7iOrS5qPwJ2SArRz0yzu` |
 | PersonaCredential | `sha384-VfXTfuks02OkoR5USaTfEdc4NU25m4+vNrLATnjC0r0Pn1S3tFTdOvGCfSYdjE2I` |
-| UserAgentCredential | `sha384-yLRK2mCokVjRlGX0nVzdEYQ1o6YWpQqgdg6+HlSxCePP+D7wvs0+70TJACLZfbF/` |
+| UserAgentCredential | `sha384-rIWkh3zBD1Ak7CNGpAwZ/ONSmf+ywOYSF3H60ULc9/a1ZYKv6EqiQMJ2dm8dOfjm` |
+| BadgeCredential | `sha384-fHQgYRFNH7RJvn8QUA8C/dF/CnABDghlLropQRX9VvJkSbP8krBqlteQ1f7wzYJl` |
 
 The `$id` property is excluded because it contains the VPR-specific schema identifier, which varies across deployments. The remaining schema content is identical for all conforming ECS Ecosystems.
 
@@ -1307,9 +1311,6 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 Credential subject object of schema MUST contain the following attributes:
 
-- `id` (string) (*mandatory*): the [[ref: DID]] of the **User Agent instance** the credential is issued to, which is the subject of the [[ref: verifiable credential]].  
-  URI format, max length: 2048 chars.
-
 - `version` (string) (*mandatory*): the software version of the User Agent instance.  
   This value is used by Verifiable Services and other Verifiable User Agents for compatibility checks, feature negotiation, and policy enforcement.  
   UTF8 charset, min length: 1 char, max length: 64 chars.
@@ -1320,7 +1321,7 @@ Credential subject object of schema MUST contain the following attributes:
 **Notes (non-normative):**
 
 - The **issuer DID** of the credential uniquely identifies the User Agent software product line, as software vendors MUST hold one Issuer authorization per software.
-- A UserAgentCredential is issued per User Agent instance, allowing the instance to cryptographically prove which software and version it is running.
+- A UserAgentCredential is issued per User Agent instance. The credential carries **no instance identifier**: consistent with the AnonCreds container ([VT-CRED-ANON]), holder binding relies on the holder's link secret, so no correlatable identifier is shared during issuance or presentation.
 - Only identity-critical information is included in this schema. Descriptive, legal, or branding metadata (name, logo, policies, etc.) are intentionally excluded to keep trust resolution minimal and deterministic.
 
 The resulting `json_schema` attribute will be the following Json Schema.
@@ -1338,11 +1339,6 @@ The resulting `json_schema` attribute will be the following Json Schema.
     "credentialSubject": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string",
-          "format": "uri",
-          "maxLength": 2048
-        },
         "version": {
           "type": "string",
           "minLength": 1,
@@ -1355,7 +1351,6 @@ The resulting `json_schema` attribute will be the following Json Schema.
         }
       },
       "required": [
-        "id",
         "version"
       ]
     }
@@ -1363,9 +1358,124 @@ The resulting `json_schema` attribute will be the following Json Schema.
 }
 ```
 
+#### [ECS-BADGE] Badge Credential Json Schema
+
+Used to identify **humans** (natural persons), such as the employees or members of the organization that operates a Verifiable Service. A Badge is issued to a human holder by a [[ref: VS]]; the organization or persona standing behind the holder is obtained by trust-resolving the **issuer** DID of the credential (see [VS-REQ] and [TR]).
+
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/badge.json)
+
+Credential subject object of schema MUST contain the following attributes:
+
+- `badgeNumber` (string) (*mandatory*): issuer-scoped identifier of the badge holder. MUST be unique per issuer. Together with the trust-resolved identity of the issuer, it identifies the subject of the credential.  
+  UTF8 charset, min length: 1 char, max length: 256 chars.
+
+- `name` (string) (*mandatory*): display name of the human the credential is issued to.  
+  UTF8 charset, min length: 1 char, max length: 256 chars.
+
+- `photo` (string) (*mandatory*): base64-encoded portrait photograph of the holder. Allowed media types of the encoded image: `image/png`, `image/jpeg`. Used as the reference image for face-matching authentication challenges.  
+  Base64 charset, max length: 262144 chars.
+
+- `title` (string) (*optional*): position or title of the holder within the issuer's organization (e.g., `CEO`, `Janitor`).  
+  UTF8 charset, min length: 1 char, max length: 128 chars.
+
+- `department` (string) (*optional*): organizational unit of the holder within the issuer's organization.  
+  UTF8 charset, min length: 1 char, max length: 128 chars.
+
+- `birthDate` (integer) (*optional*): date of birth of the holder, encoded as a "dateint" integer `YYYYMMDD` (e.g., `19910521`). The integer encoding enables zero-knowledge predicate proofs (e.g., `age >= 18`) without revealing the value (see [VT-CRED-ANON]).  
+  Allowed values: 10000101 to 99991231 (inclusive).
+
+- `biometricPattern` (string) (*optional*): base64-encoded **protected biometric template** of the holder, for privacy-preserving biometric matching (e.g., homomorphic-encryption-based face verification), so that biometric verification can be performed in the encrypted domain without revealing the raw biometric.  
+  Base64 charset, max length: 262144 chars.
+
+- `biometricPatternScheme` (string) (*conditional*): identifier of the scheme of `biometricPattern`: biometric modality, feature extractor, template-protection/encryption scheme, and version. Scheme identifier values are defined by the [[ref: ecosystem]]'s governance framework.  
+  MUST be present when `biometricPattern` is present (enforced via JSON Schema `dependentRequired`). UTF8 charset, min length: 1 char, max length: 128 chars.
+
+Badge attributes identify the holder and carry informative facts only. A verifier MUST NOT interpret any Badge attribute (such as `title` or `department`) as a role, permission, or authorization assertion: authorization decisions belong to the relying party, based on its own rules over verified facts.
+
+**Implementation notes (non-normative):**
+
+- **No subject identifier.** Consistent with the AnonCreds container ([VT-CRED-ANON]), the schema defines no `id` attribute: holder binding relies on the holder's link secret, and the subject is identified by the (issuer, `badgeNumber`) pair. This avoids introducing a globally correlatable identifier into a user-held credential.
+- **Embedded media.** `photo` and `biometricPattern` are embedded rather than referenced by URI: dereferencing a hosted resource would create a tracking and correlation vector and make biometric data web-retrievable.
+- **Selective disclosure.** `photo` and `biometricPattern` are inherently strong correlation handles. Holders SHOULD disclose them only when an authentication challenge requires them (e.g., a face-match with liveness check), and verifiers SHOULD NOT request them by default.
+- **Matching topology.** How a `biometricPattern` is matched against a live capture (which party runs the match, who holds decryption keys for the protected template) is defined by the ecosystem's governance framework and is out of scope of this specification.
+
+The resulting `json_schema` attribute will be the following Json Schema.
+
+- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
+
+```json
+{
+  "$id": "vpr:verana:VPR_CHAIN_ID:cs:VPR_CREDENTIAL_SCHEMA_ID",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BadgeCredential",
+  "description": "Identifies a human, such as an employee or member of the organization that operates a Verifiable Service. The issuer identifies the organization or persona the holder represents.",
+  "type": "object",
+  "properties": {
+    "credentialSubject": {
+      "type": "object",
+      "properties": {
+        "badgeNumber": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "photo": {
+          "type": "string",
+          "contentEncoding": "base64",
+          "maxLength": 262144
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "department": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "birthDate": {
+          "type": "integer",
+          "minimum": 10000101,
+          "maximum": 99991231
+        },
+        "biometricPattern": {
+          "type": "string",
+          "contentEncoding": "base64",
+          "maxLength": 262144
+        },
+        "biometricPatternScheme": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "badgeNumber",
+        "name",
+        "photo"
+      ],
+      "dependentRequired": {
+        "biometricPattern": ["biometricPatternScheme"]
+      }
+    }
+  }
+}
+```
+
 ### [VT-ECS-JSON-SCHEMA-VPR-CONFIG] Essential Schema VPR Configuration
 
-To be considered compliant, CredentialSchema entries for [ECS-SERVICE], [ECS-ORG], and [ECS-PERSONA] MUST set `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`. See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema).
+To be considered compliant:
+
+- CredentialSchema entries for [ECS-SERVICE], [ECS-ORG], and [ECS-PERSONA] MUST set `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`.
+- CredentialSchema entries for [ECS-BADGE] MUST set `issuer_onboarding_mode` to `OPEN` and `holder_onboarding_mode` to `PERMISSIONLESS`: any [[ref: corporation]] whose service qualifies as a [[ref: VS]] per [VS-REQ] can self-create its `ISSUER` `Participant` entry and issue Badges to the humans it stands behind (trust in a Badge derives from trust-resolving its issuer, not from an onboarding gate), and holders require no `Participant` entry in the VPR.
+
+See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema).
 
 ### [VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema VTJSCs
 
@@ -1373,6 +1483,7 @@ To be considered compliant, CredentialSchema entries for [ECS-SERVICE], [ECS-ORG
 - VTJSC [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG]. MUST have `validFrom` and `validUntil` properties.
 - VTJSC [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSONA]. MUST have `validFrom` and `validUntil` properties.
 - VTJSC [VT-ECS-UA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-UA].
+- VTJSC [VT-ECS-BADGE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-BADGE].
 
 ### [VT-ECS-CRED] Essential Schema Verifiable Trust Credentials
 
@@ -1414,6 +1525,8 @@ To be considered compliant, CredentialSchema entries for [ECS-SERVICE], [ECS-ORG
 
 - User Agent Credential [VT-ECS-UA-CRED-ANON]: a [VT-CRED-ANON] linked to a [VT-ECS-UA-JSON-SCHEMA-CRED-W3C]. MUST NOT be declared in a DID Document, as it is issued to User Agent instances.
 
+- Badge Credential [VT-ECS-BADGE-CRED-ANON]: a [VT-CRED-ANON] linked to a [VT-ECS-BADGE-JSON-SCHEMA-CRED-W3C]. MUST NOT be declared in a DID Document, as it is issued to humans, who present it over [[ref: DIDComm]] with selective disclosure.
+
 ### [VT-ECS-ECOSYSTEM-DIDDOC] Ecosystem DID Document for declaring Essential Credential Schemas
 
 If an Ecosystem wishes to provide ECS trust resolution, it MUST present VT Json Schema Credential(s) of all ECSs, as well as the corresponding VPR entry for verification. To do that, Ecosystem MUST define the following entries in its DID Document, for each ECS:
@@ -1422,6 +1535,7 @@ If an Ecosystem wishes to provide ECS trust resolution, it MUST present VT Json 
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-schemas-org-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C].
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-schemas-persona-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C].
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-schemas-ua-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-UA-JSON-SCHEMA-CRED-W3C].
+- a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-schemas-badge-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-BADGE-JSON-SCHEMA-CRED-W3C].
 
 Example:
 
@@ -1446,6 +1560,11 @@ Example:
       "id": "did:example:ecosystem#vpr-schemas-ua-vtjsc-vp",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecosystem/ecs-ua-vtjsc-vp.json"]
+    },
+    {
+      "id": "did:example:ecosystem#vpr-schemas-badge-vtjsc-vp",
+      "type": "LinkedVerifiablePresentation",
+      "serviceEndpoint": ["https://ecosystem/ecs-badge-vtjsc-vp.json"]
     }
     
     ...
@@ -1613,6 +1732,8 @@ When a [[ref: VS]] VS-1 receives a connection request from a service Service-2 t
 ### [VS-CONN-VUA] Requirements for a VS to accept a connection from a User Agent
 
 When a [[ref: VS]] receives a connection from a User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED-ANON] credential before starting to provide the service, and verify the presented credential (if any). If no credential is presented or presented credential is not verifiable, [[ref: VS]] MUST NOT provide the service.
+
+After the [VT-ECS-UA-CRED-ANON] credential has been verified, the [[ref: VS]] MAY additionally request the presentation of a [VT-ECS-BADGE-CRED-ANON] credential to identify the human operating the User Agent and the organization or persona they represent (obtained by trust-resolving the Badge issuer, per [TR]).
 
 ### [VUA-CONN-VS] Requirements for a VUA to accept connecting to a service
 
