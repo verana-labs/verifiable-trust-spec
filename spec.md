@@ -940,7 +940,7 @@ To verify that a `CredentialSchema` entry in a VPR is an Essential Credential Sc
 | OrganizationCredential | `sha384-UPn4TDqS1nMBAN3FyMzTAZOWp99zBjBD69OjpbhwOKZj7iOrS5qPwJ2SArRz0yzu` |
 | PersonaCredential | `sha384-VfXTfuks02OkoR5USaTfEdc4NU25m4+vNrLATnjC0r0Pn1S3tFTdOvGCfSYdjE2I` |
 | UserAgentCredential | `sha384-rIWkh3zBD1Ak7CNGpAwZ/ONSmf+ywOYSF3H60ULc9/a1ZYKv6EqiQMJ2dm8dOfjm` |
-| BadgeCredential | `sha384-fHQgYRFNH7RJvn8QUA8C/dF/CnABDghlLropQRX9VvJkSbP8krBqlteQ1f7wzYJl` |
+| BadgeCredential | `sha384-ZxJ2aRpoF/5DJSILWwOES6bmpMg3RZYOfO2CCF8hC/YDNvU+PhCqAnAXq/66nXCq` |
 
 The `$id` property is excluded because it contains the VPR-specific schema identifier, which varies across deployments. The remaining schema content is identical for all conforming ECS Ecosystems.
 
@@ -1372,8 +1372,8 @@ Credential subject object of schema MUST contain the following attributes:
 - `name` (string) (*mandatory*): display name of the human the credential is issued to.  
   UTF8 charset, min length: 1 char, max length: 256 chars.
 
-- `photo` (string) (*mandatory*): base64-encoded portrait photograph of the holder. Allowed media types of the encoded image: `image/png`, `image/jpeg`. Used as the reference image for face-matching authentication challenges.  
-  Base64 charset, max length: 262144 chars.
+- `photo` (string) (*mandatory*): portrait photograph of the holder, embedded inline as a base64-encoded [`data:` URI](https://www.rfc-editor.org/rfc/rfc2397). MUST match `data:image/png;base64,<base64-data>` or `data:image/jpeg;base64,<base64-data>` (the only allowed media types are `image/png` and `image/jpeg`); enforced via the JSON Schema `pattern` below. Used as the reference image for face-matching authentication challenges.  
+  URI format (`data:` scheme), max length: 262144 chars.
 
 - `title` (string) (*optional*): position or title of the holder within the issuer's organization (e.g., `CEO`, `Janitor`).  
   UTF8 charset, min length: 1 char, max length: 128 chars.
@@ -1395,7 +1395,7 @@ Badge attributes identify the holder and carry informative facts only. A verifie
 **Implementation notes (non-normative):**
 
 - **No subject identifier.** Consistent with the AnonCreds container ([VT-CRED-ANON]), the schema defines no `id` attribute: holder binding relies on the holder's link secret, and the subject is identified by the (issuer, `badgeNumber`) pair. This avoids introducing a globally correlatable identifier into a user-held credential.
-- **Embedded media.** `photo` and `biometricPattern` are embedded rather than referenced by URI: dereferencing a hosted resource would create a tracking and correlation vector and make biometric data web-retrievable.
+- **Embedded media.** `photo` (a `data:` URI) and `biometricPattern` (raw base64) are embedded inline rather than referenced by a network-dereferenceable (e.g. `https:`) URI: dereferencing a hosted resource would create a tracking and correlation vector and make biometric data web-retrievable.
 - **Selective disclosure.** `photo` and `biometricPattern` are inherently strong correlation handles. Holders SHOULD disclose them only when an authentication challenge requires them (e.g., a face-match with liveness check), and verifiers SHOULD NOT request them by default.
 - **Matching topology.** How a `biometricPattern` is matched against a live capture (which party runs the match, who holds decryption keys for the protected template) is defined by the ecosystem's governance framework and is out of scope of this specification.
 
@@ -1426,7 +1426,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
         },
         "photo": {
           "type": "string",
-          "contentEncoding": "base64",
+          "pattern": "^data:image/(png|jpeg);base64,[A-Za-z0-9+/]+={0,2}$",
           "maxLength": 262144
         },
         "title": {
