@@ -2,7 +2,7 @@
 
 **Status:** stable. This version only receives minor fixes.
 
-**Latest draft:** [spec v5-draft](https://verana-labs.github.io/verifiable-trust-spec/)
+**Latest draft:** [spec v5-draft0](https://verana-labs.github.io/verifiable-trust-spec/)
 
 **Editors:**
 

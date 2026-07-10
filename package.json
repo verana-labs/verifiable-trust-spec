@@ -17,7 +17,7 @@
   "scripts": {
     "render": "npm run build",
     "edit": "npm run dev",
-    "build": "npm run clean && npm run build:specs",
+    "build": "npm run clean && npm run build:specs && node scripts/inject-favicon.js",
     "build:specs": "node -e \"import('spec-up').then(m => m.default({ nowatch: true }))\"",
     "dev": "npm run clean && npm run dev:specs",
     "dev:specs": "node -e \"import('spec-up').then(m => m.default())\"",
