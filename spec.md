@@ -131,7 +131,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ The [did:webs DID method](https://trustoverip.github.io/tswg-did-method-webs-specification/): web-based discovery combined with [[ref: KERI]] security. The method-specific identifier embeds an [[ref: AID]]; resolution verifies the [[ref: KEL]], so the hosting web server does not need to be trusted.
 
 [[def: external trust root, external trust roots]]:
-~ A trust root that is not an Ecosystem DID anchored in a [[ref: VPR]], recognized by [[ref: VSs]] and [[ref: VUAs]] through explicit configuration. The [[ref: GLEIF]] Root of Trust [[ref: AID]] of the [[ref: vLEI]] ecosystem is the only external trust root defined by this specification. See [VT-VLEI] and [WL-VLEI].
+~ A trust root that is not an Ecosystem DID anchored in a [[ref: VPR]], recognized by [[ref: VSs]] and [[ref: VUAs]] through explicit configuration. The [[ref: GLEIF]] Root of Trust [[ref: AID]] of the [[ref: vLEI]] ecosystem is the only external trust root defined by this specification. See [VT-VLEI] and [AL-VLEI].
 
 [[def: GLEIF]]:
 ~ The Global Legal Entity Identifier Foundation: operator of the Global LEI System and Root of Trust of the [[ref: vLEI]] ecosystem, which it governs through the [vLEI Ecosystem Governance Framework](https://www.gleif.org/en/organizational-identity/become-a-vlei-issuer-qvi/vlei-ecosystem-governance-framework).
@@ -1688,11 +1688,11 @@ When the organization slot of [VS-REQ-3] / [VS-REQ-4] is satisfied per this sect
 
 - [VT-VLEI-TR-5] Recursively apply [VT-VLEI-TR-3] and [VT-VLEI-TR-4] to each credential in the chain (the QVI credential, and any GLEIF-published intermediary credential) until the [[ref: GLEIF]] Root of Trust [[ref: AID]] is reached.
 
-- [VT-VLEI-TR-6] The GLEIF Root of Trust AID reached in [VT-VLEI-TR-5] MUST be one of the [[ref: external trust roots]] configured per [WL-VLEI].
+- [VT-VLEI-TR-6] The GLEIF Root of Trust AID reached in [VT-VLEI-TR-5] MUST be one of the [[ref: external trust roots]] configured per [AL-VLEI].
 
 - [VT-VLEI-TR-7] If the same party also presents an [ECS-ORG] OrganizationCredential whose `lei` attribute is set, the `lei` value MUST equal the LEI carried by the verified LE credential; a mismatch MUST cause trust resolution failure.
 
-- [VT-VLEI-TR-8] Resolvers SHOULD check the LEI's status in GLEIF reference data. For resolution against a `production` VPR (see [WL-VPR]), a resolver MUST treat an LEI whose registration status is lapsed or retired as a failed identification.
+- [VT-VLEI-TR-8] Resolvers SHOULD check the LEI's status in GLEIF reference data. For resolution against a `production` VPR (see [AL-VPR]), a resolver MUST treat an LEI whose registration status is lapsed or retired as a failed identification.
 
 - [VT-VLEI-TR-9] If any step above fails, the vLEI Legal Entity identification MUST be considered failed, and [TR-8] applies.
 
@@ -1917,15 +1917,15 @@ For communication channel between User Agents to be enabled, both User Agents MU
 
 - [TR-6] Every DID that appears as an issuer of a credential during trust resolution MUST itself be verified as a **Verifiable Service** conforming to [VS-REQ]. The credentials presented by that issuer's DID Document MUST themselves be verified by recursively applying [TR-1] through [TR-6].
 
-- [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at a **trust root**. For VPR-anchored credentials, the trust root is the **Ecosystem DID**, which is the issuer of the VTJSC and the identifier of the Ecosystem itself. For a vLEI Legal Entity identification ([VT-VLEI]), the trust root is the [[ref: GLEIF]] Root of Trust [[ref: AID]], an [[ref: external trust root]] configured per [WL-VLEI] (see [TR-9]).
+- [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at a **trust root**. For VPR-anchored credentials, the trust root is the **Ecosystem DID**, which is the issuer of the VTJSC and the identifier of the Ecosystem itself. For a vLEI Legal Entity identification ([VT-VLEI]), the trust root is the [[ref: GLEIF]] Root of Trust [[ref: AID]], an [[ref: external trust root]] configured per [AL-VLEI] (see [TR-9]).
 
 - [TR-8] If any verification step in [TR-1] through [TR-7], or [TR-9], fails for any credential or DID encountered during trust resolution, the trust resolution MUST be considered failed, and the connection or credential MUST be rejected.
 
 - [TR-9] A vLEI Legal Entity identification presented per [VT-VLEI] MUST be verified as specified in [VT-VLEI-TR]. For that identification, [TR-2] through [TR-6] do not apply: credential verification, issuer authorization, and revocation state are established by the ACDC chain and its [[ref: TELs]], terminating at the GLEIF Root of Trust AID.
 
-### [WL] ECS Ecosystem whitelists and vpr: scheme resolution
+### [AL] ECS Ecosystem allowlists and vpr: scheme resolution
 
-- [WL-VPR] Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of VPRs and how to access them (resolution). As VPRs are decentralized, this gives the option to the VUA vendor or VS provider to run a VPR node and use its own node endpoints for trust resolution.
+- [AL-VPR] Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of VPRs and how to access them (resolution). As VPRs are decentralized, this gives the option to the VUA vendor or VS provider to run a VPR node and use its own node endpoints for trust resolution.
 
 **Example:**
 
@@ -1973,7 +1973,7 @@ For communication channel between User Agents to be enabled, both User Agents MU
 }
 ```
 
-- [WL-ECS]: Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of DIDs of Ecosystems they trust for providing essential credential schemas.
+- [AL-ECS]: Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of DIDs of Ecosystems they trust for providing essential credential schemas.
 
 Example:
 
@@ -1993,7 +1993,7 @@ Example:
 }
 ```
 
-- [WL-VLEI]: Compliant [[ref: VSs]] and [[ref: VUAs]] that accept vLEI Legal Entity identifications ([VT-VLEI]) MUST maintain a list of accepted [[ref: external trust roots]] for the [[ref: vLEI]] ecosystem: the [[ref: GLEIF]] Root of Trust [[ref: AID]](s) and the [[ref: OOBI]] endpoints used to resolve them. The authoritative root AID value is published by GLEIF; the value below is illustrative only. A [[ref: VS]] or [[ref: VUA]] that maintains no [WL-VLEI] entry simply does not accept vLEI Legal Entity identifications.
+- [AL-VLEI]: Compliant [[ref: VSs]] and [[ref: VUAs]] that accept vLEI Legal Entity identifications ([VT-VLEI]) MUST maintain a list of accepted [[ref: external trust roots]] for the [[ref: vLEI]] ecosystem: the [[ref: GLEIF]] Root of Trust [[ref: AID]](s) and the [[ref: OOBI]] endpoints used to resolve them. The authoritative root AID value is published by GLEIF; the value below is illustrative only. A [[ref: VS]] or [[ref: VUA]] that maintains no [AL-VLEI] entry simply does not accept vLEI Legal Entity identifications.
 
 Example:
 
@@ -2109,7 +2109,7 @@ Suppose the Service Essential Credential of a [[ref: VS]] is issued by a DID who
 - Resolve the organization [[ref: AID]]'s [[ref: KEL]] and check for duplicity.
 - Verify the bidirectional binding: `alsoKnownAs` → the [[ref: did:webs]] DID embedding the AID, and the AID's [[ref: designated aliases attestation]] → the DID.
 - Verify the LE credential ([[ref: SAID]], schema SAID, signature, [[ref: TEL]] state), then the QVI credential the same way, up to the [[ref: GLEIF]] Root of Trust AID.
-- Confirm that root AID is configured per [WL-VLEI]; check the [[ref: LEI]] status in GLEIF reference data.
+- Confirm that root AID is configured per [AL-VLEI]; check the [[ref: LEI]] status in GLEIF reference data.
 
 The organization is then identified by the LEI and legal name carried by the LE credential. The rest of the trust resolution — the Service Essential Credential, its Ecosystem, and issuer authorization in the VPR — is unchanged.
 
