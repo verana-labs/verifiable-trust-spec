@@ -37,7 +37,7 @@ A key consequence is that a Verifiable Service is not identified by an opaque UR
 
 This enables mutual authentication without passwords, verifiable service discovery without centralized directories, privacy-preserving credential exchange with selective disclosure and unlinkability, and ecosystem governance that is transparent, auditable, and decentralized.
 
-Verifiable Trust is container-agnostic, supporting both W3C Verifiable Credentials and Anonymous Credentials to balance transparency with privacy depending on the use case. It is also DID-method-agnostic, allowing ecosystems to operate across different decentralized identifier infrastructures.
+Verifiable Trust is container-agnostic, supporting both W3C Verifiable Credentials and Anonymous Credentials to balance transparency with privacy depending on the use case. It is also DID-method-agnostic, allowing ecosystems to operate across different decentralized identifier infrastructures. For legal-entity identification, it additionally recognizes externally governed credential chains — starting with GLEIF's verifiable LEI (vLEI), built on KERI and ACDC — as alternative trust roots (see [VT-VLEI]).
 
 This specification defines the Verifiable Trust architecture, its core concepts — Verifiable Services, Verifiable User Agents, Verifiable Trust Credentials, Essential Credential Schemas, and the trust resolution process — and the normative requirements for interoperable implementations.
 
@@ -114,6 +114,60 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 
 [[def: verifiable credential, verifiable credentials]]:
 ~ A verifiable credential as defined in [[spec-norm:VC-DATA-MODEL]].
+
+[[def: authentic chained data container, ACDC, ACDCs]]:
+~ An Authentic Chained Data Container, as specified in the [ToIP ACDC specification](https://trustoverip.github.io/tswg-acdc-specification/): a content-addressed verifiable credential format in which every object is identified by a [[ref: SAID]] and a credential MAY be chained to other ACDCs through edges, so that the authorization of its issuer travels with the credential chain itself.
+
+[[def: autonomic identifier, AID, AIDs]]:
+~ A [[ref: KERI]] autonomic identifier: a self-certifying identifier derived from its inception keys, whose complete key state history is maintained in a [[ref: KEL]] and replicated by [[ref: witnesses]].
+
+[[def: CESR]]:
+~ Composable Event Streaming Representation: the text/binary-composable encoding used for [[ref: KERI]] events and [[ref: ACDC]] proof material.
+
+[[def: designated aliases attestation, designated aliases]]:
+~ A self-issued [[ref: ACDC]] attestation by which the controller of an [[ref: AID]] declares the list of DIDs it recognizes as equivalent identifiers for itself, as defined by the [[ref: did:webs]] method specification.
+
+[[def: did:webs]]:
+~ The [did:webs DID method](https://trustoverip.github.io/tswg-did-method-webs-specification/): web-based discovery combined with [[ref: KERI]] security. The method-specific identifier embeds an [[ref: AID]]; resolution verifies the [[ref: KEL]], so the hosting web server does not need to be trusted.
+
+[[def: external trust root, external trust roots]]:
+~ A trust root that is not an Ecosystem DID anchored in a [[ref: VPR]], recognized by [[ref: VSs]] and [[ref: VUAs]] through explicit configuration. The [[ref: GLEIF]] Root of Trust [[ref: AID]] of the [[ref: vLEI]] ecosystem is the only external trust root defined by this specification. See [VT-VLEI] and [WL-VLEI].
+
+[[def: GLEIF]]:
+~ The Global Legal Entity Identifier Foundation: operator of the Global LEI System and Root of Trust of the [[ref: vLEI]] ecosystem, which it governs through the [vLEI Ecosystem Governance Framework](https://www.gleif.org/en/organizational-identity/become-a-vlei-issuer-qvi/vlei-ecosystem-governance-framework).
+
+[[def: KERI]]:
+~ The [Key Event Receipt Infrastructure](https://trustoverip.github.io/tswg-keri-specification/) protocol: ledger-independent key management for self-certifying identifiers ([[ref: AIDs]]) based on signed, hash-chained key event logs, witness receipts, and duplicity detection by [[ref: watchers]].
+
+[[def: key event log, KEL, KELs]]:
+~ The signed, hash-chained log of key events (inception, rotation, interaction) that establishes the complete key state of an [[ref: AID]].
+
+[[def: legal entity identifier, LEI, LEIs]]:
+~ An ISO 17442 Legal Entity Identifier: a 20-character alphanumeric code uniquely identifying a legal entity in the Global LEI System, with publicly available reference data.
+
+[[def: OOBI, OOBIs]]:
+~ An Out-Of-Band Introduction: a URL that associates an [[ref: AID]] with a location from which its [[ref: KEL]] and related artifacts can be retrieved. Retrieved material is verified cryptographically, so the URL itself is untrusted.
+
+[[def: qualified vLEI issuer, QVI, QVIs]]:
+~ A Qualified vLEI Issuer: an organization authorized by [[ref: GLEIF]] — through the issuance of a QVI [[ref: ACDC]] credential — to issue [[ref: vLEI]] credentials to legal entities under the vLEI Ecosystem Governance Framework.
+
+[[def: SAID, SAIDs]]:
+~ A Self-Addressing Identifier: a cryptographic digest embedded in the content it identifies, making that content tamper-evident and self-verifiable.
+
+[[def: transaction event log, TEL, TELs]]:
+~ A [[ref: KERI]] Transaction Event Log, anchored to an issuer's [[ref: KEL]], that records the issuance and revocation state of [[ref: ACDC]] credentials.
+
+[[def: verifiable LEI, vLEI, vLEIs]]:
+~ The verifiable Legal Entity Identifier ecosystem operated by [[ref: GLEIF]]: [[ref: ACDC]] credentials, chained to the GLEIF Root of Trust [[ref: AID]], that make [[ref: LEI]]-based organizational identity cryptographically verifiable. Standardized in ISO 17442-3.
+
+[[def: vLEI Legal Entity credential, LE vLEI credential, LE vLEI credentials]]:
+~ The [[ref: vLEI]] credential that identifies a legal entity: an [[ref: ACDC]] carrying the entity's [[ref: LEI]], issued to the entity's [[ref: AID]] by a [[ref: QVI]].
+
+[[def: watcher, watchers]]:
+~ A [[ref: KERI]] component that observes [[ref: KELs]] from multiple sources to detect duplicity (conflicting key event histories) on behalf of validators.
+
+[[def: witness, witnesses]]:
+~ A [[ref: KERI]] component designated by an [[ref: AID]] controller that receipts and replicates the AID's key events, establishing the authoritative copy of its [[ref: KEL]].
 
 ## Understanding Verifiable Trust
 
@@ -1105,6 +1159,7 @@ Credential subject object of schema MUST contain the following attributes:
 
 - `credentialSubject.id` (the DID) is the **sole authoritative identifier** for trust resolution within the Verifiable Trust system.
 - External identifiers such as `lei` and `registryId` are **informational references** and MUST NOT be treated as authoritative sources of truth unless supported by verifiable credentials issued under their respective governance frameworks (e.g., vLEI).
+- When the same party also presents a vLEI Legal Entity identification ([VT-VLEI]), the `lei` attribute is cross-checked during trust resolution against the LEI of the verified [[ref: LE vLEI credential]] (see [VT-VLEI-TR-7]). Issuers MAY accept an LE vLEI credential presentation as onboarding (KYB) evidence and SHOULD then populate `lei` from it.
 - `countryCode` provides a baseline jurisdiction signal. When applicable law depends on sub-national jurisdiction, `legalJurisdiction` SHOULD be provided and takes precedence for legal interpretation (e.g., moderation, liability, compliance).
 
 The resulting `json_schema` attribute will be the following Json Schema.
@@ -1571,6 +1626,100 @@ Example:
   ]
 ```
 
+### [VT-VLEI] vLEI Legal Entity Identification
+
+*The introduction of this section is non-normative.*
+
+The [[ref: vLEI]] ecosystem, operated by [[ref: GLEIF]] under the vLEI Ecosystem Governance Framework, is an organizational-identity ecosystem built on [[ref: KERI]] and [[ref: ACDC]]. Structurally, it mirrors a Verifiable Trust ecosystem: GLEIF is the trust root; GLEIF authorizes issuers by issuing a [[ref: QVI]] credential; a QVI identifies a legal entity by issuing it a [[ref: vLEI Legal Entity credential]] carrying its ISO 17442 [[ref: LEI]]. The difference is where the authorization lives: a Verifiable Trust ecosystem records issuer authorization as `Participant` entries in a [[ref: VPR]], while the vLEI ecosystem carries authorization in the credential chain itself (LE credential ← QVI credential ← GLEIF Root), with issuance and revocation state in [[ref: TELs]]. In other words, the vLEI ecosystem is an **externally anchored ecosystem**: the chain is the registry.
+
+This section defines how a [[ref: VS]] MAY satisfy the Owner/Operator identification requirement of [VS-REQ-3] / [VS-REQ-4] with a **vLEI Legal Entity identification** instead of an [ECS-ORG] OrganizationCredential. Only the organization slot is affected: the Service Essential Credential ([VS-REQ-2]) remains governed by the ECS Ecosystem, and [VT-ECS-PERSONA-CRED-W3C] remains the identification path for natural persons (vLEI identifies legal entities only).
+
+::: note
+Ecosystems MAY also use vLEI at issuance time only: an authorized [ECS-ORG] issuer MAY accept the presentation of a [[ref: LE vLEI credential]] as KYB evidence during its onboarding process, and SHOULD then populate the `lei` attribute of the issued OrganizationCredential from it. That usage requires nothing from this section — it is ordinary issuer-side evidence gathering. This section covers the stronger, runtime alternative: the vLEI chain itself satisfies the organization slot.
+:::
+
+#### [VT-VLEI-CRED] vLEI Legal Entity Credential Profile
+
+- [VT-VLEI-CRED-1] A vLEI Legal Entity identification MUST be based on a [[ref: vLEI Legal Entity credential]]: an [[ref: ACDC]] issued to the organization's [[ref: AID]] by a [[ref: QVI]], conforming to the Legal Entity vLEI Credential schema of the vLEI Ecosystem Governance Framework, identified by its schema [[ref: SAID]].
+
+- [VT-VLEI-CRED-2] The credential chain MUST be complete: the LE credential MUST chain, through its ACDC edges, to a valid QVI credential issued by the [[ref: GLEIF]] Root of Trust [[ref: AID]] (directly or through GLEIF-published intermediary AIDs, as defined by the vLEI Ecosystem Governance Framework).
+
+- [VT-VLEI-CRED-3] Only the Legal Entity vLEI credential satisfies the organization slot of [VS-REQ-3] / [VS-REQ-4]. vLEI role credentials (OOR, ECR) MUST NOT be accepted for that purpose; they MAY be presented as additional credentials.
+
+#### [VT-VLEI-PRES] Presentation
+
+- [VT-VLEI-PRES-1] The DID Document of the identified party (the [[ref: VS]] itself under [VS-REQ-3], or the issuer of the Service Essential Credential under [VS-REQ-4]) MUST declare a service entry of type `KERICredentialPresentation` with a fragment equal to `#vlei-le-vp`. Its `serviceEndpoint` MUST dereference to the presentable form of the LE credential: the full ACDC chain (the LE credential, the QVI credential, and the GLEIF root credential or their [[ref: SAIDs]]) together with the [[ref: CESR]] proof material required for verification. Example:
+
+```json
+  "service": [
+    {
+      "id": "did:example:organization#vlei-le-vp",
+      "type": "KERICredentialPresentation",
+      "serviceEndpoint": ["https://example.com/vlei-le-vp.cesr"]
+    }
+  ]
+```
+
+- [VT-VLEI-PRES-2] The dereferenced resource MUST include or reference [[ref: OOBIs]] for the organization AID and for every issuer AID in the chain, so that a verifier can retrieve and verify the corresponding [[ref: KELs]] and [[ref: TELs]].
+
+- [VT-VLEI-PRES-3] `KERICredentialPresentation` entries are part of the **identity layer** in the sense of [VS-SVC-6]: they are consumed during trust resolution and are not consumable service endpoints.
+
+#### [VT-VLEI-BIND] Binding between the DID and the AID
+
+The LE credential is issued to the organization's [[ref: AID]], not to a DID. The controller of the DID and the controller of the AID MUST therefore be bound **bidirectionally**; either direction alone MUST NOT be accepted.
+
+- [VT-VLEI-BIND-1] **DID → AID.** The DID Document declaring the `#vlei-le-vp` entry MUST reference the organization's AID through an `alsoKnownAs` entry containing a DID that embeds the AID. Using a [[ref: did:webs]] DID is RECOMMENDED; any DID method whose method-specific identifier verifiably embeds the AID (e.g., `did:keri`) MAY be used.
+
+- [VT-VLEI-BIND-2] **AID → DID.** The organization's AID MUST have issued a valid, non-revoked [[ref: designated aliases attestation]] whose alias list contains the DID of the DID Document referenced in [VT-VLEI-BIND-1].
+
+- [VT-VLEI-BIND-3] The AID bound through [VT-VLEI-BIND-1] and [VT-VLEI-BIND-2] MUST be the issuee of the LE credential presented per [VT-VLEI-PRES].
+
+#### [VT-VLEI-TR] Trust Resolution of a vLEI Legal Entity Identification
+
+When the organization slot of [VS-REQ-3] / [VS-REQ-4] is satisfied per this section, trust resolution of that identification MUST perform the following steps instead of [TR-2] through [TR-6]:
+
+- [VT-VLEI-TR-1] Resolve the organization AID's [[ref: KEL]] (through the presented [[ref: OOBIs]], its [[ref: witnesses]], or [[ref: did:webs]] resolution) and verify it: event signatures, witness receipts, and absence of unresolved duplicity. Resolvers SHOULD use a [[ref: watcher]] (or an equivalent independent vantage point) for duplicity detection.
+
+- [VT-VLEI-TR-2] Verify the bidirectional binding per [VT-VLEI-BIND].
+
+- [VT-VLEI-TR-3] Verify the LE credential: [[ref: SAID]] integrity, schema SAID equal to the Legal Entity vLEI Credential schema of the vLEI Ecosystem Governance Framework, and signature validity against the issuer AID's key state (per its KEL) at issuance.
+
+- [VT-VLEI-TR-4] Verify the [[ref: TEL]] state of the LE credential: issued and not revoked.
+
+- [VT-VLEI-TR-5] Recursively apply [VT-VLEI-TR-3] and [VT-VLEI-TR-4] to each credential in the chain (the QVI credential, and any GLEIF-published intermediary credential) until the [[ref: GLEIF]] Root of Trust [[ref: AID]] is reached.
+
+- [VT-VLEI-TR-6] The GLEIF Root of Trust AID reached in [VT-VLEI-TR-5] MUST be one of the [[ref: external trust roots]] configured per [WL-VLEI].
+
+- [VT-VLEI-TR-7] If the same party also presents an [ECS-ORG] OrganizationCredential whose `lei` attribute is set, the `lei` value MUST equal the LEI carried by the verified LE credential; a mismatch MUST cause trust resolution failure.
+
+- [VT-VLEI-TR-8] Resolvers SHOULD check the LEI's status in GLEIF reference data. For resolution against a `production` VPR (see [WL-VPR]), a resolver MUST treat an LEI whose registration status is lapsed or retired as a failed identification.
+
+- [VT-VLEI-TR-9] If any step above fails, the vLEI Legal Entity identification MUST be considered failed, and [TR-8] applies.
+
+#### Claim Mapping (non-normative)
+
+*This section is non-normative.*
+
+Relying parties and Proof-of-Trust renderers map organization display fields as follows:
+
+| Proof-of-Trust field | [ECS-ORG] source | vLEI source |
+| --- | --- | --- |
+| Organization name | `name` | `legalName` claim of the LE credential |
+| Registry identifier | `registryId` | the [[ref: LEI]] |
+| Registry record | `registryUri` | `https://search.gleif.org/#/record/{LEI}` |
+| Country / jurisdiction | `countryCode` / `legalJurisdiction` | legal jurisdiction from GLEIF LEI reference data |
+| Logo | `logoUri` + `logoDigestSri` | not available — renderers fall back to a logo-less presentation |
+
+#### Security Considerations (non-normative)
+
+*This section is non-normative.*
+
+- **Duplicity.** KERI security depends on detecting conflicting key event histories. Resolvers that verify KELs from a single source without a watcher weaken this guarantee.
+- **Witness availability.** KEL and TEL retrieval depends on the availability of the AID's witnesses; resolvers SHOULD cache verified key state and treat retrieval failure as *unresolved*, not as *untrusted*.
+- **Revocation timeliness.** TEL state is only as fresh as its last retrieval; resolvers SHOULD bound the age of cached revocation state, consistently with their caching policy for VPR-anchored credentials.
+- **Do not re-wrap.** Transforming a vLEI credential into a W3C VTC re-issued by another party breaks the vLEI authenticity chain and reintroduces the re-verification burden this section removes. The chain MUST be verified as issued.
+- **Privacy.** LEIs and LEI reference data are public by design; no personal data is involved in a Legal Entity identification.
+
 ### [VS-REQ] Verifiable Service Basic Requirements and Linked VPs
 
 - [VS-REQ-1] A [[ref: VS]] MUST be identified by a [[ref: DID]].  
@@ -1578,9 +1727,9 @@ Example:
 
 - [VS-REQ-2] A [[ref: VS]] DID Document MUST present, as a Linked Verifiable Presentation (linked-vp), a Verifiable Trust Credential that conforms to [VT-ECS-SERVICE-CRED-W3C].
 
-- [VS-REQ-3] If the issuer of the Verifiable Trust Service Essential Credential referenced in [VS-REQ-2] is the same [[ref: DID]] as the [[ref: VS]] itself, the VS DID Document MUST also present **exactly one** Verifiable Trust Credential that conforms to **either** [VT-ECS-ORG-CRED-W3C] **or** [VT-ECS-PERSONA-CRED-W3C].
+- [VS-REQ-3] If the issuer of the Verifiable Trust Service Essential Credential referenced in [VS-REQ-2] is the same [[ref: DID]] as the [[ref: VS]] itself, the VS DID Document MUST also present **exactly one** Owner/Operator identification, which MUST be **one of**: a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED-W3C], a Verifiable Trust Credential that conforms to [VT-ECS-PERSONA-CRED-W3C], **or** a vLEI Legal Entity identification that conforms to [VT-VLEI].
 
-- [VS-REQ-4] If the issuer of the Verifiable Trust Service Essential Credential referenced in [VS-REQ-2] is **not** the [[ref: DID]] of the [[ref: VS]], then the DID Document of the credential issuer MUST present **exactly one** Verifiable Trust Credential that conforms to **either** [VT-ECS-ORG-CRED-W3C] **or** [VT-ECS-PERSONA-CRED-W3C].
+- [VS-REQ-4] If the issuer of the Verifiable Trust Service Essential Credential referenced in [VS-REQ-2] is **not** the [[ref: DID]] of the [[ref: VS]], then the DID Document of the credential issuer MUST present **exactly one** Owner/Operator identification, which MUST be **one of**: a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED-W3C], a Verifiable Trust Credential that conforms to [VT-ECS-PERSONA-CRED-W3C], **or** a vLEI Legal Entity identification that conforms to [VT-VLEI].
 
 - [VS-REQ-5] A [[ref: VS]] DID Document MAY present additional Verifiable Trust Credentials as Linked Verifiable Presentations, as specified in [VT-CRED-W3C-LINKED-VP].
 
@@ -1589,10 +1738,10 @@ Example:
 ::: note
 In other words, to qualify as a Verifiable Service:
 
-- the service MAY directly identify itself by presenting an Organization or Persona Essential Credential; **or**
-- the issuer of the Service Essential Credential MUST identify itself by presenting an Organization or Persona Essential Credential.
+- the service MAY directly identify itself by presenting an Organization or Persona Essential Credential, or a vLEI Legal Entity identification; **or**
+- the issuer of the Service Essential Credential MUST identify itself by presenting an Organization or Persona Essential Credential, or a vLEI Legal Entity identification.
 
-This ensures that every Verifiable Service is ultimately bound to a legally or naturally accountable entity.
+This ensures that every Verifiable Service is ultimately bound to a legally or naturally accountable entity — identified either under an ECS Ecosystem ([ECS-ORG], [ECS-PERSONA]) or under the vLEI ecosystem's external trust root ([VT-VLEI]).
 :::
 
 ### [VS-SVC] Service Declaration
@@ -1613,7 +1762,7 @@ A Verifiable Service is consumed via service endpoints declared in its [[ref: DI
 
 - [VS-SVC-5] A peer MUST NOT consume a service endpoint URL declared in a DID Document unless trust resolution of the corresponding DID has succeeded. Once trust resolution succeeds, any URL reached through a declared service entry is considered an endpoint of the identified, credentialed operator of the DID, and inherits its trust context.
 
-- [VS-SVC-6] `LinkedVerifiablePresentation` entries declared in a DID Document for the purpose of presenting Verifiable Trust Credentials (see [VT-CRED-W3C-LINKED-VP] and [VT-ECS-CRED]) are part of the **identity layer** and are consumed during trust resolution itself. They are not considered "consumable service endpoints" for the purposes of [VS-SVC-2], [VS-SVC-3], [VS-SVC-4] and [VS-SVC-5].
+- [VS-SVC-6] `LinkedVerifiablePresentation` entries declared in a DID Document for the purpose of presenting Verifiable Trust Credentials (see [VT-CRED-W3C-LINKED-VP] and [VT-ECS-CRED]), as well as `KERICredentialPresentation` entries declared per [VT-VLEI-PRES], are part of the **identity layer** and are consumed during trust resolution itself. They are not considered "consumable service endpoints" for the purposes of [VS-SVC-2], [VS-SVC-3], [VS-SVC-4] and [VS-SVC-5].
 
 - [VS-SVC-7] When a non-DIDComm service endpoint declared under [VS-SVC-3] requires authentication (access tokens, authorization credentials, session artifacts, capability tokens, etc.), a peer SHOULD obtain the required authentication material over the DIDComm channel declared under [VS-SVC-2], **after** trust resolution has succeeded. The specific authentication scheme is protocol- and ecosystem-specific, but its establishment MUST NOT bypass trust resolution of the [[ref: VS]] DID. This ensures that authentication material for every declared endpoint is cryptographically rooted in the same verified identity handshake.
 
@@ -1768,9 +1917,11 @@ For communication channel between User Agents to be enabled, both User Agents MU
 
 - [TR-6] Every DID that appears as an issuer of a credential during trust resolution MUST itself be verified as a **Verifiable Service** conforming to [VS-REQ]. The credentials presented by that issuer's DID Document MUST themselves be verified by recursively applying [TR-1] through [TR-6].
 
-- [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at the **Ecosystem DID**, which is the issuer of the VTJSC and the identifier of the Ecosystem itself. The Ecosystem DID is the trust root.
+- [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at a **trust root**. For VPR-anchored credentials, the trust root is the **Ecosystem DID**, which is the issuer of the VTJSC and the identifier of the Ecosystem itself. For a vLEI Legal Entity identification ([VT-VLEI]), the trust root is the [[ref: GLEIF]] Root of Trust [[ref: AID]], an [[ref: external trust root]] configured per [WL-VLEI] (see [TR-9]).
 
-- [TR-8] If any verification step in [TR-1] through [TR-7] fails for any credential or DID encountered during trust resolution, the trust resolution MUST be considered failed, and the connection or credential MUST be rejected.
+- [TR-8] If any verification step in [TR-1] through [TR-7], or [TR-9], fails for any credential or DID encountered during trust resolution, the trust resolution MUST be considered failed, and the connection or credential MUST be rejected.
+
+- [TR-9] A vLEI Legal Entity identification presented per [VT-VLEI] MUST be verified as specified in [VT-VLEI-TR]. For that identification, [TR-2] through [TR-6] do not apply: credential verification, issuer authorization, and revocation state are established by the ACDC chain and its [[ref: TELs]], terminating at the GLEIF Root of Trust AID.
 
 ### [WL] ECS Ecosystem whitelists and vpr: scheme resolution
 
@@ -1837,6 +1988,27 @@ Example:
     { 
       "did": "did:example:ecosystem-test",
       "vpr": "vna-testnet-1"
+    }
+  ]
+}
+```
+
+- [WL-VLEI]: Compliant [[ref: VSs]] and [[ref: VUAs]] that accept vLEI Legal Entity identifications ([VT-VLEI]) MUST maintain a list of accepted [[ref: external trust roots]] for the [[ref: vLEI]] ecosystem: the [[ref: GLEIF]] Root of Trust [[ref: AID]](s) and the [[ref: OOBI]] endpoints used to resolve them. The authoritative root AID value is published by GLEIF; the value below is illustrative only. A [[ref: VS]] or [[ref: VUA]] that maintains no [WL-VLEI] entry simply does not accept vLEI Legal Entity identifications.
+
+Example:
+
+```json
+
+{ 
+  vleiTrustRoots: [ 
+    { 
+      "id": "gleif-root",
+      "aid": "EGleifRootOfTrustExampleAid0000000000000000",
+      "oobi": [
+        "https://gleif-root-witness-1.example/oobi/",
+        "https://gleif-root-witness-2.example/oobi/"
+      ],
+      "production": true
     }
   ]
 }
@@ -1929,6 +2101,18 @@ The credential issuer MUST be a Verifiable Service. To verify this:
 
 This Ecosystem is the ultimate trust root for the credential.
 
+### Resolve a vLEI-identified organization
+
+Suppose the Service Essential Credential of a [[ref: VS]] is issued by a DID whose DID Document presents no OrganizationCredential, but a vLEI Legal Entity identification ([VT-VLEI]) instead:
+
+- Read the `#vlei-le-vp` `KERICredentialPresentation` service entry and dereference the LE [[ref: ACDC]] chain and its [[ref: OOBIs]].
+- Resolve the organization [[ref: AID]]'s [[ref: KEL]] and check for duplicity.
+- Verify the bidirectional binding: `alsoKnownAs` → the [[ref: did:webs]] DID embedding the AID, and the AID's [[ref: designated aliases attestation]] → the DID.
+- Verify the LE credential ([[ref: SAID]], schema SAID, signature, [[ref: TEL]] state), then the QVI credential the same way, up to the [[ref: GLEIF]] Root of Trust AID.
+- Confirm that root AID is configured per [WL-VLEI]; check the [[ref: LEI]] status in GLEIF reference data.
+
+The organization is then identified by the LEI and legal name carried by the LE credential. The rest of the trust resolution — the Service Essential Credential, its Ecosystem, and issuer authorization in the VPR — is unchanged.
+
 ### Summary
 
 A relying party can therefore answer the following questions deterministically:
@@ -1939,6 +2123,7 @@ A relying party can therefore answer the following questions deterministically:
 - Was the issuer authorized? (at issuance time for W3C VTCs; at reception time for AnonCreds VTCs)
 - Which Ecosystem governs this credential?
 - Is the issuer itself a Verifiable Service (if required)?
+- Is the organization behind this service bound to a valid, non-revoked vLEI Legal Entity credential chained to GLEIF? ([VT-VLEI])
 
 All trust decisions are derived from verifiable artifacts and cryptographic proofs, without relying on issuer-asserted claims or implicit trust.
 
