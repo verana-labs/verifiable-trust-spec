@@ -3,8 +3,8 @@
     "spec-up": "^0.12.2"
   },
   "name": "verifiable-trust-spec",
-  "version": "4.0",
-  "description": "Verifiable Trust v4 Specification",
+  "version": "5.0",
+  "description": "Verifiable Trust v5 Specification",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/verana-labs/verifiable-trust-spec.git"

@@ -1,8 +1,8 @@
-# Verifiable Trust v5 Specification
+# Verifiable Trust v4 Specification
+
+**Status:** stable. This version only receives minor fixes.
 
 **Latest draft:** [spec v5-draft](https://verana-labs.github.io/verifiable-trust-spec/)
-
-**Latest stable:** [spec v4](https://verana-labs.github.io/verifiable-trust-spec/versions/v4/)
 
 **Editors:**
 
