@@ -28,6 +28,20 @@
           "account": "verana-labs",
           "repo": "verifiable-trust-spec"
         }
+      },
+      {
+        "title": "Verifiable Trust v3 Specification",
+        "spec_directory": "./versions/v3",
+        "logo": "img/verana-foundation-logo.svg",
+        "logo_link": "https://veranafoundation.org",
+        "assets": [
+          { "path": "custom-assets/logo.css" }
+        ],
+        "source": {
+          "host": "github",
+          "account": "verana-labs",
+          "repo": "verifiable-trust-spec"
+        }
       }
     ]
   }
