@@ -1,0 +1,1245 @@
+
+    <!DOCTYPE html>
+    <html lang="en" class="wa-theme-default">
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="color-scheme" content="light dark">
+        
+
+        <title>Verifiable Trust v3 Specification</title>
+
+        <link rel="icon" href="img/verana-foundation-logo.svg">
+
+        <script>(function(){"use strict";(function(){const r="spec-up-color-scheme",e=document.documentElement,o=window.matchMedia?window.matchMedia("(prefers-color-scheme: dark)"):null;let t="auto";try{const a=window.localStorage.getItem(r);(a==="light"||a==="dark"||a==="auto")&&(t=a)}catch{}const c=t==="auto"?o&&o.matches?"dark":"light":t;e.classList.remove("wa-light","wa-dark"),e.classList.add(c==="dark"?"wa-dark":"wa-light"),e.dataset.theme=c,e.dataset.themePreference=t,e.style.colorScheme=c})()})();</script><link href="assets/compiled/head.css" rel="stylesheet"/><script src="assets/compiled/head.js"></script><link href="custom-assets/logo.css" rel="stylesheet"/>
+      </head>
+      <body features="logo source">
+        <svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="svg-github" viewBox="0 0 20 20">
+    <path fill="currentColor" d="M10 0.247c-5.522 0-10 4.477-10 10 0 4.418 2.865 8.167 6.839 9.489 0.5 0.093 0.683-0.217 0.683-0.481 0-0.238-0.009-1.026-0.014-1.862-2.782 0.605-3.369-1.18-3.369-1.18-0.455-1.156-1.11-1.463-1.11-1.463-0.907-0.621 0.069-0.608 0.069-0.608 1.004 0.071 1.533 1.031 1.533 1.031 0.892 1.529 2.339 1.087 2.91 0.831 0.090-0.646 0.349-1.087 0.635-1.337-2.221-0.253-4.556-1.11-4.556-4.942 0-1.092 0.391-1.984 1.030-2.684-0.104-0.252-0.446-1.269 0.097-2.646 0 0 0.84-0.269 2.751 1.025 0.798-0.222 1.653-0.333 2.503-0.337 0.85 0.004 1.706 0.115 2.505 0.337 1.909-1.294 2.747-1.025 2.747-1.025 0.544 1.378 0.202 2.395 0.098 2.646 0.641 0.7 1.029 1.592 1.029 2.684 0 3.841-2.339 4.687-4.566 4.934 0.359 0.31 0.678 0.919 0.678 1.852 0 1.338-0.012 2.415-0.012 2.744 0 0.266 0.18 0.578 0.687 0.48 3.971-1.324 6.833-5.071 6.833-9.488 0-5.523-4.477-10-10-10z"></path>
+  </symbol>
+  <symbol id="spec-up-icon-github" viewBox="0 0 20 20">
+    <path fill="currentColor" d="M10 0.247c-5.522 0-10 4.477-10 10 0 4.418 2.865 8.167 6.839 9.489 0.5 0.093 0.683-0.217 0.683-0.481 0-0.238-0.009-1.026-0.014-1.862-2.782 0.605-3.369-1.18-3.369-1.18-0.455-1.156-1.11-1.463-1.11-1.463-0.907-0.621 0.069-0.608 0.069-0.608 1.004 0.071 1.533 1.031 1.533 1.031 0.892 1.529 2.339 1.087 2.91 0.831 0.090-0.646 0.349-1.087 0.635-1.337-2.221-0.253-4.556-1.11-4.556-4.942 0-1.092 0.391-1.984 1.030-2.684-0.104-0.252-0.446-1.269 0.097-2.646 0 0 0.84-0.269 2.751 1.025 0.798-0.222 1.653-0.333 2.503-0.337 0.85 0.004 1.706 0.115 2.505 0.337 1.909-1.294 2.747-1.025 2.747-1.025 0.544 1.378 0.202 2.395 0.098 2.646 0.641 0.7 1.029 1.592 1.029 2.684 0 3.841-2.339 4.687-4.566 4.934 0.359 0.31 0.678 0.919 0.678 1.852 0 1.338-0.012 2.415-0.012 2.744 0 0.266 0.18 0.578 0.687 0.48 3.971-1.324 6.833-5.071 6.833-9.488 0-5.523-4.477-10-10-10z"></path>
+  </symbol>
+  <symbol id="svg-nested-list" viewBox="0 0 37 32">
+    <path d="M0 2.286c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM9.143 0h27.429v4.571h-27.429zM9.143 11.429c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM18.286 9.143h18.286v4.571h-18.286zM9.143 29.714c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM18.286 27.429h18.286v4.571h-18.286zM18.286 20.571c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM27.429 18.286h9.143v4.571h-9.143z"></path>
+  </symbol>
+  <symbol id="spec-up-icon-bars" viewBox="0 0 24 24">
+    <rect x="3" y="5" width="18" height="2" rx="1" fill="currentColor"></rect>
+    <rect x="3" y="11" width="18" height="2" rx="1" fill="currentColor"></rect>
+    <rect x="3" y="17" width="18" height="2" rx="1" fill="currentColor"></rect>
+  </symbol>
+  <symbol id="spec-up-icon-search" viewBox="0 0 24 24">
+    <circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle>
+    <path d="M16 16l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+  </symbol>
+  <symbol id="spec-up-icon-sun" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"></circle>
+    <path d="M12 2.5v2.5M12 19v2.5M4.5 12H2m20 0h-2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+  </symbol>
+  <symbol id="spec-up-icon-moon" viewBox="0 0 24 24">
+    <path d="M19.5 14.25A8.25 8.25 0 0 1 9.75 4.5a8.27 8.27 0 0 0 4.5 15.18 8.2 8.2 0 0 0 5.25-1.88z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path>
+  </symbol>
+  <symbol id="spec-up-icon-circle-info" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"></circle>
+    <circle cx="12" cy="8" r="1.25" fill="currentColor"></circle>
+    <path d="M12 11v5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+  </symbol>
+  <symbol id="spec-up-icon-circle-exclamation" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"></circle>
+    <path d="M12 7v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    <circle cx="12" cy="17" r="1.25" fill="currentColor"></circle>
+  </symbol>
+  <symbol id="spec-up-icon-triangle-exclamation" viewBox="0 0 24 24">
+    <path d="M12 3.5l9 16a1 1 0 0 1-.87 1.5H3.87A1 1 0 0 1 3 19.5l9-16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path>
+    <path d="M12 9v5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    <circle cx="12" cy="17.25" r="1.1" fill="currentColor"></circle>
+  </symbol>
+  <symbol id="spec-up-icon-circle-check" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"></circle>
+    <path d="M8 12.5l2.5 2.5 5.5-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+  </symbol>
+</svg>
+
+
+        <wa-page class="spec-up-shell" mobile-breakpoint="1080" disable-navigation-toggle>
+
+          <header slot="header" id="app_header">
+            <div class="spec-up-brand">
+              <wa-button data-toggle-nav size="small" appearance="plain" variant="neutral" class="spec-up-nav-toggle" aria-label="Open table of contents">
+                <wa-icon library="spec-up" name="bars"></wa-icon>
+              </wa-button>
+              <a class="spec-up-brand-mark spec-up-brand-mark--logo" href="https://veranafoundation.org"><img src="img/verana-foundation-logo.svg" alt="Verifiable Trust v3 Specification logo"/></a>
+              <div class="spec-up-brand-copy">
+                <strong>Verifiable Trust v3 Specification</strong>
+              </div>
+            </div>
+            
+      <div class="spec-up-header-actions">
+        <wa-dropdown id="spec_up_theme_selector" class="spec-up-theme-selector color-scheme-selector" size="small" placement="bottom-start">
+          <wa-button
+            slot="trigger"
+            id="color-scheme-selector-trigger"
+            class="spec-up-theme-selector__trigger"
+            appearance="plain"
+            aria-label="Color theme"
+            variant="neutral"
+            size="small"
+          >
+            <wa-icon library="spec-up" name="sun" class="icon-embiggen only-light" aria-hidden="true"></wa-icon>
+            <wa-icon library="spec-up" name="moon" class="icon-embiggen only-dark" aria-hidden="true"></wa-icon>
+          </wa-button>
+          <wa-dropdown-item value="light">
+            <wa-icon library="spec-up" slot="icon" name="sun" class="icon-embiggen" aria-hidden="true"></wa-icon>
+            Light
+          </wa-dropdown-item>
+          <wa-dropdown-item value="dark">
+            <wa-icon library="spec-up" slot="icon" name="moon" class="icon-embiggen" aria-hidden="true"></wa-icon>
+            Dark
+          </wa-dropdown-item>
+          <wa-divider></wa-divider>
+          <wa-dropdown-item value="auto">
+            <wa-icon library="spec-up" slot="icon" name="sun" class="only-light icon-embiggen" aria-hidden="true"></wa-icon>
+            <wa-icon library="spec-up" slot="icon" name="moon" class="only-dark icon-embiggen" aria-hidden="true"></wa-icon>
+            System
+          </wa-dropdown-item>
+        </wa-dropdown>
+        
+        <wa-button class="spec-up-issues-trigger" size="small" appearance="outlined" variant="neutral" data-drawer="open repo_issues_drawer">
+          <wa-icon library="spec-up" name="github"></wa-icon>
+          Issues
+        </wa-button>
+    
+      </div>
+  
+          </header>
+
+          <div slot="navigation-header" class="spec-up-navigation-title">
+            <strong>Verifiable Trust v3 Specification</strong>
+          </div>
+
+          <nav id="toc" slot="navigation" aria-label="Table of contents">
+            <ul class="toc"><li><a href="#abstract">Abstract</a></li><li><a href="#about-this-document">About this Document</a></li><li><a href="#conformance">Conformance</a></li><li><a href="#terminology">Terminology</a></li><li><a href="#understanding-verifiable-trust">Understanding Verifiable Trust</a><ul><li><a href="#what-is-a-verifiable-service-vs">What is a Verifiable Service (VS)?</a></li><li><a href="#what-is-a-verifiable-user-agent-vua">What is a Verifiable User Agent (VUA)?</a></li><li><a href="#what-is-a-verifiable-public-registry-vpr">What is a Verifiable Public Registry (VPR)?</a><ul><li><a href="#trust-registries">Trust Registries</a></li><li><a href="#credential-schemas">Credential Schemas</a></li></ul></li><li><a href="#verifiable-trust-credentials">Verifiable Trust Credentials</a><ul><li><a href="#json-schema-credentials">Json Schema Credentials</a></li><li><a href="#issuing-verifiable-trust-credentials">Issuing Verifiable Trust Credentials</a></li></ul></li><li><a href="#essential-credential-schemas">Essential Credential Schemas</a></li></ul></li><li><a href="#specification">Specification</a><ul><li><a href="#vt-json-schema-cred-verifiable-trust-json-schema-credential">[VT-JSON-SCHEMA-CRED] Verifiable Trust Json Schema Credential</a></li><li><a href="#vt-ecosystem-diddoc-ecosystem-did-document">[VT-ECOSYSTEM-DIDDOC] Ecosystem DID Document</a></li><li><a href="#vt-cred-verifiable-trust-credential">[VT-CRED] Verifiable Trust Credential</a></li><li><a href="#vt-linked-vp-verifiable-trust-credential-linked-vp">[VT-LINKED-VP] Verifiable Trust Credential Linked VP</a></li><li><a href="#ecs-essential-credential-schemas">[ECS] Essential Credential Schemas</a><ul><li><a href="#ecs-service-service-credential-json-schema">[ECS-SERVICE] Service Credential Json Schema</a></li><li><a href="#ecs-org-organizationcredential-json-schema">[ECS-ORG] OrganizationCredential Json Schema</a></li><li><a href="#ecs-persona-persona-credential-json-schema">[ECS-PERSONA] Persona Credential Json Schema</a></li><li><a href="#ecs-ua-user-agent-credential-json-schema">[ECS-UA] User Agent Credential Json Schema</a></li></ul></li><li><a href="#vt-ecs-json-schema-cred-essential-schema-json-schema-credentials">[VT-ECS-JSON-SCHEMA-CRED] Essential Schema Json Schema Credentials</a></li><li><a href="#vt-ecs-cred-verifiable-trust-essential-schema-credentials">[VT-ECS-CRED] Verifiable Trust Essential Schema Credentials</a></li><li><a href="#vt-ecs-ecosystem-diddoc-ecosystem-did-document-for-declaring-essential-credential-schemas">[VT-ECS-ECOSYSTEM-DIDDOC] Ecosystem DID Document for declaring Essential Credential Schemas</a></li><li><a href="#vs-req-verifiable-service-basic-requirements-and-linked-vps">[VS-REQ] Verifiable Service Basic Requirements and Linked VPs</a></li><li><a href="#vua-req-requirements-for-a-user-agent-to-be-a-vua">[VUA-REQ] Requirements for a User Agent to be a VUA</a></li><li><a href="#cib-credential-issuance-by">[CIB] Credential Issuance by</a></li><li><a href="#prb-presentation-requested-by">[PRB] Presentation Requested by</a></li><li><a href="#cit-credential-issued-to">[CIT] Credential Issued to</a></li><li><a href="#prt-presentation-requested-to">[PRT] Presentation Requested to</a></li><li><a href="#vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service">[VS-CONN-VS] Requirements for a VS to accept a connection from another service</a></li><li><a href="#vs-conn-vua-requirements-for-a-vs-to-accept-a-connection-from-a-user-agent">[VS-CONN-VUA] Requirements for a VS to accept a connection from a User Agent</a></li><li><a href="#vua-conn-vs-requirements-for-a-vua-to-accept-connecting-to-a-service">[VUA-CONN-VS] Requirements for a VUA to accept connecting to a service</a></li><li><a href="#vua-conn-vua-requirements-for-two-vuas-to-connect">[VUA-CONN-VUA] Requirements for two VUAs to connect</a></li><li><a href="#vt-perm-queries-verification-of-permissions-in-verifiable-public-registries">[VT-PERM-QUERIES] Verification of permission(s) in Verifiable Public Registries</a></li><li><a href="#vt-trqp-trust-registry-query-protocol">[VT-TRQP] Trust Registry Query Protocol</a></li><li><a href="#wl-ecs-ecosystem-whitelists-and-vpr-scheme-resolution">[WL] ECS Ecosystem whitelists and vpr: scheme resolution</a></li><li><a href="#trust-resolution">Trust Resolution</a><ul><li><a href="#typescript-implementation">Typescript Implementation</a></li></ul></li><li><a href="#vuas-implementations">VUAs Implementations</a><ul><li><a href="#hologram-messaging">Hologram Messaging</a></li></ul></li><li><a href="#vss-implementations">VSs Implementations</a><ul><li><a href="#hologram-services">Hologram Services</a></li></ul></li><li><a href="#user-agent-display-of-trust-resolution">User Agent Display of Trust Resolution</a><ul><li><a href="#credential-wallets">Credential Wallets</a></li><li><a href="#connection-invitation">Connection Invitation</a></li><li><a href="#presentation-request">Presentation Request</a></li></ul></li><li><a href="#internationalization">Internationalization</a></li></ul></li></ul>
+          </nav>
+
+          <main class="spec-up-main">
+            <article id="content">
+              <h1 id="verifiable-trust-v3-specification"><span class="spec-up-heading-text">Verifiable Trust v3 Specification</span><a class="toc-anchor" href="#verifiable-trust-v3-specification">§</a></h1>
+<p><strong>Status:</strong> superseded by <a path-0="verana-labs.github.io" path-1="verifiable-trust-spec" path-2="versions" path-3="v4" path-4="" href="https://verana-labs.github.io/verifiable-trust-spec/versions/v4/">spec v4</a>. This version is frozen.</p>
+<p><strong>Latest draft:</strong> <a path-0="verana-labs.github.io" path-1="verifiable-trust-spec" path-2="" href="https://verana-labs.github.io/verifiable-trust-spec/">spec v5-draft0</a></p>
+<p><strong>Latest stable:</strong> <a path-0="verana-labs.github.io" path-1="verifiable-trust-spec" path-2="versions" path-3="v4" path-4="" href="https://verana-labs.github.io/verifiable-trust-spec/versions/v4/">spec v4</a></p>
+<dl>
+<dt><strong>Editors:</strong></dt>
+<dd>
+<p><a path-0="www.linkedin.com" path-1="in" path-2="fabricerochette" href="https://www.linkedin.com/in/fabricerochette">Fabrice Rochette</a>, (<a path-0="verana.io" href="https://verana.io">The Verana Foundation</a>)</p>
+</dd>
+<dt><strong>Contributors:</strong></dt>
+<dd>
+<p><a path-0="www.linkedin.com" path-1="in" path-2="aogentile" path-3="" href="https://www.linkedin.com/in/aogentile/">Ariel Gentile</a>, (<a path-0="verana.io" href="https://verana.io">The Verana Foundation</a>)</p>
+</dd>
+<dd>
+<p><a path-0="www.linkedin.com" path-1="in" path-2="andres-felipe-vallecilla-puentes" path-3="" href="https://www.linkedin.com/in/andres-felipe-vallecilla-puentes/">Andres Vallecilla</a>, (<a path-0="mobiera.com" href="https://mobiera.com">Mobiera</a>)</p>
+</dd>
+<dt><strong>Participate:</strong></dt>
+<dd>
+<p><a path-0="github.com" path-1="verana-labs" path-2="verifiable-trust-spec" href="https://github.com/verana-labs/verifiable-trust-spec">GitHub repo</a></p>
+</dd>
+<dd>
+<p><a path-0="github.com" path-1="verana-labs" path-2="verifiable-trust-spec" path-3="issues" href="https://github.com/verana-labs/verifiable-trust-spec/issues">File a bug</a></p>
+</dd>
+<dd>
+<p><a path-0="github.com" path-1="verana-labs" path-2="verifiable-trust-spec" path-3="commits" path-4="main" href="https://github.com/verana-labs/verifiable-trust-spec/commits/main">Commit history</a></p>
+</dd>
+</dl>
+<hr>
+<h2 id="abstract"><span class="spec-up-heading-text">Abstract</span><a class="toc-anchor" href="#abstract">§</a></h2>
+<p>The internet is broken. Existing communication channels are insecure and outdated. Because they rely on public identifiers — like email addresses, usernames, or phone numbers — anyone who knows your identifier can reach you, whether you invited them or not.</p>
+<p>Worse, there’s no reliable way to verify the identity of either service providers or users. This leaves the door wide open to spam, phishing, fraud, and identity theft.</p>
+<p>On the service side, each provider imposes its own fragmented registration process, often with complex password requirements or forced reliance on federated login systems, effectively handing control over to large third-party platforms.</p>
+<p>Although the World Wide Web was originally built for openness and interoperability, dominant players have reshaped it into a closed, centralized system that most people and organizations now depend on. Privacy has become an afterthought, and personal data is routinely harvested, exploited, or leaked.</p>
+<p>To rebuild a trustworthy internet, we need new communication channels - channels that are secure by design, based on mutual verification, and governed by decentralized trust.</p>
+<p>Connecting to a service, proving who you are, or creating an account should be as simple and safe as presenting a verifiable credential.</p>
+<p>A universal, open trust layer is essential for this vision to succeed.</p>
+<p>That’s the purpose of <strong>Verifiable Trust</strong>.</p>
+<h2 id="about-this-document"><span class="spec-up-heading-text">About this Document</span><a class="toc-anchor" href="#about-this-document">§</a></h2>
+<p>In order to fully understand the concepts developed in this document, you should have some basic knowledge of the <a path-0="www.trustoverip.org" path-1="toip-model" path-2="" href="https://www.trustoverip.org/toip-model/">ToIP stack</a>, <a class="term-reference" href="#term:did">DID</a>, <a class="term-reference" href="#term:didcomm">DIDComm</a>, <a class="term-reference" href="#term:trust-registry">trust registry</a>, and more generally, all terms present in the <a href="#terminology">Terminology</a> section.</p>
+<h2 id="conformance"><span class="spec-up-heading-text">Conformance</span><a class="toc-anchor" href="#conformance">§</a></h2>
+<p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this specification are non-normative. Everything else in this specification is normative.
+The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and SHOULD NOT in this document are to be interpreted as described in <a path-0="datatracker.ietf.org" path-1="doc" path-2="html" path-3="bcp14" href="https://datatracker.ietf.org/doc/html/bcp14">BCP 14</a> <a path-0="w3c.github.io" path-1="vc-data-model" path-2="#bib-rfc2119" href="https://w3c.github.io/vc-data-model/#bib-rfc2119">RFC2119</a> <a path-0="w3c.github.io" path-1="vc-data-model" path-2="#bib-rfc8174" href="https://w3c.github.io/vc-data-model/#bib-rfc8174">RFC8174</a> when, and only when, they appear in all capitals, as shown here.</p>
+<h2 id="terminology"><span class="spec-up-heading-text">Terminology</span><a class="toc-anchor" href="#terminology">§</a></h2>
+<dl>
+<dt><span id="term:credential-schemas"><span id="term:credential-schema">credential schema</span></span>:</dt>
+<dd>An <a class="term-reference" href="#term:vpr">VPR</a> resource which represents a verifiable credential definition and the associated permissions and business rules for issuing, verifying or holding a credential linked to this credential schema.</dd>
+<dt><span id="term:dids"><span id="term:did"><span id="term:decentralized-identifier">decentralized identifier</span></span></span>:</dt>
+<dd>A decentralized identifier, as specified in [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>].</dd>
+<dt><span id="term:didcomm"><span id="term:decentralized-identifier-communication">decentralized identifier communication</span></span>:</dt>
+<dd><a path-0="identity.foundation" path-1="didcomm-messaging" path-2="spec" path-3="" href="https://identity.foundation/didcomm-messaging/spec/">DIDComm</a> uses <a class="term-reference" href="#term:dids">DIDs</a> to establish confidential, ongoing connections.</dd>
+<dt><span id="term:dwn"><span id="term:dwn"><span id="term:decentralized-web-nodes">decentralized web nodes</span></span></span>:</dt>
+<dd>Decentralized web nodes, see <a path-0="identity.foundation" path-1="decentralized-web-node" path-2="spec" path-3="" href="https://identity.foundation/decentralized-web-node/spec/">DIF spec</a></dd>
+<dt><span id="term:did-documents"><span id="term:did-document"><span id="term:decentralized-identifier-document">decentralized identifier document</span></span></span>:</dt>
+<dd>A DID Document, as specified in [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>].</dd>
+<dt><span id="term:vprs"><span id="term:vpr"><span id="term:verifiable-public-registry">verifiable public registry</span></span></span>:</dt>
+<dd>a public, normally decentralized network, which provides: trust registry features, that can be used by all its <a class="term-reference" href="#term:participants">participants</a>: create trust registries, for each trust registry, define its credential schemas, who can issue, verify credential of a specific credential schema,… For more information, please refer to <a path-0="verana-labs.github.io" path-1="verifiable-trust-vpr-spec" path-2="" href="https://verana-labs.github.io/verifiable-trust-vpr-spec/">VPR Spec</a>.</dd>
+<dt><span id="term:vss"><span id="term:vs"><span id="term:verifiable-service">verifiable service</span></span></span>:</dt>
+<dd>A service, identified by a resolvable <a class="term-reference" href="#term:did">DID</a> that can be deployed anywhere by its owner, and that is conforming to this spec and has a resolvable <a class="term-reference" href="#term:proof-of-trust">proof of trust</a>. This can be a <a class="term-reference" href="#term:didcomm">DIDComm</a> service, a <a class="term-reference" href="#term:dwn">DWN</a> service, o any other service.</dd>
+<dt><span id="term:vuas"><span id="term:vua"><span id="term:verifiable-user-agent">verifiable user agent</span></span></span>:</dt>
+<dd>A user agent for accessing and using <a class="term-reference" href="#term:vss">VSs</a>. To be considered a <a class="term-reference" href="#term:vua">VUA</a>, a user agent must conform and enforce this spec, such as presenting a proof of trust to end user before accepting connecting to <a class="term-reference" href="#term:vs">VS</a> compliant services, and refuse connecting to not compliant services.</dd>
+<dt><span id="term:essential-credential-schemas"><span id="term:essential-credential-schema">essential credential schema</span></span>:</dt>
+<dd>Default <a class="term-reference" href="#term:credential-schema">credential schema</a>, owned by a <a class="term-reference" href="#term:trust-registry">trust registry</a>, that provide the basis for a trust layer to exist in the ecosystem so that <a class="term-reference" href="#term:vua">VUA</a> can generate a <a class="term-reference" href="#term:proof-of-trust">proof of trust</a>.</dd>
+<dt><span id="term:holders"><span id="term:holder">holder</span></span>:</dt>
+<dd>A role an entity might perform by possessing one or more verifiable credentials and generating verifiable presentations from them. A holder is often, but not always, a <a class="term-reference" href="#term:subject">subject</a> of the verifiable credentials they are holding. Holders store their credentials in credential repositories. Example holders include organizations, persons, things.</dd>
+<dt><span id="term:issuers"><span id="term:issuer">issuer</span></span>:</dt>
+<dd>A role an entity can perform by asserting claims about one or more <a class="term-reference" href="#term:subjects">subjects</a>, creating a verifiable credential from these claims, and transmitting the verifiable credential to a <a class="term-reference" href="#term:holder">holder</a>. Example issuers include corporations, non-profit organizations, trade associations, governments, and individuals.</dd>
+<dt><span id="term:json-schemas"><span id="term:json-schema">json schema</span></span>:</dt>
+<dd>A json schema as defined in <a path-0="json-schema.org" href="https://json-schema.org">JSON-SCHEMA</a>.</dd>
+<dt><span id="term:json-schema-credentials"><span id="term:json-schema-credential">json schema credential</span></span>:</dt>
+<dd>A json schema credential as defined in [<a class="spec-reference" href="#ref:VC-JSON-SCHEMA">VC-JSON-SCHEMA</a>].</dd>
+<dt><span id="term:linked-vp">linked-vp</span>:</dt>
+<dd>A presentation of a <a class="term-reference" href="#term:verifiable-credential">verifiable credential</a> as specified in <a path-0="identity.foundation" path-1="linked-vp" path-2="" href="https://identity.foundation/linked-vp/">LINKED-VP</a>.</dd>
+<dt><span id="term:participants"><span id="term:participant">participant</span></span>:</dt>
+<dd>An entity that uses an <a class="term-reference" href="#term:vpr">VPR</a> and its trust layer to provide or use services.</dd>
+<dt><span id="term:proof-of-trust">proof of trust</span>:</dt>
+<dd>Visual representation using <a class="term-reference" href="#term:essential-credential-schemas">essential credential schemas</a> of a <a class="term-reference" href="#term:trust-resolution">trust resolution</a> process of a <a class="term-reference" href="#term:verifiable-service">Verifiable Service</a>, for identifying the <a class="term-reference" href="#term:vs">VS</a>, its owner, and the <a class="term-reference" href="#term:issuer">issuer</a> of the verifiable credential of its owner.</dd>
+<dt><span id="term:session">session</span>:</dt>
+<dd>A session defines a connection to a DID Document provided service from a third party VS or VUA.</dd>
+<dt><span id="term:subjects"><span id="term:subject">subject</span></span>:</dt>
+<dd>A thing about which claims are made. Example subjects include human beings, animals, things, and organization, a <a class="term-reference" href="#term:did">DID</a>…</dd>
+<dt><span id="term:trust-registries"><span id="term:trust-registry">trust registry</span></span></dt>
+<dd>An approved list of <a class="term-reference" href="#term:issuers">issuers</a> and <a class="term-reference" href="#term:verifiers">verifiers</a> that are authorized to issue/verify certain credentials in an ecosystem.</dd>
+<dt><span id="term:trust-resolution">trust resolution</span>:</dt>
+<dd>Process run by, for example a <a class="term-reference" href="#term:vua">VUA</a> or a <a class="term-reference" href="#term:vs">VS</a>, which purpose is to recursively resolve <a class="term-reference" href="#term:did">DID</a> by digging into <a class="term-reference" href="#term:did-documents">DID Documents</a> and look for <a class="term-reference" href="#term:linked-vp">linked-vp</a> entries and their <a class="term-reference" href="#term:issuer">issuer</a> <a class="term-reference" href="#term:dids">DIDs</a>, and trust-registry entries to gather whether the service provided by the <a class="term-reference" href="#term:did">DID</a> is trustable (and legitimate), or not.</dd>
+<dt><span id="term:verifiers"><span id="term:verifier">verifier</span></span>:</dt>
+<dd>A role an entity performs by receiving one or more verifiable credentials, optionally inside a verifiable presentation for processing. Example verifiers include service providers.</dd>
+<dt><span id="term:verifiable-credentials"><span id="term:verifiable-credential">verifiable credential</span></span>:</dt>
+<dd>A verifiable credential as defined in [<a class="spec-reference" href="#ref:VC-DATA-MODEL">VC-DATA-MODEL</a>].</dd>
+</dl>
+<h2 id="understanding-verifiable-trust"><span class="spec-up-heading-text">Understanding Verifiable Trust</span><a class="toc-anchor" href="#understanding-verifiable-trust">§</a></h2>
+<p><em>This section is non-normative.</em></p>
+<p>When a user is invited to connect to a service, a verifiable trust-compliant user agent performs <em>trust resolution</em> on the service, presents the resulting Proof-of-Trust to the user, and prompts them to either accept or refuse the connection.</p>
+<p><img src="./img/proof-of-trust.png" alt="proof-of-trust"></p>
+<p>Trust Resolution is as simple as calling a method passing the DID of the service we want to resolve, to display a <strong>Proof-of-Trust</strong> to the end-user:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-1">resolve_trust(<span class="token string">"did:example:gaia"</span>)
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-1" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>and receive a response similar to this one:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-2"><span class="token punctuation">{</span>
+  <span class="token property">"did"</span><span class="token operator">:</span><span class="token string">"did:example:gaia"</span><span class="token punctuation">,</span>
+  <span class="token property">"verified"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  <span class="token property">"service_provider"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:def"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"Organization"</span><span class="token punctuation">,</span>
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Gaia Registry LLC"</span><span class="token punctuation">,</span>
+      <span class="token property">"country"</span><span class="token operator">:</span> <span class="token string">"zz"</span><span class="token punctuation">,</span>
+      <span class="token property">"reputation"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"issuedCredentials"</span><span class="token operator">:</span> <span class="token number">1234</span><span class="token punctuation">,</span>
+        <span class="token property">"verifiedCredentials"</span><span class="token operator">:</span> <span class="token number">7678</span><span class="token punctuation">,</span>
+        <span class="token property">"trustDepositValue"</span><span class="token operator">:</span> <span class="token number">176327.124356</span><span class="token punctuation">,</span>
+        <span class="token property">"amountSlashed"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token property">"stars"</span><span class="token operator">:</span> <span class="token number">5.0</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:zzz"</span><span class="token punctuation">,</span>
+      ...
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Gaia Registry"</span><span class="token punctuation">,</span>
+      <span class="token property">"termsAndConditions"</span><span class="token operator">:</span> <span class="token string">"http://example.com"</span><span class="token punctuation">,</span>
+      <span class="token property">"privacyPolicy"</span><span class="token operator">:</span> <span class="token string">"http://example.com"</span><span class="token punctuation">,</span>
+      <span class="token property">"minimumAgeRequired"</span><span class="token operator">:</span> <span class="token number">16</span><span class="token punctuation">,</span>
+      <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"Create your Metaverse ID at Gaia Registry! Protect your identity with biometrics and easily recover it if you loose your phone. Use your Gaia Identity to connect to fancy services with no password."</span>
+      ...
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"credentials"</span> <span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"TrademarkCredential"</span><span class="token punctuation">,</span>
+      ...
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+  ...
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-2" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>Let’s explain how the Verifiable Trust does it.</p>
+<p><img src="./img/vt-creds-explained.png" alt="Verifiable Service"></p>
+<p>The core idea behind Verifiable Trust is simple: trust should not be implicit, but it should be verifiable, transparent, and decentralized.</p>
+<p>In this example, a Verifiable Service (VS) presents several Verifiable Credentials to prove:</p>
+<ul>
+<li>Who operates the service, using an Essential Credential Schema (ECS) Service Verifiable Trust Credential (data shown in red)</li>
+<li>What the service offers, using another ECS Service Verifiable Trust Credential (data shown in blue)</li>
+<li>Trademark information, using a Trademark Verifiable Trust Credential (data shown in green)</li>
+</ul>
+<p>Additionally, the Verifiable Service presents computed reputation information (data shown in black). While this reputation data may support trust decisions, it is not directly defined by this specification. Refer to the <a path-0="verana-labs.github.io" path-1="verifiable-trust-vpr-spec" path-2="" href="https://verana-labs.github.io/verifiable-trust-vpr-spec/">VPR Spec</a> for more information.</p>
+<p>Verifiable Trust introduces the following core concepts:</p>
+<ul>
+<li>Verifiable Service (VS)</li>
+<li>Verifiable User Agent (VUA)</li>
+<li>Verifiable Public Registry (VPR)</li>
+<li>Verifiable Trust Credentials</li>
+<li>Essential Credential Schemas (ECS)</li>
+</ul>
+<p>The Proof-of-Trust is established by recursively resolving the credentials presented by (in this example) a service. What makes this trust verifiable is the use of cryptographic mechanisms built into Decentralized Identifiers (DIDs) and Verifiable Credentials, as applied across these five key concepts.</p>
+<p>Because these concepts are deeply interdependent, you may need to explore them together, and revisit them several times to fully grasp the Verifiable Trust model.</p>
+<h3 id="what-is-a-verifiable-service-vs"><span class="spec-up-heading-text">What is a Verifiable Service (VS)?</span><a class="toc-anchor" href="#what-is-a-verifiable-service-vs">§</a></h3>
+<p><em>This section is non-normative.</em></p>
+<p>A Verifiable Service (VS) is a service capable of identifying itself to a peer before any connection is established.</p>
+<p>Peers wishing to connect to a VS can review the Verifiable Credentials presented by the service, verify their legitimacy through trust resolution, and decide whether to proceed with the connection based on the outcome.</p>
+<p>A VS is also required to verify the trustworthiness of peers attempting to connect to it, whether those peers are other Verifiable Services (VS) or Verifiable User Agents (VUA), and must reject connections from non-verifiable peers.</p>
+<p>Furthermore, if a Verifiable Service wants to issue credentials or request credential presentation, it must first prove that it is authorized to perform these actions. Otherwise, the peer must refuse the request.</p>
+<h3 id="what-is-a-verifiable-user-agent-vua"><span class="spec-up-heading-text">What is a Verifiable User Agent (VUA)?</span><a class="toc-anchor" href="#what-is-a-verifiable-user-agent-vua">§</a></h3>
+<p><em>This section is non-normative.</em></p>
+<p>A Verifiable User Agent (VUA) is software, such as a browser, app, or wallet, designed to connect with Verifiable Services (VS) and other VUAs. When establishing connections, a VUA must verify the identity and trustworthiness of its peers and allow connections only to compliant VS or VUA peers.</p>
+<p>As part of this process, the VUA must perform trust resolution by:</p>
+<ul>
+<li>Verifying the Verifiable Credentials presented by the peers</li>
+<li>Querying Verifiable Public Registries (VPRs) to confirm that these credentials were issued by recognized and authorized issuers.</li>
+</ul>
+<p>This ensures that all connections are based on verifiable trust, not assumptions.</p>
+<h3 id="what-is-a-verifiable-public-registry-vpr"><span class="spec-up-heading-text">What is a Verifiable Public Registry (VPR)?</span><a class="toc-anchor" href="#what-is-a-verifiable-public-registry-vpr">§</a></h3>
+<wa-callout id="note-1" class="spec-up-notice spec-up-notice--note" variant="brand" appearance="filled-outlined"><wa-icon library="spec-up" slot="icon" name="circle-info" label="note"></wa-icon><div class="spec-up-notice-heading"><a class="notice-link" href="#note-1">NOTE</a></div><p>There is a <a path-0="verana-labs.github.io" path-1="verifiable-trust-vpr-spec" path-2="" href="https://verana-labs.github.io/verifiable-trust-vpr-spec/">separated VPR spec</a>. The following summarizes the main features of a VPR.</p>
+</wa-callout>
+<p><em>This section is non-normative.</em></p>
+<p>A <strong>Verifiable Public Registry (VPR)</strong> is a <strong>“registry of registries”</strong>, a public service that provides foundational infrastructure for decentralized trust ecosystems. It offers:</p>
+<ul>
+<li>
+<p><strong>Trust Registry Management</strong>:<br>
+Ecosystems can create and manage their own <strong>Trust Registries</strong>, each with:</p>
+<ul>
+<li>Defined <strong>Credential Schemas</strong></li>
+<li>Assigned roles for <strong>Issuers</strong>, <strong>Verifiers</strong>, and <strong>Grantors</strong> (Trust Registry Operators)</li>
+<li>Custom <strong>business models</strong> and permission policies</li>
+</ul>
+</li>
+<li>
+<p><strong>Query API for Trust Resolution</strong>:<br>
+A standardized API used by <strong>Verifiable Services (VSs)</strong> and <strong>Verifiable User Agents (VUAs)</strong> to perform trust resolution, enabling them to query registry data and validate roles and permissions in real time. Query API must include support for the <a path-0="trustoverip.github.io" path-1="tswg-trust-registry-protocol" path-2="" href="https://trustoverip.github.io/tswg-trust-registry-protocol/">TRQP</a>.</p>
+</li>
+</ul>
+<img src="https://www.plantuml.com/plantuml/svg/fT5D2i8m40NWVKunj1Se2EAo_kr5nFqacTPeQqioLOjuTzCQYg0BYxD8idZl8p2fOxJSb8L8XvTJM12KU8DPai3LQ3u843Mg4-O4qPwioGnAdzaqiZ0AjfGRnxQD01rSQWjt8S1F9O-a6AATRHmFAQWoMAlAjOwfX7ZUjzWYn9DCQZdrxQxy664iWY7VZD78CY3g7sGL4Fs9_6oiWq7VZUuG_ayYfRFkD_Uwdm00" alt="uml diagram">
+<h4 id="trust-registries"><span class="spec-up-heading-text">Trust Registries</span><a class="toc-anchor" href="#trust-registries">§</a></h4>
+<p><em>This section is non-normative.</em></p>
+<p>Each <strong>Trust Registry</strong> must provide, at a minimum:</p>
+<ul>
+<li>an Ecosystem controlled <strong>resolvable DID</strong></li>
+<li>One or more <strong>Governance Framework</strong> document(s)</li>
+<li>Zero or more <strong>Credential Schemas</strong></li>
+</ul>
+<p>The <strong>Verifiable Public Registry (VPR)</strong> is agnostic to the specific <strong>DID methods</strong> used. Trust resolution is performed externally, outside the VPR, allowing flexibility and interoperability across ecosystems.</p>
+<img src="https://www.plantuml.com/plantuml/svg/NOv12i9040Jlyuf6Fn0Gn6FU87vWiZj9LhExC3Cn1l7lYeA7zAMBfWxTchFwd2Tg_sI19q7c1qvDWoL57mbKkwi4n-wYipdECYHpNNTWWojZV-Yxs1tn97mYeTfgBXannSqILA8KJpp1mYYPRICCzIvQk0H1hvnbgNf3hC7eHTHAYT-xltu3" alt="uml diagram">
+<h4 id="credential-schemas"><span class="spec-up-heading-text">Credential Schemas</span><a class="toc-anchor" href="#credential-schemas">§</a></h4>
+<p><em>This section is non-normative.</em></p>
+<p><strong>Credential Schemas</strong> are created and managed by <strong>trust registry</strong> controller (Ecosystems). Each Credential Schema includes, at a minimum:</p>
+<ul>
+<li>A <strong>JSON Schema</strong> that defines the structure of the corresponding <strong>Verifiable Credential</strong></li>
+<li>A <strong>PermissionManagementMode</strong> for <strong>issuance policy</strong>, which determines how <code>Issuer</code> permissions are granted. Modes include:
+<ul>
+<li><code>OPEN</code>: Anyone can become an Issuer</li>
+<li><code>ECOSYSTEM</code>: Permissions are granted directly by the Ecosystem, the trust registry controller</li>
+<li><code>GRANTOR_VALIDATION</code>: Permissions are granted by one or several <code>Issuer Grantor(s)</code> (trust registry operator(s) responsible for selecting issuers for the ecosystem), selected by the Ecosystem.</li>
+</ul>
+</li>
+<li>A <strong>PermissionManagementMode</strong> for <strong>verification policy</strong>, which determines how <code>Verifier</code> permissions are granted. Modes include:
+<ul>
+<li><code>OPEN</code>: Anyone can act as a Verifier</li>
+<li><code>ECOSYSTEM</code>: Permissions are granted directly by the Ecosystem, the trust registry controller</li>
+<li><code>GRANTOR_VALIDATION</code>: Permissions are granted by one or several <code>Verifier Grantor(s)</code> (trust registry operator(s) responsible for selecting verifiers for the ecosystem), selected by the Ecosystem.</li>
+</ul>
+</li>
+<li>A <strong>Permission Tree</strong> that defines the roles and relationships involved in managing the schema’s lifecycle.</li>
+</ul>
+<img src="https://www.plantuml.com/plantuml/svg/ZPDTJy8m58Rl-ojEu4OlJ9QGCCE50SQ09IfccoHwOxhjCAhxIbicnF3VBUkOak2mD-r9t_C-FJtjK4ZAvIPDoB1PYP0c22dTmgrXm2UBv9e0AMZuGME4ZhsbQQ445iS8Cybe0bwunfJ24_AK2S7o37oEs04g81JmHGYeaGVl64gL7-PY9oIcCAeKaaEtjmgYeA-KK8-YiV9t1Gx0jXRUY-VR3t3bvhcyReGHYmQeJpJ0e_EesjwVO1qXDiXXncacSmxZYitY5gRZUS-s-pPpHu_-mZrBPF7uRvIb4JhecdtJn0Wkyivph3EO9NAsOhzgcbJ0igscfUqwK-T2LMKyQSFP6dCCkuOH62lZ7z3pCBjcdS3cUH8fxrUeM6iTTQVJiM7sMaZpnVsavko9iYH4lQwRcxj3emSG7-v9zK3ev_gJJDHsfTAzQbCU3Sjsmr8RDfVKQbbZ3mcwqbRr4BEe-h1w_WO0" alt="uml diagram">
+<p>Participant roles are defined in the table below:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Participant Role</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ecosystem</strong></td>
+<td>Create and control trust registries and credential Schemas. Recognize other participants by granting permission(s) to them.</td>
+</tr>
+<tr>
+<td><strong>Issuer Grantor</strong></td>
+<td>Trust Registry operator that grants Issuer permissions to candidate issuers.</td>
+</tr>
+<tr>
+<td><strong>Verifier Grantor</strong></td>
+<td>Trust Registry operator that grants Verifier permissions to candidate verifiers.</td>
+</tr>
+<tr>
+<td><strong>Issuer</strong></td>
+<td>Can issue credentials of this schema.</td>
+</tr>
+<tr>
+<td><strong>Verifier</strong></td>
+<td>Can request presentation of credentials of this schema.</td>
+</tr>
+<tr>
+<td><strong>Holder</strong></td>
+<td>Holds a credential.</td>
+</tr>
+</tbody>
+</table>
+<p>Example of a Json Schema credential schema:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-3"><span class="token punctuation">{</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
+  <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
+  <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"ExampleCredential"</span><span class="token punctuation">,</span>
+  <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"ExampleCredential using JsonSchema"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+  <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+      <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"uri"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"firstName"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">256</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"lastName"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">256</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"expirationDate"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"date"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"countryOfResidence"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">2</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"required"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"id"</span><span class="token punctuation">,</span>
+        <span class="token string">"lastName"</span><span class="token punctuation">,</span>
+        <span class="token string">"birthDate"</span><span class="token punctuation">,</span>
+        <span class="token string">"expirationDate"</span><span class="token punctuation">,</span>
+        <span class="token string">"countryOfResidence"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-3" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h3 id="verifiable-trust-credentials"><span class="spec-up-heading-text">Verifiable Trust Credentials</span><a class="toc-anchor" href="#verifiable-trust-credentials">§</a></h3>
+<p>Data stored in a VPR is not verified at the time of storage, nor does it need to be. Verification happens outside the scope of the VPR.</p>
+<p>This is not a limitation, it’s a feature. For example, any DID method can be used, and the VPR will never attempt to resolve or validate DIDs itself.</p>
+<p>The VPR provides registrations, not validations, leaving trust decisions and verification where they belong: <strong>with the relying parties</strong>.</p>
+<p>To make things verifiable, for a given credential schema:</p>
+<ul>
+<li>Ecosystem creates a Credential Json Schema in a VPR, linked to its Ecosystem DID.</li>
+<li>Ecosystem issues, with its DID, a <strong>Json Schema Credential</strong> linked to its credential <strong>Json Schema</strong> in the VPR</li>
+<li>Then, authorized issuers can issue <strong>Verifiable Trust Credentials</strong> linked to the <strong>Json Schema Credential</strong> issued by Ecosystem DID.</li>
+</ul>
+<p>.</p>
+<img src="https://www.plantuml.com/plantuml/svg/bLCxJyCm4DxzAqw10OOqbBSye29WW0b1rHKvza5SvL7vt411_U_OTN1JQ0UMEFRTVO_pUKHM63klIZQAVoH5YL293xWyEe9thMp1cdoAqa9o9njQaCKAncPE5fxmJPCr2pYG1eL51Rg6oUFJOGA200c-60368gKLNttmGrIp4daCiMNak36eiBPQbC-om4h0GHzJ1amFD3m-EJqxlxXqsoarzGkjqZbyGRAlLS9XC1X0OhKjqMsIky2vXa-MFTO96lsgHUwi1siF3X8w1RqQhs5A4lPENdELdqSnXRKpubaM7MNaIodjhAQkQE1b-doYEPfTdGXkdZipxSpm5ese1MzhaLP2rpNQT9X9ojfXDgKijc79ThlvvQ0bTrzgqyGMKM9kYyReJrHf2BkyeYdLxxnmjg5yJVYVtZWBg-wcwLMdaSDr5D5f30k1WCdu1d91BkBkwc4BTqXLa2zwKtXxVylS67aEpyKtGslqhO2HhZToK3RoP_Z_JAyximNw0MOOI1qtX_1UFCtEUMTiXBLQFSwmVWC0" alt="uml diagram">
+<h4 id="json-schema-credentials"><span class="spec-up-heading-text">Json Schema Credentials</span><a class="toc-anchor" href="#json-schema-credentials">§</a></h4>
+<p><em>This section is non-normative.</em></p>
+<p>To prove that data stored in a VPR, such as a credential json schema, is authentic, after creating the JSON Schema, the <strong>Ecosystem owner</strong> of the Trust Registry issues a <a path-0="www.w3.org" path-1="TR" path-2="vc-json-schema" path-3="" href="https://www.w3.org/TR/vc-json-schema/">JSON Schema Credential</a> using the <strong>DID registered as the Trust Registry’s Ecosystem identifier</strong> in the VPR.</p>
+<p>This credential serves as a verifiable proof of:</p>
+<ul>
+<li>Ownership of the <strong>Credential Schema</strong></li>
+<li>Control over the corresponding <strong>Trust Registry Ecosystem DID</strong>.</li>
+</ul>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-4"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem/shemas-example-jsc.json"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"JsonSchemaCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem"</span><span class="token punctuation">,</span>
+  <span class="token property">"issuanceDate"</span><span class="token operator">:</span> <span class="token string">"2024-01-01T19:23:24Z"</span><span class="token punctuation">,</span>
+  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://www.w3.org/ns/credentials/json-schema/v2.json"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
+    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:vna-mainnet-1/cs/v1/js/12345678"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
+    <span class="token property">"jsonSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"$ref"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:vna-mainnet-1/cs/v1/js/12345678"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ"</span> 
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-4" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>Finally, the Ecosystem must publish the <strong>JSON Schema Credential</strong> within the <strong>DID Document</strong> associated with the declared <strong>Trust Registry Ecosystem DID</strong> in the VPR.</p>
+<p>This ensures that the Credential Schema and its controlling Trust Registry are publicly discoverable and cryptographically verifiable.</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-5"><span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-schemas-example-jsc-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/schemas-example-jsc-vp.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+    ...
+  <span class="token punctuation">]</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-5" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h4 id="issuing-verifiable-trust-credentials"><span class="spec-up-heading-text">Issuing Verifiable Trust Credentials</span><a class="toc-anchor" href="#issuing-verifiable-trust-credentials">§</a></h4>
+<p><em>This section is non-normative.</em></p>
+<p>Once the Ecosystem has:</p>
+<ul>
+<li>Created its <strong>Credential Schemas</strong> in the VPR</li>
+<li>Issued the corresponding <strong>JSON Schema Credentials</strong></li>
+<li>Properly configured the <code>"service"</code> section of its <strong>Ecosystem DID Document</strong></li>
+</ul>
+<p>it is now possible to issue <strong>Verifiable Credentials</strong> based on these schemas.</p>
+<p>Credentials that comply with the <strong>Verifiable Trust Specification</strong> are referred to as <strong>Verifiable Trust Credentials (VTC)</strong>. These credentials must include, in their <code>credentialSchema</code> attribute, a reference to the corresponding <strong>JSON Schema Credential</strong> issued by the Trust Registry Ecosystem DID. This linkage ensures cryptographic proof of the schema’s origin and trustworthiness.</p>
+<p>In our previous example, that would mean and ExampleCredential should look like this example:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-6"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:holder"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"VerifiableTrustCredential"</span><span class="token punctuation">,</span> <span class="token string">"ExampleCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:authorized-issuer"</span><span class="token punctuation">,</span>
+  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:holder"</span><span class="token punctuation">,</span>
+    ...
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  ...
+  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem/schemas-example-jsc.json"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchemaCredential"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-6" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h3 id="essential-credential-schemas"><span class="spec-up-heading-text">Essential Credential Schemas</span><a class="toc-anchor" href="#essential-credential-schemas">§</a></h3>
+<p>Finally, the last concept: to enable fundamental trust operations, such as identifying service providers, service names, and related entities, we define a set of <strong>Essential Credential Schemas (ECS)</strong> specifically designed for these purposes:</p>
+<ul>
+<li>Service: describes <strong>services</strong>;</li>
+<li>Organization: identifies <strong>organizations</strong>, used to identify owner of a Service;</li>
+<li>Persona: identifies <strong>individuals</strong> used to identify owner of a Service;</li>
+<li>User Agent: describes <strong>user agents</strong>, such as browsers, mobile apps, and similar software</li>
+</ul>
+<p>With the Verifiable Trust concept now clearly established, we’re ready to dive into the specifications.</p>
+<h2 id="specification"><span class="spec-up-heading-text">Specification</span><a class="toc-anchor" href="#specification">§</a></h2>
+<h3 id="vt-json-schema-cred-verifiable-trust-json-schema-credential"><span class="spec-up-heading-text">[VT-JSON-SCHEMA-CRED] Verifiable Trust Json Schema Credential</span><a class="toc-anchor" href="#vt-json-schema-cred-verifiable-trust-json-schema-credential">§</a></h3>
+<p>A Verifiable Trust Json Schema Credential is a <a class="term-reference" href="#term:json-schema-credential">json schema credential</a> self-issued by a Trust Registry Ecosystem DID, that MUST refer to the json schema of a <code>CredentialSchema</code> entry created in a <code>VPR</code>. Issuer of the Verifiable Trust Json Schema Credential MUST be the same DID that the Ecosystem DID of the <code>TrustRegistry</code> entry created in the <a class="term-reference" href="#term:vpr">VPR</a> than owns the <code>CredentialSchema</code> entry in the <a class="term-reference" href="#term:vpr">VPR</a>.</p>
+<p>A Verifiable Trust Json Schema Credential MUST have a <code>credentialSchema</code> property that contains exactly the following:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-7">  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://www.w3.org/ns/credentials/json-schema/v2.json"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
+    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
+  <span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-7" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>Additionally, it MUST have a <code>credentialSubject</code> object with:</p>
+<ul>
+<li>a <code>id</code> properties that is the URL to access the <a class="term-reference" href="#term:json-schema">json schema</a> in the VPR,</li>
+<li><code>type</code> MUST be set to “JsonSchema”,</li>
+<li>an object <code>jsonSchema</code> MUST be present with an <code>$ref</code> properties that is the URL to access the <a class="term-reference" href="#term:json-schema">json schema</a> in the VPR</li>
+<li>a digestSRI property that MUST match the <a class="term-reference" href="#term:json-schema">json schema</a> file content hash.</li>
+</ul>
+<p>Example of a Verifiable Trust Json Schema Credential:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-8"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+      <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem/schemas-example-jsc.json"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"JsonSchemaCredential"</span><span class="token punctuation">,</span> <span class="token string">"VerifiableTrustJsonSchemaCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem"</span><span class="token punctuation">,</span>
+  <span class="token property">"issuanceDate"</span><span class="token operator">:</span> <span class="token string">"2024-01-01T19:23:24Z"</span><span class="token punctuation">,</span>
+  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://www.w3.org/ns/credentials/json-schema/v2.json"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
+    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-S57yQDg1MTzF56Oi9DbSQ14u7jBy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCrW"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:vna-mainnet-1/cs/v1/js/12345678"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchema"</span><span class="token punctuation">,</span>
+    <span class="token property">"jsonSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"$ref"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:vna-mainnet-1/cs/v1/js/12345678"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"digestSRI"</span><span class="token operator">:</span> <span class="token string">"sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ"</span> 
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-8" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h3 id="vt-ecosystem-diddoc-ecosystem-did-document"><span class="spec-up-heading-text">[VT-ECOSYSTEM-DIDDOC] Ecosystem DID Document</span><a class="toc-anchor" href="#vt-ecosystem-diddoc-ecosystem-did-document">§</a></h3>
+<p>For each <code>CredentialSchema</code> entry an Ecosystem has created in his Trust Registry in a <a class="term-reference" href="#term:vpr">VPR</a>, the Ecosystem MUST self-issue the corresponding Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].</p>
+<p>Additionally, in MUST present (as a <a class="term-reference" href="#term:linked-vp">linked-vp</a>) the Verifiable Trust Json Schema Credential(s) in its DID Document, as well as the corresponding VPR entry for verification. To do so, it MUST define the following entries in its DID Document:</p>
+<ul>
+<li>for each <code>CredentialSchema</code> entry it wants to be resolvable, a “LinkedVerifiablePresentation” service entry with a fragment that MUST start with <code>#vpr-schemas</code>, that MUST point to a self-issued Verifiable Trust Json Schema Credential as specified in [VT-JSON-SCHEMA-CRED].</li>
+</ul>
+<p>Example:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-9"><span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-schemas-example-jsc-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/schemas-example-jsc-vp.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+    ...
+  <span class="token punctuation">]</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-9" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h3 id="vt-cred-verifiable-trust-credential"><span class="spec-up-heading-text">[VT-CRED] Verifiable Trust Credential</span><a class="toc-anchor" href="#vt-cred-verifiable-trust-credential">§</a></h3>
+<p>A Verifiable Trust Credential MUST have a <code>credentialSchema</code> property:</p>
+<ul>
+<li><code>id</code> must point to a <a class="term-reference" href="#term:json-schema-credential">json schema credential</a> issued by the trust registry <a class="term-reference" href="#term:did">DID</a> owner of the schema in the VPR;</li>
+<li><code>type</code> MUST be <code>JsonSchemaCredential</code>.</li>
+</ul>
+<p>As a matter of fact, a Verifiable Trust Credential MUST conform to the dereferenced <a class="term-reference" href="#term:json-schema">json schema</a> of the <code>JsonSchemaCredential</code>.</p>
+<p>Example:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-10"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"https://www.w3.org/ns/credentials/v2"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:holder"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"VerifiableCredential"</span><span class="token punctuation">,</span> <span class="token string">"VerifiableTrustCredential"</span><span class="token punctuation">,</span> <span class="token string">"ExampleCredential"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"issuer"</span><span class="token operator">:</span> <span class="token string">"did:example:authorized-issuer"</span><span class="token punctuation">,</span>
+  <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+     <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:holder"</span><span class="token punctuation">,</span>
+    ...
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  ...
+  <span class="token property">"credentialSchema"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"https://ecosystem/schemas-example-jsc.json"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"JsonSchemaCredential"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-10" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h3 id="vt-linked-vp-verifiable-trust-credential-linked-vp"><span class="spec-up-heading-text">[VT-LINKED-VP] Verifiable Trust Credential Linked VP</span><a class="toc-anchor" href="#vt-linked-vp-verifiable-trust-credential-linked-vp">§</a></h3>
+<p>A DID Document MAY present an unlimited number of Verifiable Trust Credential as Linked-VPs. Linked-VPs MUST be signed by the DID controller of the DID Document, and MUST be declared with a fragment that starts with <code>#vpr-schemas-</code> and ends with <code>-c-vp</code>. Example:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-11"><span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-schemas-example-c-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/schemas-example-c-vp.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+    ...
+  <span class="token punctuation">]</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-11" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h3 id="ecs-essential-credential-schemas"><span class="spec-up-heading-text">[ECS] Essential Credential Schemas</span><a class="toc-anchor" href="#ecs-essential-credential-schemas">§</a></h3>
+<p>Essential Credential Schemas are the Verifiable Trust basic needed schemas for enabling a minimum trust resolution in Services and User Agents by answering these questions:</p>
+<ul>
+<li>who is the provider of this Verifiable Service?</li>
+<li>what is the minimum age required to access this Verifiable Service?</li>
+<li>is the User Agent trying to connect to a Verifiable Service a Verifiable User Agent?</li>
+<li>…</li>
+</ul>
+<p>Ecosystems can create Essential Credential Schemas (ECS) by creating a Trust Registry in a <a class="term-reference" href="#term:vpr">VPR</a>. There are 4 kinds of ECS:</p>
+<ul>
+<li>Service;</li>
+<li>Organization;</li>
+<li>Persona;</li>
+<li>UserAgent.</li>
+</ul>
+<p>An Ecosystem creates its Trust Registry in a <a class="term-reference" href="#term:vpr">VPR</a> by creating a <code>TrustRegistry</code> entry <code>tr</code>. For this Trust Registry to qualify for being used for trust resolution in <a class="term-reference" href="#term:vss">VSs</a> and <a class="term-reference" href="#term:vuas">VUAs</a>, it MUST provide, associated to the <code>TrustRegistry</code> entry <code>tr</code>, at least one <code>CredentialSchema</code> entry, with a respective <code>json_schema</code> attribute defined as follows in [ECS-SERVICE], [ECS-ORG], [ECS-PERSONA], [ECS-UA].</p>
+<h4 id="ecs-service-service-credential-json-schema"><span class="spec-up-heading-text">[ECS-SERVICE] Service Credential Json Schema</span><a class="toc-anchor" href="#ecs-service-service-credential-json-schema">§</a></h4>
+<p>Used to identify Services.</p>
+<p>Credential subject object of schema MUST contain the following attributes:</p>
+<ul>
+<li><code>id</code> (string) (<em>mandatory</em>): the <a class="term-reference" href="#term:did">DID</a> of the service the credential will be issued to.</li>
+<li><code>name</code> (string) (<em>mandatory</em>): service name. UTF8 charset, max length: 512 bytes.</li>
+<li><code>type</code> (string) (<em>mandatory</em>): service type. UTF8 charset, max length: 128 bytes. Service types will be defined later.</li>
+<li><code>description</code> (string) (<em>mandatory</em>): service description. UTF8 charset, max length: 4096 bytes.</li>
+<li><code>logo</code> (image) (<em>mandatory</em>): the logo of the service, as it will be shown in browsers, apps, search engines…</li>
+<li><code>minimumAgeRequired</code> (integer) (<em>mandatory</em>): minimum required age to connect to service. Allowed value: 0 to 255. Used by browsers that provide a simple birth date based parental control.</li>
+<li><code>termsAndConditions</code> (string) (<em>mandatory</em>): URL of the terms and conditions of the service. It is recommended to store terms and conditions in a file, in a repository that allows file hash verification (IPFS).</li>
+<li><code>termsAndConditionsHash</code> (string) (<em>optional</em>): If terms and conditions of the service are stored in a file, optional hash of the file for data integrity verification.</li>
+<li><code>privacyPolicy</code> (string) (<em>mandatory</em>): URL of the terms and conditions of the service. MAY be the same URL that <code>terms_and_conditions</code> if file are combined. It is recommended to store privacy policy in a file repository that allows file hash verification (IPFS).</li>
+<li><code>privacyPolicyHash</code> (string) (<em>optional</em>): If privacy policy of the service are stored in a file, optional hash of the file for data integrity verification.</li>
+</ul>
+<p>the resulting <code>json_schema</code> attribute will be the following Json Schema.</p>
+<ul>
+<li><code>VPR_CREDENTIAL_SCHEMA_ID</code> is replaced by the <code>schema_id</code> of the created <code>CredentialSchema</code> entry in the VPR.</li>
+</ul>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-12"><span class="token punctuation">{</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
+  <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
+  <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"ServiceCredential"</span><span class="token punctuation">,</span>
+  <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"ServiceCredential using JsonSchema"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+  <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+      <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"uri"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">512</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">128</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"description"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">4096</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"logo"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"contentEncoding"</span><span class="token operator">:</span> <span class="token string">"base64"</span><span class="token punctuation">,</span>
+          <span class="token property">"contentMediaType"</span><span class="token operator">:</span> <span class="token string">"image/png"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"minimumAgeRequired"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"number"</span><span class="token punctuation">,</span>
+          <span class="token property">"minimum"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+          <span class="token property">"exclusiveMaximum"</span><span class="token operator">:</span> <span class="token number">150</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"termsAndConditions"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"uri"</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">2048</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"termsAndConditionsHash"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"privacyPolicy"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"uri"</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">2048</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"privacyPolicyHash"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"required"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"id"</span><span class="token punctuation">,</span>
+        <span class="token string">"name"</span><span class="token punctuation">,</span>
+        <span class="token string">"type"</span><span class="token punctuation">,</span>
+        <span class="token string">"description"</span><span class="token punctuation">,</span>
+        <span class="token string">"logo"</span><span class="token punctuation">,</span>
+        <span class="token string">"minimumAgeRequired"</span><span class="token punctuation">,</span>
+        <span class="token string">"termsAndConditions"</span><span class="token punctuation">,</span>
+        <span class="token string">"privacyPolicy"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-12" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h4 id="ecs-org-organizationcredential-json-schema"><span class="spec-up-heading-text">[ECS-ORG] OrganizationCredential Json Schema</span><a class="toc-anchor" href="#ecs-org-organizationcredential-json-schema">§</a></h4>
+<p>Used to identify Verifiable Services run by Organizations.</p>
+<p>Credential subject object of schema MUST contain the following attributes:</p>
+<ul>
+<li><code>id</code> (string) (<em>mandatory</em>): the <a class="term-reference" href="#term:did">DID</a> of the service the credential has been issued to, which is the subject of the <a class="term-reference" href="#term:verifiable-credential">verifiable credential</a>.</li>
+<li><code>name</code> (string) (<em>mandatory</em>): name of the organization.</li>
+<li><code>logo</code> (image) (<em>mandatory</em>): the logo of the organization, as it will be shown in browsers and search engines.</li>
+<li><code>registryId</code> (string) (<em>mandatory</em>): registry id of the organization.</li>
+<li><code>registryUrl</code> (string) (<em>optional</em>): link to registry data.</li>
+<li><code>address</code> (string) (<em>mandatory</em>): address of the organization.</li>
+<li><code>type</code> (string) (<em>mandatory</em>): type of organization. PUBLIC, PRIVATE, FOUNDATION.</li>
+<li><code>countryCode</code> (string) (<em>mandatory</em>): country where the company is registered.</li>
+</ul>
+<p>the resulting <code>json_schema</code> attribute will be the following Json Schema.</p>
+<ul>
+<li><code>VPR_CREDENTIAL_SCHEMA_ID</code> is replaced by the <code>schema_id</code> of the created <code>CredentialSchema</code> entry in the VPR.</li>
+<li><code>VPR_CHAIN_ID</code> is replaced by the network name</li>
+</ul>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-13"><span class="token punctuation">{</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
+  <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
+  <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"OrganizationCredential"</span><span class="token punctuation">,</span>
+  <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"OrganizationCredential using JsonSchema"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+  <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+      <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"uri"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">256</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"logo"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"contentEncoding"</span><span class="token operator">:</span> <span class="token string">"base64"</span><span class="token punctuation">,</span>
+          <span class="token property">"contentMediaType"</span><span class="token operator">:</span> <span class="token string">"image/png"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"registryId"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">256</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"registryUrl"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">256</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"address"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">1024</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"type"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"enum"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"PUBLIC"</span><span class="token punctuation">,</span> <span class="token string">"PRIVATE"</span><span class="token punctuation">,</span> <span class="token string">"FOUNDATION"</span><span class="token punctuation">]</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"countryCode"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">2</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"required"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"id"</span><span class="token punctuation">,</span>
+        <span class="token string">"name"</span><span class="token punctuation">,</span>
+        <span class="token string">"logo"</span><span class="token punctuation">,</span>
+        <span class="token string">"registryId"</span><span class="token punctuation">,</span>
+        <span class="token string">"registryUrl"</span><span class="token punctuation">,</span>
+        <span class="token string">"address"</span><span class="token punctuation">,</span>
+        <span class="token string">"type"</span><span class="token punctuation">,</span>
+        <span class="token string">"countryCode"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-13" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h4 id="ecs-persona-persona-credential-json-schema"><span class="spec-up-heading-text">[ECS-PERSONA] Persona Credential Json Schema</span><a class="toc-anchor" href="#ecs-persona-persona-credential-json-schema">§</a></h4>
+<p>Used to identify Verifiable Services run by Personas.</p>
+<p>Credential subject object of schema MUST contain the following attributes:</p>
+<ul>
+<li><code>id</code> (string) (<em>mandatory</em>): the <a class="term-reference" href="#term:did">DID</a> the credential has been issued to.</li>
+<li><code>name</code> (string) (<em>mandatory</em>): name of the persona.</li>
+<li><code>description</code> (string) (<em>optional</em>): description of the persona.</li>
+<li><code>avatar</code> (image) (<em>optional</em>): the avatar of this person, as it will be shown in browsers and search engines.</li>
+<li><code>countryOfResidence</code> (string[2]) (<em>mandatory</em>): country of residence, for jurisdiction rule enforcement (moderation related).</li>
+</ul>
+<p>the resulting <code>json_schema</code> attribute will be the following Json Schema.</p>
+<ul>
+<li><code>VPR_CREDENTIAL_SCHEMA_ID</code> is replaced by the <code>schema_id</code> of the created <code>CredentialSchema</code> entry in the VPR.</li>
+</ul>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-14"><span class="token punctuation">{</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
+  <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
+  <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"PersonaCredential"</span><span class="token punctuation">,</span>
+  <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"PersonaCredential using JsonSchema"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+  <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+      <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"uri"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">256</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"description"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">16384</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"avatar"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"contentEncoding"</span><span class="token operator">:</span> <span class="token string">"base64"</span><span class="token punctuation">,</span>
+          <span class="token property">"contentMediaType"</span><span class="token operator">:</span> <span class="token string">"image/png"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"countryOfResidence"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">2</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"required"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"id"</span><span class="token punctuation">,</span>
+        <span class="token string">"name"</span><span class="token punctuation">,</span>
+        <span class="token string">"countryOfResidence"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-14" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h4 id="ecs-ua-user-agent-credential-json-schema"><span class="spec-up-heading-text">[ECS-UA] User Agent Credential Json Schema</span><a class="toc-anchor" href="#ecs-ua-user-agent-credential-json-schema">§</a></h4>
+<p>Credential subject object of schema MUST contain the following attributes:</p>
+<ul>
+<li><code>id</code> (string) (<em>mandatory</em>): the <a class="term-reference" href="#term:did">DID</a> of the user agent the credential will be issued to.</li>
+<li><code>name</code> (string) (<em>mandatory</em>): agent name. UTF8 charset, max length: 512 bytes.</li>
+<li><code>description</code> (string) (<em>mandatory</em>): agent description. UTF8 charset, max length: 4096 bytes.</li>
+<li><code>category</code> (string) (<em>mandatory</em>): the category of the agent, ie SOCIAL_NETWORK,…</li>
+<li><code>logo</code> (image) (<em>mandatory</em>): the logo of the agent, as it will be shown in search engines.</li>
+<li><code>wallet</code> (boolean) (<em>mandatory</em>): If the agent provides verifiable credential wallet features.</li>
+<li><code>termsAndConditions</code> (string) (<em>mandatory</em>): URL of the terms and conditions of the service. It is recommended to store terms and conditions in a file, in a repository that allows file hash verification (IPFS).</li>
+<li><code>termsAndConditionsHash</code> (string) (<em>optional</em>): If terms and conditions of the service are stored in a file, optional hash of the file for data integrity verification.</li>
+<li><code>privacyPolicy</code> (string) (<em>mandatory</em>): URL of the terms and conditions of the service. MAY be the same URL that <code>terms_and_conditions</code> if file are combined. It is recommended to store privacy policy in a file repository that allows file hash verification (IPFS).</li>
+<li><code>privacyPolicyHash</code> (string) (<em>optional</em>): If privacy policy of the service are stored in a file, optional hash of the file for data integrity verification.</li>
+</ul>
+<p>the resulting <code>json_schema</code> attribute will be the following Json Schema.</p>
+<ul>
+<li><code>VPR_CREDENTIAL_SCHEMA_ID</code> is replaced by the <code>schema_id</code> of the created <code>CredentialSchema</code> entry in the VPR.</li>
+</ul>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-15"><span class="token punctuation">{</span>
+  <span class="token property">"$id"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:VPR_CHAIN_ID/cs/v1/js/VPR_CREDENTIAL_SCHEMA_ID"</span><span class="token punctuation">,</span>
+  <span class="token property">"$schema"</span><span class="token operator">:</span> <span class="token string">"https://json-schema.org/draft/2020-12/schema"</span><span class="token punctuation">,</span>
+  <span class="token property">"title"</span><span class="token operator">:</span> <span class="token string">"UserAgentCredential"</span><span class="token punctuation">,</span>
+  <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"UserAgentCredential using JsonSchema"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+  <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"credentialSubject"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"object"</span><span class="token punctuation">,</span>
+      <span class="token property">"properties"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"id"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"uri"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"name"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">512</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"description"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">4096</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"category"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"minLength"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">128</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"logo"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"contentEncoding"</span><span class="token operator">:</span> <span class="token string">"base64"</span><span class="token punctuation">,</span>
+          <span class="token property">"contentMediaType"</span><span class="token operator">:</span> <span class="token string">"image/png"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"wallet"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"boolean"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"termsAndConditions"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"uri"</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">2048</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"termsAndConditionsHash"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"privacyPolicy"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span><span class="token punctuation">,</span>
+          <span class="token property">"format"</span><span class="token operator">:</span> <span class="token string">"uri"</span><span class="token punctuation">,</span>
+          <span class="token property">"maxLength"</span><span class="token operator">:</span> <span class="token number">2048</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"privacyPolicyHash"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"string"</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"required"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"id"</span><span class="token punctuation">,</span>
+        <span class="token string">"name"</span><span class="token punctuation">,</span>
+        <span class="token string">"description"</span><span class="token punctuation">,</span>
+        <span class="token string">"category"</span><span class="token punctuation">,</span>
+        <span class="token string">"logo"</span><span class="token punctuation">,</span>
+        <span class="token string">"wallet"</span><span class="token punctuation">,</span>
+        <span class="token string">"termsAndConditions"</span><span class="token punctuation">,</span>
+        <span class="token string">"privacyPolicy"</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-15" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h3 id="vt-ecs-json-schema-cred-essential-schema-json-schema-credentials"><span class="spec-up-heading-text">[VT-ECS-JSON-SCHEMA-CRED] Essential Schema Json Schema Credentials</span><a class="toc-anchor" href="#vt-ecs-json-schema-cred-essential-schema-json-schema-credentials">§</a></h3>
+<ul>
+<li>Json Schema Credential [VT-ECS-SERVICE-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].</li>
+<li>Json Schema Credential [VT-ECS-ORG-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG].</li>
+<li>Json Schema Credential [VT-ECS-PERSONA-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSONA].</li>
+<li>Json Schema Credential [VT-ECS-UA-JSON-SCHEMA-CRED]: a [VT-JSON-SCHEMA-CRED] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-UA].</li>
+</ul>
+<h3 id="vt-ecs-cred-verifiable-trust-essential-schema-credentials"><span class="spec-up-heading-text">[VT-ECS-CRED] Verifiable Trust Essential Schema Credentials</span><a class="toc-anchor" href="#vt-ecs-cred-verifiable-trust-essential-schema-credentials">§</a></h3>
+<ul>
+<li>Service Credential [VT-ECS-SERVICE-CRED]: a [VT-CRED] linked to a [VT-ECS-SERVICE-JSON-SCHEMA-CRED]. MUST be declared in DID Document with a “LinkedVerifiablePresentation” service entry with fragment <code>#vpr-ecs-service-c-vp</code>. Example:</li>
+</ul>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-16">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:service#vpr-ecs-service-c-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://service/ecs-service-c-vp.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+    ...
+  <span class="token punctuation">]</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-16" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<ul>
+<li>Organization Credential [VT-ECS-ORG-CRED]: a [VT-CRED] linked to a [VT-ECS-ORG-JSON-SCHEMA-CRED]. MUST be declared in DID Document with a “LinkedVerifiablePresentation” service entry with fragment <code>#vpr-ecs-org-c-vp</code>. Example:</li>
+</ul>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-17">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:service#vpr-ecs-org-c-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://service/ecs-org-c-vp.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+    ...
+  <span class="token punctuation">]</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-17" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<ul>
+<li>Persona Credential [VT-ECS-PERSONA-CRED]: a [VT-CRED] linked to a [VT-ECS-PERSONA-JSON-SCHEMA-CRED]. MUST be declared in DID Document with a “LinkedVerifiablePresentation” service entry with fragment <code>#vpr-ecs-persona-c-vp</code>. Example:</li>
+</ul>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-18">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:service#vpr-ecs-persona-c-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://service/ecs-persona-c-vp.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+    ...
+  <span class="token punctuation">]</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-18" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<ul>
+<li>User Agent Credential [VT-ECS-UA-CRED]: a [VT-CRED] linked to a [VT-ECS-UA-JSON-SCHEMA-CRED].</li>
+</ul>
+<h3 id="vt-ecs-ecosystem-diddoc-ecosystem-did-document-for-declaring-essential-credential-schemas"><span class="spec-up-heading-text">[VT-ECS-ECOSYSTEM-DIDDOC] Ecosystem DID Document for declaring Essential Credential Schemas</span><a class="toc-anchor" href="#vt-ecs-ecosystem-diddoc-ecosystem-did-document-for-declaring-essential-credential-schemas">§</a></h3>
+<p>If an Ecosystem Trust Registry wishes to provide ECS trust resolution, it MUST present VT Json Schema Credential(s) of the ECSs they support, as well as the corresponding VPR entry for verification. To do that, Ecosystem MUST define the following entries in its DID Document, for each ECS they support:</p>
+<ul>
+<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-service-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-SERVICE-JSON-SCHEMA-CRED].</li>
+<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-org-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-ORG-JSON-SCHEMA-CRED].</li>
+<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-persona-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-PERSONA-JSON-SCHEMA-CRED].</li>
+<li>a “LinkedVerifiablePresentation” service entry with fragment name equal to <code>#vpr-ecs-ua-jsc-vp</code>, that MUST point to a self-issued and presented [VT-ECS-UA-JSON-SCHEMA-CRED].</li>
+</ul>
+<p>Example:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-19">  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-ecs-service-jsc-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/ecs-service-jsc-vp.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-ecs-org-jsc-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/ecs-org-jsc-vp.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-ecs-persona-jsc-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/ecs-persona-jsc-vp.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem#vpr-ecs-ua-jsc-vp"</span><span class="token punctuation">,</span>
+      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"LinkedVerifiablePresentation"</span><span class="token punctuation">,</span>
+      <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://ecosystem/ecs-ua-jsc-vp.json"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+    
+    ...
+  <span class="token punctuation">]</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-19" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h3 id="vs-req-verifiable-service-basic-requirements-and-linked-vps"><span class="spec-up-heading-text">[VS-REQ] Verifiable Service Basic Requirements and Linked VPs</span><a class="toc-anchor" href="#vs-req-verifiable-service-basic-requirements-and-linked-vps">§</a></h3>
+<ul>
+<li>[VS-REQ-1] A <a class="term-reference" href="#term:vs">VS</a> MUST be identified by a <a class="term-reference" href="#term:did">DID</a>. The <a class="term-reference" href="#term:did">DID</a> of a <a class="term-reference" href="#term:vs">VS</a> MUST resolve to a <a class="term-reference" href="#term:did-document">DID Document</a>.</li>
+<li>[VS-REQ-2] A <a class="term-reference" href="#term:vs">VS</a> DID Document MUST present (linked-vp) a Verifiable Trust Credential that conforms to [VT-ECS-SERVICE-CRED].</li>
+<li>[VS-REQ-3] If the issuer of the VT Service Essential Credential of [VS-REQ-2] is the <a class="term-reference" href="#term:did">DID</a> of this service, service DID Document MUST present a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) [VT-ECS-PERSONA-CRED].</li>
+<li>[VS-REQ-4] If the issuer of the VT Service Credential of [VS-REQ-2] is not the <a class="term-reference" href="#term:did">DID</a> of this service, DID Document of the VT Service Credential issuer MUST present a Verifiable Trust Credential that conforms to [VT-ECS-ORG-CRED] or (exclusive) [VT-ECS-PERSONA-CRED].</li>
+<li>[VS-REQ-5] A <a class="term-reference" href="#term:vs">VS</a> DID Document CAN present other Verifiable Trust Credentials as specified in [VT-LINKED-VP].</li>
+<li>[VS-REQ-6] A <a class="term-reference" href="#term:vs">VS</a> MUST always verify issuers of credentials as specified in [VT-PERM-QUERIES].</li>
+</ul>
+<wa-callout id="note-2" class="spec-up-notice spec-up-notice--note" variant="brand" appearance="filled-outlined"><wa-icon library="spec-up" slot="icon" name="circle-info" label="note"></wa-icon><div class="spec-up-notice-heading"><a class="notice-link" href="#note-2">NOTE</a></div><p>In other words, to be a VS, a service MUST identify itself directly by presenting an Organization or a Persona Essential Credential, or the issuer of its Service Essential Credential MUST identify itself by presenting an Organization or a Persona Essential Credential.</p>
+</wa-callout>
+<h3 id="vua-req-requirements-for-a-user-agent-to-be-a-vua"><span class="spec-up-heading-text">[VUA-REQ] Requirements for a User Agent to be a VUA</span><a class="toc-anchor" href="#vua-req-requirements-for-a-user-agent-to-be-a-vua">§</a></h3>
+<ul>
+<li>[VUA-REQ-1] A <a class="term-reference" href="#term:vua">VUA</a> that connects to a <a class="term-reference" href="#term:vs">VS</a> MUST present a [VT-ECS-UA-CRED] ECS User Agent Verifiable Trust Credential when requested by the <a class="term-reference" href="#term:vs">VS</a>.</li>
+<li>[VUA-REQ-2] A <a class="term-reference" href="#term:vua">VUA</a> that connects to another <a class="term-reference" href="#term:vua">VUA</a> MUST present a [VT-ECS-UA-CRED] ECS User Agent Verifiable Trust Credential when requested by the other <a class="term-reference" href="#term:vua">VUA</a>.</li>
+<li>[VUA-REQ-3] A <a class="term-reference" href="#term:vua">VUA</a> MUST always verify issuers (credential offer) and verifiers (presentation request) of credentials as specified in [VT-PERM-QUERIES].</li>
+</ul>
+<wa-callout id="note-3" class="spec-up-notice spec-up-notice--note" variant="brand" appearance="filled-outlined"><wa-icon library="spec-up" slot="icon" name="circle-info" label="note"></wa-icon><div class="spec-up-notice-heading"><a class="notice-link" href="#note-3">NOTE</a></div><p>It is RECOMMENDED to use <a path-0="hyperledger.github.io" path-1="anoncreds-spec" path-2="" href="https://hyperledger.github.io/anoncreds-spec/">anoncreds</a> plus selective disclosure for [VT-ECS-UA-CRED] and presentations to prevent correlation.</p>
+</wa-callout>
+<h3 id="cib-credential-issuance-by"><span class="spec-up-heading-text">[CIB] Credential Issuance by</span><a class="toc-anchor" href="#cib-credential-issuance-by">§</a></h3>
+<ul>
+<li>[CIB-1] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> CAN issue [VT-CRED] VT Credentials.</li>
+<li>[CIB-2] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT issue credentials that are not compliant with [VT-CRED].</li>
+<li>[CIB-3] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT issue a credential if it cannot prove [VT-PERM-QUERIES] it is authorized by the Ecosystem controller of the schema.</li>
+</ul>
+<h3 id="prb-presentation-requested-by"><span class="spec-up-heading-text">[PRB] Presentation Requested by</span><a class="toc-anchor" href="#prb-presentation-requested-by">§</a></h3>
+<ul>
+<li>[PRB-1] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> CAN request presentation of [VT-CRED] VT Credentials</li>
+<li>[PRB-2] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT request presentation of credentials that are not compliant with [VT-CRED].</li>
+<li>[PRB-3] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT request presentation of a credential if it cannot prove [VT-PERM-QUERIES] it is authorized by the Ecosystem controller of the schema.</li>
+</ul>
+<h3 id="cit-credential-issued-to"><span class="spec-up-heading-text">[CIT] Credential Issued to</span><a class="toc-anchor" href="#cit-credential-issued-to">§</a></h3>
+<ul>
+<li>[CIT-1] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> CAN be offered [VT-CRED] VT Credentials.</li>
+<li>[CIT-2] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT be offered credentials that are not compliant with [VT-CRED].</li>
+<li>[CIT-3] When a <a class="term-reference" href="#term:vs">VS</a> is offered a credential, it MUST verify [VT-PERM-QUERIES] that the issuer is authorized by the Ecosystem that controls the schema to issue a credential of this schema.</li>
+</ul>
+<h3 id="prt-presentation-requested-to"><span class="spec-up-heading-text">[PRT] Presentation Requested to</span><a class="toc-anchor" href="#prt-presentation-requested-to">§</a></h3>
+<ul>
+<li>[PRT-1] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> CAN request presentation of [VT-CRED] VT Credentials</li>
+<li>[PRT-2] A <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> MUST NOT request presentation of credentials that are not compliant with [VT-CRED].</li>
+<li>[PRT-3] When a <a class="term-reference" href="#term:vs">VS</a> receives a presentation request, before presenting a credential, it MUST verify [VT-PERM-QUERIES] that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema.</li>
+</ul>
+<h3 id="vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service"><span class="spec-up-heading-text">[VS-CONN-VS] Requirements for a VS to accept a connection from another service</span><a class="toc-anchor" href="#vs-conn-vs-requirements-for-a-vs-to-accept-a-connection-from-another-service">§</a></h3>
+<p>When a <a class="term-reference" href="#term:vs">VS</a> VS-1 receive a connection request from a service Service-2 to one of its services specified in DID Document, VS-1 MUST verify service Service-2 complies with [VS-REQ], else VS-1 MUST NOT accept the connection, unless purpose of the service provided by VS-1 is the issuance of [VT-ECS-ORG-CRED] or [VT-ECS-PERSONA-CRED] credentials.</p>
+<h3 id="vs-conn-vua-requirements-for-a-vs-to-accept-a-connection-from-a-user-agent"><span class="spec-up-heading-text">[VS-CONN-VUA] Requirements for a VS to accept a connection from a User Agent</span><a class="toc-anchor" href="#vs-conn-vua-requirements-for-a-vs-to-accept-a-connection-from-a-user-agent">§</a></h3>
+<p>When a <a class="term-reference" href="#term:vs">VS</a> receives a connection from a User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED] credential before starting to provide the service, and verify the presented credential (if any). If no credential is presented or presented credential is not verifiable, <a class="term-reference" href="#term:vs">VS</a> MUST NOT provide the service.</p>
+<h3 id="vua-conn-vs-requirements-for-a-vua-to-accept-connecting-to-a-service"><span class="spec-up-heading-text">[VUA-CONN-VS] Requirements for a VUA to accept connecting to a service</span><a class="toc-anchor" href="#vua-conn-vs-requirements-for-a-vua-to-accept-connecting-to-a-service">§</a></h3>
+<p>When a <a class="term-reference" href="#term:vua">VUA</a> start a <a class="term-reference" href="#term:session">session</a> with a service, <a class="term-reference" href="#term:vua">VUA</a> MUST verify VS complies with [VS-REQ], else VUA MUST NOT connect to VS.</p>
+<h3 id="vua-conn-vua-requirements-for-two-vuas-to-connect"><span class="spec-up-heading-text">[VUA-CONN-VUA] Requirements for two VUAs to connect</span><a class="toc-anchor" href="#vua-conn-vua-requirements-for-two-vuas-to-connect">§</a></h3>
+<p>When a <a class="term-reference" href="#term:vua">VUA</a> receives a connection from a User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED] credential before starting to provide the service, and verify the presented credential (if any).</p>
+<p>When a <a class="term-reference" href="#term:vua">VUA</a> initiates a connection to another User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED] credential before starting to provide the service, and verify the presented credential (if any).</p>
+<p>For communication channel between User Agents to be enabled, both User Agents MUST have requested and verified the  [VT-ECS-UA-CRED] credential presented by the peer.</p>
+<h3 id="vt-perm-queries-verification-of-permissions-in-verifiable-public-registries"><span class="spec-up-heading-text">[VT-PERM-QUERIES] Verification of permission(s) in Verifiable Public Registries</span><a class="toc-anchor" href="#vt-perm-queries-verification-of-permissions-in-verifiable-public-registries">§</a></h3>
+<p>For any <strong>credential issuance</strong> or <strong>credential verification</strong>, in addition to verifying the compliance of their peers (<a class="term-reference" href="#term:vss">VSs</a> and <a class="term-reference" href="#term:vuas">VUAs</a>), entities MUST query the relevant <strong>Verifiable Public Registry (VPR)</strong> to ensure that the credential(s) are being issued or verified by <strong>authorized entities</strong>.</p>
+<p>Depending on the permissions registered in the VPR(s), the issuer or verifier MAY be required to execute a transaction in the VPR, which MAY involve the payment of <strong>trust fees</strong>, prior to offering or requesting the presentation of a credential.</p>
+<p>The receiving <a class="term-reference" href="#term:vs">VS</a> or <a class="term-reference" href="#term:vua">VUA</a> MUST deny the credential offer or presentation request if these preconditions are not met.</p>
+<p><em>This section is non-normative and should be developed with examples and flow diagrams.</em></p>
+<p>When a <a class="term-reference" href="#term:vs">VS</a> or a <a class="term-reference" href="#term:vua">VUA</a> receives a <strong>credential offer</strong> or a <strong>presentation request</strong>, it must use the appropriate <strong>VPR endpoints</strong> to verify the following:</p>
+<ul>
+<li>
+<p>Whether the <strong>requesting party is authorized</strong> to perform the action.<br>
+Authorization CAN depend on factors such as <strong>jurisdiction</strong> or <strong>assurance level</strong>.</p>
+</li>
+<li>
+<p>Whether a <strong>payment (trust fee)</strong> is required for the requested operation.<br>
+If payment is required:</p>
+<ul>
+<li>The requesting party must obtain a <strong><code>uuid</code> token</strong> from the requested party.</li>
+<li>The requesting party must execute a transaction in the VPR to pay the trust fees, referencing the provided <code>uuid</code>.</li>
+<li>The requesting party must notify the requested party that the payment has been completed.</li>
+<li>The requested party must verify the payment status by querying the VPR before proceeding.</li>
+</ul>
+</li>
+</ul>
+<p>The requested <a class="term-reference" href="#term:vs">VS</a> or <a class="term-reference" href="#term:vua">VUA</a> must reject the credential offer or presentation request if these conditions are not fulfilled.</p>
+<p>Please refer to Permission Module in <a class="term-reference" href="#term:vpr">VPR</a> specs for more information.</p>
+<h3 id="vt-trqp-trust-registry-query-protocol"><span class="spec-up-heading-text">[VT-TRQP] Trust Registry Query Protocol</span><a class="toc-anchor" href="#vt-trqp-trust-registry-query-protocol">§</a></h3>
+<p>It is RECOMMENDED for implementations to support the <a path-0="trustoverip.github.io" path-1="tswg-trust-registry-protocol" path-2="" href="https://trustoverip.github.io/tswg-trust-registry-protocol/">TRQP</a>. When TRQP stabilizes, they will likely become the default method for VPR queries.</p>
+<h3 id="wl-ecs-ecosystem-whitelists-and-vpr-scheme-resolution"><span class="spec-up-heading-text">[WL] ECS Ecosystem whitelists and vpr: scheme resolution</span><a class="toc-anchor" href="#wl-ecs-ecosystem-whitelists-and-vpr-scheme-resolution">§</a></h3>
+<ul>
+<li>[WL-VPR] Compliant <a class="term-reference" href="#term:vss">VSs</a> and <a class="term-reference" href="#term:vuas">VUAs</a> MUST maintain a list of VPRs and how to access them (resolution). As VPRs are decentralized, this gives the option to the VUA vendor or VS provider to run a VPR node and use its own node endpoints for trust resolution.</li>
+</ul>
+<p>Example:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-20">
+<span class="token punctuation">{</span> 
+  verifiablePublicRegistries<span class="token operator">:</span> <span class="token punctuation">[</span> 
+    <span class="token punctuation">{</span> 
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:vna-mainnet-1"</span><span class="token punctuation">,</span>
+      <span class="token property">"baseurls"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"https://user-agent-vpr-node-1/"</span><span class="token punctuation">,</span>
+        <span class="token string">"https://user-agent-vpr-node-2/"</span><span class="token punctuation">,</span>
+      <span class="token punctuation">]</span>
+      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1"</span>
+      <span class="token property">"production"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> 
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:vna-testnet-1"</span><span class="token punctuation">,</span>
+      <span class="token property">"baseurls"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"https://user-agent-vpr-node-testnet/"</span>
+      <span class="token punctuation">]</span>
+      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1"</span>
+      <span class="token property">"production"</span><span class="token operator">:</span> <span class="token boolean">false</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> 
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"vpr:acme:purple-3"</span><span class="token punctuation">,</span>
+      <span class="token property">"baseurls"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+        <span class="token string">"https://user-agent-vpr-node-devnet/"</span>
+      <span class="token punctuation">]</span>
+      <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"2"</span>
+      <span class="token property">"production"</span><span class="token operator">:</span> <span class="token boolean">false</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-20" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<ul>
+<li>[WL-ECS]: Compliant <a class="term-reference" href="#term:vss">VSs</a> and <a class="term-reference" href="#term:vuas">VUAs</a> MUST maintain a list of DIDs of Ecosystems they trust for providing essential credential schemas.</li>
+</ul>
+<p>Example:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-21">
+<span class="token punctuation">{</span> 
+  ecsEcosystems<span class="token operator">:</span> <span class="token punctuation">[</span> 
+    <span class="token punctuation">{</span> 
+      <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem"</span><span class="token punctuation">,</span>
+      <span class="token property">"vpr"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:vna-mainnet-1"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> 
+      <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"did:example:ecosystem-test"</span><span class="token punctuation">,</span>
+      <span class="token property">"vpr"</span><span class="token operator">:</span> <span class="token string">"vpr:verana:vna-testnet-1"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-21" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<h3 id="trust-resolution"><span class="spec-up-heading-text">Trust Resolution</span><a class="toc-anchor" href="#trust-resolution">§</a></h3>
+<h4 id="typescript-implementation"><span class="spec-up-heading-text">Typescript Implementation</span><a class="toc-anchor" href="#typescript-implementation">§</a></h4>
+<p><em>This section is non-normative.</em></p>
+<ul>
+<li>The <a path-0="github.com" path-1="verana-labs" path-2="verre" href="https://github.com/verana-labs/verre">Verre typescript library</a> (WIP)</li>
+</ul>
+<h3 id="vuas-implementations"><span class="spec-up-heading-text">VUAs Implementations</span><a class="toc-anchor" href="#vuas-implementations">§</a></h3>
+<h4 id="hologram-messaging"><span class="spec-up-heading-text">Hologram Messaging</span><a class="toc-anchor" href="#hologram-messaging">§</a></h4>
+<p><em>This section is non-normative.</em></p>
+<p>Hologram Messaging is a Verifiable Credential wallet and messaging app with true privacy preserving features. Unlike other messaging apps, Hologram is a self-custody app, which means user’s data is only stored on device, and exclusively under user’s control.</p>
+<p>Hologram is the first ever-built VUA and is already available in the app stores, look for “Hologram Messaging” in apple store, google play or huawei’s app gallery. It has a user interface very similar to that well known apps like whatsapp, signal or telegram.</p>
+<p>Based on the <a path-0="didcomm.org" href="https://didcomm.org">DIDComm</a> open protocol, Hologram provides classic features such has peer-to-peer chat with verifiable credential exchange (to be able to verify who I am chatting to), as well as a Verifiable Chatbot browser to connect to any decentralized Hologram Chatbot VS. Anyone can create an Hologram Service, publish its DID, and invite users to connect by using Hologram (or any other compatible User Agent), request Verifiable Credential Presentations, issue credentials, perform calls and video calls, exchange content, read NFC chips, and more. Integration of p2p money transfers and payments are underway.</p>
+<p>Because Hologram is using the <a path-0="didcomm.org" href="https://didcomm.org">DIDComm</a> open protocol, anyone can create a new interoperable VUA so that Hologram users will natively be able to chat with users from others compatible VUAs.</p>
+<h3 id="vss-implementations"><span class="spec-up-heading-text">VSs Implementations</span><a class="toc-anchor" href="#vss-implementations">§</a></h3>
+<h4 id="hologram-services"><span class="spec-up-heading-text">Hologram Services</span><a class="toc-anchor" href="#hologram-services">§</a></h4>
+<p><em>This section is non-normative.</em></p>
+<p>Hologram Services can be of 2 kinds:</p>
+<ul>
+<li>Chatbot Services</li>
+<li>Basic Out-of-band Services, for Verifiable Credential Presentation Request and/or Verifiable Credential Issuance.</li>
+</ul>
+<p>Creation of an Hologram Service is really straightforward, just have a look at <a path-0="github.com" path-1="2060-io" href="https://github.com/2060-io">2060.io github repository</a> for examples.</p>
+<p>Popular Chatbot Services include:</p>
+<ul>
+<li>
+<p>UnicID, a chatbot service for obtaining a Verifiable Credential by reading a NFC-compatible passport or Id Card with a mobile phone. Service reads the document, then perform a biometric face matching with liveness detection to verify that user of the mobile phone is the same person than the picture of the face registered in the NFC chip of the document, and if there is a match, a Verifiable Credential is issued to user. After issuing the credential, service does not keep any user-related data.</p>
+</li>
+<li>
+<p>AvatarID, a service for creating a unique avatar, protected by a biometric hash of user’s face. If user looses his/her phone, he/she can restore the Avatar by performing a biometric face matching with liveness detection.</p>
+</li>
+</ul>
+<p>Basic Out-of-band Services include:</p>
+<ul>
+<li>VC Authenticator: an OpenID connect plugin for logging-in a user by requesting presentation of a verifiable credential</li>
+<li>VC Verifier: a simple service for generating a Verifiable Credential Presentation Request link so that user present the credential and service instantly receives corresponding data to an URL callback.</li>
+</ul>
+<h3 id="user-agent-display-of-trust-resolution"><span class="spec-up-heading-text">User Agent Display of Trust Resolution</span><a class="toc-anchor" href="#user-agent-display-of-trust-resolution">§</a></h3>
+<p>VUAs MUST show a representation of the trust resolution for any connection, with VSs or other VUAs.</p>
+<h4 id="credential-wallets"><span class="spec-up-heading-text">Credential Wallets</span><a class="toc-anchor" href="#credential-wallets">§</a></h4>
+<h4 id="connection-invitation"><span class="spec-up-heading-text">Connection Invitation</span><a class="toc-anchor" href="#connection-invitation">§</a></h4>
+<h4 id="presentation-request"><span class="spec-up-heading-text">Presentation Request</span><a class="toc-anchor" href="#presentation-request">§</a></h4>
+<h3 id="internationalization"><span class="spec-up-heading-text">Internationalization</span><a class="toc-anchor" href="#internationalization">§</a></h3>
+<p><em>This section is non normative.</em></p>
+<p>It is the responsibility of browsers and search engines to properly translate credential attributes, as credential schemas are always defined in a single language, that SHOULD be english.</p>
+
+            </article>
+          </main>
+        </wa-page>
+
+        
+      <wa-drawer id="repo_issues_drawer" class="spec-up-issues-drawer" label="GitHub Issues" placement="end" light-dismiss>
+        <div class="spec-up-issues-search-row">
+          <wa-input id="repo_issue_search" type="search" placeholder="Search open issues" autocomplete="off" spellcheck="false" size="small">
+            <wa-icon library="spec-up" slot="start" name="search" label="Search GitHub issues"></wa-icon>
+            <span slot="end" class="spec-up-issues-search-end">
+              <span id="repo_issue_search_spinner" class="spec-up-issues-search-spinner" hidden aria-hidden="true">
+                <wa-spinner></wa-spinner>
+              </span>
+              <button id="repo_issue_search_clear" type="button" aria-label="Clear issue search" disabled>Clear</button>
+            </span>
+          </wa-input>
+        </div>
+        <div class="spec-up-issues-panel-wrap">
+          <div id="repo_issue_panel_loading" class="spec-up-issues-panel-loading" aria-hidden="true">
+            <wa-spinner></wa-spinner>
+            <p class="spec-up-issues-panel-empty-msg" hidden>No issues found in this repo</p>
+          </div>
+          <div id="repo_issue_panel" class="spec-up-issues-panel">
+            <p id="repo_issue_status"></p>
+            <ul id="repo_issue_list" class="spec-up-issue-list"></ul>
+            <div id="repo_issue_load_more" class="spec-up-issues-loading" hidden>
+              <wa-spinner></wa-spinner>
+              <span>Loading more issues…</span>
+            </div>
+          </div>
+        </div>
+      </wa-drawer>
+    
+
+        
+        <template id="spec_up_config">{&quot;title&quot;:&quot;Verifiable Trust v3 Specification&quot;,&quot;spec_directory&quot;:&quot;./versions/v3&quot;,&quot;logo&quot;:&quot;img/verana-foundation-logo.svg&quot;,&quot;logo_link&quot;:&quot;https://veranafoundation.org&quot;,&quot;assets&quot;:[{&quot;path&quot;:&quot;custom-assets/logo.css&quot;}],&quot;source&quot;:{&quot;host&quot;:&quot;github&quot;,&quot;account&quot;:&quot;verana-labs&quot;,&quot;repo&quot;:&quot;verifiable-trust-spec&quot;}}</template>
+        <script src="assets/compiled/body.js"></script>
+      </body>
+    </html>
+  

@@ -8,6 +8,8 @@ Browsable spec (latest draft): [https://verana-labs.github.io/verifiable-trust-s
 
 Latest stable (v4): [https://verana-labs.github.io/verifiable-trust-spec/versions/v4/](https://verana-labs.github.io/verifiable-trust-spec/versions/v4/)
 
+Previous versions: [v3](https://verana-labs.github.io/verifiable-trust-spec/versions/v3/)
+
 ## How to contribute
 
 Clone repo and get started by browsing the index.html file for a rendered spec-up html.

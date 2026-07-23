@@ -4,6 +4,8 @@
 
 **Latest draft:** [spec v5-draft0](https://verana-labs.github.io/verifiable-trust-spec/)
 
+**Previous versions:** [spec v3](https://verana-labs.github.io/verifiable-trust-spec/versions/v3/)
+
 **Editors:**
 
 ~ [Fabrice Rochette](https://www.linkedin.com/in/fabricerochette), ([The Verana Foundation](https://veranafoundation.org))
