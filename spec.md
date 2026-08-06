@@ -986,7 +986,7 @@ The `$id` property is excluded because it contains the VPR-specific schema ident
 
 Used to identify Verifiable Services.
 
-[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/service.json)
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/service.json)
 
 Credential subject object of schema MUST contain the following attributes:
 
@@ -1101,7 +1101,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 Used to identify Organizations that operate Verifiable Services.
 
-[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/org.json)
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/org.json)
 
 Credential subject object of schema MUST contain the following attributes:
 
@@ -1235,7 +1235,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 Used to identify Personas (human-controlled avatars) that operate Verifiable Services.
 
-[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/persona.json)
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/persona.json)
 
 Credential subject object of schema MUST contain the following attributes:
 
@@ -1345,7 +1345,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 #### [ECS-UA] User Agent Credential Json Schema
 
-[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/ua.json)
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/ua.json)
 
 Credential subject object of schema MUST contain the following attributes:
 
@@ -1400,7 +1400,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 Used to identify **humans** (natural persons), such as the employees or members of the organization that operates a Verifiable Service. A Badge is issued to a human holder by a [[ref: VS]]; the organization or persona standing behind the holder is obtained by trust-resolving the **issuer** DID of the credential (see [VS-REQ] and [TR]).
 
-[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/badge.json)
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/badge.json)
 
 Credential subject object of schema MUST contain the following attributes:
 
