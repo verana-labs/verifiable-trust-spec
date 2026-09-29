@@ -5,3 +5,5 @@ node_modules
 /index.html
 /assets/
 /build/
+/versions/*/index.html
+/versions/*/assets/
