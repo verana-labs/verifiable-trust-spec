@@ -1,0 +1,10 @@
+# Frozen specification versions.
+#
+# A pull request that changes a path below needs a review from one of the
+# owners of that path. Use this to freeze a version: add its directory here
+# when the version becomes stable. To unfreeze a version, delete its line.
+#
+# The ruleset "main" must keep "Require review from Code Owners" active, or
+# GitHub does not apply these rules.
+
+/versions/v3/ @mjfelis @genaris

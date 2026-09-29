@@ -126,7 +126,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 
 When a user is invited to connect to a service, a verifiable trust-compliant user agent performs *trust resolution* on the service, presents the resulting Proof-of-Trust to the user, and prompts them to either accept or refuse the connection.
 
-![proof-of-trust](./img/proof-of-trust.png)
+![proof-of-trust](../../img/proof-of-trust.png)
 
 Trust Resolution is as simple as calling a method passing the DID of the service we want to resolve, to display a **Proof-of-Trust** to the end-user:
 
@@ -175,7 +175,7 @@ and receive a response similar to this one:
 
 Let's explain how the Verifiable Trust does it.
 
-![Verifiable Service](./img/vt-creds-explained.png)
+![Verifiable Service](../../img/vt-creds-explained.png)
 
 The core idea behind Verifiable Trust is simple: trust should not be implicit, but it should be verifiable, transparent, and decentralized.
 
