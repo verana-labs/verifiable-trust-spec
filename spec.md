@@ -808,7 +808,7 @@ This mechanism binds a credential's content to a block timestamp assigned by the
 
 #### [VT-CRED-W3C-LINKED-VP] W3C VTC Linked VP
 
-A DID Document MAY present an unlimited number of Verifiable Trust Credential as Linked-VPs. Linked-VPs MUST be signed by the DID controller of the DID Document, and MUST be declared with a fragment that starts with `#vpr-schemas-` and ends with `-vtc-vp`. Example:
+A DID Document MAY present an unlimited number of Verifiable Trust Credentials as Linked-VPs, for credentials of schemas whose `presentation_mode` is `PUBLIC` ([VT-DECL-MODE-1]); credentials of other schemas MUST NOT be published ([VT-DECL-MODE-2]). Linked-VPs MUST be signed by the DID controller of the DID Document, and MUST be declared with a fragment that starts with `#vpr-schemas-` and ends with `-vtc-vp`. Example:
 
 ```json
 "service": [
@@ -989,6 +989,46 @@ Issuer authorization checks at credential reception time are covered by [CIT].
 ```
 
 A relying party holding any SD-JWT VTC, credential offer, or presentation request can therefore walk `vct` → Type Metadata → VTJSC → Ecosystem, with every step verifiable, and query the VPR for the peer's authorization — without pre-configured knowledge of the credential type.
+
+### [VT-DECL] Credential Schema Declaration
+
+Each `CredentialSchema` entry of a [[ref: VPR]] declares, beyond its Json Schema and its onboarding modes, what the credentials of the schema are for and how agents handle them (see the [VPR spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema)):
+
+- `subject_kind`: `SERVICE` when credentials are issued to a software (a [[ref: VS]] identified by its [[ref: DID]], or an instance of a software such as a [[ref: VUA]]), `PERSON` when they are issued to a natural person and held in that person's [[ref: VUA]];
+- `presentation_mode`, for `SERVICE` schemas only: `PUBLIC`, `ACCREDITED_AUTOMATIC` or `ACCREDITED_APPROVAL`;
+- `credential_format`: the single container of the credentials of the schema;
+- `verification_session`: `WHEN_FEES` or `REQUIRED`.
+
+The VPR stores the declaration. Verifiable Services and Verifiable User Agents MUST enforce it as follows.
+
+#### [VT-DECL-FORMAT] Credential format
+
+- [VT-DECL-FORMAT-1] An issuer MUST issue credentials of a schema only in the declared `credential_format`: [VT-CRED-W3C] for `W3C_JSONLD`, [VT-CRED-ANON] for `ANONCREDS`, [VT-CRED-SDJWT] for `SD_JWT`. This version of this specification defines no Verifiable Trust container for `MDOC`: credentials of a schema declaring `MDOC` are not Verifiable Trust Credentials until one is defined.
+- [VT-DECL-FORMAT-2] A verifier MUST request presentations of credentials of a schema in the declared `credential_format`, and a holder MUST refuse a credential offer ([CIT]) or a presentation request ([PRT]) that uses another container.
+
+#### [VT-DECL-SUBJECT] Subject kind
+
+- [VT-DECL-SUBJECT-1] An issuer MUST NOT issue a credential of a `SERVICE` schema to a natural person, nor a credential of a `PERSON` schema to a software.
+- [VT-DECL-SUBJECT-2] For `PERSON` schemas, the person decides in its [[ref: VUA]] what to present: `presentation_mode` is null and [VT-DECL-MODE] does not apply. The VUA MUST still verify the verifier per [PRT-3] and apply [VT-DECL-SESSION].
+
+#### [VT-DECL-MODE] Presentation mode of service credentials
+
+In this section, the holder is the software that holds the credential: a [[ref: VS]], or a [[ref: VUA]] holding its own User Agent credential.
+
+- [VT-DECL-MODE-1] `PUBLIC`: the holder MUST publish the credential in its DID Document as a Linked Verifiable Presentation per [VT-CRED-W3C-LINKED-VP], and MUST remove or replace it when the credential expires or is revoked. Anyone can read a published credential: reading it is not a presentation request, and [PRB], [PRT] and [VT-DECL-SESSION] do not apply to it.
+- [VT-DECL-MODE-2] A credential of a schema whose `presentation_mode` is not `PUBLIC`, and any credential of a `PERSON` schema, MUST NOT be published in a DID Document.
+- [VT-DECL-MODE-3] `ACCREDITED_AUTOMATIC`: upon a presentation request from a verifier that satisfies [PRT-3] (the verifier holds an active `VERIFIER` `Participant` entry for the schema), the holder MUST present the credential without the intervention of its controller, after the session check of [VT-DECL-SESSION] when a session is required.
+- [VT-DECL-MODE-4] `ACCREDITED_APPROVAL`: as [VT-DECL-MODE-3], but the holder MUST obtain the approval of its controller for each presentation request before any session is created or any fee is paid, and MUST refuse the request when approval is denied. See [VT-PRES-VS].
+
+#### [VT-DECL-SESSION] Verification sessions
+
+- [VT-DECL-SESSION-1] `REQUIRED`: for every presentation request of a credential of the schema, the verifier MUST create a `ParticipantSession` in the VPR ([Create or Update Participant Session](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-10-create-or-update-participant-session)) before the presentation, and the holder MUST NOT present before having verified that the session exists and is valid.
+- [VT-DECL-SESSION-2] `WHEN_FEES`: the obligations of [VT-DECL-SESSION-1] apply only when the fees computed by the VPR for the verification are greater than 0.
+
+#### [VT-DECL-HOLDER] Holder Participant entries
+
+- [VT-DECL-HOLDER-1] When a schema sets `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`, the `HOLDER` `Participant` entry records the relationship that the issuer validated with the holder for that schema, effective for the period of the entry. A credential is an artifact issued under that relationship: an issuer MUST hold an effective `HOLDER` entry for the holder before issuing, and MAY issue successive credentials under the same entry (renewal, update of claims).
+- [VT-DECL-HOLDER-2] The relationship bounds the credential: a credential of such a schema is trusted only while the `HOLDER` entry of its subject for the schema is active ([TR-9]), whatever the credential's own validity period, and the revocation of the entry withdraws trust from every credential issued under it. A credential MAY be valid for a shorter period than the entry; a credential whose validity exceeds the entry is trusted only until the entry ends.
 
 ### [ECS] Essential Credential Schemas
 
@@ -1672,7 +1712,7 @@ Example:
 
 - [VS-REQ-4] If the issuer of the Verifiable Trust Service Essential Credential referenced in [VS-REQ-2] is **not** the [[ref: DID]] of the [[ref: VS]], then the DID Document of the credential issuer MUST present **exactly one** Verifiable Trust Credential that conforms to **either** [VT-ECS-ORG-CRED-W3C] **or** [VT-ECS-PERSONA-CRED-W3C].
 
-- [VS-REQ-5] A [[ref: VS]] DID Document MAY present additional Verifiable Trust Credentials as Linked Verifiable Presentations, as specified in [VT-CRED-W3C-LINKED-VP].
+- [VS-REQ-5] A [[ref: VS]] DID Document MAY present additional Verifiable Trust Credentials as Linked Verifiable Presentations, as specified in [VT-CRED-W3C-LINKED-VP], for credentials of schemas declared `PUBLIC` ([VT-DECL-MODE]).
 
 - [VS-REQ-6] A [[ref: VS]] MUST verify issuers of Verifiable Trust Credentials.
 
@@ -1862,7 +1902,9 @@ For communication channel between User Agents to be enabled, both User Agents MU
 
 - [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at the **Ecosystem DID**, which is the issuer of the VTJSC and the identifier of the Ecosystem itself. The Ecosystem DID is the trust root.
 
-- [TR-8] If any verification step in [TR-1] through [TR-7] fails for any credential or DID encountered during trust resolution, the trust resolution MUST be considered failed, and the connection or credential MUST be rejected.
+- [TR-8] If any verification step in [TR-1] through [TR-7] or [TR-9] fails for any credential or DID encountered during trust resolution, the trust resolution MUST be considered failed, and the connection or credential MUST be rejected.
+
+- [TR-9] For every Verifiable Trust Credential encountered during trust resolution whose `CredentialSchema` sets `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`, the credential subject MUST hold a `Participant` entry of role `HOLDER` for that schema, validated by the `ISSUER` `Participant` entry of the credential's issuer, that is active at the evaluated time. The `effective_until` of that entry bounds the trust in the credential, whatever the credential's own `validUntil`. A self-issued credential ([VS-REQ-3]) is not exempt: its subject holds both the `ISSUER` and the `HOLDER` entry.
 
 ### [WL] ECS Ecosystem whitelists and vpr: scheme resolution
 
