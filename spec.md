@@ -1603,7 +1603,19 @@ The resulting `json_schema` attribute will be the following Json Schema.
 To be considered compliant:
 
 - CredentialSchema entries for [ECS-SERVICE], [ECS-ORG], and [ECS-PERSONA] MUST set `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`.
+- CredentialSchema entries for [ECS-SERVICE] MUST set `issuer_onboarding_mode` to `OPEN`: a [[ref: VS]] issues its own Service credential ([VS-REQ-3]) and is held accountable through the Organization or Persona credential bound to it, so the accreditation gate of an ECS ecosystem is on the Organization and Persona schemas, and a Service `ISSUER` entry is the self-created anchor every VS needs before it can exist ([CIB-4]).
 - CredentialSchema entries for [ECS-BADGE] MUST set `issuer_onboarding_mode` to `OPEN` and `holder_onboarding_mode` to `PERMISSIONLESS`: any [[ref: corporation]] whose service qualifies as a [[ref: VS]] per [VS-REQ] can self-create its `ISSUER` `Participant` entry and issue Badges to the humans it stands behind (trust in a Badge derives from trust-resolving its issuer, not from an onboarding gate), and holders require no `Participant` entry in the VPR.
+- CredentialSchema entries MUST set the declaration attributes of [VT-DECL] as follows:
+
+| Schema | `subject_kind` | `presentation_mode` | `credential_format` | `verification_session` |
+| --- | --- | --- | --- | --- |
+| [ECS-SERVICE] | `SERVICE` | `PUBLIC` | `W3C_JSONLD` | `WHEN_FEES` |
+| [ECS-ORG] | `SERVICE` | `PUBLIC` | `W3C_JSONLD` | `WHEN_FEES` |
+| [ECS-PERSONA] | `SERVICE` | `PUBLIC` | `W3C_JSONLD` | `WHEN_FEES` |
+| [ECS-UA] | `SERVICE` | `ACCREDITED_AUTOMATIC` | `ANONCREDS` | `WHEN_FEES` |
+| [ECS-BADGE] | `PERSON` | null | `ANONCREDS` | `WHEN_FEES` |
+
+A User Agent credential identifies an instance of a software, not its user: its subject kind is `SERVICE`, and it is presented automatically to any authorized verifier ([VUA-REQ], [VS-CONN-VUA]) with the unlinkability of the AnonCreds container. A Badge is issued to a human, who decides in its [[ref: VUA]] what to disclose; the AnonCreds container gives it selective disclosure, predicate proofs and link-secret holder binding ([VT-ECS-BADGE-CRED-ANON]).
 
 See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema).
 
