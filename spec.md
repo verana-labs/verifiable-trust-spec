@@ -1716,6 +1716,8 @@ Example:
 
 - [VS-REQ-6] A [[ref: VS]] MUST verify issuers of Verifiable Trust Credentials.
 
+- [VS-REQ-7] Apart from [CIB-4], the order in which a [[ref: VS]] obtains its `Participant` entries, anchors its credentials and publishes its Linked Verifiable Presentations is free: a VS MAY publish its Linked VPs before the `HOLDER` entries of its credentials exist (the credentials become trusted once those entries are active, [TR-9]). Implementations that cache trust resolution results SHOULD re-evaluate a DID whenever a `Participant` entry that references it is created, validated, revoked or changed.
+
 ::: note
 In other words, to qualify as a Verifiable Service:
 
@@ -1836,6 +1838,7 @@ These requirements ensure that a Verifiable User Agent can cryptographically pro
 - [CIB-1] A [[ref: VS]] or a [[ref: VUA]] CAN issue [VT-CRED] VT Credentials.
 - [CIB-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT issue credentials that are not compliant with [VT-CRED].
 - [CIB-3] A [[ref: VS]] or a [[ref: VUA]] MUST NOT issue a credential if it cannot prove it is authorized by the Ecosystem controller of the schema.
+- [CIB-4] The authorization required by [CIB-3] MUST be effective at the effective issuance time of the credential ([TR-4], [TR-5]). In particular, a [[ref: VS]] that issues its own Service credential ([VS-REQ-3]) MUST hold an effective `ISSUER` `Participant` entry for the Service schema before issuing it: a credential issued earlier fails [TR-5].
 
 ### [PRB] Presentation Requested by
 
