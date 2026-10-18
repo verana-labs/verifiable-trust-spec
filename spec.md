@@ -789,9 +789,10 @@ During verification, a trust resolution process MUST:
 
 1. **Recompute** the `digestJCS` of the received credential, exactly as defined in [Computing `digestJCS`](#computing-digestjcs);
 2. **Query** the VPR using [Get Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-qry-1-get-digest) to locate the corresponding `Digest` entry;
-3. **Use** the `created` timestamp of the returned entry as the **effective issuance time** of the credential.
+3. **Use** the `created` timestamp of the returned entry as the **effective issuance time** of the credential;
+4. **Check** that the `corporation_id` of the returned entry is the corporation of the issuer's `ISSUER` `Participant` entry effective at that time ([TR-5]).
 
-A credential whose recomputed `digestJCS` has no corresponding `Digest` entry in the VPR has no provable issuance time. Verification of that credential MUST fail.
+A credential whose recomputed `digestJCS` has no corresponding `Digest` entry in the VPR has no provable issuance time, and a credential whose `Digest` entry is owned by another corporation has a revocation controlled by that corporation. Verification of either credential MUST fail.
 
 ##### Issuance time security considerations
 
@@ -801,7 +802,7 @@ This mechanism binds a credential's content to a block timestamp assigned by the
 
 - An issuer **cannot pre-date** one. The digest covers the credential's `proof`, so it cannot be computed before the credential is signed. Anchoring can only place `created` at or after actual issuance.
 
-- **No other party can anchor the digest first.** Any account MAY anchor any digest, and because [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest) is idempotent the first anchor fixes `created` permanently. Computing the digest requires the signed credential, which exists nowhere outside the issuer until delivery, and registration MUST precede delivery. An issuer that delivers a credential before registering its digest forfeits this property.
+- **A digest anchored by another party is detected.** Any account MAY anchor any digest, and because [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest) is idempotent the first anchor fixes `created` and the owning corporation permanently. Computing the digest requires the signed credential, which exists nowhere outside the issuer until delivery, and registration MUST precede delivery. Should another party anchor first (a credential delivered or leaked before registration), the entry belongs to that party: the holder refuses the credential at reception ([CIT-4]) and trust resolution rejects it ([TR-4]), so the issuer re-issues. Ed25519 signatures are deterministic, so re-issuing the identical credential yields the identical digest: the re-issued credential MUST differ in content (for example a new `id`).
 
 - A `Digest` entry records `digest`, `created`, the corporation that anchored it and an optional `revoked` timestamp. It does not record which operator account anchored it, and the VPR does not verify a digest against any content. Attribution of a credential to its issuer comes from the credential's own proof, verified separately per [TR-2].
 
@@ -1866,6 +1867,7 @@ These requirements ensure that a Verifiable User Agent can cryptographically pro
 - [CIT-1] A [[ref: VS]] or a [[ref: VUA]] CAN be offered [VT-CRED] VT Credentials.
 - [CIT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT be offered credentials that are not compliant with [VT-CRED].
 - [CIT-3] When a [[ref: VS]] or a [[ref: VUA]] is offered a credential, it MUST verify that the issuer is authorized by the Ecosystem that controls the schema to issue a credential of this schema.
+- [CIT-4] When a [[ref: VS]] or a [[ref: VUA]] is offered a W3C VTC ([VT-CRED-W3C]), it MUST compute the credential's `digestJCS`, look it up in the VPR, and refuse the credential unless a `Digest` entry exists for it whose `corporation_id` is the corporation of the issuer's `ISSUER` `Participant` entry verified under [CIT-3]. A missing entry means that the issuer did not anchor the credential before delivering it; an entry owned by another corporation means that this corporation controls the credential's revocation.
 
 ### [PRT] Presentation Requested to
 
@@ -1924,7 +1926,7 @@ For communication channel between User Agents to be enabled, both User Agents MU
   - For SD-JWT VTCs: the VTJSC is located indirectly via the `relatedJsonSchemaCredentialId` of the `vct` Type Metadata, after `vct#integrity` is verified per [VT-CRED-SDJWT-4].
   - The VTJSC signature MUST be verified, and it MUST be confirmed that the VTJSC is issued by an Ecosystem DID and binds to a valid `CredentialSchema` entry in the VPR.
 
-- [TR-4] For W3C VTCs, the **effective issuance time** MUST be determined by recomputing the credential's `digestJCS` and locating the corresponding digest entry in the VPR. The timestamp associated with that digest entry is the effective issuance time. This step does not apply to AnonCreds VTCs (see [VT-CRED-ANON]) or to SD-JWT VTCs (see [VT-CRED-SDJWT]).
+- [TR-4] For W3C VTCs, the **effective issuance time** MUST be determined by recomputing the credential's `digestJCS` and locating the corresponding digest entry in the VPR. The timestamp associated with that digest entry is the effective issuance time. The `Digest` entry MUST be owned by the corporation of the issuer's `ISSUER` `Participant` entry that is effective at that time (the entry located by [TR-5]); a digest anchored by another corporation leaves the credential's revocation to that corporation, and the credential MUST be rejected. This step does not apply to AnonCreds VTCs (see [VT-CRED-ANON]) or to SD-JWT VTCs (see [VT-CRED-SDJWT]).
 
 - [TR-5] The issuer of every Verifiable Trust Credential encountered during trust resolution MUST be verified as authorized:
   - For W3C VTCs: the issuer MUST have been authorized by the Ecosystem for the referenced VTJSC **at the effective issuance time** determined by [TR-4].
