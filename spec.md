@@ -781,7 +781,7 @@ A credential whose schema is not registered in a VPR has no `CredentialSchema` e
 
 ##### Anchoring the digest
 
-When issuing a Verifiable Trust Credential, the issuer MUST compute its `digestJCS` as defined above, and **register** it in the VPR by calling [CreateOrUpdateParticipantSession](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-10-create-or-update-participant-session) with the `digest` parameter or, when no session is created (a self-issued or zero-fee issuance), by calling Store Digest directly. The VPR stores the digest with the block timestamp via [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest). Registration MUST succeed before the credential is delivered to the holder.
+When issuing a Verifiable Trust Credential, the issuer MUST compute its `digestJCS` as defined above, and **register** it in the VPR by calling [CreateOrUpdateParticipantSession](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-10-create-or-update-participant-session) with the `digest` parameter; the issuance session is created even when no fees are due, so that the digest records the entry under which it was anchored. The VPR stores the digest with the block timestamp via [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest). Registration MUST succeed before the credential is delivered to the holder.
 
 ##### Verifying the issuance time
 
@@ -793,7 +793,7 @@ During verification, a trust resolution process MUST:
 4. **Check** that the `corporation_id` of the returned entry is the corporation of the issuer's `ISSUER` `Participant` entry effective at that time ([TR-5]);
 5. **Check** that `revoked` of the returned entry is null, or later than the evaluated time.
 
-A credential whose recomputed `digestJCS` has no corresponding `Digest` entry in the VPR has no provable issuance time, a credential whose `Digest` entry is owned by another corporation has a revocation controlled by that corporation, and a credential whose `Digest` entry is revoked has been revoked by its issuer as of `revoked`. Verification of any of these credentials MUST fail.
+A credential whose recomputed `digestJCS` has no corresponding `Digest` entry in the VPR has no provable issuance time, a credential whose `Digest` entry is owned by another corporation has a revocation controlled by that corporation, and a credential whose `Digest` entry is revoked has been revoked, by its issuer or by the ecosystem governance above it, as of `revoked`. Verification of any of these credentials MUST fail.
 
 ##### Issuance time security considerations
 
