@@ -2072,9 +2072,9 @@ Examples below illustrate how trust resolution is performed assuming that all re
   - that it is issued by an Ecosystem DID
   - that it binds to a valid `CredentialSchema` entry in the VPR
 
-### Determine the issuance time of the credential (W3C VTCs only)
+### Determine the issuance time of the credential (anchored schemas only)
 
-This step applies to W3C VTCs only. AnonCreds VTCs and SD-JWT VTCs do not support objective issuance-time determination (see [VT-CRED-ANON] and [VT-CRED-SDJWT]).
+This step applies to credentials of schemas whose `credential_anchoring` is `DIGEST` only (W3C VTCs, and SD-JWT VTCs of such schemas). Credentials of `NONE` schemas (AnonCreds VTCs, SD-JWT VTCs otherwise) have no objective issuance time (see [VT-CRED-ANON], [VT-CRED-SDJWT] and [VT-DECL-ANCHOR]).
 
 - Recompute the credential’s deterministic `digestJCS`
 - Locate the corresponding digest entry in the VPR
@@ -2122,7 +2122,7 @@ This Ecosystem is the ultimate trust root for the credential.
 A relying party can therefore answer the following questions deterministically:
 
 - Is this credential authentic?
-- When was it issued? (W3C VTCs only)
+- When was it issued? (anchored schemas only)
 - I have a `ParticipantSession` with `uuid=7e55834f-5a81-4029-9121-2cab1268fb43` with Verifiable Service `did=did:Example:123`. Can this DID request the presentation of a credential of vtjsc with `id=https://example/vtjsc.json` to me?
 - Was the issuer authorized? (at the effective issuance time for W3C VTCs; at reception and again at evaluation, current authorization, for AnonCreds and SD-JWT VTCs)
 - Is the credential's digest anchored under an `ISSUER` entry of the issuer for the schema, effective at `created`, and not revoked? (W3C VTCs, [TR-4])
