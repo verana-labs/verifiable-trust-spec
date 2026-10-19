@@ -781,7 +781,7 @@ A credential whose schema is not registered in a VPR has no `CredentialSchema` e
 
 ##### Anchoring the digest
 
-When issuing a Verifiable Trust Credential, the issuer MUST compute its `digestJCS` as defined above, and **register** it in the VPR by calling [CreateOrUpdateParticipantSession](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-10-create-or-update-participant-session) with the `digest` parameter. The VPR stores the digest with the block timestamp via [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest). Registration MUST succeed before the credential is delivered to the holder.
+When issuing a Verifiable Trust Credential, the issuer MUST compute its `digestJCS` as defined above, and **register** it in the VPR by calling [CreateOrUpdateParticipantSession](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-10-create-or-update-participant-session) with the `digest` parameter or, when no session is created (a self-issued or zero-fee issuance), by calling Store Digest directly. The VPR stores the digest with the block timestamp via [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest). Registration MUST succeed before the credential is delivered to the holder.
 
 ##### Verifying the issuance time
 
@@ -790,9 +790,10 @@ During verification, a trust resolution process MUST:
 1. **Recompute** the `digestJCS` of the received credential, exactly as defined in [Computing `digestJCS`](#computing-digestjcs);
 2. **Query** the VPR using [Get Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-qry-1-get-digest) to locate the corresponding `Digest` entry;
 3. **Use** the `created` timestamp of the returned entry as the **effective issuance time** of the credential;
-4. **Check** that the `corporation_id` of the returned entry is the corporation of the issuer's `ISSUER` `Participant` entry effective at that time ([TR-5]).
+4. **Check** that the `corporation_id` of the returned entry is the corporation of the issuer's `ISSUER` `Participant` entry effective at that time ([TR-5]);
+5. **Check** that `revoked` of the returned entry is null, or later than the evaluated time.
 
-A credential whose recomputed `digestJCS` has no corresponding `Digest` entry in the VPR has no provable issuance time, and a credential whose `Digest` entry is owned by another corporation has a revocation controlled by that corporation. Verification of either credential MUST fail.
+A credential whose recomputed `digestJCS` has no corresponding `Digest` entry in the VPR has no provable issuance time, a credential whose `Digest` entry is owned by another corporation has a revocation controlled by that corporation, and a credential whose `Digest` entry is revoked has been revoked by its issuer as of `revoked`. Verification of any of these credentials MUST fail.
 
 ##### Issuance time security considerations
 
@@ -802,7 +803,7 @@ This mechanism binds a credential's content to a block timestamp assigned by the
 
 - An issuer **cannot pre-date** one. The digest covers the credential's `proof`, so it cannot be computed before the credential is signed. Anchoring can only place `created` at or after actual issuance.
 
-- **A digest anchored by another party is detected.** Any account MAY anchor any digest, and because [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest) is idempotent the first anchor fixes `created` and the owning corporation permanently. Computing the digest requires the signed credential, which exists nowhere outside the issuer until delivery, and registration MUST precede delivery. Should another party anchor first (a credential delivered or leaked before registration), the entry belongs to that party: the holder refuses the credential at reception ([CIT-4]) and trust resolution rejects it ([TR-4]), so the issuer re-issues. Ed25519 signatures are deterministic, so re-issuing the identical credential yields the identical digest: the re-issued credential MUST differ in content (for example a new `id`).
+- **A digest anchored by another party is detected.** Any registered corporation, through an authorized operator, MAY anchor any digest, and because [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest) is idempotent the first anchor fixes `created` and the owning corporation permanently. Computing the digest requires the signed credential, which exists nowhere outside the issuer until delivery, and registration MUST precede delivery. Should another party anchor first (a credential delivered or leaked before registration), the entry belongs to that party: the holder refuses the credential at reception ([CIT-4]) and trust resolution rejects it ([TR-4]), so the issuer re-issues. Ed25519 signatures are deterministic, so re-issuing the identical credential yields the identical digest: the re-issued credential MUST differ in content (for example a new `id`).
 
 - A `Digest` entry records `digest`, `created`, the corporation that anchored it and an optional `revoked` timestamp. It does not record which operator account anchored it, and the VPR does not verify a digest against any content. Attribution of a credential to its issuer comes from the credential's own proof, verified separately per [TR-2].
 
@@ -829,7 +830,7 @@ A DID Document MAY present an unlimited number of Verifiable Trust Credentials a
 
 An AnonCreds Verifiable Trust Credential is a Verifiable Trust Credential issued using the [AnonCreds](https://anoncreds.github.io/anoncreds-spec/) specification. AnonCreds credentials provide **zero-knowledge proof (ZKP)** capabilities that are essential for credentials requiring strong privacy guarantees.
 
-AnonCreds VTCs are the container to declare in the schema's `credential_format` ([VT-DECL-FORMAT]) when:
+An ecosystem declares the AnonCreds container in a schema's `credential_format` ([VT-DECL-FORMAT]) when it needs one or more of the following; SD-JWT VTCs ([VT-CRED-SDJWT]) offer selective disclosure but none of the other three:
 
 - **Selective disclosure** is needed — the holder reveals only the requested attributes, not the full credential.
 - **Unlinkability** is needed — multiple presentations of the same credential MUST NOT be linkable by verifiers or colluding parties.
@@ -1012,7 +1013,8 @@ The VPR stores the declaration. Verifiable Services and Verifiable User Agents M
 
 - [VT-DECL-SUBJECT-1] An issuer MUST NOT issue a credential of a `SERVICE` schema to a natural person, nor a credential of a `PERSON` schema to a software.
 - [VT-DECL-SUBJECT-2] For `PERSON` schemas, the person decides in its [[ref: VUA]] what to present: `presentation_mode` is null and [VT-DECL-MODE-1], [VT-DECL-MODE-3] and [VT-DECL-MODE-4] do not apply ([VT-DECL-MODE-2] does). The VUA MUST still verify the verifier per [PRT-3] and apply [VT-DECL-SESSION].
-- [VT-DECL-SUBJECT-3] A `PERSON` schema sets `holder_onboarding_mode` to `PERMISSIONLESS`: a natural person holds no `Participant` entry (entries belong to corporations and are keyed by a DID), so [VT-DECL-HOLDER] and [TR-9] concern `SERVICE` schemas only. The VPR rejects any other combination.
+- [VT-DECL-SUBJECT-3] A `PERSON` schema sets `holder_onboarding_mode` to `PERMISSIONLESS`: a natural person holds no `Participant` entry (entries belong to corporations and carry a DID), so [VT-DECL-HOLDER] and [TR-9] concern `SERVICE` schemas in `ISSUER_ONBOARDING_PROCESS` holder mode only. The VPR rejects any other combination.
+- [VT-DECL-SUBJECT-4] A `SERVICE` schema whose credentials are issued to software instances that have no DID, such as User Agent instances, MUST set `holder_onboarding_mode` to `PERMISSIONLESS` and `presentation_mode` to `ACCREDITED_AUTOMATIC`: such a holder can neither hold a `Participant` entry nor publish a DID Document, and has no controller to approve presentations.
 
 #### [VT-DECL-MODE] Presentation mode of service credentials
 
@@ -1020,12 +1022,12 @@ In this section, the holder is the software that holds the credential: a [[ref: 
 
 - [VT-DECL-MODE-1] `PUBLIC`: the credential is made available to verifiers by publication only. The holder MAY publish it in its DID Document as a Linked Verifiable Presentation per [VT-CRED-W3C-LINKED-VP] (other rules, such as [VT-ECS-CRED], make publication mandatory for some schemas), MUST remove or replace a published credential when it expires or is revoked, and MUST NOT present it through any other channel. The VPR requires `W3C_JSONLD` for a `PUBLIC` schema. Anyone can read a published credential: reading it is not a presentation request, and [PRB], [PRT] and [VT-DECL-SESSION] do not apply to it. A `PUBLIC` schema therefore collects no verification fees; the `verification_fees` of its `Participant` entries SHOULD be 0.
 - [VT-DECL-MODE-2] A credential of a schema whose `presentation_mode` is not `PUBLIC`, and any credential of a `PERSON` schema, MUST NOT be published in a DID Document.
-- [VT-DECL-MODE-3] `ACCREDITED_AUTOMATIC`: upon a presentation request from a verifier that satisfies [PRT-3] (the verifier holds an active `VERIFIER` `Participant` entry for the schema), the holder MUST present the credential without the intervention of its controller, after the session check of [VT-DECL-SESSION] when a session is required.
+- [VT-DECL-MODE-3] `ACCREDITED_AUTOMATIC`: upon a presentation request from a verifier that satisfies [PRT-3] (under a `verifier_onboarding_mode` of `OPEN` every peer is authorized to request the presentation, and a `VERIFIER` `Participant` entry is needed only to create a `ParticipantSession`; under the other modes the verifier holds an active `VERIFIER` entry for the schema), the holder MUST present the credential without the intervention of its controller, after the session check of [VT-DECL-SESSION] when a session is required.
 - [VT-DECL-MODE-4] `ACCREDITED_APPROVAL`: as [VT-DECL-MODE-3], but the holder MUST obtain the approval of its controller for each presentation request before any session is created or any fee is paid, and MUST refuse the request when approval is denied. See [VT-PRES-VS].
 
 #### [VT-DECL-SESSION] Verification sessions
 
-- [VT-DECL-SESSION-1] `REQUIRED`: before obtaining any presentation of a credential of the schema, the verifier MUST create a `ParticipantSession` in the VPR ([Create or Update Participant Session](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-10-create-or-update-participant-session)), and the holder MUST NOT present before having verified that the session exists and is valid; no session is created when the holder answers negatively or refuses ([VT-PRES-VS-4], [VT-PRES-VS-5]).
+- [VT-DECL-SESSION-1] `REQUIRED`: before obtaining any presentation of a credential of the schema, the verifier MUST create a `ParticipantSession` in the VPR ([Create or Update Participant Session](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-10-create-or-update-participant-session)), and the holder MUST NOT present before having verified the session as specified in [VT-PRES-VS-6]; no session is created when the holder answers negatively or refuses ([VT-PRES-VS-4], [VT-PRES-VS-5]).
 - [VT-DECL-SESSION-2] `WHEN_FEES`: the obligations of [VT-DECL-SESSION-1] apply only when the fees computed by the VPR for the verification are greater than 0.
 
 #### [VT-DECL-HOLDER] Holder Participant entries
@@ -1619,7 +1621,7 @@ To be considered compliant:
 | [ECS-UA] | `SERVICE` | `ACCREDITED_AUTOMATIC` | `ANONCREDS` | `WHEN_FEES` |
 | [ECS-BADGE] | `PERSON` | null | `ANONCREDS` | `WHEN_FEES` |
 
-Organization and Persona credentials identify the legal or natural person behind a service, but their subject is the DID of that service and they are held by its agent: their subject kind is `SERVICE`. A User Agent credential identifies an instance of a software, not its user: its subject kind is `SERVICE`, and it is presented automatically to any authorized verifier ([VUA-REQ], [VS-CONN-VUA]) with the unlinkability of the AnonCreds container. A Badge is issued to a human, who decides in its [[ref: VUA]] what to disclose; the AnonCreds container gives it selective disclosure, predicate proofs and link-secret holder binding ([VT-ECS-BADGE-CRED-ANON]).
+Organization and Persona credentials identify the legal or natural person behind a service; their subject id is the DID that the organization or persona controls and under which it operates the service ([VS-REQ-3]), and they are held by that service's agent: their subject kind is `SERVICE`. A User Agent credential identifies an instance of a software, not its user: its subject kind is `SERVICE`, and it is presented automatically to any authorized verifier ([VUA-REQ], [VS-CONN-VUA]) with the unlinkability of the AnonCreds container. A Badge is issued to a human, who decides in its [[ref: VUA]] what to disclose; the AnonCreds container gives it selective disclosure, predicate proofs and link-secret holder binding ([VT-ECS-BADGE-CRED-ANON]).
 
 See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema).
 
@@ -1732,7 +1734,7 @@ Example:
 
 - [VS-REQ-6] A [[ref: VS]] MUST verify issuers of Verifiable Trust Credentials.
 
-- [VS-REQ-7] Subject to [CIB-4], [VT-DECL-HOLDER-1], the anchoring rule of [VT-CRED-W3C] (the digest of a credential is registered before the credential is delivered) and [VS-CONN-VS] (the Essential Credentials of a VS precede any other credential exchange), a [[ref: VS]] MAY obtain its `Participant` entries, anchor its credentials and publish its Linked Verifiable Presentations in any order across schemas. After adding, replacing or removing a Linked VP, a VS SHOULD submit TriggerResolver ([VPR MOD-PP-MSG-15](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-15-trigger-resolver)) for one of its active `Participant` entries whose `did` is its DID, since resolvers treat it as the signal for off-chain changes; when no such entry remains (for example after the revocation of its last entry), the on-chain event itself causes re-evaluation. Implementations that cache trust resolution results SHOULD re-evaluate a DID whenever such a trigger is emitted and whenever the on-chain state of a `Participant` entry that references it changes (creation, validation, expiry, revocation, slashing, repayment), including through the entries of the issuer of its Service credential.
+- [VS-REQ-7] Subject to [CIB-4], [VT-DECL-HOLDER-1], the anchoring rule of [VT-CRED-W3C] (the digest of a credential is registered before the credential is delivered) and [VS-CONN-VS] (a service that does not yet meet [VS-REQ] is accepted only by issuers of Essential Credentials), a [[ref: VS]] MAY obtain its `Participant` entries, anchor its credentials and publish its Linked Verifiable Presentations in any order across schemas. After adding, replacing or removing a Linked VP, a VS SHOULD submit TriggerResolver ([VPR MOD-PP-MSG-15](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-15-trigger-resolver)) for one of its active `Participant` entries whose `did` is its DID, since resolvers treat it as the signal for off-chain changes; when no such entry remains (for example after the revocation of its last entry), the on-chain event itself causes re-evaluation. Implementations that cache trust resolution results SHOULD re-evaluate a DID whenever such a trigger is emitted and whenever the on-chain state of a `Participant` entry that references it changes (creation, validation, expiry, revocation, slashing, repayment), including through the entries of the issuer of its Service credential.
 
 ::: note
 In other words, to qualify as a Verifiable Service:
@@ -1867,13 +1869,13 @@ These requirements ensure that a Verifiable User Agent can cryptographically pro
 - [CIT-1] A [[ref: VS]] or a [[ref: VUA]] CAN be offered [VT-CRED] VT Credentials.
 - [CIT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT be offered credentials that are not compliant with [VT-CRED].
 - [CIT-3] When a [[ref: VS]] or a [[ref: VUA]] is offered a credential, it MUST verify that the issuer is authorized by the Ecosystem that controls the schema to issue a credential of this schema.
-- [CIT-4] When a [[ref: VS]] or a [[ref: VUA]] is offered a W3C VTC ([VT-CRED-W3C]), it MUST compute the credential's `digestJCS`, look it up in the VPR, and refuse the credential unless a `Digest` entry exists for it whose `corporation_id` is the corporation of the issuer's `ISSUER` `Participant` entry verified under [CIT-3]. A missing entry means that the issuer did not anchor the credential before delivering it; an entry owned by another corporation means that this corporation controls the credential's revocation.
+- [CIT-4] When a [[ref: VS]] or a [[ref: VUA]] is offered a W3C VTC ([VT-CRED-W3C]), it MUST compute the credential's `digestJCS`, look it up in the VPR, and refuse the credential unless a `Digest` entry exists for it whose `corporation_id` is the corporation of the issuer's `ISSUER` `Participant` entry verified under [CIT-3], whose `created` falls within the effective period of that entry, and whose `revoked` is null. A missing entry means that the issuer did not anchor the credential before delivering it; an entry owned by another corporation means that this corporation controls the credential's revocation.
 
 ### [PRT] Presentation Requested to
 
 - [PRT-1] A [[ref: VS]] or a [[ref: VUA]] CAN request presentation of [VT-CRED] VT Credentials
 - [PRT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of credentials that are not compliant with [VT-CRED].
-- [PRT-3] When a [[ref: VS]] or a [[ref: VUA]] receives a presentation request, before presenting a credential, it MUST verify that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema.
+- [PRT-3] When a [[ref: VS]] or a [[ref: VUA]] receives a presentation request, before presenting a credential, it MUST verify that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema. Under a `verifier_onboarding_mode` of `OPEN` every peer is authorized; under `GRANTOR_ONBOARDING_PROCESS` or `ECOSYSTEM_ONBOARDING_PROCESS` the verifier MUST hold an active `VERIFIER` `Participant` entry for the schema.
 
 ### [VT-PRES-VS] Credential Presentation between Verifiable Services
 
@@ -1884,10 +1886,10 @@ This section specifies how a [[ref: VS]] (the verifier) obtains the presentation
 - [VT-PRES-VS-3] **Request.** The verifier sends a presentation request that identifies the `CredentialSchema` by its VTJSC and selects one of two candidate modes: all credentials of the schema held by the holder, or the credentials of the schema whose claims match a filter given as attribute names and values. A presentation carries one credential; the exchange MAY be repeated for other candidates. The request MUST comply with [PRB], and the holder MUST verify the verifier per [PRT-3] before answering.
 - [VT-PRES-VS-4] **Availability.** Before any session is created or any fee is paid, the holder MUST answer whether it holds at least one credential matching the request, without disclosing any claim beyond what the filter itself implies. A positive answer carries a `ParticipantSession` identifier (uuid) chosen by the holder, and, for each matching credential, the id of the `ISSUER` `Participant` entry of its issuer; the verifier needs both to create the session ([VT-PRES-VS-6]), and selects one credential when several match. When the verifier asked for a presentation digest ([VT-PRES-VS-9]), the holder selects the credential itself and the answer carries that single candidate. When the answer is negative the exchange ends, and the verifier MUST NOT create a session.
 - [VT-PRES-VS-5] **Approval.** For a schema declared `ACCREDITED_APPROVAL`, the holder MUST obtain the approval of its controller before answering [VT-PRES-VS-4] positively. The approval MAY be asynchronous; the holder MUST notify the verifier of the decision, and the verifier MUST NOT create a session before a positive answer.
-- [VT-PRES-VS-6] **Session.** When [VT-DECL-SESSION] requires a session, the verifier creates the `ParticipantSession` in the VPR under the identifier received in [VT-PRES-VS-4], with its own `VERIFIER` `Participant` entry as primary participant and the `ISSUER` `Participant` entry of the issuer of the credential, then notifies the holder. Before presenting, the holder MUST verify by querying the VPR that the `ParticipantSession` exists under that identifier, belongs to the corporation of the verifier and references the issuer of the credential.
+- [VT-PRES-VS-6] **Session.** When [VT-DECL-SESSION] requires a session, or when the verifier asked for a presentation digest ([VT-PRES-VS-9]), the verifier creates the `ParticipantSession` in the VPR under the identifier received in [VT-PRES-VS-4], with its own `VERIFIER` `Participant` entry as primary participant and the `ISSUER` `Participant` entry of the issuer of the credential, then notifies the holder. Before presenting, the holder MUST verify by querying the VPR that the `ParticipantSession` exists under that identifier, belongs to the corporation of the verifier and references the issuer of the credential.
 - [VT-PRES-VS-7] **Presentation.** The holder presents over the DIDComm connection, in the schema's `credential_format`, disclosing only the claims the request needs where the container supports selective disclosure ([VT-CRED-ANON], [VT-CRED-SDJWT]); a [VT-CRED-W3C] credential is presented whole. The verifier verifies the presentation per [TR].
 - [VT-PRES-VS-8] **Evidence.** Both parties SHOULD retain the session id together with the presentation, for the period their governance frameworks require.
-- [VT-PRES-VS-9] **Presentation digest (optional).** The verifier MAY ask in its request that the presentation be anchored in the VPR. The holder then builds and signs the presentation before [VT-PRES-VS-6], computes its digest (the presentation as it will be transmitted, canonicalized with [JCS](https://www.rfc-editor.org/rfc/rfc8785) when it is a JSON document and taken as its exact bytes otherwise, hashed with the `digest_algorithm` of the schema) and sends the digest with its positive answer; the verifier anchors exactly that digest as the `digest` of the `ParticipantSession`; before sending the presentation, the holder MUST verify that a `Digest` entry with its digest exists in the VPR and belongs to the corporation of the verifier. The timestamp of that entry is the effective presentation time: it lets the holder prove to whom and when it presented, and the verifier prove what it received, without any content on chain. Anchoring is optional and decided by the verifier: a verifier that asked for it MUST anchor it, since the holder presents only after checking the `Digest` entry, and a holder MUST NOT be required to anchor anything itself.
+- [VT-PRES-VS-9] **Presentation digest (optional).** The verifier MAY ask in its request that the presentation be anchored in the VPR; such a request implies a `ParticipantSession` even when [VT-DECL-SESSION] does not require one, since the digest is anchored by the session transaction. The holder then builds and signs the presentation before [VT-PRES-VS-6], computes its digest (the presentation as it will be transmitted, canonicalized with [JCS](https://www.rfc-editor.org/rfc/rfc8785) when it is a JSON document and taken as its exact bytes otherwise, hashed with the `digest_algorithm` of the schema) and sends the digest with its positive answer; the verifier anchors exactly that digest as the `digest` of the `ParticipantSession`; before sending the presentation, the holder MUST verify that a `Digest` entry with its digest exists in the VPR and belongs to the corporation of the verifier. The timestamp of that entry is the effective presentation time: it lets the holder prove to whom and when it presented, and the verifier prove what it received, without any content on chain. Anchoring is optional and decided by the verifier: a verifier that asked for it MUST anchor it, since the holder presents only after checking the `Digest` entry, and a holder MUST NOT be required to anchor anything itself.
 
 ### [VS-CONN-VS] Requirements for a VS to accept a connection from another service
 
@@ -1926,20 +1928,20 @@ For communication channel between User Agents to be enabled, both User Agents MU
   - For SD-JWT VTCs: the VTJSC is located indirectly via the `relatedJsonSchemaCredentialId` of the `vct` Type Metadata, after `vct#integrity` is verified per [VT-CRED-SDJWT-4].
   - The VTJSC signature MUST be verified, and it MUST be confirmed that the VTJSC is issued by an Ecosystem DID and binds to a valid `CredentialSchema` entry in the VPR.
 
-- [TR-4] For W3C VTCs, the **effective issuance time** MUST be determined by recomputing the credential's `digestJCS` and locating the corresponding digest entry in the VPR. The timestamp associated with that digest entry is the effective issuance time. The `Digest` entry MUST be owned by the corporation of the issuer's `ISSUER` `Participant` entry that is effective at that time (the entry located by [TR-5]); a digest anchored by another corporation leaves the credential's revocation to that corporation, and the credential MUST be rejected. This step does not apply to AnonCreds VTCs (see [VT-CRED-ANON]) or to SD-JWT VTCs (see [VT-CRED-SDJWT]).
+- [TR-4] For W3C VTCs, the **effective issuance time** MUST be determined by recomputing the credential's `digestJCS` and locating the corresponding digest entry in the VPR. The timestamp associated with that digest entry is the effective issuance time. The `Digest` entry MUST be owned by the corporation of the issuer's `ISSUER` `Participant` entry that is effective at that time (the entry located by [TR-5]); a digest anchored by another corporation leaves the credential's revocation to that corporation, and the credential MUST be rejected. A `Digest` entry whose `revoked` is not null means that the credential is revoked as of that timestamp: the credential MUST be rejected at any evaluated time at or after it. This step does not apply to AnonCreds VTCs (see [VT-CRED-ANON]) or to SD-JWT VTCs (see [VT-CRED-SDJWT]).
 
 - [TR-5] The issuer of every Verifiable Trust Credential encountered during trust resolution MUST be verified as authorized:
   - For W3C VTCs: the issuer MUST have been authorized by the Ecosystem for the referenced VTJSC **at the effective issuance time** determined by [TR-4].
   - For AnonCreds VTCs and SD-JWT VTCs: the issuer MUST be currently authorized by the Ecosystem for the referenced VTJSC. Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
-  - Later expiry, revocation or slashing of the issuer's `Participant` entry, or of an entry of its branch, does not by itself invalidate a W3C VTC issued while the issuer was authorized: a sanction or a structural change in the ecosystem is not a judgement on the credentials already issued, and the VPR keeps paying or withholding fees on its own rules. The mechanism that withdraws trust from an individual holder is the revocation of its `HOLDER` entry ([TR-9]).
+  - For W3C VTCs, later expiry, revocation or slashing of the issuer's `Participant` entry, or of one of the validators above it in the `Participant` tree, does not by itself invalidate a credential issued while the issuer was authorized: a sanction or a structural change in the ecosystem is not a judgement on the credentials already issued, and the VPR keeps paying or withholding fees on its own rules. The mechanisms that withdraw trust from credentials already issued are the revocation of the holder's `HOLDER` entry ([TR-9]) and, for an individual W3C VTC, the revocation of its digest ([TR-4]).
 
-- [TR-6] Every DID that appears as an issuer of a credential during trust resolution MUST itself be verified as a **Verifiable Service** conforming to [VS-REQ]. The credentials presented by that issuer's DID Document MUST themselves be verified by recursively applying [TR-1] through [TR-6].
+- [TR-6] Every DID that appears as an issuer of a credential during trust resolution MUST itself be verified as a **Verifiable Service** conforming to [VS-REQ]. The credentials presented by that issuer's DID Document MUST themselves be verified by recursively applying [TR-1] through [TR-6] and [TR-9].
 
 - [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at the **Ecosystem DID**, which is the issuer of the VTJSC and the identifier of the Ecosystem itself. The Ecosystem DID is the trust root.
 
-- [TR-8] If any verification step in [TR-1] through [TR-7] or [TR-9] fails for any credential or DID encountered during trust resolution, the trust resolution MUST be considered failed, and the connection or credential MUST be rejected.
+- [TR-8] If any verification step in [TR-1] through [TR-7] or [TR-9] fails for any credential or DID encountered during trust resolution, the trust resolution MUST be considered failed, and the connection or credential MUST be rejected. A failure on an additional Linked VP ([VS-REQ-5]) on which the trust decision does not rely does not fail the resolution of the DID: that credential is disregarded.
 
-- [TR-9] For every Verifiable Trust Credential on which a trust decision relies, whose `CredentialSchema` sets `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`, the credential subject (the DID identified by the credential's subject id or, for a container that carries no subject identifier, the DID of the service presenting it) MUST hold a `Participant` entry of role `HOLDER` for that schema, validated by the `ISSUER` `Participant` entry of the credential's issuer, that is active at the evaluated time in the VPR sense of an active participant: the entry's own effective window and its own `revoked` and `slashed` fields, not a state inherited from its validator. The `effective_until` of that entry bounds the trust in the credential, whatever the credential's own `validUntil`. A self-issued credential ([VS-REQ-3]) is not exempt: its subject holds both the `ISSUER` and the `HOLDER` entry. An additional Linked VP ([VS-REQ-5]) that fails this check is disregarded; it does not fail the resolution of the DID.
+- [TR-9] For every Verifiable Trust Credential on which a trust decision relies, whose `CredentialSchema` sets `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`, the credential subject (the DID identified by the credential's subject id or, for a container that carries no subject identifier, the DID of the service presenting it) MUST hold a `Participant` entry of role `HOLDER` for that schema whose validator is the `ISSUER` `Participant` entry under which the credential was issued, that was effective at the credential's effective issuance time (for W3C VTCs, [TR-4]) and is active at the evaluated time, in the VPR sense of an active participant: the entry's own effective window and its own `revoked` and `slashed` fields, not a state inherited from its validator. The `effective_until` of that entry bounds the trust in the credential, whatever the credential's own `validUntil`. A self-issued credential ([VS-REQ-3]) is not exempt: its subject holds both the `ISSUER` and the `HOLDER` entry.
 
 ### [WL] ECS Ecosystem whitelists and vpr: scheme resolution
 
@@ -2031,7 +2033,7 @@ Using this indexed data, a relying party (or a wallet acting on its behalf) can 
 
 ### Recursive Resolution Principle
 
-Trust resolution is inherently **recursive**. Every DID encountered during resolution — whether as a credential issuer, a service operator, or a schema controller — MUST itself be resolved and verified. Specifically, any DID that appears as an issuer of a credential MUST be verified as a **Verifiable Service** (see [VS-REQ]), and all credentials it presents MUST themselves undergo the same resolution steps. This recursion terminates at the **Ecosystem DID**, which serves as the trust root: it is the issuer of the VTJSC and identifies the Ecosystem itself.
+Trust resolution is inherently **recursive**. Every DID encountered during resolution — whether as a credential issuer, a service operator, or a schema controller — MUST itself be resolved and verified. Specifically, any DID that appears as an issuer of a credential MUST be verified as a **Verifiable Service** (see [VS-REQ]), and all credentials it presents MUST themselves undergo the same resolution steps. This recursion terminates at the **Ecosystem DID**, which serves as the trust root: it is the issuer of the VTJSC and identifies the Ecosystem itself. Every credential of a schema in `ISSUER_ONBOARDING_PROCESS` holder mode MUST also pass the holder-relationship check of [TR-9].
 
 Examples below illustrate how trust resolution is performed assuming that all required Verifiable Trust artifacts are already available to the relying party. No assumptions are made about how the data was obtained; only the logical resolution steps are described.
 
@@ -2067,6 +2069,7 @@ This step applies to W3C VTCs only. AnonCreds VTCs and SD-JWT VTCs do not suppor
 - Recompute the credential’s deterministic `digestJCS`
 - Locate the corresponding digest entry in the VPR
 - Use the timestamp associated with that digest as the **effective issuance time**
+- Check that the entry is owned by the issuer's corporation and is not revoked ([TR-4])
 
 ### Verify issuer authorization
 
@@ -2110,8 +2113,9 @@ A relying party can therefore answer the following questions deterministically:
 
 - Is this credential authentic?
 - When was it issued? (W3C VTCs only)
-- I have a session with `uuid=7e55834f-5a81-4029-9121-2cab1268fb43` with Verifiable Service `did=did:Example:123`. Can this DID request the presentation of a credential of vtjsc with `id=https://example/vtjsc.json` to me?
-- Was the issuer authorized? (at issuance time for W3C VTCs; at reception time for AnonCreds VTCs)
+- I have a `ParticipantSession` with `uuid=7e55834f-5a81-4029-9121-2cab1268fb43` with Verifiable Service `did=did:Example:123`. Can this DID request the presentation of a credential of vtjsc with `id=https://example/vtjsc.json` to me?
+- Was the issuer authorized? (at the effective issuance time for W3C VTCs; currently, as checked at reception, for AnonCreds and SD-JWT VTCs)
+- Is the credential's digest owned by the issuer's corporation and not revoked? (W3C VTCs, [TR-4])
 - Does the subject hold an active `HOLDER` entry validated by the issuer? (schemas in `ISSUER_ONBOARDING_PROCESS` holder mode, [TR-9])
 - Which Ecosystem governs this credential?
 - Is the issuer itself a Verifiable Service (if required)?
@@ -2130,7 +2134,7 @@ This example shows the action sequence for a holder VS-Agent obtaining a public 
 
 **Preconditions:**
 
-- The Ecosystem has defined a `CredentialSchema` `cs` for the credential (e.g., a service, organisation, or persona credential), with an associated VTJSC published by the Ecosystem DID.
+- The Ecosystem has defined a `CredentialSchema` `cs` for the credential (e.g., a service, organisation, or persona credential), with an associated VTJSC published by the Ecosystem DID; `cs` is declared `PUBLIC` and sets `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`.
 - The issuer has an active `ISSUER` `Participant` entry on `cs` (`issuer_participant`), and issuer service is a Verifiable Service.
 - The holder VS-Agent knows the issuer's DID and the schema `cs` it wants to be issued a credential against.
 
@@ -2165,6 +2169,7 @@ sequenceDiagram
     Idx-->>Issuer: notify
     Holder->>Issuer: DIDComm onboarding flow
     Issuer->>VPR: MsgSetParticipantOPToValidated
+    Issuer->>VPR: MsgCreateOrUpdateParticipantSession (digest anchored)
     Issuer->>Holder: DIDComm credential issuance
     Holder->>Holder: update DID Document (linked-vp)
     Holder->>VPR: MsgTriggerResolver
@@ -2182,7 +2187,7 @@ This example shows the symmetric flow for revoking a previously issued credentia
 
 **Sequence:**
 
-1. **Issuer revokes on-chain.** The issuer VS-Agent submits `MsgRevokeParticipant` (`MOD-PP-MSG-9`) against `holder_participant`. On confirmation, `holder_participant.revoked = now` and the `Participant` entry ceases to be active, which revokes the corresponding credential.
+1. **Issuer revokes on-chain.** The issuer VS-Agent submits `MsgRevokeParticipant` (`MOD-PP-MSG-9`) against `holder_participant`. On confirmation, `holder_participant.revoked = now` and the `Participant` entry ceases to be active, which withdraws trust from every credential issued under that entry ([TR-9]); to revoke a single credential while keeping the relationship, the issuer revokes its digest instead ([TR-4]).
 
 2. **Resolver auto-re-resolves.** The [[ref: VPR]] resolver pipeline treats `MsgRevokeParticipant` as an implicit re-resolution signal for the holder DID and re-runs trust resolution. With `holder_participant` no longer active, the credential it backed is no longer authorised at the current time, so trust resolution against the holder DID's currently-published linked-vp fails for that credential. The resolver eventually updates the `trustStatus = UNTRUSTED` for the holder DID (or downgrades it accordingly if it still presents other valid credentials).
 
