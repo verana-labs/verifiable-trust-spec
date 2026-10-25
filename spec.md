@@ -178,17 +178,15 @@ and receive a response similar to this one:
 
 Let's explain how the Verifiable Trust does it.
 
-![Verifiable Service](./img/vt-creds-explained.png)
-
 The core idea behind Verifiable Trust is simple: trust should not be implicit, but it should be verifiable, transparent, and decentralized.
 
-In this example, a Verifiable Service (VS) presents several Verifiable Credentials to prove:
+A Verifiable Service (VS) presents several Verifiable Credentials to prove:
 
-- Who operates the service, using an Essential Credential Schema (ECS) Organization or Persona Verifiable Trust Credential (data shown in red)
-- What the service offers, using an ECS Service Verifiable Trust Credential (data shown in blue)
-- Trademark information, using a Trademark Verifiable Trust Credential (data shown in green)
+- Who operates the service, using an Essential Credential Schema (ECS) Organization or Persona Verifiable Trust Credential
+- What the service offers, using an ECS Service Verifiable Trust Credential
+- Trademark information, using a Trademark Verifiable Trust Credential
 
-Additionally, the Verifiable Service presents computed reputation information (data shown in black). While this reputation data may support trust decisions, it is not directly defined by this specification. Refer to the [VPR Spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/) for more information.
+Additionally, the Verifiable Service presents computed reputation information. While this reputation data may support trust decisions, it is not directly defined by this specification. Refer to the [VPR Spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/) for more information.
 
 Verifiable Trust introduces the following core concepts:
 
