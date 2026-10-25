@@ -1098,7 +1098,7 @@ The `$id` property is excluded because it contains the VPR-specific schema ident
 
 Used to identify Verifiable Services.
 
-[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/service.json)
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/service.json)
 
 Credential subject object of schema MUST contain the following attributes:
 
@@ -1213,7 +1213,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 Used to identify Organizations that operate Verifiable Services.
 
-[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/org.json)
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/org.json)
 
 Credential subject object of schema MUST contain the following attributes:
 
@@ -1250,6 +1250,8 @@ Credential subject object of schema MUST contain the following attributes:
 
 - `lei` (string) (*optional*): Legal Entity Identifier (LEI), if known and asserted by the issuer during onboarding.  
   Pattern: `^[A-Z0-9]{20}$`.
+- `onboardingSummaryDigestSri` (string) (*optional*): Subresource Integrity digest, encoded as <algorithm>-<base64-digest> (SRI format), of the **onboarding summary** compiled by the issuer: the document describing the information, proofs and decisions of the validation of the organization that led to this issuance. The counterpart, for a schema in `PERMISSIONLESS` holder mode, of the `op_summary_digest` a validator records on a `HOLDER` `Participant` entry. The issuer MUST retain the summary for the period its ecosystem governance framework requires, MUST produce it to the ecosystem governance authority on request, MAY share it with the subject, and MUST NOT publish it. Whether accredited issuers MUST set this attribute is decided by the ecosystem governance framework.  
+  Max length: 256 chars.
 
 **Implementation notes (non-normative):**
 
@@ -1327,6 +1329,10 @@ The resulting `json_schema` attribute will be the following Json Schema.
         "lei": {
           "type": "string",
           "pattern": "^[A-Z0-9]{20}$"
+        },
+        "onboardingSummaryDigestSri": {
+          "type": "string",
+          "maxLength": 256
         }
       },
       "required": [
@@ -1347,7 +1353,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 Used to identify Personas (human-controlled avatars) that operate Verifiable Services.
 
-[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/persona.json)
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/persona.json)
 
 Credential subject object of schema MUST contain the following attributes:
 
@@ -1378,6 +1384,8 @@ Credential subject object of schema MUST contain the following attributes:
 
 - `controllerJurisdiction` (string) (*optional*): sub-national jurisdiction of the controller’s residence when applicable law varies by sub-jurisdiction (e.g., `US-CA`).  
   Pattern: `^[A-Z]{2}(-[A-Z0-9]{1,3})?$`, max length: 64 chars.
+- `onboardingSummaryDigestSri` (string) (*optional*): Subresource Integrity digest, encoded as <algorithm>-<base64-digest> (SRI format), of the **onboarding summary** compiled by the issuer: the document describing the information, proofs and decisions of the validation of the natural person that led to this issuance. The counterpart, for a schema in `PERMISSIONLESS` holder mode, of the `op_summary_digest` a validator records on a `HOLDER` `Participant` entry. The issuer MUST retain the summary for the period its ecosystem governance framework requires, MUST produce it to the ecosystem governance authority on request, MAY share it with the subject, and MUST NOT publish it. Whether accredited issuers MUST set this attribute is decided by the ecosystem governance framework.  
+  Max length: 256 chars.
 
 **Implementation notes (non-normative):**
 
@@ -1440,6 +1448,10 @@ The resulting `json_schema` attribute will be the following Json Schema.
           "minLength": 1,
           "maxLength": 64,
           "pattern": "^[A-Z]{2}(-[A-Z0-9]{1,3})?$"
+        },
+        "onboardingSummaryDigestSri": {
+          "type": "string",
+          "maxLength": 256
         }
       },
       "required": [
@@ -1457,7 +1469,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 #### [ECS-UA] User Agent Credential Json Schema
 
-[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/ua.json)
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/ua.json)
 
 Credential subject object of schema MUST contain the following attributes:
 
@@ -1512,7 +1524,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 
 Used to identify **humans** (natural persons), such as the employees or members of the organization that operates a Verifiable Service. A Badge is issued to a human holder by a [[ref: VS]]; the organization or persona standing behind the holder is obtained by trust-resolving the **issuer** DID of the credential (see [VS-REQ] and [TR]).
 
-[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v4/badge.json)
+[Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/badge.json)
 
 Credential subject object of schema MUST contain the following attributes:
 
