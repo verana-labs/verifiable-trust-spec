@@ -1,0 +1,64 @@
+{
+  "$id": "https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/badge.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BadgeCredential",
+  "description": "Identifies a human, such as an employee or member of the organization that operates a Verifiable Service. The issuer identifies the organization or persona the holder represents.",
+  "type": "object",
+  "properties": {
+    "credentialSubject": {
+      "type": "object",
+      "properties": {
+        "badgeNumber": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "photo": {
+          "type": "string",
+          "pattern": "^data:image/(png|jpeg);base64,[A-Za-z0-9+/]+={0,2}$",
+          "maxLength": 262144
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "department": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "birthDate": {
+          "type": "integer",
+          "minimum": 10000101,
+          "maximum": 99991231
+        },
+        "biometricPattern": {
+          "type": "string",
+          "contentEncoding": "base64",
+          "maxLength": 262144
+        },
+        "biometricPatternScheme": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "badgeNumber",
+        "name",
+        "photo"
+      ],
+      "dependentRequired": {
+        "biometricPattern": [
+          "biometricPatternScheme"
+        ]
+      }
+    }
+  }
+}
