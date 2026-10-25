@@ -792,19 +792,19 @@ A credential whose schema is not registered in a VPR has no `CredentialSchema` e
 
 ##### Anchoring the digest
 
-When issuing a Verifiable Trust Credential, the issuer MUST compute its `digestJCS` as defined above, and **register** it in the VPR by calling [CreateOrUpdateParticipantSession](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-10-create-or-update-participant-session) with the `digest` parameter; the issuance session is created even when no fees are due, so that the digest records the entry under which it was anchored. The VPR stores the digest with the block timestamp via [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest). Registration MUST succeed before the credential is delivered to the holder.
+When issuing a Verifiable Trust Credential, the issuer MUST compute its `digestJCS` as defined above, and **register** it in the VPR by calling [CreateOrUpdateParticipantSession](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-10-create-or-update-participant-session) with the `digest` parameter; the issuance session is created even when no fees are due, so that the digest records the entry under which it was anchored. The event of that transaction anchors the digest with the block time and the issuing entry; under `VPR` revocation ([VT-DECL-ANCHOR-4]) the VPR also stores it as a `Digest` entry, with the credential's `validUntil` given as `credential_valid_until`, until that expiry. Registration MUST succeed before the credential is delivered to the holder.
 
 ##### Verifying the issuance time
 
 During verification, a trust resolution process MUST:
 
 1. **Recompute** the `digestJCS` of the received credential, exactly as defined in [Computing `digestJCS`](#computing-digestjcs);
-2. **Query** the VPR using [Get Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-qry-1-get-digest) to locate the corresponding `Digest` entry;
-3. **Use** the `created` timestamp of the returned entry as the **effective issuance time** of the credential;
-4. **Check** the anchoring of the returned entry: its `participant_id` MUST be an `ISSUER` `Participant` entry of the credential's issuer for the credential's schema that was effective at `created`, that entry being the issuer entry [TR-5] and [TR-9] refer to; or, when `participant_id` is null and the schema's `issuer_onboarding_mode` is `OPEN`, its `vs_id` MUST be the [[ref: verifiable service entry]] whose identifier at `created` was the credential's issuer DID ([TR-10]) and its `schema_id` the credential's schema. A `Digest` entry with neither was stored directly and is not a valid anchor;
-5. **Check** that `revoked` of the returned entry is null, or later than the evaluated time.
+2. **Locate** its anchoring: the issuance session transaction that carried the digest, which indexers serve from its event (the VPR keeps no entry for it unless the schema's `credential_revocation` is `VPR`);
+3. **Use** the block time of that transaction as the **effective issuance time** of the credential;
+4. **Check** the anchoring: the transaction MUST have been signed for an `ISSUER` `Participant` entry of the credential's issuer for the credential's schema that was effective at that time, that entry being the issuer entry [TR-5] and [TR-9] refer to; or, when the issuer holds no entry and the schema's `issuer_onboarding_mode` is `OPEN`, for the [[ref: verifiable service entry]] whose identifier at that time was the credential's issuer DID ([TR-10]), with the credential's schema. An anchoring by another corporation is not the issuer's and is disregarded; a digest stored directly with Store Digest is not an anchoring;
+5. **Check**, when the schema's `credential_revocation` is `VPR`, the `Digest` entry: it MUST exist and its `revoked` MUST be null, or later than the evaluated time.
 
-A credential whose recomputed `digestJCS` has no anchoring in the VPR has no provable issuance time, a credential whose `Digest` entry is anchored neither under an `ISSUER` entry of its issuer nor, for an `OPEN` schema, under its issuer's [[ref: verifiable service entry]] (another corporation anchored it first, or it was stored directly) has a revocation outside the issuer's control or no anchoring entry at all, and a credential whose `Digest` entry is revoked has been revoked, by its issuer or by the ecosystem governance above it, as of `revoked`. Verification of the first two MUST fail; verification of the third MUST fail at any evaluated time at or after `revoked`.
+A credential whose recomputed `digestJCS` has no anchoring by its issuer in the VPR has no provable issuance time, and verification MUST fail. Under `VPR` revocation, a credential whose `Digest` entry is revoked has been revoked, by its issuer or by the ecosystem governance above it, as of `revoked`, and verification MUST fail at any evaluated time at or after it; a credential whose `Digest` entry is gone has passed its expiry, and fails on that expiry.
 
 ##### Issuance time security considerations
 
