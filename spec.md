@@ -1957,7 +1957,7 @@ For communication channel between User Agents to be enabled, both User Agents MU
 
 ### [WL] ECS Ecosystem whitelists and vpr: scheme resolution
 
-- [WL-VPR] Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of VPRs and how to access them (resolution). As VPRs are decentralized, this gives the option to the VUA vendor or VS provider to run a VPR node and use its own node endpoints for trust resolution.
+- [WL-VPR] Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of VPRs and how to access them: the indexer endpoints used for trust resolution and the RPC endpoints of the nodes used for transactions. As VPRs are decentralized, this gives the option to the VUA vendor or VS provider to run its own node and indexer and use their endpoints.
 
 **Example:**
 
@@ -1968,7 +1968,7 @@ For communication channel between User Agents to be enabled, both User Agents MU
     { 
       "id": "vna-mainnet-1",
       "scheme": "vpr:verana:vna-mainnet-1",
-      "api": [
+      "indexer": [
         "https://idx-mainnet-node-1/",
         "https://idx-mainnet-node-2/"
       ],
@@ -1976,27 +1976,19 @@ For communication channel between User Agents to be enabled, both User Agents MU
         "https://rpc-mainnet-node-1/",
         "https://rpc-mainnet-node-2/"
       ],
-      "resolver": [
-        "https://rsv-mainnet-node-1/",
-        "https://rsv-mainnet-node-2/"
-      ],
       "version": "1",
       "production": true
     },
     { 
       "id": "vna-testnet-1",
       "scheme": "vpr:verana:vna-testnet-1",
-      "api": [
+      "indexer": [
         "https://idx-testnet-node-1/",
         "https://idx-testnet-node-2/"
       ],
       "rpc": [
         "https://rpc-testnet-node-1/",
         "https://rpc-testnet-node-2/"
-      ],
-      "resolver": [
-        "https://rsv-testnet-node-1/",
-        "https://rsv-testnet-node-2/"
       ],
       "version": "1",
       "production": true
