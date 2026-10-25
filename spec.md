@@ -669,6 +669,12 @@ The Verifiable Trust Specification is **container-agnostic** and supports multip
   - issuance time must be objectively verifiable
   - unlinkability is not required
 
+- **Anonymous Credentials (e.g., AnonCreds)**  
+  Suitable for private credentials where:
+  - selective disclosure is required
+  - multiple presentations must not be linkable
+  - issuer authorization is verified by the holder's wallet at credential reception time rather than anchored via stable identifiers
+
 - **IETF SD-JWT VC (`dc+sd-jwt`)**  
   Suitable for private credentials exchanged over OpenID4VCI and OpenID4VP where:
   - selective disclosure is required (per-claim disclosures)
@@ -686,12 +692,6 @@ The Verifiable Trust Specification is **container-agnostic** and supports multip
   - revocation through a status list and batch issuance of single-use copies are acceptable ([VT-CRED-MDOC-7], [VT-CRED-MDOC-8])
 
   An mdoc does not provide unlinkability either: its issuer-signed part is a stable correlator, mitigated by issuing batches of copies.
-
-- **Anonymous Credentials (e.g., AnonCreds)**  
-  Suitable for private credentials where:
-  - selective disclosure is required
-  - multiple presentations must not be linkable
-  - issuer authorization is verified by the holder's wallet at credential reception time rather than anchored via stable identifiers
 
 Depending on the credential format and proof system used, ecosystems can achieve different trade-offs between:
 
