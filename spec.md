@@ -1744,6 +1744,8 @@ Example:
 
 - [VS-REQ-7] Subject to [CIB-4], [VT-DECL-HOLDER-1], the anchoring rule of [VT-CRED-W3C] (the digest of a credential is registered before the credential is delivered) and [VS-CONN-VS] (a service that does not yet meet [VS-REQ] is accepted only by issuers of Essential Credentials), a [[ref: VS]] MAY obtain its `Participant` entries, anchor its credentials and publish its Linked Verifiable Presentations in any order across schemas. After adding, replacing or removing a Linked VP, a VS SHOULD submit TriggerResolver ([VPR MOD-PP-MSG-15](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-pp-msg-15-trigger-resolver)) for one of its active `Participant` entries whose `did` is its DID, since resolvers treat it as the signal for off-chain changes; when no such entry remains (for example after the revocation of its last entry), the on-chain event itself causes re-evaluation. Implementations that cache trust resolution results SHOULD re-evaluate a DID whenever such a trigger is emitted and whenever the on-chain state of a `Participant` entry that references it changes (creation, validation, expiry, revocation, slashing, repayment), including through the entries of the issuer of its Service credential, and whenever the `Digest` entry of one of its credentials is revoked.
 
+- [VS-REQ-8] A [[ref: VS]] MUST verify every peer before providing it a service, whichever party initiated the connection: a connecting service per [VS-CONN-VS], and a connecting User Agent per [VS-CONN-VUA], by requesting and verifying its User Agent credential. A service that provides a service to an unverified peer does not qualify as a [[ref: VS]].
+
 ::: note
 In other words, to qualify as a Verifiable Service:
 
@@ -1862,8 +1864,8 @@ These requirements ensure that a Verifiable User Agent can cryptographically pro
 ### [CIB] Credential Issuance by
 
 - [CIB-1] A [[ref: VS]] CAN issue [VT-CRED] VT Credentials. A [[ref: VUA]] cannot: an issuer DID must resolve as a Verifiable Service ([TR-6]) and anchor through a `ParticipantSession` ([CIB-4]), neither of which a VUA instance can do.
-- [CIB-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT issue credentials that are not compliant with [VT-CRED].
-- [CIB-3] A [[ref: VS]] or a [[ref: VUA]] MUST NOT issue a credential if it cannot prove it is authorized by the Ecosystem controller of the schema.
+- [CIB-2] A [[ref: VS]] MUST NOT issue credentials that are not compliant with [VT-CRED].
+- [CIB-3] A [[ref: VS]] MUST NOT issue a credential if it cannot prove it is authorized by the Ecosystem controller of the schema.
 - [CIB-4] The authorization required by [CIB-3] MUST be effective when the credential is issued: for credentials of a schema whose `credential_anchoring` is `DIGEST` at the effective issuance time, which is the anchoring of the credential's digest ([TR-4], [TR-5]); for credentials of a `NONE` schema at issuance, as checked by the holder ([CIT-3]). In particular, a [[ref: VS]] that issues its own Service credential ([VS-REQ-3]) MUST hold an effective `ISSUER` `Participant` entry for the Service schema before anchoring it: a digest anchored earlier fails [TR-5].
 
 ### [PRB] Presentation Requested by
@@ -1907,7 +1909,7 @@ When a [[ref: VS]] VS-1 receives a connection request from a service Service-2 t
 
 ### [VS-CONN-VUA] Requirements for a VS to accept a connection from a User Agent
 
-When a [[ref: VS]] receives a connection from a User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED-ANON] credential before starting to provide the service, and verify the presented credential (if any). If no credential is presented or presented credential is not verifiable, [[ref: VS]] MUST NOT provide the service.
+When a [[ref: VS]] connects with a User Agent, whichever party initiated the connection, it MUST request the presentation of a [VT-ECS-UA-CRED-ANON] credential before starting to provide the service, and verify the presented credential per [TR]: an AnonCreds credential of the User Agent schema, whose issuer MUST be currently accredited for that schema ([TR-5], [CIT-3]), presented under the configuration of [VT-ECS-JSON-SCHEMA-VPR-CONFIG] (`OPEN` verifier mode, zero fees, no `ParticipantSession`, no anchoring), so that no `Participant` entry of the VS is involved. If no credential is presented or the presented credential does not verify, the [[ref: VS]] MUST NOT provide the service, unless the purpose of the service is the issuance of [VT-ECS-UA-CRED-ANON] credentials: a User Agent connects to its User Agent credential issuer precisely because it holds none yet, and that issuer applies its own checks instead.
 
 After the [VT-ECS-UA-CRED-ANON] credential has been verified, the [[ref: VS]] MAY additionally request the presentation of a [VT-ECS-BADGE-CRED-ANON] credential to identify the human operating the User Agent and the organization or persona they represent (obtained by trust-resolving the Badge issuer, per [TR]).
 
