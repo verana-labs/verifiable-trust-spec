@@ -2055,7 +2055,7 @@ For communication channel between User Agents to be enabled, both User Agents MU
 - [TR-5] The issuer of every Verifiable Trust Credential encountered during trust resolution MUST be verified as authorized:
   - For credentials of a schema whose `credential_anchoring` is not `NONE`: the issuer MUST have been authorized by the Ecosystem for the referenced VTJSC **at the effective issuance time** determined by [TR-4]: by an `ISSUER` entry effective at that time or, for a schema whose `issuer_onboarding_mode` is `OPEN`, by the anchoring itself, under its [[ref: verifiable service entry]], which is the only record such an issuer leaves.
   - For credentials of a `NONE` schema (AnonCreds VTCs, and SD-JWT and mdoc VTCs of such schemas): the issuer MUST be currently authorized by the Ecosystem for the referenced VTJSC: by an active `ISSUER` entry, or, for a schema whose `issuer_onboarding_mode` is `OPEN`, by resolving as a Verifiable Service ([TR-6]) while neither its participation for the schema nor its corporation is blacklisted ([TR-12]) (an `OPEN` schema places no other condition on its issuers; an ecosystem's lever over such an issuer is a slash of the deposit of its participation, created by its first paid session, which bars it until the debt is repaid and, when the ecosystem so decides, blacklists it until reinstated, and otherwise the trust resolution of the issuer itself, through its Organization or Persona credential). Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
-  - For credentials of a `DIGEST` schema, later expiry or revocation of the issuer's `Accreditation` entry, a slash of its participation or of its corporation that leaves a debt without blacklisting, or the same for one of the validators above it in the `Accreditation` tree, does not by itself invalidate a credential issued while the issuer was authorized: a sanction or a structural change in the ecosystem is not a judgement on the credentials already issued, and the VPR keeps paying or withholding fees on its own rules. The mechanisms that withdraw trust from credentials already issued are the end or revocation of the holder's `HOLDER` entry or a slash of its participation ([TR-9]), the revocation of an individual credential's digest ([TR-4]), the end of the transition window of a rotated identifier the credential still carries ([TR-10]), a blacklisting slash of the issuer's participation or corporation, or of a validator above it ([TR-12]), and the issuer ceasing to resolve as a Verifiable Service ([TR-6]): an issuer that loses its own Service, Organization or Persona credential invalidates every credential it issued.
+  - For credentials of an anchored schema, later expiry or revocation of the issuer's `Accreditation` entry, a slash of its participation or of its corporation that leaves a debt without blacklisting, or the same for one of the validators above it in the `Accreditation` tree, does not by itself invalidate a credential issued while the issuer was authorized: a sanction or a structural change in the ecosystem is not a judgement on the credentials already issued, and the VPR keeps paying or withholding fees on its own rules. The mechanisms that withdraw trust from credentials already issued are the end or revocation of the holder's `HOLDER` entry or a slash of its participation ([TR-9]), the revocation of an individual credential's digest ([TR-4]), the end of the transition window of a rotated identifier the credential still carries ([TR-10]), a blacklisting slash of the issuer's participation or corporation, or of a validator above it ([TR-12]), and the issuer ceasing to resolve as a Verifiable Service ([TR-6]): an issuer that loses its own Service, Organization or Persona credential invalidates every credential it issued.
 
 - [TR-6] Every DID that appears as an issuer of a credential during trust resolution MUST itself be verified as a **Verifiable Service** conforming to [VS-REQ]. The credentials presented by that issuer's DID Document MUST themselves be verified by recursively applying [TR-1] through [TR-6] and [TR-9] through [TR-11].
 
@@ -2144,7 +2144,7 @@ Such services typically ingest and index:
 - Ecosystem DID Documents
 - Linked Verifiable Presentations published in DID Documents
 - Verifiable Trust Credentials and Verifiable Trust Json Schema Credentials
-- On-chain digest anchoring data (credentials of `DIGEST` schemas)
+- On-chain digest anchoring data (credentials of anchored schemas)
 
 Using this indexed data, a relying party (or a wallet acting on its behalf) can answer higher-level trust questions such as the following.
 
@@ -2194,7 +2194,7 @@ This step applies to credentials of schemas whose `credential_anchoring` is not 
 
 - Identify the Ecosystem DID that issued the vtjsc
 - Query the Ecosystem entry and its `Accreditation` entries
-- For credentials of a `DIGEST` schema (W3C VTCs, anchored SD-JWT and mdoc VTCs): verify that the credential issuer DID was authorized for the referenced vtjsc **at the effective issuance time** determined above
+- For credentials of an anchored schema (W3C VTCs, anchored SD-JWT and mdoc VTCs): verify that the credential issuer DID was authorized for the referenced vtjsc **at the effective issuance time** determined above
 - For credentials of a `NONE` schema (AnonCreds VTCs, SD-JWT and mdoc VTCs otherwise): verify that the credential issuer DID is currently authorized for the referenced vtjsc. Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
 
 If this check fails, the credential MUST be rejected.
@@ -2213,7 +2213,7 @@ The credential issuer MUST be a Verifiable Service. To verify this:
   - either:
     - the service DID itself presents a valid VT-ECS-ORG-CRED-W3C or VT-ECS-PERSONA-CRED-W3C, or
     - the issuer of the service credential presents such a credential
-- Verify the issuer's authorization as [TR-5] requires (at the effective issuance time for credentials of `DIGEST` schemas, currently for credentials of `NONE` schemas)
+- Verify the issuer's authorization as [TR-5] requires (at the effective issuance time for credentials of anchored schemas, currently for credentials of `NONE` schemas)
 - **Recursively apply the same trust resolution steps** to each credential found in the issuer's DID Document (verify signature, resolve VTJSC, determine issuance time, verify authorization, verify that *its* issuer is also a Verifiable Service)
 
 ### Determine the governing Ecosystem
@@ -2234,7 +2234,7 @@ A relying party can therefore answer the following questions deterministically:
 - When was it issued? (anchored schemas only)
 - I have a `ParticipantSession` with `uuid=7e55834f-5a81-4029-9121-2cab1268fb43` with Verifiable Service `did=did:Example:123`. Can this DID request the presentation of a credential of vtjsc with `id=https://example/vtjsc.json` to me?
 - Was the issuer authorized? (at the effective issuance time for credentials of anchored schemas; at reception and again at evaluation, current authorization, for credentials of `NONE` schemas)
-- Is the credential's digest anchored under the issuer's [[ref: verifiable service entry]] with the schema, the issuer holding an `ISSUER` entry effective at `created` or none under an `OPEN` schema, and not revoked? (`DIGEST` schemas, [TR-4])
+- Is the credential's digest anchored under the issuer's [[ref: verifiable service entry]] with the schema, the issuer holding an `ISSUER` entry effective at `created` or none under an `OPEN` schema, and not revoked? (anchored schemas, [TR-4])
 - Does every DID encountered match its [[ref: verifiable service entry]], directly or through a transition window? ([TR-10])
 - Is the credential's status reference, if any, under a status base its issuer declares, and is the status artifact signed by the issuer DID? (`NONE` schemas, [TR-11])
 - Does the subject still hold, active, the `HOLDER` entry the credential was issued under? (schemas in `ISSUER_ONBOARDING_PROCESS` holder mode, [TR-9])
