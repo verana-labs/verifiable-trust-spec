@@ -99,9 +99,6 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 [[def: proof of trust]]:
 ~ Visual representation using [[ref: essential credential schemas]] of a [[ref: trust resolution]] process of a [[ref: Verifiable Service]], for identifying the [[ref: VS]], its owner, and the [[ref: issuer]] of the verifiable credential of its owner.
 
-[[def: session]]:
-~ A session defines a connection to a DID Document provided service from a third party VS or VUA.
-
 [[def: subject, subjects]]:
 ~ A thing about which claims are made. Example subjects include human beings, animals, things, and organization, a [[ref: DID]]...
 
@@ -2028,7 +2025,7 @@ After the [VT-ECS-UA-CRED-ANON] credential has been verified, the [[ref: VS]] MA
 
 ### [VUA-CONN-VS] Requirements for a VUA to accept connecting to a service
 
-When a [[ref: VUA]] starts a [[ref: session]] with a service, the [[ref: VUA]] MUST verify that the service complies with [VS-REQ] and [VS-SVC], else the VUA MUST NOT connect to the VS.
+When a [[ref: VUA]] connects to a service, the [[ref: VUA]] MUST verify that the service complies with [VS-REQ] and [VS-SVC], else the VUA MUST NOT connect to the VS.
 
 ### [VUA-CONN-VUA] Requirements for two VUAs to connect
 
@@ -2314,7 +2311,7 @@ This example shows the symmetric flow for revoking a previously issued credentia
 
 1. **Issuer revokes on-chain.** The issuer VS-Agent submits `MsgRevokeParticipant` (`MOD-PP-MSG-9`) against `holder_participant`. On confirmation, the entry is deleted and its revocation recorded by the transaction's event, which withdraws trust from every credential issued under that entry ([TR-9]); to revoke a single credential while keeping the relationship, the issuer revokes its digest instead ([TR-4]).
 
-2. **Resolver auto-re-resolves.** The [[ref: VPR]] resolver pipeline treats `MsgRevokeParticipant` as an implicit re-resolution signal for the holder DID and re-runs trust resolution. With `holder_participant` no longer active, the credential it backed is no longer covered by an active `HOLDER` entry ([TR-9]), so trust resolution against the holder DID's currently-published linked-vp fails for that credential. The resolver eventually updates the `trustStatus = UNTRUSTED` for the holder DID (or downgrades it accordingly if it still presents other valid credentials).
+2. **Resolver auto-re-resolves.** The [[ref: VPR]] resolver pipeline treats `MsgRevokeParticipant` as an implicit re-resolution signal for the holder DID and re-runs trust resolution. With `holder_participant` no longer active, the credential it backed is no longer covered by an active `HOLDER` entry ([TR-9]), so trust resolution against the holder DID's currently-published linked-vp fails for that credential. The resolver then marks the holder DID untrusted for every decision that relies on that credential. A Linked VP on which a decision does not rely is disregarded ([TR-8]), so the DID keeps, for decisions relying on its other credentials, the trust those credentials establish.
 
 3. **Issuer notifies the holder over DIDComm.** The issuer's VS-Agent sends a credential-state-change message to the holder VS-Agent over the existing DIDComm session, informing it that the credential has been revoked. The holder VS-Agent reacts in user-land (display the revocation, request a new credential, stop offering the affected service, etc.).
 
