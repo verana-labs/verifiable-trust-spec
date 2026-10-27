@@ -798,7 +798,7 @@ A credential whose schema is not registered in a VPR has no `CredentialSchema` e
 
 ##### Anchoring the digest
 
-When issuing a Verifiable Trust Credential, the issuer MUST compute its `digestJCS` as defined above, and **register** it in the VPR by calling [RecordCredentialExchange](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-10-record-credential-exchange) with the `digest` parameter; the issuance transaction is sent even when no fees are due; its event anchors the digest with the block time, the issuer's verifiable service entry, the schema and the `ISSUER` entry referenced, if any; under `REVOCABLE_DIGEST` ([VT-DECL-ANCHOR-4]) the VPR also stores it as a `Digest` entry, with the credential's `validUntil` given as `credential_valid_until`, until that expiry. Registration MUST succeed before the credential is delivered to the holder.
+When issuing a Verifiable Trust Credential, the issuer MUST compute its `digestJCS` as defined above, and **register** it in the VPR by calling [RecordCredentialExchange](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-10-record-credential-exchange) with the `digest` parameter; the issuance transaction is sent even when no fees are due; its event anchors the digest with the block time, the schema and the issuer's reference (its `ISSUER` entry, whose verifiable service entry is then the anchoring entry, or its verifiable service entry itself for an entry-less issuer under `OPEN`); under `REVOCABLE_DIGEST` ([VT-DECL-ANCHOR-4]) the VPR also stores it as a `Digest` entry, with the credential's `validUntil` given as `credential_valid_until`, until that expiry. Registration MUST succeed before the credential is delivered to the holder.
 
 ##### Verifying the issuance time
 
