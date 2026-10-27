@@ -2271,7 +2271,7 @@ This example shows the action sequence for a holder VS-Agent obtaining a public 
 
 **Preconditions:**
 
-- The Ecosystem has defined a `CredentialSchema` `cs` for the credential (a schema that keeps `ISSUER_ONBOARDING_PROCESS`; the essential schemas are `PERMISSIONLESS`, see [VT-ECS-JSON-SCHEMA-VPR-CONFIG], and skip steps 1, 2 and 4), with an associated VTJSC published by the Ecosystem DID; `cs` is declared `PUBLIC`, with `credential_anchoring` `REVOCABLE_DIGEST` (Example 2 revokes a digest), and sets `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`.
+- The Ecosystem has defined a `CredentialSchema` `cs` for the credential (a schema that keeps `ISSUER_ONBOARDING_PROCESS`; the essential schemas are `PERMISSIONLESS`, see [VT-ECS-JSON-SCHEMA-VPR-CONFIG], and skip steps 1, 2 and 4), with an associated VTJSC published by the Ecosystem DID; `cs` is declared `PUBLIC`, with `credential_anchoring` `REVOCABLE_DIGEST` (Example 2 notes the digest alternative), and sets `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`.
 - The issuer has an active `ISSUER` `Accreditation` entry on `cs` (`issuer_accreditation`), and issuer service is a Verifiable Service.
 - The holder VS-Agent knows the issuer's DID and the schema `cs` it wants to be issued a credential against.
 
