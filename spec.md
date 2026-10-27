@@ -2250,7 +2250,7 @@ A relying party can therefore answer the following questions deterministically:
 - Was the issuer authorized? (at the effective issuance time for credentials of anchored schemas; at reception and again at evaluation, current authorization, for credentials of `NONE` schemas)
 - Is the credential's digest anchored under the issuer's [[ref: verifiable service entry]] with the schema, the issuer holding an `ISSUER` entry effective at the block time of that transaction or none under an `OPEN` schema, and, under `REVOCABLE_DIGEST`, its `Digest` entry present and not revoked? (anchored schemas, [TR-4])
 - Does every DID encountered match its [[ref: verifiable service entry]], directly or through a transition window? ([TR-10])
-- Is the credential's status reference, if any, under a status base its issuer declares, and is the status artifact signed by the issuer DID? (`NONE` schemas, [TR-11])
+- Is the credential's status reference, if any, under a status base its issuer declares, and is the status artifact signed by the issuer DID? ([TR-11])
 - Is neither the issuer's participation for the schema nor its corporation, nor a validator above it, excluded? ([TR-12])
 - Does the subject still hold, in force, the `HOLDER` entry the credential was issued under? (schemas in `ISSUER_ONBOARDING_PROCESS` holder mode, [TR-9])
 - I have a `CredentialExchange` with `exchange_id=7e55834f-5a81-4029-9121-2cab1268fb43` with Verifiable Service `did=did:example:123`. Can this DID request the presentation of a credential of vtjsc with `id=https://example/vtjsc.json` to me?
