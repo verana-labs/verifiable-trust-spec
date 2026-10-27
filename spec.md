@@ -374,7 +374,7 @@ object "Ecosystem" as tra #3fbdb6 {
 @startuml
 scale max 800 width
  
-package "Example Credential Scheman Accreditation Tree" as cs {
+package "Example Credential Schema Accreditation Tree" as cs {
 
     object "Ecosystem A" as tr #3fbdb6 {
         role: ECOSYSTEM (Root)
