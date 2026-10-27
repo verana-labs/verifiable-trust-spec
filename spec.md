@@ -1180,7 +1180,7 @@ Credential subject object of schema MUST contain the following attributes:
 
 the resulting `json_schema` attribute will be the following Json Schema.
 
-- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
+- `$id`: `VPR_CHAIN_ID` and `VPR_CREDENTIAL_SCHEMA_ID` are replaced by the VPR itself when it stores the schema, by its chain id and the id of the created `CredentialSchema` entry ([Create Credential Schema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-cs-msg-1-create-credential-schema)): the `$id` of a stored schema is always `vpr:verana:<chain id>:cs:<id>`.
 
 ```json
 {
@@ -1320,8 +1320,7 @@ Credential subject object of schema MUST contain the following attributes:
 
 The resulting `json_schema` attribute will be the following Json Schema.
 
-- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
-- `VPR_CHAIN_ID` is replaced by the network name.
+- `$id`: `VPR_CHAIN_ID` and `VPR_CREDENTIAL_SCHEMA_ID` are replaced by the VPR itself when it stores the schema, by its chain id and the id of the created `CredentialSchema` entry ([Create Credential Schema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-cs-msg-1-create-credential-schema)): the `$id` of a stored schema is always `vpr:verana:<chain id>:cs:<id>`.
 
 ```json
 {
@@ -1454,7 +1453,7 @@ Credential subject object of schema MUST contain the following attributes:
 
 The resulting `json_schema` attribute will be the following Json Schema.
 
-- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
+- `$id`: `VPR_CHAIN_ID` and `VPR_CREDENTIAL_SCHEMA_ID` are replaced by the VPR itself when it stores the schema, by its chain id and the id of the created `CredentialSchema` entry ([Create Credential Schema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-cs-msg-1-create-credential-schema)): the `$id` of a stored schema is always `vpr:verana:<chain id>:cs:<id>`.
 
 ```json
 {
@@ -1547,7 +1546,7 @@ Credential subject object of schema MUST contain the following attributes:
 
 The resulting `json_schema` attribute will be the following Json Schema.
 
-- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
+- `$id`: `VPR_CHAIN_ID` and `VPR_CREDENTIAL_SCHEMA_ID` are replaced by the VPR itself when it stores the schema, by its chain id and the id of the created `CredentialSchema` entry ([Create Credential Schema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-cs-msg-1-create-credential-schema)): the `$id` of a stored schema is always `vpr:verana:<chain id>:cs:<id>`.
 
 ```json
 {
@@ -1622,7 +1621,7 @@ Badge attributes identify the holder and carry informative facts only. A verifie
 
 The resulting `json_schema` attribute will be the following Json Schema.
 
-- `VPR_CREDENTIAL_SCHEMA_ID` is replaced by the `schema_id` of the created `CredentialSchema` entry in the VPR.
+- `$id`: `VPR_CHAIN_ID` and `VPR_CREDENTIAL_SCHEMA_ID` are replaced by the VPR itself when it stores the schema, by its chain id and the id of the created `CredentialSchema` entry ([Create Credential Schema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-cs-msg-1-create-credential-schema)): the `$id` of a stored schema is always `vpr:verana:<chain id>:cs:<id>`.
 
 ```json
 {
