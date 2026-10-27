@@ -580,7 +580,7 @@ This credential provides verifiable evidence of:
     "jsonSchema": {
       "$ref": "vpr:verana:vna-mainnet-1:cs:12345678"
     },
-    "digestSRI": "sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZ"
+    "digestSRI": "sha384-ABCSGyugst67rs67rdbugsy0RDdx0YbeV7shwhCS88G8SCXeFq82PafhCeZabcde"
   }
 }
 ```
@@ -746,8 +746,8 @@ A W3C Verifiable Trust Credential MUST include, at a minimum, the following attr
   ],
   "issuer": "did:example:authorized-issuer",
   "credentialSubject": {
-    "id": "did:example:holder"
-    // ... schema-defined attributes
+    "id": "did:example:holder",
+    "exampleClaim": "schema-defined attributes follow"
   },
   "credentialSchema": {
     "id": "https://example/vtjsc.json",
@@ -833,7 +833,7 @@ A DID Document MAY present an unlimited number of Verifiable Trust Credentials a
 ```json
 "service": [
     {
-      "id": "did:example:ecosystem#vpr-schemas-example-vtc-vp",
+      "id": "did:example:service#vpr-schemas-example-vtc-vp",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://ecosystem/schemas-example-vtc-vp.json"]
     }
@@ -1746,7 +1746,7 @@ See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credenti
 ```json
   "service": [
     {
-      "id": "did:example:organization#vpr-schemas-org-vtc-vp",
+      "id": "did:example:service#vpr-schemas-org-vtc-vp",
       "type": "LinkedVerifiablePresentation",
       "serviceEndpoint": ["https://example.com/vpr-schemas-org-vtc-vp.json"]
     }
@@ -1758,7 +1758,7 @@ See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credenti
 ```json
   "service": [
    {
-    "id": "did:example:persona#vpr-schemas-persona-vtc-vp",
+    "id": "did:example:service#vpr-schemas-persona-vtc-vp",
     "type": "LinkedVerifiablePresentation",
     "serviceEndpoint": ["https://example.com/vpr-schemas-persona-vtc-vp.json"]
    }
