@@ -1856,11 +1856,13 @@ This section specifies how a [[ref: VS]] MUST declare its endpoints, how it prov
 
 - [VS-SVC-2] A [[ref: VS]] [[ref: DID Document]] MUST declare **at least one** service entry of type `DIDCommMessaging`. DIDComm is the **bootstrapping channel** of the service: it is the primary channel over which trust is established, over which protocols such as credential issuance, credential presentation and secure messaging are performed, and over which the authentication material required to consume other declared endpoints is obtained (see [VS-SVC-7]).
 
-- [VS-SVC-3] A [[ref: VS]] [[ref: DID Document]] MAY declare **any number of additional service entries**, including but not limited to:
+- [VS-SVC-3] A [[ref: VS]] [[ref: DID Document]] MAY declare **any number of additional service entries**.
+
+  Examples *(non-normative)*:
   - an `MCP` service, exposing tools consumable by AI agents;
   - an `A2A` service, for agent-to-agent interoperability;
   - a `LinkedDomains` service (or equivalent), pointing to a plain website or other HTTP(S) resource;
-  - any other service type defined by the ecosystem.
+  - ...
 
 - [VS-SVC-4] A peer (whether a [[ref: VS]] or a [[ref: VUA]]) MUST perform trust resolution of the [[ref: VS]] DID — in particular, it MUST verify the Linked Verifiable Presentations required by [VS-REQ] and apply [TR] — **before** using any of the consumable service endpoints declared in the DID Document.
 
