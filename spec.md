@@ -716,7 +716,7 @@ A W3C Verifiable Trust Credential MUST include, at a minimum, the following attr
 - `validUntil`: optional
 - `issuer`: the DID of the authorized issuer issuing the credential
 - `credentialSubject`: an object containing:
-  - `id`: the DID of the credential holder
+  - `id`: for a credential of a `SERVICE` schema, the DID of the credential holder; for a `PERSON` schema, whatever the schema defines, if anything ([VT-DECL-SUBJECT])
   - all attributes required by the referenced Credential Schema
 - `credentialSchema`: an object containing:
   - `id`: the identifier of the VTJSC issued by the Ecosystem DID
@@ -1014,7 +1014,7 @@ An mdoc Verifiable Trust Credential is a Verifiable Trust Credential issued as a
 
 - [VT-CRED-MDOC-2] An mdoc VTC MUST carry the **Verifiable Trust namespace** `io.verana.vt`, with the element `relatedJsonSchemaCredentialId`, whose value identifies the **VTJSC** issued by the Ecosystem DID for the corresponding `CredentialSchema` — the same linkage property the AnonCreds Credential Definition and the SD-JWT Type Metadata use ([VT-CRED-ANON], [VT-CRED-SDJWT-3]). The element MUST be disclosed in every presentation, and a relying party MUST request it with every request for the document. The JSON Schema MUST be obtained **through** the VTJSC, from its `credentialSubject.jsonSchema.$ref`, resolved per [WL-VPR] and verified against the VTJSC's `digestSRI`.
 
-- [VT-CRED-MDOC-3] The claims of an mdoc VTC are the data elements of **one namespace per schema**, whose identifier is the `$id` of the schema's JSON Schema (the VPR reference of the `CredentialSchema` entry, `vpr:verana:VPR_CHAIN_ID:cs:VPR_CREDENTIAL_SCHEMA_ID`). The element identifiers are the `credentialSubject` properties of the JSON Schema, except `id`, which a `PERSON` credential does not carry; the element values are the CBOR encodings of the JSON values, and the constraints of the JSON Schema apply to the decoded values. An issuer MUST NOT place claims of the schema in any other namespace.
+- [VT-CRED-MDOC-3] The claims of an mdoc VTC are the data elements of **one namespace per schema**, whose identifier is the `$id` of the schema's JSON Schema (the VPR reference of the `CredentialSchema` entry, `vpr:verana:VPR_CHAIN_ID:cs:VPR_CREDENTIAL_SCHEMA_ID`). The element identifiers are the `credentialSubject` properties of the JSON Schema, except `id` when the schema defines none; the element values are the CBOR encodings of the JSON values, and the constraints of the JSON Schema apply to the decoded values. An issuer MUST NOT place claims of the schema in any other namespace.
 
 - [VT-CRED-MDOC-4] During trust resolution, the VTJSC referenced under [VT-CRED-MDOC-2] MUST be verified per [TR-3], and the issuer MUST be verified as authorized per [TR-5]: at the effective issuance time given by the document's digest when the schema's `credential_anchoring` is not `NONE` ([TR-4]), as **currently authorized** when it is `NONE`. Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
 
@@ -1085,6 +1085,8 @@ The VPR stores the declaration. Verifiable Services and Verifiable User Agents M
 - [VT-DECL-SUBJECT-2] For `PERSON` schemas, the person decides in its [[ref: VUA]] what to present: `presentation_mode` is null and [VT-DECL-MODE-1], [VT-DECL-MODE-3] and [VT-DECL-MODE-4] do not apply ([VT-DECL-MODE-2] does). The VUA MUST still verify the verifier per [PRT-3] and apply [VT-DECL-RECORD] and [VT-PRES-VS-9].
 - [VT-DECL-SUBJECT-3] A `PERSON` schema sets `holder_onboarding_mode` to `PERMISSIONLESS`: a natural person holds no `Accreditation` entry (entries belong to corporations and carry a DID), so [VT-DECL-HOLDER] and [TR-9] concern `SERVICE` schemas in `ISSUER_ONBOARDING_PROCESS` holder mode only. The VPR rejects any other combination.
 - [VT-DECL-SUBJECT-4] A `SERVICE` schema whose credentials are issued to software instances that have no DID, such as User Agent instances, MUST set `holder_onboarding_mode` to `PERMISSIONLESS`, `presentation_mode` to `ON_REQUEST` and a `credential_format` other than `W3C_JSONLD` (a W3C VTC names its holder's DID as subject): such a holder can neither hold a `Accreditation` entry nor publish a DID Document, and has no controller to approve presentations.
+
+Whether a credential of a `PERSON` schema carries a subject identifier, and what it is (a wallet-generated DID, a key binding, a link secret, a device key, or none), is decided by the ecosystem's schema and by the container; this specification imposes nothing. *This paragraph is non-normative.*
 
 #### [VT-DECL-MODE] Presentation mode of service credentials
 
