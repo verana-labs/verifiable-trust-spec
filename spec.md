@@ -2084,7 +2084,7 @@ For communication channel between User Agents to be enabled, both User Agents MU
 
 ### [WL] ECS Ecosystem whitelists and vpr: scheme resolution
 
-- [WL-VPR] Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of VPRs and how to access them: the indexer endpoints used for trust resolution and the RPC endpoints of the nodes used for transactions. As VPRs are decentralized, this gives the option to the VUA vendor or VS provider to run its own node and indexer and use their endpoints.
+- [WL-VPR] Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of VPRs and how to access them: the indexer endpoints used for trust resolution and the RPC endpoints of the nodes used for transactions. As VPRs are decentralized, this gives the option to the VUA vendor or VS provider to run its own node and indexer and use their endpoints. An identifier of the form `vpr:<network>:<chain id>:...` (a schema reference, [VT-CRED-MDOC-3]) resolves through the whitelist entry whose `scheme` is its prefix `vpr:<network>:<chain id>`, with that entry's indexer; with no such entry it is unresolvable and the verification fails. An indexer serves an exchange record by its `exchange_id` from the event of the transaction ([VT-PRES-VS-6], [CIT-5]); its interface is specified with the indexer.
 
 **Example:**
 
