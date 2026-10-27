@@ -2200,7 +2200,7 @@ Examples below illustrate how trust resolution is performed assuming that all re
 This step applies to credentials of schemas whose `credential_anchoring` is not `NONE` only (W3C VTCs, and SD-JWT and mdoc VTCs of such schemas). Credentials of `NONE` schemas (AnonCreds VTCs, SD-JWT and mdoc VTCs otherwise) have no objective issuance time (see [VT-CRED-ANON], [VT-CRED-SDJWT], [VT-CRED-MDOC] and [VT-DECL-ANCHOR]).
 
 - Recompute the credential's digest (`digestJCS`, the SD-JWT digest or the mdoc digest, per the container)
-- Locate its anchoring: the issuance transaction, served by an indexer from its event (a `Digest` entry exists only under `REVOCABLE_DIGEST`)
+- Locate its anchoring: the earliest issuance transaction that carried the digest under the issuer's entry and schema ([TR-4]), served by an indexer from its event (a `Digest` entry exists only under `REVOCABLE_DIGEST`)
 - Use the block time of that transaction as the **effective issuance time**
 - Check that the anchoring is under the issuer's [[ref: verifiable service entry]] with the schema, the issuer holding an `ISSUER` entry effective at the block time of that transaction or none under an `OPEN` schema, and, under `REVOCABLE_DIGEST`, its `Digest` entry present and not revoked ([TR-4])
 
@@ -2209,13 +2209,19 @@ This step applies to credentials of schemas whose `credential_anchoring` is not 
 - Identify the Ecosystem DID that issued the vtjsc
 - Query the Ecosystem entry and its `Accreditation` entries
 - For credentials of an anchored schema (W3C VTCs, anchored SD-JWT and mdoc VTCs): verify that the credential issuer DID was authorized for the referenced vtjsc **at the effective issuance time** determined above
-- For credentials of a `NONE` schema (AnonCreds VTCs, SD-JWT and mdoc VTCs otherwise): verify that the credential issuer DID is currently authorized for the referenced vtjsc. Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
+- For credentials of a `NONE` schema (AnonCreds VTCs, SD-JWT and mdoc VTCs otherwise): verify that the credential issuer DID is currently authorized for the referenced vtjsc: an `ISSUER` entry in force or, under an `OPEN` schema, the issuer resolving as a Verifiable Service with neither its participation nor its corporation excluded ([TR-5]). Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
 
 If this check fails, the credential MUST be rejected.
 
 ### Verify the holder relationship
 
-For a credential of a schema whose `holder_onboarding_mode` is `ISSUER_ONBOARDING_PROCESS`, check that the subject still holds, active, the `HOLDER` entry the credential was issued under, validated by the issuer's `ISSUER` entry ([TR-9]); the end of that entry bounds the trust in the credential.
+For a credential of a schema whose `holder_onboarding_mode` is `ISSUER_ONBOARDING_PROCESS`, check that the subject still holds, active, the `HOLDER` entry the credential was issued under, validated by the issuer's `ISSUER` entry ([TR-9]); the end of that entry bounds the trust in the credential. For a credential of an anchored schema the entry MUST also have been effective at the effective issuance time, with the `ISSUER` entry the credential was anchored under as validator ([TR-9]).
+
+### Check identifiers, status endpoints and exclusions
+
+- Every DID encountered matches its [[ref: verifiable service entry]], directly or through a transition window ([TR-10]).
+- A status reference carried by the credential is under a base its issuer declares, and its artifact is signed by the issuer DID ([TR-11]).
+- Neither the issuer's participation for the schema nor its corporation, nor a validator above it, is excluded ([TR-12]).
 
 ### Verify the issuer is a Verifiable Service
 
@@ -2227,7 +2233,6 @@ The credential issuer MUST be a Verifiable Service. To verify this:
   - either:
     - the service DID itself presents a valid VT-ECS-ORG-CRED-W3C or VT-ECS-PERSONA-CRED-W3C, or
     - the issuer of the service credential presents such a credential
-- Verify the issuer's authorization as [TR-5] requires (at the effective issuance time for credentials of anchored schemas, currently for credentials of `NONE` schemas)
 - **Recursively apply the same trust resolution steps** to each credential found in the issuer's DID Document (verify signature, resolve VTJSC, determine issuance time, verify authorization, verify that *its* issuer is also a Verifiable Service)
 
 ### Determine the governing Ecosystem
@@ -2246,7 +2251,7 @@ A relying party can therefore answer the following questions deterministically:
 
 - Is this credential authentic?
 - When was it issued? (anchored schemas only)
-- I have a `CredentialExchange` with `exchange_id=7e55834f-5a81-4029-9121-2cab1268fb43` with Verifiable Service `did=did:Example:123`. Can this DID request the presentation of a credential of vtjsc with `id=https://example/vtjsc.json` to me?
+- I have a `CredentialExchange` with `exchange_id=7e55834f-5a81-4029-9121-2cab1268fb43` with Verifiable Service `did=did:example:123`. Can this DID request the presentation of a credential of vtjsc with `id=https://example/vtjsc.json` to me?
 - Was the issuer authorized? (at the effective issuance time for credentials of anchored schemas; at reception and again at evaluation, current authorization, for credentials of `NONE` schemas)
 - Is the credential's digest anchored under the issuer's [[ref: verifiable service entry]] with the schema, the issuer holding an `ISSUER` entry effective at the block time of that transaction or none under an `OPEN` schema, and, under `REVOCABLE_DIGEST`, its `Digest` entry present and not revoked? (anchored schemas, [TR-4])
 - Does every DID encountered match its [[ref: verifiable service entry]], directly or through a transition window? ([TR-10])
@@ -2254,7 +2259,7 @@ A relying party can therefore answer the following questions deterministically:
 - Is neither the issuer's participation for the schema nor its corporation, nor a validator above it, excluded? ([TR-12])
 - Does the subject still hold, active, the `HOLDER` entry the credential was issued under? (schemas in `ISSUER_ONBOARDING_PROCESS` holder mode, [TR-9])
 - Which Ecosystem governs this credential?
-- Is the issuer itself a Verifiable Service (if required)?
+- Is the issuer itself a Verifiable Service? ([TR-6])
 
 All trust decisions are derived from verifiable artifacts and cryptographic proofs, without relying on issuer-asserted claims or implicit trust.
 
