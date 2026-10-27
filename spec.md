@@ -1859,7 +1859,7 @@ This section specifies how a [[ref: VS]] MUST declare its endpoints, how it prov
 - [VS-SVC-3] A [[ref: VS]] [[ref: DID Document]] MAY declare **any number of additional service entries**.
 
   Examples *(non-normative)*:
-  - an `MCP` service, exposing tools consumable by AI agents;
+  - a `MCP` service, exposing tools consumable by AI agents;
   - an `A2A` service, for agent-to-agent interoperability;
   - a `LinkedDomains` service (or equivalent), pointing to a plain website or other HTTP(S) resource;
   - ...
