@@ -121,7 +121,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ An entity recognized by one or several ecosystems in a [[ref: VPR]], as the VPR spec defines it; the roles it is granted for a [[ref: credential schema]] are recorded by `Accreditation` entries (see [Accreditation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#accreditation) in the VPR spec).
 
 [[def: trust resolution]]:
-~ Process run by, for example a [[ref: VUA]] or a [[ref: VS]], which purpose is to recursively resolve [[ref: DID]] by digging into [[ref: DID Documents]] and look for [[ref: linked-vp]] entries and their [[ref: issuer]] [[ref: DIDs]], and [[ref: ecosystem]] entries to gather whether the service provided by the [[ref: DID]] is trustable (and legitimate), or not.
+~ Process run by, for example a [[ref: VUA]] or a [[ref: VS]], which purpose is to recursively resolve [[ref: DID]] by digging into [[ref: DID Documents]] and look for [[ref: linked-vp]] entries and their [[ref: issuer]] [[ref: DIDs]], and [[ref: ecosystem]] entries to gather whether the service provided by the [[ref: DID]] is trusted (and legitimate), or not.
 
 [[def: verifier, verifiers]]:
 ~ A role an entity performs by receiving one or more verifiable credentials, optionally inside a verifiable presentation for processing. Example verifiers include service providers.
@@ -286,7 +286,7 @@ A **Verifiable Public Registry (VPR)** is a **“registry of registries”**, a 
   - Custom **business models** and onboarding policies
 
 - **Query API for Trust Resolution**:  
-  A standardized API used by **Verifiable Services (VSs)** and **Verifiable User Agents (VUAs)** to perform trust resolution, enabling them to query registry data and validate roles and `Accreditation` entries in real time. Query API must include support for the [TRQP](https://trustoverip.github.io/tswg-trust-registry-protocol/).
+  A standardized API used by **Verifiable Services (VSs)** and **Verifiable User Agents (VUAs)** to perform trust resolution, enabling them to query registry data and validate roles and `Accreditation` entries in real time.
 
 ```plantuml
 
@@ -2005,8 +2005,8 @@ These requirements ensure that a Verifiable User Agent can cryptographically pro
 
 ### [PRT] Presentation Requested to
 
-- [PRT-1] A [[ref: VS]] or a [[ref: VUA]] CAN request presentation of [VT-CRED] VT Credentials
-- [PRT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of credentials that are not compliant with [VT-CRED].
+- [PRT-1] A [[ref: VS]] or a [[ref: VUA]] CAN be requested to present [VT-CRED] VT Credentials.
+- [PRT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT present credentials that are not compliant with [VT-CRED].
 - [PRT-3] When a [[ref: VS]] or a [[ref: VUA]] receives a presentation request, before presenting a credential, it MUST verify that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema. Under a `verifier_onboarding_mode` of `OPEN` every peer is authorized; under `CREDENTIAL` the verifier's DID Document MUST present, as a Linked Verifiable Presentation, a credential of one of the schemas listed in the schema's `verifier_credential_schema_ids`, whose subject is the verifier's DID ([VT-CRED-W3C-LINKED-VP]) and that passes [TR]; under `GRANTOR_ONBOARDING_PROCESS` or `ECOSYSTEM_ONBOARDING_PROCESS` the verifier MUST hold an active `VERIFIER` `Accreditation` entry for the schema. Under `OPEN` or `CREDENTIAL` the holder MUST also verify, through an indexer of its whitelist ([WL-VPR]), that neither the verifier's participation for the schema (`ParticipationTrustDeposit[(vs_id, schema_id, VERIFIER)]`, when it exists) nor its corporation's `TrustDeposit` is barred by a slash debt or an exclusion, the guard the VPR applies to the exchange transaction itself: a barred verifier is not authorized, whether or not the verification requires an exchange. No `VERIFIER` entry is required under `OPEN` or `CREDENTIAL`: the verifier sends its exchange transactions under its self-created `VERIFIER` entry when it holds an active one, else under its [[ref: verifiable service entry]] ([VT-PRES-VS-3]).
 
 ### [VT-PRES-VS] Credential Presentation between Verifiable Services
@@ -2287,7 +2287,7 @@ This example shows the action sequence for a holder VS-Agent obtaining a public 
 
 3. **DIDComm session.** The holder VS-Agent opens a DIDComm session to the issuer and follows the agent-level credential acquisition protocol (validation request, optional out-of-band steps to provide additional evidence, etc.). The issuer's VS-Agent collects and validates the evidence on its side.
 
-4. **Validator approves on-chain.** Once the issuer is satisfied, its VS-Agent submits `MsgSetAccreditationOPToValidated` (`MOD-AC-MSG-3`) on the [[ref: VPR]]. `holder_accreditation` transitions to `op_state = VALIDATED` and its `effective_until` is set per the schema's policy.
+4. **Validator approves on-chain.** Once the issuer is satisfied, its VS-Agent submits `MsgSetAccreditationOPtoValidated` (`MOD-AC-MSG-3`) on the [[ref: VPR]]. `holder_accreditation` transitions to `op_state = VALIDATED` and its `effective_until` is set per the schema's policy.
 
 5. **Credential issuance over DIDComm.** The issuer's VS-Agent issues a W3C Verifiable Trust Credential to the holder over the existing DIDComm session, using the schema's VTJSC as `credentialSchema.id` and anchoring the deterministic `digestJCS` per [VT-CRED-W3C] and [TR-4]. The holder had supplied the `CredentialExchange` identifier when accepting the offer, and before storing the credential it verifies through its indexer that the issuance transaction anchored the digest under the issuer's entry and carries that identifier ([CIT-4], [CIT-5]).
 
