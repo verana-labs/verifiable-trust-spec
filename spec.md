@@ -106,7 +106,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ A [[ref: VPR]] resource, controlled by a [[ref: corporation]], that defines an approved list of [[ref: participants]] (issuers, verifiers, grantors, holders) authorized to issue, verify or hold credentials for a given set of credential schemas. The Ecosystem entry plays the role formerly known as "trust registry". For the canonical data model, see [Ecosystem](https://verana-labs.github.io/verifiable-trust-vpr-spec/#ecosystem) in the VPR spec.
 
 [[def: corporation, corporations]]:
-~ A [[ref: VPR]] resource representing a legal/organizational entity that controls one or more [[ref: ecosystems]] and/or holds one or more [[ref: participants]] in ecosystems. See [Corporation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#corporation) in the VPR spec.
+~ A [[ref: VPR]] resource representing a legal/organizational entity that controls one or more [[ref: ecosystems]] and/or holds `Accreditation` entries in one or more ecosystems. See [Corporation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#corporation) in the VPR spec.
 
 [[def: evaluated time]]:
 ~ The time at which a relying party runs a trust resolution; "currently" and "at the evaluated time" in this specification mean at that time.
