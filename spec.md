@@ -114,8 +114,11 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 [[def: in force]]:
 ~ Of an `Accreditation` entry, for trust resolution: within its effective window, and neither its participation nor its corporation excluded ([TR-12]). Differs from the VPR's *active*, which also requires the absence of a slash debt: a debt bars acts, it does not withdraw trust.
 
+[[def: participation, participations]]:
+~ As in the VPR: a [[ref: verifiable service entry]] taking part in a [[ref: credential schema]] in a role, the triple (`vs_id`, `schema_id`, `role`) whose `ParticipationTrustDeposit` an ecosystem can slash or exclude ([TR-12]).
+
 [[def: participant, participants]]:
-~ A [[ref: VPR]] resource, linked to a [[ref: credential schema]] in an [[ref: ecosystem]], that records the role (ISSUER, VERIFIER, ISSUER_GRANTOR, VERIFIER_GRANTOR, ECOSYSTEM, HOLDER) granted to a [[ref: corporation]] for that schema. The Accreditation entry replaces what earlier drafts called a "Permission". See [Accreditation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#accreditation) in the VPR spec.
+~ An entity recognized by one or several ecosystems in a [[ref: VPR]], as the VPR spec defines it; the roles it is granted for a [[ref: credential schema]] are recorded by `Accreditation` entries (see [Accreditation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#accreditation) in the VPR spec).
 
 [[def: trust resolution]]:
 ~ Process run by, for example a [[ref: VUA]] or a [[ref: VS]], which purpose is to recursively resolve [[ref: DID]] by digging into [[ref: DID Documents]] and look for [[ref: linked-vp]] entries and their [[ref: issuer]] [[ref: DIDs]], and [[ref: ecosystem]] entries to gather whether the service provided by the [[ref: DID]] is trustable (and legitimate), or not.
