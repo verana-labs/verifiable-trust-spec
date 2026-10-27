@@ -948,7 +948,7 @@ AnonCreds credentials MAY be represented in the [W3C Verifiable Credentials form
     "definition": "did:example:authorized-issuer/resources/creddef-123"
   },
   "credentialSubject": {
-    "userAgentType": "mobile-wallet"
+    "documentNumber": "AB123456"
   },
   "proof": {
     "type": "AnonCredsProof2023",
