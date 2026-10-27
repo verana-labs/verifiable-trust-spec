@@ -2228,7 +2228,7 @@ The credential issuer MUST be a Verifiable Service. To verify this:
   - it presents a valid VT-ECS-SERVICE-CRED-W3C; and
   - either:
     - the service DID itself presents a valid VT-ECS-ORG-CRED-W3C or VT-ECS-PERSONA-CRED-W3C, or
-    - the issuer of the service credential presents such a credential
+    - the issuer of the service credential presents such a credential, its verifiable service entry being owned by the same corporation as the VS's ([VS-REQ-4])
 - **Recursively apply the same trust resolution steps** to each credential found in the issuer's DID Document (verify signature, resolve VTJSC, determine issuance time, verify authorization, verify that *its* issuer is also a Verifiable Service)
 
 ### Determine the governing Ecosystem
