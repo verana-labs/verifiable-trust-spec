@@ -2270,13 +2270,13 @@ This example shows the action sequence for a holder VS-Agent obtaining a public 
 
 **Preconditions:**
 
-- The Ecosystem has defined a `CredentialSchema` `cs` for the credential (a schema that keeps `ISSUER_ONBOARDING_PROCESS`; the essential schemas are `PERMISSIONLESS`, see [VT-ECS-JSON-SCHEMA-VPR-CONFIG], and skip steps 1, 2 and 4), with an associated VTJSC published by the Ecosystem DID; `cs` is declared `PUBLIC` and sets `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`.
+- The Ecosystem has defined a `CredentialSchema` `cs` for the credential (a schema that keeps `ISSUER_ONBOARDING_PROCESS`; the essential schemas are `PERMISSIONLESS`, see [VT-ECS-JSON-SCHEMA-VPR-CONFIG], and skip steps 1, 2 and 4), with an associated VTJSC published by the Ecosystem DID; `cs` is declared `PUBLIC`, with `credential_anchoring` `REVOCABLE_DIGEST` (Example 2 revokes a digest), and sets `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`.
 - The issuer has an active `ISSUER` `Accreditation` entry on `cs` (`issuer_accreditation`), and issuer service is a Verifiable Service.
 - The holder VS-Agent knows the issuer's DID and the schema `cs` it wants to be issued a credential against.
 
 **Sequence:**
 
-1. **Start the onboarding process (holder side).** The holder VS-Agent submits `MsgStartAccreditationOP` (`MOD-AC-MSG-1`) on the [[ref: VPR]], targeting the issuer as validator of the requested `HOLDER` `Accreditation` entry against `cs`. The on-chain entry creates an applicant `Accreditation` entry `holder_accreditation` in `op_state = PENDING` whose `validator_accreditation_id` points at `issuer_accreditation`.
+1. **Start the onboarding process (holder side).** The holder's corporation submits `MsgStartAccreditationOP` (`MOD-AC-MSG-1`), through an operator under an OperatorAuthorization or through its group policy (a vs-agent cannot execute it), on the [[ref: VPR]], targeting the issuer as validator of the requested `HOLDER` `Accreditation` entry against `cs`. The on-chain entry creates an applicant `Accreditation` entry `holder_accreditation` in `op_state = PENDING` whose `validator_accreditation_id` points at `issuer_accreditation`.
 
 2. **Indexer notifies both parties.** Both the holder and the issuer VS-Agents receive an indexer notification for the new onboarding process via their respective DID-scoped subscriptions.
 
@@ -2284,11 +2284,11 @@ This example shows the action sequence for a holder VS-Agent obtaining a public 
 
 4. **Validator approves on-chain.** Once the issuer is satisfied, its VS-Agent submits `MsgSetAccreditationOPToValidated` (`MOD-AC-MSG-3`) on the [[ref: VPR]]. `holder_accreditation` transitions to `op_state = VALIDATED` and its `effective_until` is set per the schema's policy.
 
-5. **Credential issuance over DIDComm.** The issuer's VS-Agent issues a W3C Verifiable Trust Credential to the holder over the existing DIDComm session, using the schema's VTJSC as `credentialSchema.id` and anchoring the deterministic `digestJCS` per [VT-CRED-W3C] and [TR-4].
+5. **Credential issuance over DIDComm.** The issuer's VS-Agent issues a W3C Verifiable Trust Credential to the holder over the existing DIDComm session, using the schema's VTJSC as `credentialSchema.id` and anchoring the deterministic `digestJCS` per [VT-CRED-W3C] and [TR-4]. The holder had supplied the `CredentialExchange` identifier when accepting the offer, and before storing the credential it verifies through its indexer that the issuance transaction anchored the digest under the issuer's entry and carries that identifier ([CIT-4], [CIT-5]).
 
 6. **Holder publishes the credential in its DID Document.** The holder VS-Agent updates its DID Document to publish (or update) a `linked-vp` entry containing the newly received credential, alongside any previously held public credentials.
 
-7. **Holder triggers the resolver.** As soon as the updated DID Document is updated, the holder VS-Agent submits `MsgTriggerResolver` (`MOD-AC-MSG-15`) for its [[ref: verifiable service entry]] (`vs_id`). The signing parameters use Path 1 of the TriggerResolver authorization model: `corporation = holder.corporation`, `operator = holder.vs_operator`. The Msg makes no on-chain state change; it only emits an event.
+7. **Holder triggers the resolver.** As soon as the updated DID Document is updated, the holder VS-Agent submits `MsgTriggerResolver` (`MOD-AC-MSG-15`) for its [[ref: verifiable service entry]] (`vs_id`). The vs-agent signs as `operator = holder.vs_operator` for `corporation = holder.corporation`, the vs_operator path of `MOD-AC-MSG-15`. The Msg makes no on-chain state change; it only emits an event.
 
 8. **Trust resolution.** The [[ref: VPR]] resolver pipeline observes the `MsgTriggerResolver` event, and trigger the resolver module that fetches the latest holder DID Document, validates each linked-vp credential per [TR], and records the holder DID's trust state. Subsequent queries to the resolver return `trustStatus = TRUSTED` for the holder DID.
 
@@ -2299,13 +2299,16 @@ sequenceDiagram
     participant VPR as VPR (ledger)
     participant Idx as Indexer + Resolver
 
-    Holder->>VPR: MsgStartAccreditationOP (validator = issuer)
-    VPR-->>Idx: participant-pending event
+    Holder->>VPR: MsgStartAccreditationOP (validator = issuer; by the holder's corporation)
+    VPR-->>Idx: accreditation-pending event
     Idx-->>Holder: notify
     Idx-->>Issuer: notify
     Holder->>Issuer: DIDComm onboarding flow
-    Issuer->>VPR: MsgSetAccreditationOPToValidated
-    Issuer->>VPR: MsgRecordCredentialExchange (digest anchored)
+    Holder->>Issuer: DIDComm credential offer accepted (exchange_id)
+    Issuer->>VPR: MsgSetAccreditationOPtoValidated
+    Issuer->>VPR: MsgRecordCredentialExchange (exchange_id, digest anchored)
+    Idx-->>Holder: exchange notification
+    Holder->>Holder: verify anchoring and exchange ([CIT-4], [CIT-5])
     Issuer->>Holder: DIDComm credential issuance
     Holder->>Holder: update DID Document (linked-vp)
     Holder->>VPR: MsgTriggerResolver
@@ -2323,7 +2326,7 @@ This example shows the symmetric flow for revoking a previously issued credentia
 
 **Sequence:**
 
-1. **Issuer revokes on-chain.** The issuer VS-Agent submits `MsgRevokeAccreditation` (`MOD-AC-MSG-9`) against `holder_accreditation`. On confirmation, the entry is deleted and its revocation recorded by the transaction's event, which withdraws trust from every credential issued under that entry ([TR-9]); to revoke a single credential while keeping the relationship, the issuer revokes its digest instead ([TR-4]).
+1. **Issuer revokes on-chain.** The issuer's corporation submits `MsgRevokeAccreditation` (`MOD-AC-MSG-9`), through an operator or its group policy (a vs-agent cannot execute it), against `holder_accreditation`. On confirmation, the entry is deleted and its revocation recorded by the transaction's event, which withdraws trust from every credential issued under that entry ([TR-9]); to revoke a single credential while keeping the relationship, the issuer revokes its digest instead ([TR-4]).
 
 2. **Resolver auto-re-resolves.** The [[ref: VPR]] resolver pipeline treats `MsgRevokeAccreditation` as an implicit re-resolution signal for the holder DID and re-runs trust resolution. With `holder_accreditation` no longer active, the credential it backed is no longer covered by an active `HOLDER` entry ([TR-9]), so trust resolution against the holder DID's currently-published linked-vp fails for that credential. The resolver then marks the holder DID untrusted for every decision that relies on that credential. A Linked VP on which a decision does not rely is disregarded ([TR-8]), so the DID keeps, for decisions relying on its other credentials, the trust those credentials establish.
 
@@ -2340,9 +2343,9 @@ sequenceDiagram
     participant VPR as VPR (ledger)
     participant Idx as Indexer + Resolver
 
-    Issuer->>VPR: MsgRevokeAccreditation (holder_accreditation)
+    Issuer->>VPR: MsgRevokeAccreditation (holder_accreditation; by the issuer's corporation)
     VPR-->>Idx: revoke event (implicit trigger)
-    Idx->>Idx: re-resolve holder DID -> UNTRUSTED
+    Idx->>Idx: re-resolve holder DID -> credential untrusted (other decisions unaffected, [TR-8])
     Issuer->>Holder: DIDComm credential-state-change (revoked)
     Holder->>Holder: update DID Document (remove linked-vp entry)
     Holder->>VPR: MsgTriggerResolver
