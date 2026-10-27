@@ -682,7 +682,7 @@ The Verifiable Trust Specification is **container-agnostic** and supports multip
   - issuer authorization is verified by the holder's wallet at credential reception time rather than anchored via stable identifiers
 
 - **IETF SD-JWT VC (`dc+sd-jwt`)**  
-  Suitable for private credentials exchanged over OpenID4VCI and OpenID4VP where:
+  Suitable for private credentials exchanged over OpenID4VCI and OpenID4VP (in this version, for exchanges that need no `CredentialExchange`, [CIB-5], [PRB-5]; otherwise over DIDComm) where:
   - selective disclosure is required (per-claim disclosures)
   - holder binding is required (`cnf`)
   - interoperability with OpenID4VC wallets is more important than unlinkability
