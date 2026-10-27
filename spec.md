@@ -2211,7 +2211,7 @@ If this check fails, the credential MUST be rejected.
 
 ### Verify the holder relationship
 
-For a credential of a schema whose `holder_onboarding_mode` is `ISSUER_ONBOARDING_PROCESS`, check that the subject still holds, in force, the `HOLDER` entry the credential was issued under, validated by the issuer's `ISSUER` entry ([TR-9]); the end of that entry bounds the trust in the credential. For a credential of an anchored schema the entry MUST also have been effective at the effective issuance time, with the `ISSUER` entry the credential was anchored under as validator ([TR-9]).
+For a credential of a schema whose `holder_onboarding_mode` is `ISSUER_ONBOARDING_PROCESS`, check that the subject holds a `HOLDER` entry in force, validated by an `ISSUER` entry of the issuer ([TR-9]); the end of that entry bounds the trust in the credential. For a credential of an anchored schema it MUST be the entry the credential was issued under, effective at the effective issuance time, with the `ISSUER` entry the credential was anchored under as validator; for a credential of a `NONE` schema any such entry in force suffices ([TR-9], [VT-DECL-HOLDER-2]).
 
 ### Check identifiers, status endpoints and exclusions
 
