@@ -2120,7 +2120,7 @@ For communication channel between User Agents to be enabled, both User Agents MU
 }
 ```
 
-- [WL-ECS]: Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of DIDs of Ecosystems they trust for providing essential credential schemas.
+- [WL-ECS]: Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of DIDs of Ecosystems they trust for providing essential credential schemas. Since an ECS Ecosystem may provide only some of them ([ECS-EC]), the list SHOULD cover the five essential credential schemas, [ECS-SERVICE], [ECS-ORG], [ECS-PERSONA], [ECS-UA] and [ECS-BADGE], each provided by at least one listed Ecosystem: an essential credential whose schema no listed Ecosystem provides fails the resolution ([TR-7]), so a list without the Service schema, or without both the Organization and Persona schemas, resolves no [[ref: VS]] ([VS-REQ-2] to [VS-REQ-4]), and a list without the User Agent schema admits no User Agent ([VS-CONN-VUA], [VUA-CONN-VUA]).
 
 Example:
 
