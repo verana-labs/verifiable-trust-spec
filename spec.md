@@ -1942,7 +1942,7 @@ In this example:
 - `#vpr-schemas-service-vtc-vp` and `#vpr-schemas-org-vtc-vp` are **identity-layer** entries used during trust resolution (see [VS-REQ]).
 - `#didcomm` is the **mandatory** DIDComm endpoint required by [VS-SVC-2]; it is the bootstrap channel for the service.
 - `#mcp`, `#a2a` and `#website` are **optional** consumable endpoints declared under [VS-SVC-3].
-- `#status-lists`, `#oid4vci`, `#oid4vp` and `#anoncreds` are **protocol endpoints** declared under [VS-SVC-8]: the status lists of the SD-JWT credentials this service issues under `NONE` schemas live under `https://example.com/status/`, the service issues over OpenID4VCI and requests presentations over OpenID4VP, and it serves its own AnonCreds objects, whose identifiers `did:example:service?service=anoncreds&relativeRef=/...` resolve through `#anoncreds`. What the first three serve is signed by a key of `did:example:service` ([VS-SVC-9]).
+- `#status-lists`, `#oid4vci` and `#oid4vp` are **protocol endpoints** declared under [VS-SVC-8]: the status lists of the SD-JWT credentials this service issues under `NONE` schemas live under `https://example.com/status/`, and the service issues over OpenID4VCI and requests presentations over OpenID4VP. What they serve is signed by a key of `did:example:service` ([VS-SVC-9]). AnonCreds objects the service publishes are not declared here: they are published and resolved as the AnonCreds method of its DID method defines ([VS-SVC-8]).
 
 A conforming peer would interact with this service as follows:
 
