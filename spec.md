@@ -810,9 +810,9 @@ A credential whose recomputed `digestJCS` has no anchoring by its issuer in the 
 
 This mechanism binds a credential's content to a block timestamp assigned by the VPR, and so allows verification that the issuer was authorized to issue the credential **at that time** rather than merely at the time of presentation. Its guarantees, and their limits, are:
 
-- An issuer **cannot backdate** a credential. The `created` timestamp is assigned at block execution and is not under the issuer's control.
+- An issuer **cannot backdate** a credential. The block time of the issuance transaction is assigned by the chain and is not under the issuer's control.
 
-- An issuer **cannot pre-date** one. The digest covers the credential's `proof`, so it cannot be computed before the credential is signed. Anchoring can only place `created` at or after actual issuance.
+- An issuer **cannot pre-date** one. The digest covers the credential's `proof`, so it cannot be computed before the credential is signed. Anchoring can only place the effective issuance time at or after actual issuance.
 
 - **A digest anchored by another party is detected.** Any registered corporation MAY anchor any digest under one of its [[ref: verifiable service entries]], through an operator or the entry's vs-agent, and because [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest) is idempotent the first anchor fixes `created` and the anchoring entry, and so the owner, permanently. Computing the digest requires the signed credential, which exists nowhere outside the issuer until delivery, and registration MUST precede delivery. Should another party anchor first (a credential delivered or leaked before registration), the entry belongs to that party: under `REVOCABLE_DIGEST` the issuer's exchange transaction aborts, since the VPR refuses a Credential Issuance whose digest is already owned by another corporation; under `DIGEST` nothing is written and the stored digest is disregarded ([TR-4]), and if the credential were delivered anyway the holder refuses it at reception ([CIT-4]) and trust resolution rejects it ([TR-4]); the issuer re-issues. Ed25519 signatures are deterministic, so re-issuing the identical credential yields the identical digest: the re-issued credential MUST differ in content (for example a new `id`).
 
@@ -1986,7 +1986,7 @@ These requirements ensure that a Verifiable User Agent can cryptographically pro
 - [PRB-1] A [[ref: VS]] or a [[ref: VUA]] CAN request presentation of [VT-CRED] VT Credentials. A VUA verifier has no [[ref: verifiable service entry]] (a VUA instance has no DID and belongs to no corporation), holds no `Accreditation` entry and sends no `CredentialExchange` transaction, so it can only request a presentation for which none is required: `OPEN` verifier mode, fees of 0 as the holder computes them with Find Beneficiaries for the schema and the issuer reference with no verifier reference ([VT-DECL-RECORD-2]), no `presentation_validity_period` and no anchoring ask ([VT-PRES-VS-9]); the holder refuses the request otherwise.
 - [PRB-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of credentials that are not compliant with [VT-CRED].
 - [PRB-3] A [[ref: VS]] or a [[ref: VUA]] MUST NOT request presentation of a credential if it cannot prove it is authorized by the Ecosystem controller of the schema.
-- [PRB-4] A verifier MUST apply the `presentation_validity_period` of the schema, whatever the `verifier_onboarding_mode`: when it is greater than 0, the verifier MUST anchor the presentation digest and observe the reliance period that runs from the `created` timestamp of the receipt ([VT-PRES-VS-8], [VT-PRES-VS-9]). The attribute is mutable, so the verifier reads it from the VPR at the time of the verification ([VT-DECL-RECORD-3]).
+- [PRB-4] A verifier MUST apply the `presentation_validity_period` of the schema, whatever the `verifier_onboarding_mode`: when it is greater than 0, the verifier MUST anchor the presentation digest and observe the reliance period that runs from the block time of the exchange transaction that carried the presentation digest ([VT-PRES-VS-8], [VT-PRES-VS-9]). The attribute is mutable, so the verifier reads it from the VPR at the time of the verification ([VT-DECL-RECORD-3]).
 - [PRB-5] A [[ref: VS]] that requests a presentation over OpenID4VP or the Digital Credentials API MUST limit itself, in this version, to presentations for which no `CredentialExchange` is required, under the same conditions as a VUA verifier in [PRB-1]: zero fees computed for the verification, no `presentation_validity_period` and no anchoring ask. Those protocols carry no step in which the holder supplies an exchange identifier and an issuer reference before presenting ([VT-PRES-VS-4], [VT-PRES-VS-6]); a mapping of the exchange handshake onto them is deferred to a later version.
 
 ### [CIT] Credential Issued to
@@ -2196,7 +2196,7 @@ This step applies to credentials of schemas whose `credential_anchoring` is not 
 - Recompute the credential's digest (`digestJCS`, the SD-JWT digest or the mdoc digest, per the container)
 - Locate its anchoring: the issuance transaction, served by an indexer from its event (a `Digest` entry exists only under `REVOCABLE_DIGEST`)
 - Use the block time of that transaction as the **effective issuance time**
-- Check that the anchoring is under the issuer's [[ref: verifiable service entry]] with the schema, the issuer holding an `ISSUER` entry effective at `created` or none under an `OPEN` schema, and is not revoked ([TR-4])
+- Check that the anchoring is under the issuer's [[ref: verifiable service entry]] with the schema, the issuer holding an `ISSUER` entry effective at the block time of that transaction or none under an `OPEN` schema, and, under `REVOCABLE_DIGEST`, its `Digest` entry present and not revoked ([TR-4])
 
 ### Verify issuer authorization
 
@@ -2242,7 +2242,7 @@ A relying party can therefore answer the following questions deterministically:
 - When was it issued? (anchored schemas only)
 - I have a `CredentialExchange` with `exchange_id=7e55834f-5a81-4029-9121-2cab1268fb43` with Verifiable Service `did=did:Example:123`. Can this DID request the presentation of a credential of vtjsc with `id=https://example/vtjsc.json` to me?
 - Was the issuer authorized? (at the effective issuance time for credentials of anchored schemas; at reception and again at evaluation, current authorization, for credentials of `NONE` schemas)
-- Is the credential's digest anchored under the issuer's [[ref: verifiable service entry]] with the schema, the issuer holding an `ISSUER` entry effective at `created` or none under an `OPEN` schema, and not revoked? (anchored schemas, [TR-4])
+- Is the credential's digest anchored under the issuer's [[ref: verifiable service entry]] with the schema, the issuer holding an `ISSUER` entry effective at the block time of that transaction or none under an `OPEN` schema, and, under `REVOCABLE_DIGEST`, its `Digest` entry present and not revoked? (anchored schemas, [TR-4])
 - Does every DID encountered match its [[ref: verifiable service entry]], directly or through a transition window? ([TR-10])
 - Is the credential's status reference, if any, under a status base its issuer declares, and is the status artifact signed by the issuer DID? (`NONE` schemas, [TR-11])
 - Is neither the issuer's participation for the schema nor its corporation, nor a validator above it, excluded? ([TR-12])
