@@ -719,7 +719,7 @@ A W3C Verifiable Trust Credential MUST include, at a minimum, the following attr
 - `id`: a globally unique identifier for the credential (e.g., a `urn:uuid:`)
 - `type`: MUST include `VerifiableCredential` and `VerifiableTrustCredential`, and MAY include one or more schema-specific types
 - `validFrom`: optional
-- `validUntil`: optional
+- `validUntil`: optional; REQUIRED when the schema's `credential_anchoring` is `REVOCABLE_DIGEST` ([VT-DECL-ANCHOR-4])
 - `issuer`: the DID of the authorized issuer issuing the credential
 - `credentialSubject`: an object containing:
   - `id`: for a credential of a `SERVICE` schema, the DID of the credential holder; for a `PERSON` schema, whatever the schema defines, if anything ([VT-DECL-SUBJECT])
