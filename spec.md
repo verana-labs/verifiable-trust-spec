@@ -1868,7 +1868,7 @@ Parties that must authenticate each other (a [[ref: VS]] and its peers, two [[re
 The [Trust Spanning Protocol](https://trustoverip.github.io/tswg-tsp-specification/) is expected to join this list in a later version.
 
 - [VT-CHAN-3] **Binding to the trust-resolved DID.** A trusted channel with a [[ref: VS]] MUST be established through a service entry of a listed protocol that the VS declares in its DID Document, with the DID of the VS as its party, so that the messages the VS sends on it are authenticated by keys of that DID or by keys asserted under it at establishment. Everything this specification attributes to a channel with a VS (credentials, presentations, access material, endpoints, services) requires that binding; a channel not so bound is not a trusted channel with that VS.
-- [VT-CHAN-4] **Channel and peer verification.** Establishing a trusted channel authenticates identifiers and keys ([VT-CHAN-1]); it does not establish that the peer is a [[ref: VS]] or a [[ref: VUA]]. That verification ([VS-REQ], [VUA-REQ]) takes place before the channel when the peer's DID is known in advance (trust resolution, [VS-SVC-4]), and otherwise over the channel once established: a User Agent by its User Agent credential ([VS-CONN-VUA], [VUA-CONN-VUA]), a service that opened the channel by trust resolution of the DID the channel authenticated ([VS-CONN-VS]). Until both parties are verified, the channel carries only the messages of that verification, and no service is provided ([VS-REQ-8]).
+- [VT-CHAN-4] **Channel and peer verification.** Establishing a trusted channel authenticates identifiers and keys ([VT-CHAN-1]); it does not establish that the peer is a [[ref: VS]] or a [[ref: VUA]]. That verification ([VS-REQ], [VUA-REQ]) takes place before the channel when the peer's DID is known in advance (trust resolution, [VS-SVC-4]), and otherwise over the channel once established ([VT-PROTO-VERIF]): a User Agent by its User Agent credential ([VS-CONN-VUA], [VUA-CONN-VUA]), a service that opened the channel by trust resolution of the DID the channel authenticated ([VS-CONN-VS]). Until both parties are verified, the channel carries only the messages of that verification, and no service is provided ([VS-REQ-8]).
 
 #### [VT-CHAN-DIDCOMM] DIDComm binding
 
@@ -1906,7 +1906,7 @@ This section specifies how a [[ref: VS]] MUST declare its trusted channels and i
 
 - [VS-SVC-6] `LinkedVerifiablePresentation` entries declared in a DID Document for the purpose of presenting Verifiable Trust Credentials (see [VT-CRED-W3C-LINKED-VP] and [VT-ECS-CRED]) are part of the **identity layer** and are consumed during trust resolution itself. They are not considered "consumable service endpoints" for the purposes of [VS-SVC-2], [VS-SVC-3], [VS-SVC-4] and [VS-SVC-5].
 
-- [VS-SVC-7] When a service endpoint declared under [VS-SVC-3] requires authentication (access tokens, authorization credentials, session artifacts, capability tokens, etc.), a peer SHOULD obtain the required authentication material over a [[ref: trusted channel]] with the VS ([VS-SVC-2]), **after** trust resolution has succeeded. The specific authentication scheme is protocol- and ecosystem-specific, but its establishment MUST NOT bypass trust resolution of the [[ref: VS]] DID. This ensures that authentication material for every declared endpoint is cryptographically rooted in the same verified identity handshake. For an endpoint provided over a trusted channel ([VS-SVC-11]), the authentication material MUST be obtained over that channel.
+- [VS-SVC-7] When a service endpoint declared under [VS-SVC-3] requires authentication (access tokens, authorization credentials, session artifacts, capability tokens, etc.), a peer SHOULD obtain the required authentication material over a [[ref: trusted channel]] with the VS ([VS-SVC-2]), **after** trust resolution has succeeded. The specific authentication scheme, and the application protocol that delivers the material ([VT-PROTO-5]), are protocol- and ecosystem-specific, but its establishment MUST NOT bypass trust resolution of the [[ref: VS]] DID. This ensures that authentication material for every declared endpoint is cryptographically rooted in the same verified identity handshake. For an endpoint provided over a trusted channel ([VS-SVC-11]), the authentication material MUST be obtained over that channel.
 
 - [VS-SVC-8] **Declared protocol endpoints.** When a [[ref: VS]] operates one of the following, it MUST declare it in its [[ref: DID Document]] before using it, with the service type given here, and MUST keep the entry current for as long as artifacts that reference the endpoint are in circulation (a base under which credentials still in circulation carry a status reference stays declared until they are re-issued or expire):
   - `CredentialStatusList`: the base URL(s) under which the VS publishes the status lists its credentials reference: those of its `NO_DIGEST` schemas ([VT-DECL-ANCHOR-2]) and any status list carried in addition to the digest under an anchored schema ([VT-DECL-ANCHOR-1]), such as [Token Status Lists](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-status-list-21). The entry names bases, not lists: a status reference carried by a credential (the `status` claim of an SD-JWT VTC, the `status` element of the MSO of an mdoc VTC) MUST have one of the declared bases as a prefix, with the same scheme, host and port.
@@ -1920,9 +1920,9 @@ This section specifies how a [[ref: VS]] MUST declare its trusted channels and i
 
 - [VS-SVC-10] A peer MUST reach a protocol endpoint of a VS through its DID Document, after trust resolution ([VS-SVC-4], [VS-SVC-5]), and MUST verify the signatures of [VS-SVC-9]. A status reference that is under no declared `CredentialStatusList` base of the issuer, or whose status artifact is not signed by the issuer DID, and an AnonCreds revocation registry identifier that does not resolve as the AnonCreds method of the issuer's DID method defines, leave the credential's status unverifiable: [TR-11] rejects the credential. An OpenID4VC endpoint reached by any other path, or whose artifacts fail [VS-SVC-9], MUST NOT be used.
 
-- [VS-SVC-11] **Endpoints provided over a trusted channel.** A [[ref: VS]] MAY provide a peer, over a [[ref: trusted channel]], once both parties are verified ([VT-CHAN-4]), endpoints it does not declare in its [[ref: DID Document]], together with the access material required to consume them ([VS-SVC-7]). The channel MUST be bound to the trust-resolved DID of the VS ([VT-CHAN-3]); a peer MUST NOT treat as an endpoint of the VS a URL received on a channel not so bound. An endpoint so provided is an endpoint of the VS for that peer and inherits the trust context of its DID ([VS-SVC-5]); unlike a declared endpoint, it is not verifiable by third parties, and a VS SHOULD declare the endpoints it exposes publicly. The protocol endpoints of [VS-SVC-8] are never provided this way. Between two [[ref: VUAs]], which have no DID Document in which to declare endpoints, endpoints are exchanged this way only, over the channel established per [VUA-CONN-VUA].
+- [VS-SVC-11] **Endpoints provided over a trusted channel.** A [[ref: VS]] MAY provide a peer, over a [[ref: trusted channel]], once both parties are verified ([VT-CHAN-4]), endpoints it does not declare in its [[ref: DID Document]], together with the access material required to consume them ([VS-SVC-7]), through an application protocol ([VT-PROTO-5]). The channel MUST be bound to the trust-resolved DID of the VS ([VT-CHAN-3]); a peer MUST NOT treat as an endpoint of the VS a URL received on a channel not so bound. An endpoint so provided is an endpoint of the VS for that peer and inherits the trust context of its DID ([VS-SVC-5]); unlike a declared endpoint, it is not verifiable by third parties, and a VS SHOULD declare the endpoints it exposes publicly. The protocol endpoints of [VS-SVC-8] are never provided this way. Between two [[ref: VUAs]], which have no DID Document in which to declare endpoints, endpoints are exchanged this way only, over the channel established per [VUA-CONN-VUA].
 
-- [VS-SVC-12] **Services over the trusted channel.** A [[ref: VS]] MAY provide a service over the [[ref: trusted channel]] itself, through the protocols the channel carries (credential issuance and presentation, messaging, or any protocol the ecosystem defines over it), with no other endpoint. A peer consumes it once both parties are verified ([VT-CHAN-4], [VS-CONN-VS], [VS-CONN-VUA], [VUA-CONN-VS]), over a channel bound to the DID of the VS ([VT-CHAN-3]); what the VS sends on that channel is attributable to its DID and inherits its trust context.
+- [VS-SVC-12] **Services over the trusted channel.** A [[ref: VS]] MAY provide a service over the [[ref: trusted channel]] itself, through the protocols the channel carries (the issuance and presentation of [VT-PROTO], or any application protocol, [VT-PROTO-5]), with no other endpoint. A peer consumes it once both parties are verified ([VT-CHAN-4], [VS-CONN-VS], [VS-CONN-VUA], [VUA-CONN-VS]), over a channel bound to the DID of the VS ([VT-CHAN-3]); what the VS sends on that channel is attributable to its DID and inherits its trust context.
 
 ::: note
 In practice, this means the trusted channel acts as the **control plane** of a Verifiable Service, and as its **data plane** for the services it carries ([VS-SVC-12]), while its other endpoints act as its data plane: a peer first performs trust resolution and opens a trusted channel, consumes the services carried over it, or uses it to obtain any credentials, tokens or endpoints it needs (e.g., bearer tokens for an MCP endpoint, verifiable presentations for an A2A endpoint, signed session cookies for a website, the URL of an endpoint provided to that peer only), and only then calls the target endpoint, declared or provided over the channel, with those artifacts. A public endpoint may also be consumed at the one-way level, after trust resolution only.
@@ -2064,7 +2064,91 @@ These requirements ensure that a Verifiable User Agent can cryptographically pro
 - [PRT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT present credentials that are not compliant with [VT-CRED].
 - [PRT-3] When a [[ref: VS]] or a [[ref: VUA]] receives a presentation request, before presenting a credential, it MUST verify that the verifier is authorized by the Ecosystem that controls the schema to verify the requested credential of this schema. Under a `verifier_onboarding_mode` of `OPEN` every peer is authorized; under `CREDENTIAL` the verifier's DID Document MUST present, as a Linked Verifiable Presentation, a credential of one of the schemas listed in the schema's `verifier_credential_schema_ids`, whose subject is the verifier's DID ([VT-CRED-W3C-LINKED-VP]) and that passes [TR]; under `GRANTOR_ONBOARDING_PROCESS` or `ECOSYSTEM_ONBOARDING_PROCESS` the verifier MUST hold an active `VERIFIER` `Accreditation` entry for the schema with no excluded validator above it ([TR-12]). Under `OPEN` or `CREDENTIAL` the holder MUST also verify, through an indexer of its whitelist ([WL-VPR]), that neither the verifier's participation for the schema (`ParticipationTrustDeposit[(vs_id, schema_id, VERIFIER)]`, when it exists) nor its corporation's `TrustDeposit` is barred by a slash debt or an exclusion, the guard the VPR applies to the exchange transaction itself: a barred verifier is not authorized, whether or not the verification requires an exchange. Under every mode the holder MUST verify in the same way that the verifier's corporation has accepted the version in force of the ecosystem's governance framework, or a former version within the grace period of its activation (VPR [GF-CHECK-3]), unless the verifier's corporation controls the ecosystem: the VPR refuses the exchange transaction of a verifier that has not, and the holder refuses the request where no transaction exists. No `VERIFIER` entry is required under `OPEN` or `CREDENTIAL`: the verifier sends its exchange transactions under its self-created `VERIFIER` entry when it holds an active one, else under its [[ref: verifiable service entry]] ([VT-PRES-VS-3]).
 
-### [VT-PRES-VS] Credential Presentation over a Trusted Channel
+### [VS-CONN-VS] Requirements for a VS to accept a connection from another service
+
+When a [[ref: VS]] VS-1 receives a connection request from a service Service-2 to one of its service endpoints, declared in its DID Document or provided over a trusted channel (see [VS-SVC]), VS-1 MUST verify that Service-2 complies with [VS-REQ] and [VS-SVC], before or after establishing the channel ([VT-CHAN-4]), else VS-1 MUST NOT provide it any service, unless the purpose of the service provided by VS-1 is the issuance of [VT-ECS-ORG-CRED-W3C] or [VT-ECS-PERSONA-CRED-W3C] or [VT-ECS-SERVICE-CRED-W3C] credentials.
+
+### [VS-CONN-VUA] Requirements for a VS to accept a connection from a User Agent
+
+When a [[ref: VS]] connects with a User Agent, whichever party initiated the connection, it MUST request the presentation of a [VT-ECS-UA-CRED-ANON] credential before starting to provide the service, and verify the presented credential per [TR]: an AnonCreds credential of the User Agent schema, whose issuer MUST be currently authorized for that schema ([TR-5]: an `ISSUER` entry [[ref: in force]], a slash debt notwithstanding), presented under the configuration of [VT-ECS-JSON-SCHEMA-VPR-CONFIG] (`OPEN` verifier mode, zero fees, no `CredentialExchange`, no anchoring), so that no `Accreditation` entry of the VS is involved. If no credential is presented or the presented credential does not verify, the [[ref: VS]] MUST NOT provide the service, unless the purpose of the service is the issuance of [VT-ECS-UA-CRED-ANON] credentials: a User Agent connects to its User Agent credential issuer precisely because it holds none yet, and that issuer applies its own checks instead. Nor does this requirement apply to the OpenID4VC protocol endpoints of [VS-SVC-8]: a [[ref: VS]] that issues over OpenID4VCI ([CIB-5]) or requests a presentation over OpenID4VP or the Digital Credentials API ([PRB-5]) acts at the one-way level of [VS-SVC], which carries no User Agent credential ([VS-REQ-8]), and therefore with no `CredentialExchange` and no Verifiable User Agent reward.
+
+The issuer of the verified User Agent credential is the vendor of the User Agent. For every `CredentialExchange` the [[ref: VS]] sends for an exchange with that User Agent, it sets `vua_issuer_accreditation_id` to the `ISSUER` entry of that issuer under the User Agent schema that its trust resolution matched ([TR-5]), barred or not: the VPR pays no reward to a barred entry and the exchange goes through; the User Agent sends nothing for it, and a value it would send is ignored; but it checks it: a User Agent completes an exchange only after verifying, through its indexer, that the exchange transaction carries its vendor's entry as `vua_issuer_accreditation_id` ([CIT-5], [VT-PRES-VS-6]). That entry receives the Verifiable User Agent reward of the exchange, at the rate it declares (`vua_reward_rate`) bounded by the network's `vua_reward_rate` ([Record Credential Exchange](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-10-record-credential-exchange)). A User Agent whose credential does not verify is not served, so no reward is ever attributed to a vendor whose entry is gone.
+
+After the [VT-ECS-UA-CRED-ANON] credential has been verified, the [[ref: VS]] MAY additionally request the presentation of a [VT-ECS-BADGE-CRED-ANON] credential to identify the human operating the User Agent and the organization or persona they represent (obtained by trust-resolving the Badge issuer, per [TR]).
+
+### [VUA-CONN-VS] Requirements for a VUA to accept connecting to a service
+
+When a [[ref: VUA]] connects to a service, the [[ref: VUA]] MUST verify that the service complies with [VS-REQ] and [VS-SVC], else the VUA MUST NOT connect to the VS.
+
+### [VUA-CONN-VUA] Requirements for two VUAs to connect
+
+When a [[ref: VUA]] receives a connection from a User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED-ANON] credential before starting to provide the service, and verify the presented credential per [TR], under the configuration of [VT-ECS-JSON-SCHEMA-VPR-CONFIG] (no `CredentialExchange`, no fee, no anchoring); if no credential is presented or the presented credential does not verify, the VUA MUST close the channel and MUST NOT provide the service ([VT-CHAN-4]).
+
+When a [[ref: VUA]] initiates a connection to another User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED-ANON] credential before starting to provide the service, and verify the presented credential per [TR], under the configuration of [VT-ECS-JSON-SCHEMA-VPR-CONFIG] (no `CredentialExchange`, no fee, no anchoring); if no credential is presented or the presented credential does not verify, the VUA MUST close the channel and MUST NOT provide the service ([VT-CHAN-4]).
+
+For communication channel between User Agents to be enabled, both User Agents MUST have requested and verified the [VT-ECS-UA-CRED-ANON] credential presented by the peer.
+
+### [VT-PROTO] Verifiable Trust Protocol
+
+The exchanges this specification requires over a [[ref: trusted channel]] are defined here as abstract messages, with their fields, their order and the checks each party makes: the verification of a peer ([VT-PROTO-VERIF]), the issuance of a credential ([VT-PROTO-ISS]) and the presentation of credentials ([VT-PRES-VS]). A binding maps them onto each [[ref: trusted channel protocol]] ([VT-BIND]). The diagrams of this section are non-normative illustrations of its rules.
+
+- [VT-PROTO-1] **Messages.** A message has a name and fields. Field types are abstract: a VTJSC identifier, a UUID, a DID, a boolean, a text, a digest, a transaction hash, and the format-specific offers, requests, credentials and presentations of each container. How a message is typed, encoded and carried is its binding's ([VT-BIND-1]). A party MUST ignore a field it does not know.
+- [VT-PROTO-2] **Correlation.** The messages of one exchange (a verification, an issuance, or a presentation request and the presentations it leads to) are correlated to the first message of the exchange ([VT-CHAN-1]).
+- [VT-PROTO-3] **`exchange-recorded`.** The party that sent a `CredentialExchange` transaction (the issuer of an issuance, the verifier of a presentation) notifies its peer with `exchange-recorded`: `exchange_id` and `tx_hash`, the hash of the included transaction. The notification is a hint: the peer verifies the transaction through an indexer of its whitelist ([WL-VPR]), as [CIT-5] and [VT-PRES-VS-6] specify, whatever the message says.
+- [VT-PROTO-4] **Errors and declines.** A protocol error is reported with `error`: a `code` and an optional `comment`. Codes: `malformed`, `out-of-order`, `unknown-exchange`, `mixed-request` ([VT-PRES-VS-3]), `no-longer-available` (a credential that ceased to be active after it was answered), `exchange-not-recorded` (no included transaction matches the exchange). A decline is never an error: it is the absence of an item, or of the answer, and discloses nothing ([VT-PRES-VS-5]).
+- [VT-PROTO-5] **Application protocols.** Services carried over a trusted channel ([VS-SVC-12]) and the delivery of endpoints and of the access material to consume them ([VS-SVC-7], [VS-SVC-11]) are left to application protocols, defined separately from this specification. An application protocol SHOULD be publicly published and SHOULD refer to this specification. Its messages are carried over the trusted channel once both parties are verified ([VT-PROTO-VERIF]), and what a [[ref: VS]] sends with it inherits the trust context of its DID ([VS-SVC-11]).
+
+#### [VT-PROTO-VERIF] Peer Verification
+
+The verification of [VT-CHAN-4], with the messages that carry it.
+
+- [VT-PROTO-VERIF-1] **Services.** A party that knows the DID of its peer in advance verifies it by trust resolution before opening the channel ([VS-SVC-4]). A [[ref: VS]] that receives a channel from a service verifies it by trust resolution of the DID the channel authenticated ([VS-CONN-VS]). No message is exchanged for either.
+- [VT-PROTO-VERIF-2] **User Agents.** A party verifies a User Agent with the presentation protocol ([VT-PRES-VS]): a `request` for the User Agent schemas of the ECS ecosystems of its whitelist ([WL-ECS]), answered automatically (the schema is `ON_REQUEST`), then the `presentation-request` and `presentation` of the credential answered, with no `CredentialExchange` (zero fees, no anchoring, no presentation validity period, [VT-ECS-JSON-SCHEMA-VPR-CONFIG]), as [VS-CONN-VUA] and [VUA-CONN-VUA] require. Two User Agents run it in both directions.
+- [VT-PROTO-VERIF-3] **Before verification.** Until both parties are verified, a party MUST NOT send any message other than those of this verification, and MUST NOT act on any other message it receives, outside the exemptions of [VS-CONN-VS] and [VS-CONN-VUA]. A failed verification ends the exchange: no service is provided ([VS-REQ-8]), and a VUA closes the channel ([VUA-CONN-VUA]).
+
+A VUA opens a channel to a VS:
+
+```mermaid
+sequenceDiagram
+    participant U as VUA
+    participant S as VS
+    Note over U: trust-resolves the DID of the VS (VS-SVC-4)
+    U->>S: opens the trusted channel (VT-CHAN-3)
+    S->>U: request (User Agent schemas)
+    U->>S: answer ([UA, e1, issuer_did, exchange_required false, more false])
+    S->>U: presentation-request (e1)
+    U->>S: presentation (User Agent credential)
+    Note over S: verifies it per TR (VS-CONN-VUA)
+    Note over U,S: both verified: issuance, presentation, application protocols
+```
+
+A VS opens a channel to another VS:
+
+```mermaid
+sequenceDiagram
+    participant A as VS A
+    participant B as VS B
+    Note over A: trust-resolves the DID of B (VS-SVC-4)
+    A->>B: opens the trusted channel (VT-CHAN-3)
+    Note over B: trust-resolves the DID of A, authenticated by the channel (VS-CONN-VS)
+    Note over A,B: both verified
+```
+
+Two VUAs:
+
+```mermaid
+sequenceDiagram
+    participant U1 as VUA 1
+    participant U2 as VUA 2
+    U1->>U2: opens the trusted channel
+    U2->>U1: request (User Agent schemas)
+    U1->>U2: answer, presentation-request, presentation (its User Agent credential)
+    U1->>U2: request (User Agent schemas)
+    U2->>U1: answer, presentation-request, presentation (its User Agent credential)
+    Note over U1,U2: both verified, else the channel is closed (VUA-CONN-VUA)
+```
+
+#### [VT-PRES-VS] Credential Presentation
 
 How a verifier (a [[ref: VS]], or a [[ref: VUA]] within [PRB-1]) obtains over a [[ref: trusted channel]] the presentation of credentials held by a [[ref: VS]] (`SERVICE` schemas declared `ON_REQUEST` or `ON_APPROVAL`, [VT-DECL]) or by the person using a [[ref: VUA]] (`PERSON` schemas, [VT-DECL-SUBJECT-2]); `PUBLIC` credentials are read from the holder's DID Document. Two phases: the verifier asks which credentials of the requested schemas the holder will present, and the holder answers, automatically (`ON_REQUEST`) or after the consent and selection of its controller or of the person (`ON_APPROVAL`, `PERSON`), disclosing nothing before that consent; then each credential answered is exchanged on its own, the verifier recording and paying the exchange when one is required, the holder presenting. No answer confirms a claim before the exchange is recorded: a verifier cannot obtain for free what it would pay a presentation for. OpenID4VP and the Digital Credentials API carry no such phases: a [[ref: VS]] requests over them, in this version, only presentations requiring no `CredentialExchange` ([PRB-5]). Messages: [VT-PRES-VS-MSG].
 
@@ -2078,7 +2162,7 @@ How a verifier (a [[ref: VS]], or a [[ref: VUA]] within [PRB-1]) obtains over a 
 - [VT-PRES-VS-8] **Evidence.** Both parties SHOULD retain the `CredentialExchange` identifier, the transaction hash with its inclusion proof and the presentation for the period their governance frameworks require. When the `presentation_validity_period` in force at the effective presentation time is greater than 0, the presentation is evidence of a verification only until the block time of the transaction that carried its digest plus that period; afterwards the verifier MUST obtain a new presentation through a new `CredentialExchange`. That end is stored nowhere: an indexer computes it from the event and the schema's update history, and the value a party read at the verification is its estimate, kept with its evidence. A W3C or SD-JWT presentation MAY carry it (the `expires` of its Data Integrity proof, the `exp` of its Key Binding JWT), committed to by the anchored digest. Trust resolution never applies it.
 - [VT-PRES-VS-9] **Presentation digest.** Anchoring the presentation is mandatory when the schema's `presentation_validity_period`, read from the VPR at the time of the verification ([VT-DECL-RECORD-3]), is greater than 0; otherwise the verifier MAY ask for it in its request. Either way a `CredentialExchange` is implied even with fees of 0 ([VT-DECL-RECORD-1]): the transaction anchors the digest. The holder builds and proves the presentation before [VT-PRES-VS-6], digests it as it will be transmitted (canonicalized with [JCS](https://www.rfc-editor.org/rfc/rfc8785) when it is a JSON document, its exact bytes otherwise, hashed with the schema's `digest_algorithm`), sends the digest in its answer for that credential, and presents only after verifying that the transaction carries exactly that digest ([VT-PRES-VS-6]). The block time of that transaction is the effective presentation time: the holder can prove to whom and when it presented, the verifier what it received, with no content on chain. Unless the schema requires it, anchoring is the verifier's decision: a verifier that asked for it MUST anchor (the holder presents only after checking the transaction), and a holder MUST NOT be required to anchor anything itself. A verifier that receives a digest it did not ask for (the holder read a period greater than 0) MUST anchor it or end the exchange, never obtain the presentation without anchoring it.
 
-#### [VT-PRES-VS-MSG] Messages
+##### [VT-PRES-VS-MSG] Messages
 
 [VT-PRES-VS-3] to [VT-PRES-VS-9] are carried over the [[ref: trusted channel]] by the **Verifiable Trust presentation protocol** and, for the presentation itself, by the presentation protocol of the channel's binding ([VT-CHAN-2]).
 
@@ -2152,30 +2236,6 @@ sequenceDiagram
     V->>H: request-presentation (challenge e1)
     H->>V: presentation
 ```
-
-### [VS-CONN-VS] Requirements for a VS to accept a connection from another service
-
-When a [[ref: VS]] VS-1 receives a connection request from a service Service-2 to one of its service endpoints, declared in its DID Document or provided over a trusted channel (see [VS-SVC]), VS-1 MUST verify that Service-2 complies with [VS-REQ] and [VS-SVC], before or after establishing the channel ([VT-CHAN-4]), else VS-1 MUST NOT provide it any service, unless the purpose of the service provided by VS-1 is the issuance of [VT-ECS-ORG-CRED-W3C] or [VT-ECS-PERSONA-CRED-W3C] or [VT-ECS-SERVICE-CRED-W3C] credentials.
-
-### [VS-CONN-VUA] Requirements for a VS to accept a connection from a User Agent
-
-When a [[ref: VS]] connects with a User Agent, whichever party initiated the connection, it MUST request the presentation of a [VT-ECS-UA-CRED-ANON] credential before starting to provide the service, and verify the presented credential per [TR]: an AnonCreds credential of the User Agent schema, whose issuer MUST be currently authorized for that schema ([TR-5]: an `ISSUER` entry [[ref: in force]], a slash debt notwithstanding), presented under the configuration of [VT-ECS-JSON-SCHEMA-VPR-CONFIG] (`OPEN` verifier mode, zero fees, no `CredentialExchange`, no anchoring), so that no `Accreditation` entry of the VS is involved. If no credential is presented or the presented credential does not verify, the [[ref: VS]] MUST NOT provide the service, unless the purpose of the service is the issuance of [VT-ECS-UA-CRED-ANON] credentials: a User Agent connects to its User Agent credential issuer precisely because it holds none yet, and that issuer applies its own checks instead. Nor does this requirement apply to the OpenID4VC protocol endpoints of [VS-SVC-8]: a [[ref: VS]] that issues over OpenID4VCI ([CIB-5]) or requests a presentation over OpenID4VP or the Digital Credentials API ([PRB-5]) acts at the one-way level of [VS-SVC], which carries no User Agent credential ([VS-REQ-8]), and therefore with no `CredentialExchange` and no Verifiable User Agent reward.
-
-The issuer of the verified User Agent credential is the vendor of the User Agent. For every `CredentialExchange` the [[ref: VS]] sends for an exchange with that User Agent, it sets `vua_issuer_accreditation_id` to the `ISSUER` entry of that issuer under the User Agent schema that its trust resolution matched ([TR-5]), barred or not: the VPR pays no reward to a barred entry and the exchange goes through; the User Agent sends nothing for it, and a value it would send is ignored; but it checks it: a User Agent completes an exchange only after verifying, through its indexer, that the exchange transaction carries its vendor's entry as `vua_issuer_accreditation_id` ([CIT-5], [VT-PRES-VS-6]). That entry receives the Verifiable User Agent reward of the exchange, at the rate it declares (`vua_reward_rate`) bounded by the network's `vua_reward_rate` ([Record Credential Exchange](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-10-record-credential-exchange)). A User Agent whose credential does not verify is not served, so no reward is ever attributed to a vendor whose entry is gone.
-
-After the [VT-ECS-UA-CRED-ANON] credential has been verified, the [[ref: VS]] MAY additionally request the presentation of a [VT-ECS-BADGE-CRED-ANON] credential to identify the human operating the User Agent and the organization or persona they represent (obtained by trust-resolving the Badge issuer, per [TR]).
-
-### [VUA-CONN-VS] Requirements for a VUA to accept connecting to a service
-
-When a [[ref: VUA]] connects to a service, the [[ref: VUA]] MUST verify that the service complies with [VS-REQ] and [VS-SVC], else the VUA MUST NOT connect to the VS.
-
-### [VUA-CONN-VUA] Requirements for two VUAs to connect
-
-When a [[ref: VUA]] receives a connection from a User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED-ANON] credential before starting to provide the service, and verify the presented credential per [TR], under the configuration of [VT-ECS-JSON-SCHEMA-VPR-CONFIG] (no `CredentialExchange`, no fee, no anchoring); if no credential is presented or the presented credential does not verify, the VUA MUST close the channel and MUST NOT provide the service ([VT-CHAN-4]).
-
-When a [[ref: VUA]] initiates a connection to another User Agent, it MUST request the presentation of a [VT-ECS-UA-CRED-ANON] credential before starting to provide the service, and verify the presented credential per [TR], under the configuration of [VT-ECS-JSON-SCHEMA-VPR-CONFIG] (no `CredentialExchange`, no fee, no anchoring); if no credential is presented or the presented credential does not verify, the VUA MUST close the channel and MUST NOT provide the service ([VT-CHAN-4]).
-
-For communication channel between User Agents to be enabled, both User Agents MUST have requested and verified the [VT-ECS-UA-CRED-ANON] credential presented by the peer.
 
 ### [TR] Trust Resolution
 
