@@ -2080,9 +2080,9 @@ How a verifier (a [[ref: VS]], or a [[ref: VUA]] within [PRB-1]) obtains over a 
 
 #### [VT-PRES-VS-MSG] Messages
 
-[VT-PRES-VS-3] to [VT-PRES-VS-9] are carried over the [[ref: trusted channel]] by the **Verifiable Trust presentation protocol**, identifier `https://verana.io/vt-presentation/1.0`, and, for the presentation itself, by the presentation protocol of the channel's binding ([VT-CHAN-2]).
+[VT-PRES-VS-3] to [VT-PRES-VS-9] are carried over the [[ref: trusted channel]] by the **Verifiable Trust presentation protocol** and, for the presentation itself, by the presentation protocol of the channel's binding ([VT-CHAN-2]).
 
-- [VT-PRES-VS-MSG-1] **Envelope.** A message type is the protocol identifier followed by `/` and the message name. Bodies are JSON objects. All the messages of one request, and the presentations it leads to, are correlated to the `request` ([VT-CHAN-1]). How types, bodies and correlation are carried is the binding of the channel's protocol ([VT-CHAN-DIDCOMM-1]).
+- [VT-PRES-VS-MSG-1] **Envelope.** Each message has a name (`request`, `answer`, `next`, `exchange-recorded`) and a JSON body. All the messages of one request, and the presentations it leads to, are correlated to the `request` ([VT-CHAN-1]). How types, bodies and correlation are carried is the binding of the channel's protocol ([VT-CHAN-DIDCOMM-1]).
 - [VT-PRES-VS-MSG-2] **`request`** (verifier to holder): `schemas`, a non-empty list of `{ "vtjsc": <the id of the VTJSC>, "anchor": <boolean> }`, `anchor` true asking that the presentation be anchored ([VT-PRES-VS-9]); `purpose`, an optional free-text string ([VT-PRES-VS-3]).
 - [VT-PRES-VS-MSG-3] **`answer`** (holder to verifier): `credentials`, a list of `{ "vtjsc", "exchange_id": <uuid>, "issuer_did": <DID>, "exchange_required": <boolean>, "presentation_digest": <string, when anchored>, "more": <boolean, ON_REQUEST only> }`, as [VT-PRES-VS-4] specifies. A schema absent from the list, an empty list, or no `answer` at all, is a decline ([VT-PRES-VS-5]).
 - [VT-PRES-VS-MSG-4] **`next`** (verifier to holder, `ON_REQUEST` only): `vtjsc`; asks the next credential of that schema, answered with a new `answer` ([VT-PRES-VS-6]).
