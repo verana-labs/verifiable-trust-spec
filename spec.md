@@ -1877,7 +1877,7 @@ The [Trust Spanning Protocol](https://trustoverip.github.io/tswg-tsp-specificati
 
 ### [VS-SVC] Service Declaration
 
-A Verifiable Service is consumed over the [[ref: trusted channel]] established with it ([VT-CHAN]), through service endpoints declared in its [[ref: DID Document]], and/or through endpoints it provides to an authenticated peer over that channel. Two levels of authentication apply:
+A Verifiable Service is consumed over the [[ref: trusted channel]] established with it ([VT-CHAN]) and/or through endpoints it provides to an authenticated peer over that channel, or through service endpoints declared in its [[ref: DID Document]]. Two levels of authentication apply:
 
 - **One-way (declared endpoints).** The peer trust-resolves the DID of the [[ref: VS]] ([TR]) and consumes an endpoint declared in its DID Document ([VS-SVC-4], [VS-SVC-5]): the VS is authenticated, the peer is not, unless the endpoint's own protocol authenticates it. This level serves what the VS makes available without identifying its peer: public content, and the protocol endpoints of [VS-SVC-8].
 - **Mutual, over a trusted channel (strong).**
