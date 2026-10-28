@@ -1850,7 +1850,7 @@ This ensures that every Verifiable Service is ultimately bound to a legally or n
 
 ### [VT-CHAN] Trusted Channels
 
-Parties that must authenticate each other (a [[ref: VS]] and its peers, two [[ref: VUAs]]) establish a [[ref: trusted channel]], over which they exchange credentials, presentations and messages and consume services ([VS-SVC]). This specification states its rules against the properties of a trusted channel; how a [[ref: trusted channel protocol]] provides them, and carries the messages this specification defines, is its binding. Adding a protocol adds a row to [VT-CHAN-2] and a binding, and changes no other rule.
+Parties that must authenticate each other (a [[ref: VS]] and its peers, two [[ref: VUAs]]) establish a [[ref: trusted channel]], over which they exchange credentials, presentations and messages and consume services ([VS-SVC]). This specification states its rules against the properties of a trusted channel; how a [[ref: trusted channel protocol]] provides them, and carries the messages of [VT-PROTO], is its binding ([VT-BIND]). Adding a protocol adds a row to [VT-CHAN-2] and a binding, and changes no other rule.
 
 - [VT-CHAN-1] **Properties.** A trusted channel protocol MUST provide:
   1. authentication of the identifiers at establishment (peer verification is [VT-CHAN-4]): each party proves control of the DID it claims, or of keys asserted under it; a party without a resolvable DID (a [[ref: VUA]] instance) proves control of the keys it uses for the channel, and authenticates the DID of its counterpart;
@@ -1862,20 +1862,13 @@ Parties that must authenticate each other (a [[ref: VS]] and its peers, two [[re
 
 | Protocol | DID Document service type | Binding |
 | --- | --- | --- |
-| [DIDComm Messaging](https://identity.foundation/didcomm-messaging/spec/) v2 (2.x) | `DIDCommMessaging`, its `serviceEndpoint` an object with `uri` and `accept: ["didcomm/v2"]` | [VT-CHAN-DIDCOMM] |
-| [DIDComm](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0005-didcomm) v1 | `did-communication`, with `serviceEndpoint`, `recipientKeys`, `routingKeys` and `accept: ["didcomm/aip2;env=rfc19"]` | [VT-CHAN-DIDCOMM] |
+| [DIDComm Messaging](https://identity.foundation/didcomm-messaging/spec/) v2 (2.x) | `DIDCommMessaging`, its `serviceEndpoint` an object with `uri` and `accept: ["didcomm/v2"]` | [VT-BIND-DIDCOMM2] |
+| [DIDComm](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0005-didcomm) v1 | `did-communication`, with `serviceEndpoint`, `recipientKeys`, `routingKeys` and `accept: ["didcomm/aip2;env=rfc19"]` | [VT-BIND-DIDCOMM1] |
 
 The [Trust Spanning Protocol](https://trustoverip.github.io/tswg-tsp-specification/) is expected to join this list in a later version.
 
 - [VT-CHAN-3] **Binding to the trust-resolved DID.** A trusted channel with a [[ref: VS]] MUST be established through a service entry of a listed protocol that the VS declares in its DID Document, with the DID of the VS as its party, so that the messages the VS sends on it are authenticated by keys of that DID or by keys asserted under it at establishment. Everything this specification attributes to a channel with a VS (credentials, presentations, access material, endpoints, services) requires that binding; a channel not so bound is not a trusted channel with that VS.
 - [VT-CHAN-4] **Channel and peer verification.** Establishing a trusted channel authenticates identifiers and keys ([VT-CHAN-1]); it does not establish that the peer is a [[ref: VS]] or a [[ref: VUA]]. That verification ([VS-REQ], [VUA-REQ]) takes place before the channel when the peer's DID is known in advance (trust resolution, [VS-SVC-4]), and otherwise over the channel once established ([VT-PROTO-VERIF]): a User Agent by its User Agent credential ([VS-CONN-VUA], [VUA-CONN-VUA]), a service that opened the channel by trust resolution of the DID the channel authenticated ([VS-CONN-VS]). Until both parties are verified, the channel carries only the messages of that verification, and no service is provided ([VS-REQ-8]).
-
-#### [VT-CHAN-DIDCOMM] DIDComm binding
-
-- [VT-CHAN-DIDCOMM-1] **Envelope.** Over DIDComm v1 a message type is carried as the `@type` of the message and its thread as `~thread`; over DIDComm v2, as `type` and `thid`. Bodies are carried as the message body.
-- [VT-CHAN-DIDCOMM-2] **Presentation** ([VT-PRES-VS-MSG-6]). [Present Proof 2.0](https://github.com/hyperledger/aries-rfcs/tree/main/features/0454-present-proof-v2) over DIDComm v1 and [Present Proof 3.0](https://didcomm.org/present-proof/3.0/) over DIDComm v2, in a thread whose parent is the `request`'s: the verifier sends `request-presentation` for one credential, with its `exchange_id` as the challenge, and the holder sends `presentation`. Attachment formats: `anoncreds/proof-request@v1.0` and `anoncreds/proof@v1.0` for [VT-CRED-ANON]; `dif/presentation-exchange/definitions@v1.0` and `dif/presentation-exchange/submission@v1.0` for [VT-CRED-W3C] and [VT-CRED-SDJWT].
-- [VT-CHAN-DIDCOMM-3] **Issuance** ([CIT-5]). [Issue Credential 2.0](https://github.com/hyperledger/aries-rfcs/tree/main/features/0453-issue-credential-v2) over DIDComm v1 and [Issue Credential 3.0](https://didcomm.org/issue-credential/3.0/) over DIDComm v2: the holder carries the `CredentialExchange` identifier it chose in its `request-credential` message, and the issuer records the exchange before `issue-credential`.
-- [VT-CHAN-DIDCOMM-4] **Errors** ([VT-PRES-VS-MSG-7]). The `problem-report` message of the DIDComm version in use.
 
 ### [VS-SVC] Service Declaration
 
@@ -2284,6 +2277,33 @@ sequenceDiagram
     V->>H: presentation-request (e1)
     H->>V: presentation
 ```
+
+### [VT-BIND] Bindings
+
+A binding maps [VT-PROTO] onto one [[ref: trusted channel protocol]] of [VT-CHAN-2]; adding a protocol to the list adds a binding.
+
+- [VT-BIND-1] **Content.** A binding specifies:
+  1. the DID Document service type, and how a channel is opened from the DID;
+  2. how the protocol meets [VT-CHAN-1] and [VT-CHAN-3]: how the DID of a [[ref: VS]] is its party, and how a party without a resolvable DID authenticates;
+  3. the type identifier, the encoding and the correlation of every message of [VT-PROTO];
+  4. the protocols and attachment formats that carry offers, credential requests, credentials, presentation requests and presentations, per container;
+  5. how `error` is carried.
+
+#### [VT-BIND-DIDCOMM2] DIDComm v2 binding
+
+- [VT-BIND-DIDCOMM2-1] **Service and channel.** A `DIDCommMessaging` service entry, its `serviceEndpoint` an object with `uri` and `accept: ["didcomm/v2"]`. A party opens a channel with authenticated-encrypted messages to the DID of its peer, whose key agreement keys it resolves from the DID Document, or by accepting an out-of-band invitation whose `from` is that DID; a [[ref: VS]] is the party under its DID ([VT-CHAN-3]), and a party without a resolvable DID uses a `did:peer` DID it controls.
+- [VT-BIND-DIDCOMM2-2] **Messages.** A message of [VT-PROTO] that the next rules do not map is a DIDComm v2 message whose `type` is `https://verana.io/didcomm/vt/1.0/` followed by the message name (`request`, `answer`, `next`, `exchange-recorded`), whose `body` is a JSON object with the fields of [VT-PROTO] under the same names, and whose `thid` is the `id` of the first message of the exchange.
+- [VT-BIND-DIDCOMM2-3] **Issuance.** [Issue Credential 3.0](https://didcomm.org/issue-credential/3.0/): `offer` is `offer-credential`, `credential-request` is `request-credential` with `exchange_id` in its `body`, `credential` is `issue-credential`. Attachment formats: `anoncreds/credential-offer@v1.0`, `anoncreds/credential-request@v1.0` and `anoncreds/credential@v1.0` for [VT-CRED-ANON]; `aries/ld-proof-vc-detail@v1.0` and `aries/ld-proof-vc@v1.0` for [VT-CRED-W3C].
+- [VT-BIND-DIDCOMM2-4] **Presentation.** [Present Proof 3.0](https://didcomm.org/present-proof/3.0/): `presentation-request` is `request-presentation`, `presentation` is `presentation`, in a thread whose `pthid` is the `request`'s. Attachment formats: `anoncreds/proof-request@v1.0` and `anoncreds/proof@v1.0` for [VT-CRED-ANON]; `dif/presentation-exchange/definitions@v1.0` and `dif/presentation-exchange/submission@v1.0` for [VT-CRED-W3C].
+- [VT-BIND-DIDCOMM2-5] **Errors.** `error` is a DIDComm v2 [problem report](https://identity.foundation/didcomm-messaging/spec/#problem-reports) whose code carries the code of [VT-PROTO-4].
+
+#### [VT-BIND-DIDCOMM1] DIDComm v1 binding
+
+- [VT-BIND-DIDCOMM1-1] **Service and channel.** A `did-communication` service entry, with `serviceEndpoint`, `recipientKeys`, `routingKeys` and `accept: ["didcomm/aip2;env=rfc19"]`. A channel with a [[ref: VS]] is established with [DID Exchange](https://github.com/hyperledger/aries-rfcs/tree/main/features/0023-did-exchange) using the VS's DID, through an implicit invitation or an out-of-band invitation naming that DID, so that the VS's DID is its party ([VT-CHAN-3]); a party without a resolvable DID uses a `did:peer` DID it controls. Messages are packed with authenticated encryption ([RFC 0019](https://github.com/hyperledger/aries-rfcs/tree/main/features/0019-encryption-envelope)).
+- [VT-BIND-DIDCOMM1-2] **Messages.** A message of [VT-PROTO] that the next rules do not map is a DIDComm v1 message whose `@type` is `https://verana.io/didcomm/vt/1.0/` followed by the message name, whose fields are top-level properties under the names of [VT-PROTO], and whose `~thread.thid` is the `@id` of the first message of the exchange.
+- [VT-BIND-DIDCOMM1-3] **Issuance.** [Issue Credential 2.0](https://github.com/hyperledger/aries-rfcs/tree/main/features/0453-issue-credential-v2): `offer` is `offer-credential`, `credential-request` is `request-credential` with `exchange_id` as a top-level property, `credential` is `issue-credential`. Attachment formats: `anoncreds/credential-offer@v1.0`, `anoncreds/credential-request@v1.0` and `anoncreds/credential@v1.0` for [VT-CRED-ANON]; `aries/ld-proof-vc-detail@v1.0` and `aries/ld-proof-vc@v1.0` for [VT-CRED-W3C].
+- [VT-BIND-DIDCOMM1-4] **Presentation.** [Present Proof 2.0](https://github.com/hyperledger/aries-rfcs/tree/main/features/0454-present-proof-v2): `presentation-request` is `request-presentation`, `presentation` is `presentation`, in a thread whose `~thread.pthid` is the `request`'s. Attachment formats: `anoncreds/proof-request@v1.0` and `anoncreds/proof@v1.0` for [VT-CRED-ANON]; `dif/presentation-exchange/definitions@v1.0` and `dif/presentation-exchange/submission@v1.0` for [VT-CRED-W3C].
+- [VT-BIND-DIDCOMM1-5] **Errors.** `error` is a [problem report](https://github.com/hyperledger/aries-rfcs/tree/main/features/0035-report-problem) whose `description.code` carries the code of [VT-PROTO-4].
 
 ### [TR] Trust Resolution
 
