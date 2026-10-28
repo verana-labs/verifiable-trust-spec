@@ -2056,7 +2056,7 @@ These requirements ensure that a Verifiable User Agent can cryptographically pro
 - [CIT-2] A [[ref: VS]] or a [[ref: VUA]] MUST NOT be offered credentials that are not compliant with [VT-CRED].
 - [CIT-3] When a [[ref: VS]] or a [[ref: VUA]] is offered a credential, it MUST verify that the issuer is authorized by the Ecosystem that controls the schema to issue a credential of this schema. A [[ref: VS]] offered a Service credential ([VT-ECS-SERVICE-CRED-W3C]) MUST refuse it unless the issuer's [[ref: verifiable service entry]] is owned by its own corporation ([VS-REQ-4]). For an issuer that holds an `ISSUER` entry, authorized means an entry active in the VPR sense (its window open, and neither its participation nor its corporation barred by a slash debt or an exclusion); for an `OPEN` issuer, a participation and a corporation neither barred nor excluded. A debt therefore bars new issuances even under schemas where no exchange transaction exists to refuse them, while the trust resolution of credentials already issued ignores it ([TR-5], [TR-12]). The holder MUST also verify, through an indexer of its whitelist ([WL-VPR]), that the issuer's corporation has accepted the version in force of the ecosystem's governance framework, or a former version within the grace period of its activation (VPR [GF-CHECK-3]), unless the issuer's corporation controls the ecosystem: the VPR refuses the issuance transaction of an issuer that has not, and the holder refuses the credential where no transaction exists.
 - [CIT-4] When a [[ref: VS]] or a [[ref: VUA]] receives a credential of a schema whose `credential_anchoring` is `DIGEST` or `REVOCABLE_DIGEST` (a W3C VTC, or an SD-JWT or mdoc VTC of such a schema), it MUST compute the credential's digest (`digestJCS`, the SD-JWT digest of [VT-CRED-SDJWT] or the mdoc digest of [VT-CRED-MDOC]), verify through its indexer that the issuance transaction anchored it (the earliest under the issuer's entry and schema, [TR-4]), and refuse the credential unless that anchoring passes the check of [TR-4] (signed for the issuer's [[ref: verifiable service entry]] with the schema, the issuer holding an `ISSUER` entry effective at the block time or, under an `OPEN` schema, none). Under `REVOCABLE_DIGEST` ([VT-DECL-ANCHOR-4]) it MUST additionally find the `Digest` entry, with `revoked` null and an `expires` equal to the credential's expiry. A missing anchoring means that the issuer did not anchor the credential before delivering it; under `REVOCABLE_DIGEST`, a `Digest` entry under another verifiable service entry means that the issuance could not anchor the credential (the VPR refuses it): the anchoring is missing.
-- [CIT-5] When issuance fees are due along the issuer's branch for the schema (which the holder determines with the VPR's Find Beneficiaries query, for the schema and the issuer's `ISSUER` entry when it holds one, and the fees of the entries it returns), a [[ref: VS]] or a [[ref: VUA]] MUST verify, before storing the credential, through the notification of an indexer of its whitelist ([WL-VPR]), that a `CredentialExchange` transaction was included under the identifier it supplied to the issuer when accepting the offer (a `CredentialExchange` identifier, uuid, chosen by the holder as in [VT-PRES-VS-4], and carried in its credential request over the [[ref: trusted channel]], as the binding of the channel's protocol specifies ([VT-CHAN-DIDCOMM-3]), the issuer recording the exchange before issuing), signed for the issuer's corporation as a Credential Issuance with the issuer's `ISSUER` entry, or its [[ref: verifiable service entry]] when it holds none (`OPEN`), and the schema as primary party, and, when the holder is a User Agent, carrying the `ISSUER` entry of its vendor as `vua_issuer_accreditation_id` ([VS-CONN-VUA]). Under an anchored schema the existence of the issuance exchange follows from [CIT-4], since the digest is anchored by that exchange transaction, and the holder still checks its identifier and, for a User Agent, `vua_issuer_accreditation_id`; under `NO_DIGEST` it is the only enforcement of issuance fees. For the issuance of a User Agent credential itself, the issuer sets `vua_issuer_accreditation_id` to its own `ISSUER` entry under the User Agent schema ([VS-CONN-VUA]).
+- [CIT-5] When issuance fees are due along the issuer's branch for the schema (which the holder determines with the VPR's Find Beneficiaries query, for the schema and the issuer's `ISSUER` entry when it holds one, and the fees of the entries it returns), a [[ref: VS]] or a [[ref: VUA]] MUST verify, before storing the credential, through the notification of an indexer of its whitelist ([WL-VPR]), that a `CredentialExchange` transaction was included under the identifier it supplied to the issuer when accepting the offer (a `CredentialExchange` identifier, uuid, chosen by the holder as in [VT-PRES-VS-4], and carried in its `credential-request`, the issuer recording the exchange before issuing, [VT-PROTO-ISS]), signed for the issuer's corporation as a Credential Issuance with the issuer's `ISSUER` entry, or its [[ref: verifiable service entry]] when it holds none (`OPEN`), and the schema as primary party, and, when the holder is a User Agent, carrying the `ISSUER` entry of its vendor as `vua_issuer_accreditation_id` ([VS-CONN-VUA]). Under an anchored schema the existence of the issuance exchange follows from [CIT-4], since the digest is anchored by that exchange transaction, and the holder still checks its identifier and, for a User Agent, `vua_issuer_accreditation_id`; under `NO_DIGEST` it is the only enforcement of issuance fees. For the issuance of a User Agent credential itself, the issuer sets `vua_issuer_accreditation_id` to its own `ISSUER` entry under the User Agent schema ([VS-CONN-VUA]).
 
 ### [PRT] Presentation Requested to
 
@@ -2146,6 +2146,51 @@ sequenceDiagram
     U1->>U2: request (User Agent schemas)
     U2->>U1: answer, presentation-request, presentation (its User Agent credential)
     Note over U1,U2: both verified, else the channel is closed (VUA-CONN-VUA)
+```
+
+#### [VT-PROTO-ISS] Credential Issuance
+
+The issuance of a credential over a [[ref: trusted channel]], after [VT-PROTO-VERIF]:
+
+| Message | From | Fields |
+| --- | --- | --- |
+| `offer` | issuer | `vtjsc`; `issuer_did`; `exchange_required` (boolean: a `CredentialExchange` will be recorded, the schema being anchored or issuance fees being due); the format-specific offer (an AnonCreds credential offer, or the W3C credential to be issued, without its proof); optional `comment` |
+| `credential-request` | holder | `exchange_id` (UUID chosen by the holder, [CIT-5]); the format-specific request (an AnonCreds credential request, or the holder's acceptance of the W3C credential) |
+| `credential` | issuer | `exchange_id`; the credential |
+
+- [VT-PROTO-ISS-1] **Offer.** The issuer sends `offer` once the holder is verified ([VT-PROTO-VERIF]) and, for a schema whose `holder_onboarding_mode` is `ISSUER_ONBOARDING_PROCESS`, once the holder holds an active `HOLDER` entry ([VT-DECL-HOLDER-1]). A holder MAY ask for an offer through an application protocol ([VT-PROTO-5]).
+- [VT-PROTO-ISS-2] **Request.** The holder verifies the issuer ([CIT-3]) and determines whether issuance fees are due ([CIT-5]); it accepts with `credential-request`, which always carries an `exchange_id` it generated, and declines by sending nothing.
+- [VT-PROTO-ISS-3] **Record.** When the schema is anchored or issuance fees are due, the issuer records the `CredentialExchange` under that `exchange_id`, anchoring the credential's digest under an anchored schema ([VT-DECL-ANCHOR-1]), and sends `exchange-recorded` ([VT-PROTO-3]) before `credential`; otherwise it sends `credential` directly.
+- [VT-PROTO-ISS-4] **Reception.** Before storing the credential, the holder applies [CIT-3], [CIT-4] and [CIT-5]. A credential that fails them is discarded, with `error` `exchange-not-recorded` when no included transaction matches the exchange.
+
+With an exchange (an anchored or fee-bearing schema):
+
+```mermaid
+sequenceDiagram
+    participant I as Issuer VS
+    participant H as Holder (VS or VUA)
+    participant VPR as VPR
+    Note over I,H: both verified (VT-PROTO-VERIF)
+    I->>H: offer (vtjsc, issuer_did, exchange_required true)
+    Note over H: CIT-3 issuer authorized, CIT-5 fees
+    H->>I: credential-request (e1)
+    Note over I: signs the credential, computes its digest
+    I->>VPR: Record Credential Exchange (e1, schema, issuer ref, digest)
+    I->>H: exchange-recorded (e1, tx_hash)
+    I->>H: credential (e1)
+    Note over H: CIT-4 and CIT-5 through its indexer, then stores
+```
+
+Without an exchange (a `NO_DIGEST` schema with no issuance fees):
+
+```mermaid
+sequenceDiagram
+    participant I as Issuer VS
+    participant H as Holder (VS or VUA)
+    I->>H: offer (vtjsc, issuer_did, exchange_required false)
+    Note over H: CIT-3 issuer authorized
+    H->>I: credential-request (e1)
+    I->>H: credential (e1)
 ```
 
 #### [VT-PRES-VS] Credential Presentation
