@@ -57,44 +57,35 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 
 ## Terminology
 
+[[def: corporation, corporations]]:
+~ A [[ref: VPR]] resource representing a legal/organizational entity that operates one or more [[ref: VSs]], each registered as a [[ref: verifiable service entry]] it owns, and controls one or more [[ref: ecosystems]] and/or holds `Accreditation` entries in one or more ecosystems. See [Corporation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#corporation) in the VPR spec.
+
 [[def: credential schema, credential schemas]]:
 ~ An [[ref: VPR]] resource which represents a verifiable credential definition and the associated accreditations and business rules for issuing, verifying or holding a credential linked to this credential schema.
 
 [[def: decentralized identifier, DID, DIDs]]:
 ~ A decentralized identifier, as specified in [[spec-norm:DID-CORE]].
 
-[[def: verifiable identifier, VID, VIDs]]:
-~ A digital identifier bound to cryptographic key material, such that another party can verify control of the identifier and resolve it to keys and endpoints, as specified in the [Trust Spanning Protocol (TSP) Specification](https://trustoverip.github.io/tswg-tsp-specification/). [[ref: DIDs]] are one type of VID. A [[ref: VPR]] registers VIDs without resolving them ([[ref: verifiable service entry]]); this specification requires the VIDs it resolves to be [[ref: DIDs]].
-
-[[def: verifiable service entry, verifiable service entries]]:
-~ The registration of a [[ref: VID]] in a [[ref: VPR]] (a `VerifiableService` entry, referenced by `vs_id`): it records the owner [[ref: corporation]], the agent account that operates the service, and the current value of the identifier; former values and their transition windows are known from the VPR's rotation events. Every `Accreditation` entry of a service references it, and a service MAY be registered without holding any `Accreditation` entry. See the [VPR spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#verifiableservice).
-
 [[def: decentralized identifier communication, DIDComm]]:
 ~ [DIDComm](https://identity.foundation/didcomm-messaging/spec/) uses [[ref: DIDs]] to establish confidential, ongoing connections.
-
-[[def: trusted channel, trusted channels]]:
-~ A connection between two parties over which each has authenticated the identifier of the other, and which carries their messages confidentially, with integrity and sender authentication, bound to the identifiers resolved. It is established with a [[ref: trusted channel protocol]] ([VT-CHAN]).
-
-[[def: trusted channel protocol, trusted channel protocols]]:
-~ A protocol listed in [VT-CHAN] as establishing [[ref: trusted channels]]: DIDComm v2 and DIDComm v1 in this version.
 
 [[def: decentralized identifier document, DID Document, DID Documents]]:
 ~ A DID Document, as specified in [[spec-norm:DID-CORE]].
 
-[[def: verifiable public registry, VPR, VPRs]]:
-~ a public, normally decentralized network, which provides: ecosystem features, that can be used by all its [[ref: participants]]: create ecosystems, for each ecosystem, define its credential schemas, who can issue, verify credential of a specific credential schema,... For more information, please refer to [VPR Spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/).
-
-[[def: verifiable service, VS, VSs]]:
-~ A service, identified by a resolvable [[ref: DID]], that can be deployed anywhere by its owner, that conforms to this spec, and that has a resolvable [[ref: proof of trust]]. A VS declares its service endpoints in its [[ref: DID Document]] (see [VS-SVC]); it MUST declare a service entry for each [[ref: trusted channel protocol]] it implements, DIDComm v2 at least, and MAY declare additional services such as MCP, A2A, a website, or any other service type.
-
-[[def: verifiable user agent, VUA, VUAs]]:
-~ A user agent for accessing and using [[ref: VSs]]. To be considered a [[ref: VUA]], a user agent must conform and enforce this spec, such as presenting a proof of trust to end user before accepting connecting to [[ref: VS]] compliant services, and refuse connecting to not compliant services.
+[[def: ecosystem, ecosystems]]:
+~ A [[ref: VPR]] resource, controlled by a [[ref: corporation]], that defines an approved list of [[ref: participants]] (issuers, verifiers, grantors, holders) authorized to issue, verify or hold credentials for a given set of credential schemas. The Ecosystem entry plays the role formerly known as "trust registry". For the canonical data model, see [Ecosystem](https://verana-labs.github.io/verifiable-trust-vpr-spec/#ecosystem) in the VPR spec.
 
 [[def: essential credential schema, essential credential schemas]]:
 ~ Default [[ref: credential schema]], owned by an [[ref: ecosystem]], that provide the basis for a trust layer to exist in the ecosystem so that [[ref: VUA]] can generate a [[ref: proof of trust]].
 
+[[def: evaluated time]]:
+~ The time at which a relying party runs a trust resolution; "currently" and "at the evaluated time" in this specification mean at that time.
+
 [[def: holder, holders]]:
 ~ A role an entity might perform by possessing one or more verifiable credentials and generating verifiable presentations from them. A holder is often, but not always, a [[ref: subject]] of the verifiable credentials they are holding. Holders store their credentials in credential repositories. Example holders include organizations, persons, things.
+
+[[def: in force]]:
+~ Of an `Accreditation` entry, for trust resolution: within its effective window, and neither its participation nor its corporation excluded ([TR-12]). Differs from the VPR's *active*, which also requires the absence of a slash debt: a debt bars acts, it does not withdraw trust.
 
 [[def: issuer, issuers]]:
 ~ A role an entity can perform by asserting claims about one or more [[ref: subjects]], creating a verifiable credential from these claims, and transmitting the verifiable credential to a [[ref: holder]]. Example issuers include corporations, non-profit organizations, trade associations, governments, and individuals.
@@ -102,38 +93,47 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 [[def: linked-vp]]:
 ~ A presentation of a [[ref: verifiable credential]] as specified in [LINKED-VP](https://identity.foundation/linked-vp/).
 
+[[def: participant, participants]]:
+~ An entity recognized by one or several ecosystems in a [[ref: VPR]], as the VPR spec defines it; the roles it is granted for a [[ref: credential schema]] are recorded by `Accreditation` entries (see [Accreditation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#accreditation) in the VPR spec).
+
+[[def: participation, participations]]:
+~ As in the VPR: a [[ref: verifiable service entry]] taking part in a [[ref: credential schema]] in a role, the triple (`vs_id`, `schema_id`, `role`) whose `ParticipationTrustDeposit` an ecosystem can slash or exclude ([TR-12]).
+
 [[def: proof of trust]]:
 ~ Visual representation using [[ref: essential credential schemas]] of a [[ref: trust resolution]] process of a [[ref: Verifiable Service]], for identifying the [[ref: VS]], its owner, and the [[ref: issuer]] of the verifiable credential of its owner.
 
 [[def: subject, subjects]]:
 ~ A thing about which claims are made. Example subjects include human beings, animals, things, and organization, a [[ref: DID]]...
 
-[[def: ecosystem, ecosystems]]:
-~ A [[ref: VPR]] resource, controlled by a [[ref: corporation]], that defines an approved list of [[ref: participants]] (issuers, verifiers, grantors, holders) authorized to issue, verify or hold credentials for a given set of credential schemas. The Ecosystem entry plays the role formerly known as "trust registry". For the canonical data model, see [Ecosystem](https://verana-labs.github.io/verifiable-trust-vpr-spec/#ecosystem) in the VPR spec.
-
-[[def: corporation, corporations]]:
-~ A [[ref: VPR]] resource representing a legal/organizational entity that operates one or more [[ref: VSs]], each registered as a [[ref: verifiable service entry]] it owns, and controls one or more [[ref: ecosystems]] and/or holds `Accreditation` entries in one or more ecosystems. See [Corporation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#corporation) in the VPR spec.
-
-[[def: evaluated time]]:
-~ The time at which a relying party runs a trust resolution; "currently" and "at the evaluated time" in this specification mean at that time.
-
-[[def: in force]]:
-~ Of an `Accreditation` entry, for trust resolution: within its effective window, and neither its participation nor its corporation excluded ([TR-12]). Differs from the VPR's *active*, which also requires the absence of a slash debt: a debt bars acts, it does not withdraw trust.
-
-[[def: participation, participations]]:
-~ As in the VPR: a [[ref: verifiable service entry]] taking part in a [[ref: credential schema]] in a role, the triple (`vs_id`, `schema_id`, `role`) whose `ParticipationTrustDeposit` an ecosystem can slash or exclude ([TR-12]).
-
-[[def: participant, participants]]:
-~ An entity recognized by one or several ecosystems in a [[ref: VPR]], as the VPR spec defines it; the roles it is granted for a [[ref: credential schema]] are recorded by `Accreditation` entries (see [Accreditation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#accreditation) in the VPR spec).
-
 [[def: trust resolution]]:
 ~ Process run by, for example a [[ref: VUA]] or a [[ref: VS]], which purpose is to recursively resolve [[ref: DID]] by digging into [[ref: DID Documents]] and look for [[ref: linked-vp]] entries and their [[ref: issuer]] [[ref: DIDs]], and [[ref: ecosystem]] entries to gather whether the service provided by the [[ref: DID]] is trusted (and legitimate), or not.
 
-[[def: verifier, verifiers]]:
-~ A role an entity performs by receiving one or more verifiable credentials, optionally inside a verifiable presentation for processing. Example verifiers include service providers.
+[[def: trusted channel, trusted channels]]:
+~ A connection between two parties over which each has authenticated the identifier of the other (a [[ref: DID]], or the keys a [[ref: VUA]] instance uses for the channel), and which carries their messages confidentially, with integrity and sender authentication, bound to the identifiers resolved. It is established with a [[ref: trusted channel protocol]] ([VT-CHAN]).
+
+[[def: trusted channel protocol, trusted channel protocols]]:
+~ A protocol listed in [VT-CHAN] as establishing [[ref: trusted channels]]: DIDComm v2 and DIDComm v1 in this version.
 
 [[def: verifiable credential, verifiable credentials]]:
 ~ A verifiable credential as defined in [[spec-norm:VC-DATA-MODEL]].
+
+[[def: verifiable identifier, VID, VIDs]]:
+~ A digital identifier bound to cryptographic key material, such that another party can verify control of the identifier and resolve it to keys and endpoints, as specified in the [Trust Spanning Protocol (TSP) Specification](https://trustoverip.github.io/tswg-tsp-specification/). [[ref: DIDs]] are one type of VID. A [[ref: VPR]] registers VIDs without resolving them ([[ref: verifiable service entry]]); this specification requires the VIDs it resolves to be [[ref: DIDs]].
+
+[[def: verifiable public registry, VPR, VPRs]]:
+~ a public, normally decentralized network, which provides: ecosystem features, that can be used by all its [[ref: participants]]: create ecosystems, for each ecosystem, define its credential schemas, who can issue, verify credential of a specific credential schema,... For more information, please refer to [VPR Spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/).
+
+[[def: verifiable service, VS, VSs]]:
+~ A service, identified by a resolvable [[ref: DID]], that can be deployed anywhere by its owner, that conforms to this spec, and that has a resolvable [[ref: proof of trust]]. A VS declares its service endpoints in its [[ref: DID Document]] (see [VS-SVC]); it MUST declare a service entry for each [[ref: trusted channel protocol]] it implements, DIDComm v2 at least, and MAY declare additional services such as MCP, A2A, a website, or any other service type.
+
+[[def: verifiable service entry, verifiable service entries]]:
+~ The registration of a [[ref: VID]] in a [[ref: VPR]] (a `VerifiableService` entry, referenced by `vs_id`): it records the owner [[ref: corporation]], the agent account that operates the service, and the current value of the identifier; former values and their transition windows are known from the VPR's rotation events. Every `Accreditation` entry of a service references it, and a service MAY be registered without holding any `Accreditation` entry. See the [VPR spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#verifiableservice).
+
+[[def: verifiable user agent, VUA, VUAs]]:
+~ A user agent for accessing and using [[ref: VSs]]. To be considered a [[ref: VUA]], a user agent must conform and enforce this spec, such as presenting a proof of trust to end user before accepting connecting to [[ref: VS]] compliant services, and refuse connecting to not compliant services.
+
+[[def: verifier, verifiers]]:
+~ A role an entity performs by receiving one or more verifiable credentials, optionally inside a verifiable presentation for processing. Example verifiers include service providers.
 
 ## Understanding Verifiable Trust
 
