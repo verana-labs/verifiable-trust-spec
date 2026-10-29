@@ -1862,8 +1862,8 @@ Parties that must authenticate each other (a [[ref: VS]] and its peers, two [[re
 
 | Protocol | DID Document service type | Binding |
 | --- | --- | --- |
-| [DIDComm Messaging](https://identity.foundation/didcomm-messaging/spec/) v2 (2.x) | `DIDCommMessaging`, its `serviceEndpoint` an object with `uri` and `accept: ["didcomm/v2"]` | [DIDComm v2 binding](https://github.com/verana-labs/verifiable-trust-spec/blob/main/bindings/v5/didcomm-v2.md) |
-| [DIDComm](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0005-didcomm) v1 | `did-communication`, with `serviceEndpoint`, `recipientKeys`, `routingKeys` and `accept: ["didcomm/aip2;env=rfc19"]` | [DIDComm v1 binding](https://github.com/verana-labs/verifiable-trust-spec/blob/main/bindings/v5/didcomm-v1.md) |
+| [DIDComm Messaging](https://identity.foundation/didcomm-messaging/spec/) v2 (2.x) | `DIDCommMessaging`, its `serviceEndpoint` an object with `uri` and `accept: ["didcomm/v2"]` | [DIDComm v2 binding](./bindings/v5/didcomm-v2.html) |
+| [DIDComm](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0005-didcomm) v1 | `did-communication`, with `serviceEndpoint`, `recipientKeys`, `routingKeys` and `accept: ["didcomm/aip2;env=rfc19"]` | [DIDComm v1 binding](./bindings/v5/didcomm-v1.html) |
 
 The [Trust Spanning Protocol](https://trustoverip.github.io/tswg-tsp-specification/) is expected to join this list in a later version.
 

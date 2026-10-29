@@ -7,3 +7,4 @@ node_modules
 /build/
 /versions/*/index.html
 /versions/*/assets/
+/bindings/**/*.html
