@@ -2083,12 +2083,12 @@ For communication channel between User Agents to be enabled, both User Agents MU
 
 ### [VT-PROTO] Verifiable Trust Protocol
 
-The exchanges this specification requires over a [[ref: trusted channel]] are defined here as abstract messages, with their fields, their order and the checks each party makes: the verification of a peer ([VT-PROTO-VERIF]), the issuance of a credential ([VT-PROTO-ISS]) and the presentation of credentials ([VT-PRES-VS]). A binding maps them onto each [[ref: trusted channel protocol]] ([VT-BIND]). The diagrams of this section are non-normative illustrations of its rules.
+The exchanges this specification requires over a [[ref: trusted channel]] are defined here as abstract messages, with their fields, their order and the checks each party makes: the verification of a peer ([VT-PROTO-VERIF]), the onboarding process of an `Accreditation` entry ([VT-PROTO-OP]), the issuance of a credential ([VT-PROTO-ISS]), the presentation of credentials ([VT-PRES-VS]), and the notifications that follow them ([VT-PROTO-NOTIF]). A binding maps them onto each [[ref: trusted channel protocol]] ([VT-BIND]). The diagrams of this section are non-normative illustrations of its rules.
 
 - [VT-PROTO-1] **Messages.** A message has a name and fields. Field types are abstract: a VTJSC identifier, a UUID, a DID, a boolean, a text, a digest, a transaction hash, and the format-specific offers, requests, credentials and presentations of each container. How a message is typed, encoded and carried is its binding's ([VT-BIND-1]). A party MUST ignore a field it does not know.
-- [VT-PROTO-2] **Correlation.** The messages of one exchange (a verification, an issuance, or a presentation request and the presentations it leads to) are correlated to the first message of the exchange ([VT-CHAN-1]).
+- [VT-PROTO-2] **Correlation.** The messages of one exchange (a verification, an onboarding process and the issuance that may follow it, an issuance, or a presentation request and the presentations it leads to) are correlated to the first message of the exchange ([VT-CHAN-1]).
 - [VT-PROTO-3] **`exchange-recorded`.** The party that sent a `CredentialExchange` transaction (the issuer of an issuance, the verifier of a presentation) notifies its peer with `exchange-recorded`: `exchange_id` and `tx_hash`, the hash of the included transaction. The notification is a hint: the peer verifies the transaction through an indexer of its whitelist ([WL-VPR]), as [CIT-5] and [VT-PRES-VS-6] specify, whatever the message says.
-- [VT-PROTO-4] **Errors and declines.** A protocol error is reported with `error`: a `code` and an optional `comment`. Codes: `malformed`, `out-of-order`, `unknown-exchange`, `mixed-request` ([VT-PRES-VS-3]), `no-longer-available` (a credential that ceased to be active after it was answered), `exchange-not-recorded` (no included transaction matches the exchange). A decline is never an error: it is the absence of an item, or of the answer, and discloses nothing ([VT-PRES-VS-5]).
+- [VT-PROTO-4] **Errors and declines.** A protocol error is reported with `error`: a `code` and an optional `comment`. Codes: `malformed`, `out-of-order`, `unknown-exchange`, `mixed-request` ([VT-PRES-VS-3]), `no-longer-available` (a credential that ceased to be active after it was answered), `exchange-not-recorded` (no included transaction matches the exchange), `invalid-accreditation` (an `onboarding-request` naming an entry that is not pending under the validator, or whose service entry is not the peer's, [VT-PROTO-OP-1]), `invalid-schema` (an `issuance-request` for a schema the issuer does not issue), `invalid-claims` (claims that do not satisfy the schema). A decline is never an error: it is the absence of an item, or of the answer, and discloses nothing ([VT-PRES-VS-5]).
 - [VT-PROTO-5] **Application protocols.** Services carried over a trusted channel ([VS-SVC-12]) and the delivery of endpoints and of the access material to consume them ([VS-SVC-7], [VS-SVC-11]) are left to application protocols, defined separately from this specification. An application protocol SHOULD be publicly published and SHOULD refer to this specification. Its messages are carried over the trusted channel once both parties are verified ([VT-PROTO-VERIF]), and what a [[ref: VS]] sends with it inherits the trust context of its DID ([VS-SVC-11]).
 - [VT-PROTO-6] **Containers.** In this version, the credentials issued and presented over a trusted channel are [VT-CRED-ANON] and [VT-CRED-W3C] VTCs. [VT-CRED-SDJWT] and [VT-CRED-MDOC] VTCs are issued over OpenID4VCI and presented over OpenID4VP or the Digital Credentials API only ([CIB-5], [PRB-5]), under `NO_DIGEST` schemas with no issuance fees ([VT-DECL-ANCHOR-3]).
 
@@ -2140,6 +2140,46 @@ sequenceDiagram
     U1->>U2: request (User Agent schemas)
     U2->>U1: answer, presentation-request, presentation (its User Agent credential)
     Note over U1,U2: both verified, else the channel is closed (VUA-CONN-VUA)
+```
+
+#### [VT-PROTO-OP] Onboarding Process
+
+The exchange through which an applicant obtains from its validator the validation of an `Accreditation` entry it started on the VPR ([Start Accreditation OP](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-1-start-accreditation-op) or [Renew Accreditation OP](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-2-renew-accreditation-op)). It runs over a [[ref: trusted channel]] between the applicant's [[ref: VS]] and the VS of the validator's entry, after [VT-PROTO-VERIF] or within the exemptions of [VT-PROTO-VERIF-3].
+
+| Message | From | Fields |
+| --- | --- | --- |
+| `onboarding-request` | applicant | `accreditation_id` (the applicant's pending entry); optional `claims` (information the applicant provides at once); optional `proofs` (documents or presentations supporting the request) |
+| `information-request` | validator | `items`: a text description of what the validator needs, and optionally the VTJSCs of the credentials whose presentation it asks ([VT-PRES-VS]); optional `url`: an out-of-band step, unique to this process, with an optional `expires` |
+| `information` | applicant | `claims` and `proofs` answering an `information-request` |
+| `validating` | validator | optional `comment`: the validator is processing the request, or the answer or out-of-band step it received |
+| `onboarding-result` | validator | `accreditation_id`; `outcome`: `validated`, with the `tx_hash` of the validation, or `refused`, with an optional `comment`; optional `summary`: the onboarding summary ([VT-PROTO-OP-4]) |
+| `withdraw` | applicant | `accreditation_id`: the applicant ends the process |
+
+- [VT-PROTO-OP-1] **Request.** Once its Start Accreditation OP or Renew Accreditation OP transaction is included, the applicant sends `onboarding-request` to the VS of the validator's entry (`VerifiableService[validator_accreditation.vs_id]`), over a channel bound to that VS's DID ([VT-CHAN-3]). The validator verifies through an indexer of its whitelist ([WL-VPR]) that the entry exists and is pending, that its validator is one of the validator's entries, and that the identifier of the entry's [[ref: verifiable service entry]] is the DID the channel authenticated (matched per [TR-10]): the binding of the channel to that DID is the applicant's proof of control of the entry; no other proof is required. A request that fails these checks is answered with `error` `invalid-accreditation`; otherwise the validator answers `validating`.
+- [VT-PROTO-OP-2] **Validation.** The validator MAY send `information-request` any number of times, asking for information, documents, or the presentation of credentials, which then runs per [VT-PRES-VS] in an exchange correlated to the process; when it gives a `url`, the applicant completes the step out of band. The applicant answers with `information`, or by completing the out-of-band step; the validator answers `validating` after each answer or completed step.
+- [VT-PROTO-OP-3] **Outcome.** When it validates, the validator records [Set Accreditation OP to Validated](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-3-set-accreditation-op-to-validated), which fixes the entry's fees and window, then sends `onboarding-result` `validated` with the transaction hash; the applicant verifies the entry through its indexer whatever the message says. When it refuses, it sends `onboarding-result` `refused`; the entry stays pending, and the applicant MAY cancel it ([Cancel Accreditation OP Last Request](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-6-cancel-accreditation-op-last-request)) to recover its escrow. The applicant MAY end the process with `withdraw`. The VPR prevails over the messages: an entry validated on chain after a refusal, a withdrawal or an interruption is validated, and the process resumes from there ([VT-PROTO-7]).
+- [VT-PROTO-OP-4] **Summary.** When the validator records an `op_summary_digest` on the entry, it delivers the summary it digested in `onboarding-result`, and the applicant verifies that its digest equals the entry's. For a `PERMISSIONLESS` holder, which has no entry, a validator that compiles a summary delivers it the same way, and the holder verifies it against the `onboardingSummaryDigestSri` of the credential it receives ([VT-PROTO-ISS]).
+- [VT-PROTO-OP-5] **Issuance.** For a `HOLDER` entry, the issuance follows in the same exchange: the validator, which holds the `ISSUER` entry, sends its `offer` once the entry is validated ([VT-PROTO-ISS], [VT-DECL-HOLDER-1]). For any other role, the process ends with `onboarding-result`.
+
+An onboarding process for a `HOLDER` entry, with one information request:
+
+```mermaid
+sequenceDiagram
+    participant A as Applicant VS
+    participant V as Validator VS
+    participant VPR as VPR
+    A->>VPR: Start Accreditation OP (HOLDER, validator entry, escrow)
+    A->>V: opens the trusted channel; both verified (VT-PROTO-VERIF)
+    A->>V: onboarding-request (accreditation_id, claims, proofs)
+    Note over V: entry pending under its entry, entry's vid = channel DID
+    V->>A: validating
+    V->>A: information-request (items, optional url)
+    A->>V: information (claims, proofs), or the out-of-band step
+    V->>A: validating
+    V->>VPR: Set Accreditation OP to Validated (fees, window, op_summary_digest)
+    V->>A: onboarding-result (validated, tx_hash, summary)
+    Note over A: verifies the entry and the summary digest through its indexer
+    V->>A: offer (VT-PROTO-ISS, same exchange)
 ```
 
 #### [VT-PROTO-ISS] Credential Issuance
