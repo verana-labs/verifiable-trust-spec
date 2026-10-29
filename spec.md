@@ -2188,12 +2188,13 @@ The issuance of a credential over a [[ref: trusted channel]], after [VT-PROTO-VE
 
 | Message | From | Fields |
 | --- | --- | --- |
-| `offer` | issuer | `vtjsc`; `issuer_did`; `exchange_required` (boolean: a `CredentialExchange` will be recorded, the schema being anchored or issuance fees being due); the format-specific offer (an AnonCreds credential offer, or the W3C credential to be issued, without its proof); optional `comment` |
+| `issuance-request` | holder | `vtjsc`; `exchange_id` (UUID chosen by the holder, [CIT-5]); optional `claims` and `proofs` supporting the request |
+| `offer` | issuer | `vtjsc`; `issuer_did`; `exchange_required` (boolean: a `CredentialExchange` will be recorded, the schema being anchored or issuance fees being due); the format-specific offer (an AnonCreds credential offer, or the W3C credential to be issued, without its proof); optional `replaces`: the `exchange_id` of the issuance of a credential this one replaces ([VT-PROTO-NOTIF-3]); optional `comment` |
 | `credential-request` | holder | `exchange_id` (UUID chosen by the holder, [CIT-5]); the format-specific request (an AnonCreds credential request, or the holder's acceptance of the W3C credential) |
 | `credential` | issuer | `exchange_id`; the credential |
 
-- [VT-PROTO-ISS-1] **Offer.** The issuer sends `offer` once the holder is verified ([VT-PROTO-VERIF]) and, for a schema whose `holder_onboarding_mode` is `ISSUER_ONBOARDING_PROCESS`, once the holder holds an active `HOLDER` entry ([VT-DECL-HOLDER-1]). A holder MAY ask for an offer through an application protocol ([VT-PROTO-5]).
-- [VT-PROTO-ISS-2] **Request.** The holder verifies the issuer ([CIT-3]) and determines whether issuance fees are due ([CIT-5]); it accepts with `credential-request`, which always carries an `exchange_id` it generated, and declines by sending nothing.
+- [VT-PROTO-ISS-1] **Offer.** The issuer sends `offer` on its own initiative, at the end of an onboarding process for a `HOLDER` entry ([VT-PROTO-OP-5]), or in answer to the holder's `issuance-request`, after the information steps of [VT-PROTO-OP-2] when it needs them, or refuses the request with `error` `invalid-schema` or `invalid-claims`, or silently. It sends it once the holder is verified ([VT-PROTO-VERIF]) and, for a schema whose `holder_onboarding_mode` is `ISSUER_ONBOARDING_PROCESS`, once the holder holds an active `HOLDER` entry ([VT-DECL-HOLDER-1]).
+- [VT-PROTO-ISS-2] **Request.** The holder verifies the issuer ([CIT-3]) and determines whether issuance fees are due ([CIT-5]); it accepts with `credential-request`, which always carries an `exchange_id` it generated (the one of its `issuance-request`, when it sent one), and declines by sending nothing.
 - [VT-PROTO-ISS-3] **Record.** When the schema is anchored or issuance fees are due, the issuer records the `CredentialExchange` under that `exchange_id`, anchoring the credential's digest under an anchored schema ([VT-DECL-ANCHOR-1]), and sends `exchange-recorded` ([VT-PROTO-3]) before `credential`; otherwise it sends `credential` directly.
 - [VT-PROTO-ISS-4] **Reception.** Before storing the credential, the holder applies [CIT-3], [CIT-4] and [CIT-5]. A credential that fails them is discarded, with `error` `exchange-not-recorded` when no included transaction matches the exchange.
 
@@ -2225,6 +2226,20 @@ sequenceDiagram
     Note over H: CIT-3 issuer authorized
     H->>I: credential-request (e1)
     I->>H: credential (e1)
+```
+
+A holder asks for a credential (for example an Organization credential under a `PERMISSIONLESS` schema):
+
+```mermaid
+sequenceDiagram
+    participant H as Holder VS
+    participant I as Issuer VS
+    H->>I: issuance-request (vtjsc, e1, claims, proofs)
+    I->>H: information-request (items, optional url)
+    H->>I: information, or the out-of-band step
+    I->>H: offer (vtjsc, issuer_did, exchange_required)
+    H->>I: credential-request (e1)
+    Note over I,H: then as above, with or without an exchange
 ```
 
 #### [VT-PRES-VS] Credential Presentation
