@@ -1860,10 +1860,10 @@ Parties that must authenticate each other (a [[ref: VS]] and its peers, two [[re
   5. a service type through which a party declares in its [[ref: DID Document]] how to reach it, so that a channel can be opened from the DID alone.
 - [VT-CHAN-2] **Listed protocols.** Only the protocols listed below are trusted channel protocols in this version; a channel established with any other protocol is not a trusted channel under this specification. [VS-SVC-2] and [VUA-REQ] state which ones a party implements.
 
-| Protocol | DID Document service type | Binding |
-| --- | --- | --- |
-| [DIDComm Messaging](https://identity.foundation/didcomm-messaging/spec/) v2 (2.x) | `DIDCommMessaging`, its `serviceEndpoint` an object with `uri` and `accept: ["didcomm/v2"]` | [DIDComm v2 binding](./bindings/v5/didcomm-v2.html) |
-| [DIDComm](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0005-didcomm) v1 | `did-communication`, with `serviceEndpoint`, `recipientKeys`, `routingKeys` and `accept: ["didcomm/aip2;env=rfc19"]` | [DIDComm v1 binding](./bindings/v5/didcomm-v1.html) |
+| Protocol | DID Document service type |
+| --- | --- |
+| [DIDComm Messaging](https://identity.foundation/didcomm-messaging/spec/) v2 (2.x) | `DIDCommMessaging`, its `serviceEndpoint` an object with `uri` and `accept: ["didcomm/v2"]` |
+| [DIDComm](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0005-didcomm) v1 | `did-communication`, with `serviceEndpoint`, `recipientKeys`, `routingKeys` and `accept: ["didcomm/aip2;env=rfc19"]` |
 
 The [Trust Spanning Protocol](https://trustoverip.github.io/tswg-tsp-specification/) is expected to join this list in a later version.
 
@@ -2359,7 +2359,7 @@ The chain and the status lists are the source of truth on the state of a credent
 
 ### [VT-BIND] Bindings
 
-A binding maps [VT-PROTO] onto one [[ref: trusted channel protocol]] of [VT-CHAN-2]; adding a protocol to the list adds a binding. Each binding is a separate document, linked from the table of [VT-CHAN-2].
+A binding maps [VT-PROTO] onto one [[ref: trusted channel protocol]] of [VT-CHAN-2]; adding a protocol to the list adds a binding. Bindings are published separately from this specification.
 
 - [VT-BIND-1] **Content.** A binding specifies:
   1. the DID Document service type, and how a channel is opened from the DID;
