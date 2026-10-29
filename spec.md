@@ -2336,6 +2336,19 @@ sequenceDiagram
     H->>V: presentation
 ```
 
+#### [VT-PROTO-NOTIF] Notifications and Re-issuance
+
+The chain and the status lists are the source of truth on the state of a credential or an entry; these messages tell the peer to look.
+
+| Message | From | Fields |
+| --- | --- | --- |
+| `credential-state` | issuer | `exchange_id` of the credential's issuance; `state`: `revoked`, `suspended`, `reinstated`, `expiring` (with `valid_until`), or `to-be-replaced`; optional `tx_hash`; optional `comment` |
+| `accreditation-state` | the party that sent the transaction | `accreditation_id`; `state`: `revoked`, `effective-until-changed` (with the new value), `slashed`, `excluded`, or `exclusion-lifted`; optional `tx_hash`; optional `comment` |
+
+- [VT-PROTO-NOTIF-1] **Credentials.** An issuer SHOULD send `credential-state` to the holder when it revokes, suspends or reinstates a credential, when a credential it is willing to re-issue approaches its expiry, and when it must re-issue a credential ([VT-PROTO-NOTIF-3]). The holder verifies the state on the VPR or the status list ([TR-4], [TR-11]) whatever the message says, and removes or replaces a published credential that is revoked ([VT-DECL-MODE-1]).
+- [VT-PROTO-NOTIF-2] **Accreditations.** The party that records [Revoke Accreditation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-9-revoke-accreditation), [Set Accreditation Effective Until](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-8-set-accreditation-effective-until), a slash or an exclusion affecting an entry SHOULD send `accreditation-state` to the entry's owner when it has a trusted channel with it; the owner verifies the state on the VPR whatever the message says.
+- [VT-PROTO-NOTIF-3] **Re-issuance.** An issuer that re-issues a credential (after the rotation of its identifier, [TR-10]; after the transfer of a service entry, [VS-REQ-4]; before an expiry) sends an `offer` whose `replaces` names the `exchange_id` of the earlier issuance ([VT-PROTO-ISS]). Once the new credential is stored, the holder discards the one it replaces and, for a `PUBLIC` schema, publishes the new one in its place ([VT-DECL-MODE-1]).
+
 ### [VT-BIND] Bindings
 
 A binding maps [VT-PROTO] onto one [[ref: trusted channel protocol]] of [VT-CHAN-2]; adding a protocol to the list adds a binding.
