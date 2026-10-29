@@ -1831,6 +1831,8 @@ Example:
 
 - [VS-REQ-4] If the issuer of the Verifiable Trust Service Essential Credential referenced in [VS-REQ-2] is **not** the [[ref: DID]] of the [[ref: VS]], then the DID Document of the credential issuer MUST present **exactly one** Verifiable Trust Credential that conforms to **either** [VT-ECS-ORG-CRED-W3C] **or** [VT-ECS-PERSONA-CRED-W3C]. The issuer is the controller of the service: the issuer's [[ref: verifiable service entry]] and the VS's MUST be owned by the same corporation (`VerifiableService.corporation_id` in the VPR, both entries matched per [TR-10]), which a relying party checks through its indexer; a Service credential issued across corporations is not the service's. A transfer of the VS's entry to another corporation ([Accept Verifiable Service Transfer](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-vs-msg-5-accept-verifiable-service-transfer)) therefore ends a Service credential issued by another entry of the former owner, which the new owner re-issues; a self-issued one follows the entry.
 
+  Note: a transfer also ends the Service credentials that the transferred service issued, as their controller, to other services of its former owner: the issuer's entry and theirs no longer share a corporation, and those services fail [VS-REQ-4] until their owner re-issues the credentials from another of its entries, which it does before offering the transfer.
+
 - [VS-REQ-5] A [[ref: VS]] DID Document MUST present as Linked Verifiable Presentations, as specified in [VT-CRED-W3C-LINKED-VP], the additional Verifiable Trust Credentials the VS holds of schemas declared `PUBLIC` ([VT-DECL-MODE-1]).
 
 - [VS-REQ-6] A [[ref: VS]] MUST verify issuers of Verifiable Trust Credentials.
