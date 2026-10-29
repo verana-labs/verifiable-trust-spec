@@ -2179,7 +2179,7 @@ sequenceDiagram
     participant V as Validator VS
     participant VPR as VPR
     A->>VPR: Start Accreditation OP (HOLDER, validator entry, escrow)
-    A->>V: opens the trusted channel; both verified (VT-PROTO-VERIF)
+    A->>V: opens the trusted channel, both verified (VT-PROTO-VERIF)
     A->>V: onboarding-request (accreditation_id, claims, proofs)
     Note over V: entry pending under its entry, entry's vid = channel DID
     V->>A: validating
@@ -2646,7 +2646,7 @@ sequenceDiagram
     participant VPR as VPR (ledger)
     participant Idx as Indexer + Resolver
 
-    Holder->>VPR: MsgStartAccreditationOP (validator = issuer; by the holder's corporation)
+    Holder->>VPR: MsgStartAccreditationOP (validator = issuer, by the holder's corporation)
     VPR-->>Idx: accreditation-pending event
     Idx-->>Holder: notify
     Idx-->>Issuer: notify
@@ -2690,7 +2690,7 @@ sequenceDiagram
     participant VPR as VPR (ledger)
     participant Idx as Indexer + Resolver
 
-    Issuer->>VPR: MsgRevokeAccreditation (holder_accreditation; by the issuer's corporation)
+    Issuer->>VPR: MsgRevokeAccreditation (holder_accreditation, by the issuer's corporation)
     VPR-->>Idx: revoke event (implicit trigger)
     Idx->>Idx: re-resolve holder DID -> credential untrusted (other decisions unaffected, [TR-8])
     Issuer->>Holder: DIDComm credential-state-change (revoked)
