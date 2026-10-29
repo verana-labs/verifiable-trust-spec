@@ -2239,7 +2239,7 @@ sequenceDiagram
     I->>H: credential (e1)
 ```
 
-A holder asks for a credential (for example an Organization credential under a `PERMISSIONLESS` schema):
+A holder asks for a credential (for example a quality certification credential under a `PERMISSIONLESS` schema):
 
 ```mermaid
 sequenceDiagram
