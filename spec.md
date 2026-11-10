@@ -2631,8 +2631,9 @@ sequenceDiagram
     Idx-->>Holder: notify
     Idx-->>Issuer: notify
     Holder->>Issuer: DIDComm onboarding flow
-    Holder->>Issuer: DIDComm credential offer accepted (exchange_id)
     Issuer->>VPR: MsgValidateOnboarding
+    Issuer->>Holder: DIDComm credential offer
+    Holder->>Issuer: DIDComm credential offer accepted (exchange_id)
     Issuer->>VPR: MsgRecordCredentialExchange (exchange_id, digest anchored)
     Idx-->>Holder: exchange notification
     Holder->>Holder: verify anchoring and exchange ([CIT-4], [CIT-5])
