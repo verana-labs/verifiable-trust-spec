@@ -1282,7 +1282,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 }
 ```
 
-#### [ECS-ORG] OrganizationCredential Json Schema
+#### [ECS-ORG] Organization Credential Json Schema
 
 Used to identify Organizations that operate Verifiable Services.
 
