@@ -1319,7 +1319,7 @@ Credential subject object of schema MUST contain the following attributes:
   Pattern: `^[A-Z]{2}(-[A-Z0-9]{1,3})?$`, max length: 64 chars.
 
 - `organizationKind` (string) (*optional*): informational classification of the organization (free-text, non-normative), intended for display or filtering purposes.  
-  UTF8 charset, max length: 64 chars.
+  UTF8 charset, min length: 1 char, max length: 64 chars.
 
 - `lei` (string) (*optional*): Legal Entity Identifier (LEI), if known and asserted by the issuer during onboarding.  
   Pattern: `^[A-Z0-9]{20}$`.
