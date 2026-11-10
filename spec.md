@@ -1554,7 +1554,7 @@ Credential subject object of schema MUST contain the following attributes:
 
 **Notes (non-normative):**
 
-- The **issuer DID** of the credential uniquely identifies the User Agent software product line, as software vendors MUST hold one Issuer authorization per software.
+- The **issuer DID** of the credential uniquely identifies the User Agent software product line, a vendor issuing under one identifier per software product line.
 - A UserAgentCredential is issued per User Agent instance. The credential carries **no instance identifier**: consistent with the AnonCreds container ([VT-CRED-ANON]), holder binding relies on the holder's link secret, so no correlatable identifier is shared during issuance or presentation.
 - Only identity-critical information is included in this schema. Descriptive, legal, or branding metadata (name, logo, policies, etc.) are intentionally excluded to keep trust resolution minimal and deterministic.
 
