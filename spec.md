@@ -2603,7 +2603,7 @@ This example shows the action sequence for a holder VS-Agent obtaining a public 
 
 **Sequence:**
 
-1. **Start the onboarding process (holder side).** The holder's corporation submits `MsgStartOnboarding` (`MOD-AC-MSG-1`), through an operator under an OperatorAuthorization or through its group policy (a vs-agent cannot execute it), on the [[ref: VPR]], targeting the issuer as validator of the requested `HOLDER` `Accreditation` entry against `cs`. The on-chain entry creates an applicant `Accreditation` entry `holder_accreditation` in `onboarding_state = PENDING` whose `validator_accreditation_id` points at `issuer_accreditation`.
+1. **Start the onboarding process (holder side).** The holder's corporation submits `MsgStartOnboarding` (`MOD-AC-MSG-1`), through an operator under an OperatorAuthorization (a vs-agent cannot execute it), on the [[ref: VPR]], targeting the issuer as validator of the requested `HOLDER` `Accreditation` entry against `cs`. The on-chain entry creates an applicant `Accreditation` entry `holder_accreditation` in `onboarding_state = PENDING` whose `validator_accreditation_id` points at `issuer_accreditation`.
 
 2. **Indexer notifies both parties.** Both the holder and the issuer VS-Agents receive an indexer notification for the new onboarding process via their respective DID-scoped subscriptions.
 
@@ -2653,7 +2653,7 @@ This example shows the symmetric flow for revoking a previously issued credentia
 
 **Sequence:**
 
-1. **Issuer revokes on-chain.** The issuer's corporation submits `MsgRevokeAccreditation` (`MOD-AC-MSG-9`), through an operator or its group policy (a vs-agent cannot execute it), against `holder_accreditation`. On confirmation, the entry is deleted and its revocation recorded by the transaction's event, which withdraws trust from every credential issued under that entry ([TR-9]); to revoke a single credential while keeping the relationship, the issuer revokes its digest instead ([TR-4]).
+1. **Issuer revokes on-chain.** The issuer's corporation submits `MsgRevokeAccreditation` (`MOD-AC-MSG-9`), through an operator (a vs-agent cannot execute it), against `holder_accreditation`. On confirmation, the entry is deleted and its revocation recorded by the transaction's event, which withdraws trust from every credential issued under that entry ([TR-9]); to revoke a single credential while keeping the relationship, the issuer revokes its digest instead ([TR-4]).
 
 2. **Resolver auto-re-resolves.** The [[ref: VPR]] resolver pipeline treats `MsgRevokeAccreditation` as an implicit re-resolution signal for the holder DID and re-runs trust resolution. With `holder_accreditation` deleted, the credential it backed is no longer covered by a `HOLDER` entry in force ([TR-9]), so trust resolution against the holder DID's currently-published linked-vp fails for that credential. The resolver then marks the holder DID untrusted for every decision that relies on that credential. A Linked VP on which a decision does not rely is disregarded ([TR-8]), so the DID keeps, for decisions relying on its other credentials, the trust those credentials establish.
 
