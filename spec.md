@@ -1749,7 +1749,7 @@ See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credenti
   ]
 ```
 
-- Organization Credential [VT-ECS-ORG-CRED-W3C]: a [VT-CRED-W3C] linked to a [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C], which MUST carry `validFrom` and `validUntil` ([VT-DECL-ANCHOR-4]). [VT-ECS-ORG-CRED-W3C-LINKED-VP] MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-schemas-org-vtc-vp`. Example:
+- Organization Credential [VT-ECS-ORG-CRED-W3C]: a [VT-CRED-W3C] linked to a [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C], which MUST carry a `validUntil` ([VT-DECL-ANCHOR-4]). [VT-ECS-ORG-CRED-W3C-LINKED-VP] MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-schemas-org-vtc-vp`. Example:
 
 ```json
   "service": [
@@ -1761,7 +1761,7 @@ See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credenti
   ]
 ```
 
-- Persona Credential [VT-ECS-PERSONA-CRED-W3C]: a [VT-CRED-W3C] linked to a [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C], which MUST carry `validFrom` and `validUntil` ([VT-DECL-ANCHOR-4]). [VT-ECS-PERSONA-CRED-W3C-LINKED-VP] MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-schemas-persona-vtc-vp`. Example:
+- Persona Credential [VT-ECS-PERSONA-CRED-W3C]: a [VT-CRED-W3C] linked to a [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C], which MUST carry a `validUntil` ([VT-DECL-ANCHOR-4]). [VT-ECS-PERSONA-CRED-W3C-LINKED-VP] MUST be declared in DID Document with a "LinkedVerifiablePresentation" service entry with fragment `#vpr-schemas-persona-vtc-vp`. Example:
 
 ```json
   "service": [
