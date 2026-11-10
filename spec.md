@@ -2658,7 +2658,7 @@ This example shows the symmetric flow for revoking a previously issued credentia
 
 2. **Resolver auto-re-resolves.** The [[ref: VPR]] resolver pipeline treats `MsgRevokeAccreditation` as an implicit re-resolution signal for the holder DID and re-runs trust resolution. With `holder_accreditation` deleted, the credential it backed is no longer covered by a `HOLDER` entry in force ([TR-9]), so trust resolution against the holder DID's currently-published linked-vp fails for that credential. The resolver then marks the holder DID untrusted for every decision that relies on that credential. A Linked VP on which a decision does not rely is disregarded ([TR-8]), so the DID keeps, for decisions relying on its other credentials, the trust those credentials establish.
 
-3. **Issuer notifies the holder over DIDComm.** The issuer's VS-Agent sends a credential-state-change message to the holder VS-Agent over the existing DIDComm session, informing it that the credential has been revoked. The holder VS-Agent reacts in user-land (display the revocation, request a new credential, stop offering the affected service, etc.).
+3. **Issuer notifies the holder over DIDComm.** The issuer's VS-Agent sends a `credential-state` message (`revoked`, [VT-PROTO-NOTIF-1]) to the holder VS-Agent over the existing DIDComm session, informing it that the credential has been revoked. The holder VS-Agent reacts in user-land (display the revocation, request a new credential, stop offering the affected service, etc.).
 
 4. **Holder removes the credential from its DID Document.** The holder VS-Agent updates its `linked-vp` entry to remove the revoked credential. Until the DID Document is updated, the resolver continues to see the (now untrusted) credential.
 
@@ -2674,7 +2674,7 @@ sequenceDiagram
     Issuer->>VPR: MsgRevokeAccreditation (holder_accreditation, by the issuer's corporation)
     VPR-->>Idx: revoke event (implicit trigger)
     Idx->>Idx: re-resolve holder DID -> credential untrusted (other decisions unaffected, [TR-8])
-    Issuer->>Holder: DIDComm credential-state-change (revoked)
+    Issuer->>Holder: DIDComm credential-state (revoked)
     Holder->>Holder: update DID Document (remove linked-vp entry)
     Holder->>VPR: MsgTriggerResolver
     VPR-->>Idx: TriggerResolver event
