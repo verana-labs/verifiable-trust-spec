@@ -58,7 +58,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ## Terminology
 
 [[def: corporation, corporations]]:
-~ A [[ref: VPR]] resource representing a legal/organizational entity that operates one or more [[ref: VSs]], each registered as a [[ref: verifiable service entry]] it owns, and controls one or more [[ref: ecosystems]] and/or holds `Accreditation` entries in one or more ecosystems. See [Corporation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#corporation) in the VPR spec.
+~ A [[ref: VPR]] resource representing a legal/organizational entity that operates one or more [[ref: VSs]], each registered as a [[ref: verifiable service entry]] it owns, and MAY control [[ref: ecosystems]] and hold `Accreditation` entries in ecosystems. See [Corporation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#corporation) in the VPR spec.
 
 [[def: credential schema, credential schemas]]:
 ~ An [[ref: VPR]] resource which represents a verifiable credential definition and the associated accreditations and business rules for issuing, verifying or holding a credential linked to this credential schema.
