@@ -1071,7 +1071,7 @@ A relying party holding any mdoc VTC or presentation can therefore walk the `io.
 
 ### [VT-DECL] Credential Schema Declaration
 
-Each `CredentialSchema` entry of a [[ref: VPR]] declares, beyond its Json Schema and its onboarding modes, what the credentials of the schema are for and how agents handle them (see the [VPR spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema)):
+Each `CredentialSchema` entry of a [[ref: VPR]] declares, beyond its Json Schema and its onboarding modes, what the credentials of the schema are for and how agents handle them. The attributes and their values are defined by the VPR spec ([CredentialSchema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema)); this section states what agents do with each value:
 
 - `subject_kind`: `SERVICE` when credentials are issued to a software (a [[ref: VS]] identified by its [[ref: DID]], or an instance of a software such as a [[ref: VUA]]), `PERSON` when they are issued to a natural person and held in that person's [[ref: VUA]];
 - `presentation_mode`, for `SERVICE` schemas only: `PUBLIC`, `ON_REQUEST` or `ON_APPROVAL`;
