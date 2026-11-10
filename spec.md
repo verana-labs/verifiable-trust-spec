@@ -635,7 +635,7 @@ A Verifiable Trust Credential MUST be linked to the applicable **VTJSC** issued 
 - the governing schema definition,
 - and the Ecosystem under which the schema is defined.
 
-During verification, wallets and verifiers can resolve the referenced VTJSC, verify its authenticity, and determine whether the issuing DID was authorized to issue credentials under that schema. For credentials of a schema whose `credential_anchoring` is `DIGEST` or `REVOCABLE_DIGEST` (W3C VTCs; SD-JWT and mdoc VTCs are not anchored in this version), authorization is checked at the objectively determined issuance time (see [VT-CRED-W3C], [VT-CRED-SDJWT], [VT-CRED-MDOC]). For credentials of a `NO_DIGEST` schema (AnonCreds VTCs, SD-JWT and mdoc VTCs otherwise), authorization is checked at credential reception time and the issuer MUST still be authorized at evaluation ([TR-5]) (see [VT-CRED-ANON], [VT-CRED-SDJWT], [VT-CRED-MDOC] and [CIT]).
+During verification, wallets and verifiers can resolve the referenced VTJSC, verify its authenticity, and determine whether the issuing DID was authorized to issue credentials under that schema. For credentials of a schema whose `credential_anchoring` is `DIGEST` or `REVOCABLE_DIGEST` (W3C VTCs; SD-JWT and mdoc VTCs are not anchored in this version), authorization is checked at the objectively determined issuance time (see [VT-CRED-W3C], [TR-4]). For credentials of a `NO_DIGEST` schema (AnonCreds VTCs, SD-JWT and mdoc VTCs otherwise), authorization is checked at credential reception time and the issuer MUST still be authorized at evaluation ([TR-5]) (see [VT-CRED-ANON], [VT-CRED-SDJWT], [VT-CRED-MDOC] and [CIT]).
 
 #### Issuance Time and Unlinkability Considerations
 
