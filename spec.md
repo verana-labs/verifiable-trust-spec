@@ -1322,7 +1322,7 @@ Credential subject object of schema MUST contain the following attributes:
 
 - `lei` (string) (*optional*): Legal Entity Identifier (LEI), if known and asserted by the issuer during onboarding.  
   Pattern: `^[A-Z0-9]{20}$`.
-- `onboardingSummaryDigestSri` (string) (*optional*): Subresource Integrity digest, encoded as <algorithm>-<base64-digest> (SRI format), of the **onboarding summary** compiled by the issuer: the document describing the information, proofs and decisions of the validation of the organization that led to this issuance. The counterpart, for a schema in `PERMISSIONLESS` holder mode, of the `op_summary_digest` a validator records on a `HOLDER` `Accreditation` entry. The issuer MUST retain the summary for the period its ecosystem governance framework requires, MUST produce it to the ecosystem governance authority on request, MAY share it with the subject, and MUST NOT publish it. Whether accredited issuers MUST set this attribute is decided by the ecosystem governance framework.  
+- `onboardingSummaryDigestSri` (string) (*optional*): Subresource Integrity digest, encoded as <algorithm>-<base64-digest> (SRI format), of the **onboarding summary** compiled by the issuer: the document describing the information, proofs and decisions of the validation of the organization that led to this issuance. The counterpart, for a schema in `PERMISSIONLESS` holder mode, of the `onboarding_summary_digest` a validator records on a `HOLDER` `Accreditation` entry. The issuer MUST retain the summary for the period its ecosystem governance framework requires, MUST produce it to the ecosystem governance authority on request, MAY share it with the subject, and MUST NOT publish it. Whether accredited issuers MUST set this attribute is decided by the ecosystem governance framework.  
   Max length: 256 chars.
 
 **Implementation notes (non-normative):**
@@ -1455,7 +1455,7 @@ Credential subject object of schema MUST contain the following attributes:
 
 - `controllerJurisdiction` (string) (*optional*): sub-national jurisdiction of the controller’s residence when applicable law varies by sub-jurisdiction (e.g., `US-CA`).  
   Pattern: `^[A-Z]{2}(-[A-Z0-9]{1,3})?$`, max length: 64 chars.
-- `onboardingSummaryDigestSri` (string) (*optional*): Subresource Integrity digest, encoded as <algorithm>-<base64-digest> (SRI format), of the **onboarding summary** compiled by the issuer: the document describing the information, proofs and decisions of the validation of the natural person that led to this issuance. The counterpart, for a schema in `PERMISSIONLESS` holder mode, of the `op_summary_digest` a validator records on a `HOLDER` `Accreditation` entry. The issuer MUST retain the summary for the period its ecosystem governance framework requires, MUST produce it to the ecosystem governance authority on request, MAY share it with the subject, and MUST NOT publish it. Whether accredited issuers MUST set this attribute is decided by the ecosystem governance framework.  
+- `onboardingSummaryDigestSri` (string) (*optional*): Subresource Integrity digest, encoded as <algorithm>-<base64-digest> (SRI format), of the **onboarding summary** compiled by the issuer: the document describing the information, proofs and decisions of the validation of the natural person that led to this issuance. The counterpart, for a schema in `PERMISSIONLESS` holder mode, of the `onboarding_summary_digest` a validator records on a `HOLDER` `Accreditation` entry. The issuer MUST retain the summary for the period its ecosystem governance framework requires, MUST produce it to the ecosystem governance authority on request, MAY share it with the subject, and MUST NOT publish it. Whether accredited issuers MUST set this attribute is decided by the ecosystem governance framework.  
   Max length: 256 chars.
 
 **Implementation notes (non-normative):**
@@ -2149,7 +2149,7 @@ sequenceDiagram
 
 #### [VT-PROTO-OP] Onboarding Process
 
-The exchange through which an applicant obtains from its validator the validation of an `Accreditation` entry it started on the VPR ([Start Accreditation OP](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-1-start-accreditation-op) or [Renew Accreditation OP](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-2-renew-accreditation-op)). It runs over a [[ref: trusted channel]] between the applicant's [[ref: VS]] and the VS of the validator's entry, after [VT-PROTO-VERIF] or within the exemptions of [VT-PROTO-VERIF-3].
+The exchange through which an applicant obtains from its validator the validation of an `Accreditation` entry it started on the VPR ([Start Onboarding](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-1-start-onboarding) or [Renew Onboarding](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-2-renew-onboarding)). It runs over a [[ref: trusted channel]] between the applicant's [[ref: VS]] and the VS of the validator's entry, after [VT-PROTO-VERIF] or within the exemptions of [VT-PROTO-VERIF-3].
 
 | Message | From | Fields |
 | --- | --- | --- |
@@ -2160,10 +2160,10 @@ The exchange through which an applicant obtains from its validator the validatio
 | `onboarding-result` | validator | `accreditation_id`; `outcome`: `validated`, with the `tx_hash` of the validation, or `refused`, with an optional `comment`; optional `summary`: the onboarding summary ([VT-PROTO-OP-4]) |
 | `withdraw` | applicant | `accreditation_id`: the applicant ends the process |
 
-- [VT-PROTO-OP-1] **Request.** Once its Start Accreditation OP or Renew Accreditation OP transaction is included, the applicant sends `onboarding-request` to the VS of the validator's entry (`VerifiableService[validator_accreditation.vs_id]`), over a channel bound to that VS's DID ([VT-CHAN-3]). The validator verifies through an indexer of its whitelist ([WL-VPR]) that the entry exists and is pending, that its validator is one of the validator's entries, and that the identifier of the entry's [[ref: verifiable service entry]] is the DID the channel authenticated, as its current identifier ([VT-PROTO-8]): the binding of the channel to that DID is the applicant's proof of control of the entry; no other proof is required. A request that fails these checks is answered with `error` `invalid-accreditation`; otherwise the validator answers `validating`.
+- [VT-PROTO-OP-1] **Request.** Once its Start Onboarding or Renew Onboarding transaction is included, the applicant sends `onboarding-request` to the VS of the validator's entry (`VerifiableService[validator_accreditation.vs_id]`), over a channel bound to that VS's DID ([VT-CHAN-3]). The validator verifies through an indexer of its whitelist ([WL-VPR]) that the entry exists and is pending, that its validator is one of the validator's entries, and that the identifier of the entry's [[ref: verifiable service entry]] is the DID the channel authenticated, as its current identifier ([VT-PROTO-8]): the binding of the channel to that DID is the applicant's proof of control of the entry; no other proof is required. A request that fails these checks is answered with `error` `invalid-accreditation`; otherwise the validator answers `validating`.
 - [VT-PROTO-OP-2] **Validation.** The validator MAY send `information-request` any number of times, asking for information, documents, or the presentation of credentials, which then runs per [VT-PRES-VS] in an exchange correlated to the process; when it gives a `url`, the applicant completes the step out of band. The applicant answers with `information`, or by completing the out-of-band step; the validator answers `validating` after each answer or completed step.
-- [VT-PROTO-OP-3] **Outcome.** When it validates, the validator records [Set Accreditation OP to Validated](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-3-set-accreditation-op-to-validated), which fixes the entry's fees and window, then sends `onboarding-result` `validated` with the transaction hash; the applicant verifies the entry through its indexer whatever the message says. When it refuses, it sends `onboarding-result` `refused`; the entry stays pending, and the applicant MAY cancel it ([Cancel Accreditation OP Last Request](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-6-cancel-accreditation-op-last-request)) to recover its escrow. The applicant MAY end the process with `withdraw`. The VPR prevails over the messages: an entry validated on chain after a refusal, a withdrawal or an interruption is validated, and the process resumes from there ([VT-PROTO-7]).
-- [VT-PROTO-OP-4] **Summary.** When the validator records an `op_summary_digest` on the entry, it delivers the summary it digested in `onboarding-result`, and the applicant verifies that its digest equals the entry's. For a `PERMISSIONLESS` holder, which has no entry, a validator that compiles a summary delivers it the same way, and the holder verifies it against the `onboardingSummaryDigestSri` of the credential it receives ([VT-PROTO-ISS]).
+- [VT-PROTO-OP-3] **Outcome.** When it validates, the validator records [Validate Onboarding](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-3-validate-onboarding), which fixes the entry's fees and window, then sends `onboarding-result` `validated` with the transaction hash; the applicant verifies the entry through its indexer whatever the message says. When it refuses, it sends `onboarding-result` `refused`; the entry stays pending, and the applicant MAY cancel it ([Withdraw Onboarding Request](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-6-withdraw-onboarding-request)) to recover its escrow. The applicant MAY end the process with `withdraw`. The VPR prevails over the messages: an entry validated on chain after a refusal, a withdrawal or an interruption is validated, and the process resumes from there ([VT-PROTO-7]).
+- [VT-PROTO-OP-4] **Summary.** When the validator records an `onboarding_summary_digest` on the entry, it delivers the summary it digested in `onboarding-result`, and the applicant verifies that its digest equals the entry's. For a `PERMISSIONLESS` holder, which has no entry, a validator that compiles a summary delivers it the same way, and the holder verifies it against the `onboardingSummaryDigestSri` of the credential it receives ([VT-PROTO-ISS]).
 - [VT-PROTO-OP-5] **Issuance.** For a `HOLDER` entry, the issuance follows in the same exchange: the validator, which holds the `ISSUER` entry, sends its `offer` once the entry is validated ([VT-PROTO-ISS], [VT-DECL-HOLDER-1]). For any other role, the process ends with `onboarding-result`.
 
 An onboarding process for a `HOLDER` entry, with one information request:
@@ -2173,7 +2173,7 @@ sequenceDiagram
     participant A as Applicant VS
     participant V as Validator VS
     participant VPR as VPR
-    A->>VPR: Start Accreditation OP (HOLDER, validator entry, escrow)
+    A->>VPR: Start Onboarding (HOLDER, validator entry, escrow)
     A->>V: opens the trusted channel, both verified (VT-PROTO-VERIF)
     A->>V: onboarding-request (accreditation_id, claims, proofs)
     Note over V: entry pending under its entry, entry's vid = channel DID
@@ -2181,7 +2181,7 @@ sequenceDiagram
     V->>A: information-request (items, optional url)
     A->>V: information (claims, proofs), or the out-of-band step
     V->>A: validating
-    V->>VPR: Set Accreditation OP to Validated (fees, window, op_summary_digest)
+    V->>VPR: Validate Onboarding (fees, window, onboarding_summary_digest)
     V->>A: onboarding-result (validated, tx_hash, summary)
     Note over A: verifies the entry and the summary digest through its indexer
     V->>A: offer (VT-PROTO-ISS, same exchange)
@@ -2602,13 +2602,13 @@ This example shows the action sequence for a holder VS-Agent obtaining a public 
 
 **Sequence:**
 
-1. **Start the onboarding process (holder side).** The holder's corporation submits `MsgStartAccreditationOP` (`MOD-AC-MSG-1`), through an operator under an OperatorAuthorization or through its group policy (a vs-agent cannot execute it), on the [[ref: VPR]], targeting the issuer as validator of the requested `HOLDER` `Accreditation` entry against `cs`. The on-chain entry creates an applicant `Accreditation` entry `holder_accreditation` in `op_state = PENDING` whose `validator_accreditation_id` points at `issuer_accreditation`.
+1. **Start the onboarding process (holder side).** The holder's corporation submits `MsgStartOnboarding` (`MOD-AC-MSG-1`), through an operator under an OperatorAuthorization or through its group policy (a vs-agent cannot execute it), on the [[ref: VPR]], targeting the issuer as validator of the requested `HOLDER` `Accreditation` entry against `cs`. The on-chain entry creates an applicant `Accreditation` entry `holder_accreditation` in `onboarding_state = PENDING` whose `validator_accreditation_id` points at `issuer_accreditation`.
 
 2. **Indexer notifies both parties.** Both the holder and the issuer VS-Agents receive an indexer notification for the new onboarding process via their respective DID-scoped subscriptions.
 
 3. **DIDComm session.** The holder VS-Agent opens a DIDComm session to the issuer and follows the agent-level credential acquisition protocol (validation request, optional out-of-band steps to provide additional evidence, etc.). The issuer's VS-Agent collects and validates the evidence on its side.
 
-4. **Validator approves on-chain.** Once the issuer is satisfied, its VS-Agent submits `MsgSetAccreditationOPtoValidated` (`MOD-AC-MSG-3`) on the [[ref: VPR]]. `holder_accreditation` transitions to `op_state = VALIDATED` and its `effective_until` is set per the schema's policy.
+4. **Validator approves on-chain.** Once the issuer is satisfied, its VS-Agent submits `MsgValidateOnboarding` (`MOD-AC-MSG-3`) on the [[ref: VPR]]. `holder_accreditation` transitions to `onboarding_state = VALIDATED` and its `effective_until` is set per the schema's policy.
 
 5. **Credential issuance over DIDComm.** The issuer's VS-Agent issues a W3C Verifiable Trust Credential to the holder over the existing DIDComm session, using the schema's VTJSC as `credentialSchema.id` and anchoring the deterministic `digestJCS` per [VT-CRED-W3C] and [TR-4]. The holder had supplied the `CredentialExchange` identifier when accepting the offer, and before storing the credential it verifies through its indexer that the issuance transaction anchored the digest under the issuer's entry and carries that identifier ([CIT-4], [CIT-5]).
 
@@ -2625,13 +2625,13 @@ sequenceDiagram
     participant VPR as VPR (ledger)
     participant Idx as Indexer + Resolver
 
-    Holder->>VPR: MsgStartAccreditationOP (validator = issuer, by the holder's corporation)
+    Holder->>VPR: MsgStartOnboarding (validator = issuer, by the holder's corporation)
     VPR-->>Idx: accreditation-pending event
     Idx-->>Holder: notify
     Idx-->>Issuer: notify
     Holder->>Issuer: DIDComm onboarding flow
     Holder->>Issuer: DIDComm credential offer accepted (exchange_id)
-    Issuer->>VPR: MsgSetAccreditationOPtoValidated
+    Issuer->>VPR: MsgValidateOnboarding
     Issuer->>VPR: MsgRecordCredentialExchange (exchange_id, digest anchored)
     Idx-->>Holder: exchange notification
     Holder->>Holder: verify anchoring and exchange ([CIT-4], [CIT-5])
