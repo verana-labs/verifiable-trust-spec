@@ -1084,7 +1084,7 @@ The VPR stores the declaration. Verifiable Services and Verifiable User Agents M
 #### [VT-DECL-FORMAT] Credential format
 
 - [VT-DECL-FORMAT-1] An issuer MUST issue credentials of a schema only in the declared `credential_format`: [VT-CRED-W3C] for `W3C_JSONLD`, [VT-CRED-ANON] for `ANONCREDS`, [VT-CRED-SDJWT] for `SD_JWT`, [VT-CRED-MDOC] for `MDOC`. The W3C representation of an AnonCreds credential counts as `ANONCREDS`.
-- [VT-DECL-FORMAT-2] A verifier MUST request presentations of credentials of a schema in the declared `credential_format`, and a holder MUST refuse a credential offer ([CIT]) or a presentation request ([PRT]) that uses another container.
+- [VT-DECL-FORMAT-2] A [[ref: verifier]] MUST request presentations of credentials of a schema in the declared `credential_format`, and a holder MUST refuse a credential offer ([CIT]) or a presentation request ([PRT]) that uses another container.
 
 #### [VT-DECL-ANCHOR] Credential anchoring
 
