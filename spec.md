@@ -2607,7 +2607,7 @@ This example shows the action sequence for a holder VS-Agent obtaining a public 
 
 2. **Indexer notifies both parties.** Both the holder and the issuer VS-Agents receive an indexer notification for the new onboarding process via their respective DID-scoped subscriptions.
 
-3. **DIDComm session.** The holder VS-Agent opens a DIDComm session to the issuer and follows the agent-level credential acquisition protocol (validation request, optional out-of-band steps to provide additional evidence, etc.). The issuer's VS-Agent collects and validates the evidence on its side.
+3. **DIDComm session.** The holder VS-Agent opens a DIDComm session to the issuer and follows the onboarding process of [VT-PROTO-OP] (`onboarding-request`, `information-request` with an optional out-of-band `url`, `information`). The issuer's VS-Agent collects and validates the evidence on its side.
 
 4. **Validator approves on-chain.** Once the issuer is satisfied, its VS-Agent submits `MsgValidateOnboarding` (`MOD-AC-MSG-3`) on the [[ref: VPR]]. `holder_accreditation` transitions to `onboarding_state = VALIDATED` and its `effective_until` is set per the schema's policy.
 
