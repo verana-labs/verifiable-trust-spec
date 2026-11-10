@@ -602,7 +602,7 @@ Publishing VTJSC in the Ecosystem DID Document ensures that:
 - The binding between a Credential Schema and its **controlling Ecosystem DID** is **cryptographically verifiable**
 - Wallets, issuers, and verifiers can **resolve and validate schema trust roots** without relying on off-chain registries or implicit trust assumptions
 
-The Ecosystem DID Document MUST include a `service` entry of type `LinkedVerifiablePresentation` that references a Verifiable Presentation containing one or more VTJSC issued by the Ecosystem DID.
+The Ecosystem DID Document MUST include a `service` entry of type `LinkedVerifiablePresentation` that references a Verifiable Presentation containing one or more VTJSC issued by the Ecosystem DID. Such an entry MUST be declared with a fragment that starts with `#vpr-schemas-` and ends with `-vtjsc-vp`, as [VT-CRED-W3C-LINKED-VP] requires `-vtc-vp` for credentials.
 
 Example:
 
