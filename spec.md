@@ -1718,7 +1718,7 @@ To be considered compliant:
 | [ECS-SERVICE] | `SERVICE` | `PUBLIC` | `W3C_JSONLD` | null | `DIGEST` |
 | [ECS-ORG] | `SERVICE` | `PUBLIC` | `W3C_JSONLD` | null | `REVOCABLE_DIGEST` |
 | [ECS-PERSONA] | `SERVICE` | `PUBLIC` | `W3C_JSONLD` | null | `REVOCABLE_DIGEST` |
-| [ECS-UA] | `SERVICE` | `ON_REQUEST` | `ANONCREDS` | 0 | `NO_DIGEST` |
+| [ECS-UA] | `SERVICE` | `ON_REQUEST` | `ANONCREDS` | 0 or null | `NO_DIGEST` |
 | [ECS-BADGE] | `PERSON` | null | `ANONCREDS` | 0 at launch (an ecosystem decision) | `NO_DIGEST` |
 
 - Organization and Persona credentials MUST carry a `validUntil` ([VT-DECL-ANCHOR-4]); their digests are kept by the VPR until then and the issuing ecosystem can revoke them. A Service credential, issued by the controller of the service and published with the DID Document, needs neither: it is anchored by its issuance transaction only and withdrawn by its controller removing it.
