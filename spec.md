@@ -2488,31 +2488,24 @@ Examples below illustrate how trust resolution is performed assuming that all re
 
 ### Determine the issuance time of the credential (anchored schemas only)
 
-This step applies to credentials of schemas whose `credential_anchoring` is `DIGEST` or `REVOCABLE_DIGEST` only (W3C VTCs, and SD-JWT and mdoc VTCs of such schemas). Credentials of `NO_DIGEST` schemas (AnonCreds VTCs, SD-JWT and mdoc VTCs otherwise) have no objective issuance time (see [VT-CRED-ANON], [VT-CRED-SDJWT], [VT-CRED-MDOC] and [VT-DECL-ANCHOR]).
-
-- Recompute the credential's digest (`digestJCS`, the SD-JWT digest or the mdoc digest, per the container)
-- Locate its anchoring: the earliest issuance transaction that carried the digest under the issuer's entry and schema ([TR-4]), served by an indexer from its event (a `Digest` entry exists only under `REVOCABLE_DIGEST`)
-- Use the block time of that transaction as the **effective issuance time**
-- Check that the anchoring is under the issuer's [[ref: verifiable service entry]] with the schema, the issuer holding an `ISSUER` entry effective at the block time of that transaction or none under an `OPEN` schema, and, under `REVOCABLE_DIGEST`, its `Digest` entry present and not revoked ([TR-4])
+- Recompute the credential's digest, locate its anchoring and take the effective issuance time, as [TR-4] states.
 
 ### Verify issuer authorization
 
-- Identify the Ecosystem DID that issued the vtjsc
-- Query, through the indexer, the `Accreditation` entries of the issuer for the schema, including those since expired, revoked or deleted ([TR-9])
-- For credentials of an anchored schema (W3C VTCs, anchored SD-JWT and mdoc VTCs): verify that the credential issuer DID was authorized for the referenced vtjsc **at the effective issuance time** determined above
-- For credentials of a `NO_DIGEST` schema (AnonCreds VTCs, SD-JWT and mdoc VTCs otherwise): verify that the credential issuer DID is currently authorized for the referenced vtjsc: an `ISSUER` entry in force or, under an `OPEN` schema, the issuer resolving as a Verifiable Service with neither its participation nor its corporation excluded ([TR-5]). Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
-
-If this check fails, the credential MUST be rejected.
+- Identify the Ecosystem DID that issued the VTJSC ([TR-3]).
+- Verify that the issuer was authorized for the schema at the time [TR-5] gives for the schema's `credential_anchoring`.
 
 ### Verify the holder relationship
 
-For a credential of a schema whose `holder_onboarding_mode` is `ISSUER_ONBOARDING_PROCESS`, check that the subject holds a `HOLDER` entry in force, validated by an `ISSUER` entry of the issuer ([TR-9]); the end of that entry bounds the trust in the credential. For a credential of an anchored schema it MUST be the entry the credential was issued under, effective at the effective issuance time, with the `ISSUER` entry the credential was anchored under as validator; for a credential of a `NO_DIGEST` schema any such entry in force suffices ([TR-9], [VT-DECL-HOLDER-2]).
+- Apply [TR-9] to the subject of the credential.
 
 ### Check identifiers, status endpoints and exclusions
 
-- Every DID encountered matches its [[ref: verifiable service entry]], directly or through a transition window ([TR-10]).
-- A status reference carried by the credential is under a base its issuer declares, and its artifact is signed by the issuer DID ([TR-11]).
-- Neither the issuer's participation for the schema nor its corporation, nor a validator above it, is excluded ([TR-12]).
+- Match every DID encountered to its [[ref: verifiable service entry]] ([TR-10]).
+- Evaluate the status reference the credential carries, if any ([TR-11]).
+- Check that no exclusion applies ([TR-12]).
+
+A failed step rejects the credential ([TR-8]).
 
 ### Verify the issuer is a Verifiable Service
 
