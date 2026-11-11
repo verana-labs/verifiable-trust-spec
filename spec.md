@@ -1867,7 +1867,6 @@ Parties that must authenticate each other (a [[ref: VS]] and its peers, two [[re
 | Protocol | DID Document service type |
 | --- | --- |
 | [DIDComm Messaging](https://identity.foundation/didcomm-messaging/spec/) v2 (2.x) | `DIDCommMessaging`, its `serviceEndpoint` an object with `uri` and `accept: ["didcomm/v2"]` |
-| [DIDComm](https://github.com/hyperledger/aries-rfcs/tree/main/concepts/0005-didcomm) v1 | `did-communication`, with `serviceEndpoint`, `recipientKeys`, `routingKeys` and `accept: ["didcomm/aip2;env=rfc19"]` |
 
 The [Trust Spanning Protocol](https://trustoverip.github.io/tswg-tsp-specification/) is expected to join this list in a later version.
 
@@ -1928,7 +1927,7 @@ In practice, this means a trusted channel acts as the **control plane** of a Ver
 
 #### Example: VS DID Document with Multiple Service Endpoints
 
-The following example shows a Verifiable Service DID Document that declares its trusted channels, the mandatory DIDComm v2 entry and a DIDComm v1 entry, alongside optional MCP, A2A and website endpoints, in addition to the identity-layer Linked Verifiable Presentations required by [VS-REQ]:
+The following example shows a Verifiable Service DID Document that declares its [[ref: trusted channel endpoint]], the mandatory DIDComm v2 entry, alongside optional MCP, A2A and website endpoints, in addition to the identity-layer Linked Verifiable Presentations required by [VS-REQ]:
 
 ```json
 "service": [
@@ -1949,15 +1948,6 @@ The following example shows a Verifiable Service DID Document that declares its 
       "uri": "wss://example.com",
       "accept": ["didcomm/v2"]
     }
-  },
-  {
-    "id": "did:example:service#did-communication",
-    "type": "did-communication",
-    "serviceEndpoint": "wss://example.com",
-    "priority": 0,
-    "recipientKeys": ["did:example:service#key-1"],
-    "routingKeys": [],
-    "accept": ["didcomm/aip2;env=rfc19"]
   },
   {
     "id": "did:example:service#mcp",
@@ -1995,18 +1985,18 @@ The following example shows a Verifiable Service DID Document that declares its 
 In this example:
 
 - `#vpr-schemas-service-vtc-vp` and `#vpr-schemas-org-vtc-vp` are **identity-layer** entries used during trust resolution (see [VS-REQ]).
-- `#didcomm-messaging-0` is the **mandatory** DIDComm v2 entry and `#did-communication` the DIDComm v1 entry a VS SHOULD also declare ([VS-SVC-2], [VT-CHAN-2]); a peer opens the trusted channel, the bootstrap channel of the service, through either.
+- `#didcomm-messaging-0` is the **mandatory** DIDComm v2 [[ref: trusted channel endpoint]] ([VS-SVC-2], [VT-CHAN-2]); a peer opens a trusted channel, the bootstrap channel of the service, through it.
 - `#mcp`, `#a2a` and `#website` are **optional** consumable endpoints declared under [VS-SVC-3].
 - `#status-lists`, `#oid4vci` and `#oid4vp` are **protocol endpoints** declared under [VS-SVC-8]: the status lists of the SD-JWT credentials this service issues under `NO_DIGEST` schemas live under `https://example.com/status/`, and the service issues over OpenID4VCI and requests presentations over OpenID4VP. What they serve is signed by a key of `did:example:service` ([VS-SVC-9]). AnonCreds objects the service publishes are not declared here: they are published and resolved as the AnonCreds method of its DID method defines ([VS-SVC-8]).
 
 A conforming peer would interact with this service as follows:
 
 1. Trust-resolve `did:example:service` (per [VS-SVC-4] and [TR]).
-2. Open a trusted channel through `#didcomm-messaging-0` or `#did-communication`, bound to `did:example:service` ([VT-CHAN-3]).
+2. Open a trusted channel through `#didcomm-messaging-0`, bound to `did:example:service` ([VT-CHAN-3]).
 3. Over that channel, consume the services it carries ([VS-SVC-12]), or obtain any credentials, access tokens, or other authentication material required by `#mcp`, `#a2a` or `#website` (per [VS-SVC-7]).
 4. Call the target endpoint(s) — `#mcp`, `#a2a` or `#website` — presenting the artifacts obtained in step 3 as that endpoint's protocol requires.
 
-Per [VS-SVC-5], none of `#didcomm-messaging-0`, `#did-communication`, `#mcp`, `#a2a` or `#website` may be used before trust resolution of `did:example:service` has succeeded.
+Per [VS-SVC-5], none of `#didcomm-messaging-0`, `#mcp`, `#a2a` or `#website` may be used before trust resolution of `did:example:service` has succeeded.
 
 ::: note
 The `MCP` and `A2A` service type strings used above are illustrative. Ecosystems are free to standardize type names for emerging protocols; this specification only requires that service entries follow DID Core `service` syntax and that a `DIDCommMessaging` entry is present ([VS-SVC-2]).
