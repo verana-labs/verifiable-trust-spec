@@ -288,11 +288,11 @@ A **Verifiable Public Registry (VPR)** is a **“registry of registries”**, a 
 - **Ecosystem Management**:  
   [[ref: Corporations]] can create and manage their own [[ref: Ecosystems]], each with:
   - Defined **Credential Schemas**
-  - Assigned roles for **Issuers**, **Verifiers**, and **Grantors** (Ecosystem Operators), modeled as `Accreditation` entries
+  - Assigned roles for **Issuers**, **Verifiers**, and **Grantors** (participants accredited to onboard issuers or verifiers), modeled as `Accreditation` entries
   - Custom **business models** and onboarding policies
 
-- **Query API for Trust Resolution**:  
-  A standardized API used by **Verifiable Services (VSs)** and **Verifiable User Agents (VUAs)** to perform trust resolution, enabling them to query registry data and validate roles and `Accreditation` entries in real time.
+- **Data for Trust Resolution**:  
+  The entries and events that **Verifiable Services (VSs)** and **Verifiable User Agents (VUAs)** read, through an indexer of their choice, to perform trust resolution ([WL-VPR]).
 
 ```plantuml
 
