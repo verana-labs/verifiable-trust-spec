@@ -21,6 +21,7 @@
     "build:specs": "node -e \"import('spec-up').then(m => m.default({ nowatch: true }))\"",
     "dev": "npm run clean && npm run dev:specs",
     "dev:specs": "node -e \"import('spec-up').then(m => m.default())\"",
-    "clean": "rm -rf build && mkdir build"
+    "clean": "rm -rf build && mkdir build",
+    "check": "npm run build && node scripts/check-spec.mjs"
   }
 }
