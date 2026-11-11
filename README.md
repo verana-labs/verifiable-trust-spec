@@ -36,10 +36,6 @@ Git does not track these files. CI builds them again on each deploy.
 
 Contribute by editing [spec.md](spec.md) in a new branch.
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) first: it gives the writing rules of the
-spec. Run `npm run check` before you push. It builds the HTML, then checks the
-links, the glossary, the rule ids and the diagrams.
-
 To re-render html while you edit the spec.md file, run:
 
 ```
