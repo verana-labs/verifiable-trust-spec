@@ -238,31 +238,27 @@ The DID Document of a Verifiable Service declares two complementary things:
 - **Identity material**, in the form of Linked Verifiable Presentations, used to prove who operates the service and under which ecosystem governance (see [VS-REQ]).
 - **Service endpoints**, expressed as standard [DID Core `service` entries](https://www.w3.org/TR/did-core/#services), used to actually consume the service.
 
-Every Verifiable Service declares at least one **trusted channel**: a service entry for a protocol that authenticates both parties and binds the channel to their DIDs ([VT-CHAN]). DIDComm v2 is mandatory and DIDComm v1 recommended ([VS-SVC-2]); other protocols, such as the Trust Spanning Protocol, can join the list without changing the rules. The trusted channel plays a very specific role in the Verifiable Trust architecture: it is the **bootstrapping channel** of the service. Over it, a peer:
+Every Verifiable Service declares a **trusted channel endpoint** for each trusted channel protocol it implements ([VS-SVC-2]): the service entry through which a peer opens a **trusted channel** with it, a connection over which both parties authenticate their identifiers ([VT-CHAN]). A trusted channel is the **bootstrapping channel** of the service: trust is established over it, and the other endpoints are reached with what it provides. The list of trusted channel protocols is open: the Trust Spanning Protocol, for instance, can join it in a later version.
 
-- completes mutual identity proof and trust resolution;
-- negotiates and consumes higher-level protocols such as credential issuance, credential presentation, and secure messaging; and
-- obtains whatever credentials, access tokens, or session artifacts are required to authenticate its later calls to the *other* declared endpoints, and the endpoints the service provides to authenticated peers only.
-
-In addition to its trusted channels, a Verifiable Service MAY declare any number of other service endpoints, for example:
+In addition to its trusted channel endpoints, a Verifiable Service can declare other service endpoints ([VS-SVC-1], [VS-SVC-3]), for example:
 
 - an **MCP** endpoint exposing tools consumable by AI agents;
 - an **A2A** endpoint for agent-to-agent interoperability;
 - a **website** endpoint pointing to a traditional HTTP(S) resource;
 - any other protocol type defined by the ecosystem.
 
-These endpoints form the **data plane** of the service; the trusted channel is its **control plane**, which authenticates access to them, and the data plane of the services it carries.
+These endpoints form the **data plane** of the service; a trusted channel is its **control plane**, which authenticates access to them, and the data plane of the services it carries.
 
 With mutual authentication, the interaction flow is the same whatever the protocol:
 
 1. A peer obtains the service's **DID** (via a link, QR code, directory, or any other means).
 2. The peer **resolves** the DID and fetches its DID Document.
-3. The peer performs **trust resolution**: it verifies the Linked Verifiable Presentations, checks issuer authorization in the VPR, and recursively resolves the DIDs of the service's operator and credential issuers.
-4. Once trust is established, the peer opens a **trusted channel** with the service, and the service **verifies the peer** over it: its User Agent credential, or trust resolution of a service's DID ([VT-CHAN-4]); until then the channel carries nothing else.
-5. The channel is the bootstrap channel: it carries services itself, and is used to exchange further credentials, issue access tokens, or otherwise negotiate whatever authentication material is needed to reach the other declared endpoints, and to provide the endpoints the service does not declare.
-6. Armed with the artifacts obtained over the channel, the peer **consumes** the other endpoint it is interested in (MCP, A2A, website, …), declared or provided over the channel, presenting the obtained tokens or credentials as required by that endpoint's protocol.
+3. The peer performs **trust resolution** of the DID ([VS-SVC-4], [TR]).
+4. The peer opens a **trusted channel** with the service through its trusted channel endpoint ([VT-CHAN-3]), and the service **verifies the peer** over it ([VT-CHAN-4]).
+5. Over the channel, the peer consumes the services it carries ([VS-SVC-12]) and obtains the access material, and the endpoints the service does not declare, that it needs for the others ([VS-SVC-7], [VS-SVC-11]).
+6. The peer **consumes** the other endpoint it is interested in (MCP, A2A, website, …) with what it obtained.
 
-Because service endpoints are declared inside a cryptographically controlled DID Document, because the DID itself has been trust-resolved, and because the authentication material for the other endpoints originates from the trusted channel, any URL reached via those endpoints inherits the trust context of the DID. An MCP call, an A2A message, or a plain website fetch performed through a service entry declared in a verified DID Document is, by construction, an interaction with an identified and accountable operator — not with an anonymous server behind a random URL. An endpoint the service provides over the trusted channel inherits the same trust context for that peer; a URL received through any other channel does not. A public endpoint, such as a website, may also be consumed at a one-way level, after steps 1 to 3 only: the service is authenticated, the peer is not ([VS-SVC]).
+Because service endpoints are declared inside a cryptographically controlled DID Document, because the DID itself has been trust-resolved, and because the authentication material for the other endpoints originates from a trusted channel, any URL reached via those endpoints inherits the trust context of the DID ([VS-SVC-5], [VS-SVC-11]). An MCP call, an A2A message, or a plain website fetch performed through a service entry declared in a verified DID Document is, by construction, an interaction with an identified and accountable operator — not with an anonymous server behind a random URL. A public endpoint, such as a website, can also be consumed without a trusted channel ([VS-SVC-1]).
 
 This reverses the common "connect first, verify later" model of today's internet into a "verify first, then connect" model. The normative requirements for Service Declaration are defined in [VS-SVC].
 
