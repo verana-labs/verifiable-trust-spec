@@ -2455,7 +2455,7 @@ Using this indexed data, a relying party (or a wallet acting on its behalf) can 
 
 ### Recursive Resolution Principle
 
-Trust resolution is inherently **recursive**. Every DID encountered during resolution — whether as a credential issuer, a service operator, or a credential subject — MUST itself be resolved and verified. Specifically, any DID that appears as an issuer of a credential MUST be verified as a **Verifiable Service** (see [VS-REQ]), and all credentials it presents MUST themselves undergo the same resolution steps. This recursion terminates at the **Ecosystem DID**, which serves as the trust root: it is the issuer of the VTJSC and identifies the Ecosystem itself (accepted under [TR-3] and [WL-ECS], not as a Verifiable Service); a DID already under resolution is not re-entered ([TR-1]). Every credential on which the trust decision relies, of a schema in `ISSUER_ONBOARDING_PROCESS` holder mode, MUST also pass the holder-relationship check of [TR-9].
+Trust resolution is **recursive** ([TR-1]): every DID encountered is itself resolved, and every issuer is itself verified as a **Verifiable Service** ([TR-6]). The recursion ends at the **Ecosystem DID**, the trust root, which issued the VTJSC ([TR-3], [TR-7], [WL-ECS]). Every credential the trust decision relies on also passes the holder-relationship check of [TR-9].
 
 Examples below illustrate how trust resolution is performed assuming that all required Verifiable Trust artifacts are already available to the relying party. No assumptions are made about how the data was obtained; only the logical resolution steps are described.
 
