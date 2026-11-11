@@ -414,16 +414,7 @@ issuer --> holder: granted schema participant
 
 ```
 
-Accreditation roles are defined in the table below:
-
-| **Accreditation Role**   | **Description**                                                  |
-|-----------------------|------------------------------------------------------------------|
-| **Ecosystem**    | Create and control Ecosystems and Credential Schemas. Recognize other corporations by creating `Accreditation` entries for them.        |
-| **Issuer Grantor**    | Ecosystem operator that creates Issuer `Accreditation` entries for candidate issuers.                   |
-| **Verifier Grantor**  | Ecosystem operator that creates Verifier `Accreditation` entries for candidate verifiers.               |
-| **Issuer**            | Can issue credentials of this schema.                            |
-| **Verifier**          | Can request presentation of credentials of this schema.          |
-| **Holder**            | Holds a credential.   |
+The roles of an `Accreditation` entry (`ECOSYSTEM`, `ISSUER_GRANTOR`, `VERIFIER_GRANTOR`, `ISSUER`, `VERIFIER`, `HOLDER`) are defined by the VPR spec ([Accreditation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#accreditation)). A grantor is a participant that holds a grantor accreditation, under which it validates candidate issuers or verifiers.
 
 Example of a Json Schema credential schema:
 
