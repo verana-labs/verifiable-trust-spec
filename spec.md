@@ -360,18 +360,10 @@ object "Ecosystem" as tra #3fbdb6 {
 **Credential Schemas** are created and managed by [[ref: Ecosystems]] (which are themselves controlled by [[ref: corporations]]). Each Credential Schema includes, at a minimum:
 
 - A **JSON Schema** that defines the structure of the corresponding **Verifiable Credential**
-- An **IssuerOnboardingMode** for **issuance policy**, which determines how `ISSUER` `Accreditation` entries are created. Modes include:
-  - `OPEN`: any [[ref: corporation]] issues under the [[ref: verifiable service entry]] of its service, without any `ISSUER` entry; the deposit of its participation, created by the first trust units minted on its payments, is what the ecosystem can slash; it MAY self-create an entry to declare the fees it charges.
-  - `ECOSYSTEM_ONBOARDING_PROCESS`: `ISSUER` `Accreditation` entries are created directly by the controlling [[ref: ecosystem]] through an onboarding process.
-  - `GRANTOR_ONBOARDING_PROCESS`: `ISSUER` `Accreditation` entries are created by one or several `Issuer Grantor(s)` (ecosystem operators responsible for onboarding issuers for the schema), selected by the [[ref: ecosystem]] through an onboarding process.
-- A **VerifierOnboardingMode** for **verification policy**, which determines how `VERIFIER` `Accreditation` entries are created. Modes include:
-  - `OPEN`: any [[ref: corporation]] verifies under the [[ref: verifiable service entry]] of its service, without any `VERIFIER` entry; the deposit of its participation, created by the first trust units minted on its payments, is what the ecosystem can slash.
-  - `CREDENTIAL`: any service whose DID is the subject of a valid credential of one of the schemas listed in the schema's `verifier_credential_schema_ids` (all of them `PUBLIC` service schemas) verifies under the [[ref: verifiable service entry]] of its service, without any `VERIFIER` entry; the holder establishes the verifier's credential from its DID Document ([PRT-3]).
-  - `ECOSYSTEM_ONBOARDING_PROCESS`: `VERIFIER` `Accreditation` entries are created directly by the controlling [[ref: ecosystem]] through an onboarding process.
-  - `GRANTOR_ONBOARDING_PROCESS`: `VERIFIER` `Accreditation` entries are created by one or several `Verifier Grantor(s)` (ecosystem operators responsible for onboarding verifiers for the schema), selected by the [[ref: ecosystem]] through an onboarding process.
-- A **HolderOnboardingMode** for **holder policy**, which determines how `HOLDER` `Accreditation` entries are created. Modes include:
-  - `ISSUER_ONBOARDING_PROCESS`: `HOLDER` `Accreditation` entries are created for holders through an onboarding process that the issuer validates.
-  - `PERMISSIONLESS`: a holder that wants to obtain credentials from an issuer does not require an `Accreditation` entry in the VPR.
+- Three **onboarding modes**, which state how the participants of each role come to act under the schema. Their values and semantics are defined by the VPR spec ([CredentialSchema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema)); what a holder verifies under each mode is stated by [CIT-3] and [PRT-3]:
+  - an **IssuerOnboardingMode**: `OPEN`, `ECOSYSTEM_ONBOARDING_PROCESS` or `GRANTOR_ONBOARDING_PROCESS`;
+  - a **VerifierOnboardingMode**: `OPEN`, `CREDENTIAL`, `ECOSYSTEM_ONBOARDING_PROCESS` or `GRANTOR_ONBOARDING_PROCESS`;
+  - a **HolderOnboardingMode**: `ISSUER_ONBOARDING_PROCESS` or `PERMISSIONLESS`.
 - A **declaration** of what the credentials are for: `subject_kind`, `presentation_mode`, `credential_format`, `presentation_validity_period` and `credential_anchoring` ([VT-DECL]).
 - A **Accreditation Tree** that defines the roles and relationships involved in managing the schema’s lifecycle.
 
