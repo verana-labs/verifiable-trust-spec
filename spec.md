@@ -631,7 +631,7 @@ Verifiable Trust Credentials are designed to support multiple credential contain
 
 In decentralized systems, relying on issuer-asserted timestamps (such as `issuanceDate`) is insufficient, as such values can be forged or backdated by the issuer.
 
-To address this, the Verifiable Trust architecture enables **objective issuance-time determination** for W3C VTCs ([VT-DECL-ANCHOR]), by anchoring a deterministic cryptographic digest of the credential in the VPR at issuance time. Verifiers can recompute this digest from the presented credential and use the corresponding VPR registration timestamp as the effective issuance time. Note that this mechanism does not apply to AnonCreds VTCs, where unlinkability takes precedence over objective issuance-time anchoring (see [VT-CRED-ANON]).
+To address this, the Verifiable Trust architecture enables **objective issuance-time determination** for credentials of anchored schemas ([VT-DECL-ANCHOR-1]), by anchoring a deterministic cryptographic digest of the credential in the VPR at issuance time. Verifiers can recompute this digest from the presented credential and use the corresponding VPR registration timestamp as the effective issuance time.
 
 This approach is:
 
