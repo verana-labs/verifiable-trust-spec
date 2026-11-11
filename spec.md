@@ -668,23 +668,22 @@ The Verifiable Trust Specification is **container-agnostic** and supports multip
   Suitable for private credentials where:
   - selective disclosure is required
   - multiple presentations must not be linkable
-  - issuer authorization is verified by the holder's wallet at credential reception time rather than anchored via stable identifiers
+  - no stable identifier may be anchored, issuer authorization being evaluated as [VT-DECL-ANCHOR-2] states
 
 - **IETF SD-JWT VC (`dc+sd-jwt`)**  
-  Suitable for private credentials exchanged over OpenID4VCI and OpenID4VP or the Digital Credentials API (in this version only for exchanges that need no `CredentialExchange`, [CIB-5], [PRB-5], [VT-PROTO-6]) where:
+  Suitable for private credentials, issued and presented as [VT-PROTO-6] states, where:
   - selective disclosure is required (per-claim disclosures)
   - holder binding is required (`cnf`)
   - interoperability with OpenID4VC wallets is more important than unlinkability
-  - issuer authorization is verified by the holder's wallet at reception ([VT-DECL-ANCHOR-2])
 
   An SD-JWT VC does not provide unlinkability. Salted disclosures limit correlation. They do not remove it. Use AnonCreds when presentations must not be linkable.
 
 - **ISO/IEC 18013-5 mdoc (`mso_mdoc`)**  
-  Suitable for private credentials of natural persons presented over OpenID4VP or the Digital Credentials API where:
+  Suitable for private credentials of natural persons ([VT-CRED-MDOC-9]), issued and presented as [VT-PROTO-6] states, where:
   - selective disclosure is required (per-element disclosure)
   - holder binding through a device key is required
   - compatibility with mobile-document wallets and readers is more important than unlinkability
-  - revocation through a status list and batch issuance of single-use copies are acceptable ([VT-CRED-MDOC-7], [VT-CRED-MDOC-8])
+  - the linkability of its presentations is acceptable, with the mitigations of [VT-CRED-MDOC-8]
 
   An mdoc does not provide unlinkability either: its issuer-signed part is a stable correlator, mitigated by issuing batches of copies.
 
