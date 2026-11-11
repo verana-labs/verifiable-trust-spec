@@ -2571,7 +2571,7 @@ This example shows the action sequence for a holder [[ref: VS Agent]] obtaining 
 
 6. **Holder publishes the credential in its DID Document.** The holder VS Agent updates its DID Document to publish (or update) a `linked-vp` entry containing the newly received credential, alongside any previously held public credentials.
 
-7. **Holder triggers the resolver.** As soon as the updated DID Document is updated, the holder VS Agent submits `TriggerResolver` (`MOD-AC-MSG-15`) for its [[ref: verifiable service entry]] (`vs_id`). The vs-agent signs as `operator = holder.vs_operator` for `corporation = holder.corporation`, the vs_operator path of `MOD-AC-MSG-15`. The Msg makes no on-chain state change; it only emits an event.
+7. **Holder triggers the resolver.** As soon as the updated DID Document is updated, the holder VS Agent submits `TriggerResolver` (`MOD-AC-MSG-15`) for its [[ref: verifiable service entry]] (`vs_id`). The VS Agent signs as `operator = holder.vs_operator` for `corporation = holder.corporation`, the vs_operator path of `MOD-AC-MSG-15`. The Msg makes no on-chain state change; it only emits an event.
 
 8. **Trust resolution.** The [[ref: VPR]] resolver pipeline observes the `TriggerResolver` event, and trigger the resolver module that fetches the latest holder DID Document, validates each linked-vp credential per [TR], and records the holder DID's trust state. Subsequent queries to the resolver return `trustStatus = TRUSTED` for the holder DID.
 
