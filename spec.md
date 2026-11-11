@@ -138,6 +138,9 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 [[def: verifier, verifiers]]:
 ~ A role an entity performs by receiving one or more verifiable credentials, optionally inside a verifiable presentation for processing. Example verifiers include service providers.
 
+[[def: VS Agent, VS Agents]]:
+~ The software that runs a [[ref: VS]]: it holds the keys of the service's [[ref: DID]], establishes its [[ref: trusted channels]], runs the exchanges of [VT-PROTO], and signs for the service, with the `vs_operator` account of its [[ref: verifiable service entry]], the VPR messages its corporation authorized that account to sign (VPR [AUTHZ-CHECK-3](https://verana-labs.github.io/verifiable-trust-vpr-spec/#authz-check-3-vs-operator-authorization-checks)).
+
 ## Understanding Verifiable Trust
 
 *This section is non-normative.*
@@ -808,7 +811,7 @@ This mechanism binds a credential's content to a block timestamp assigned by the
 
 - An issuer **cannot pre-date** one. The digest covers the credential's `proof`, so it cannot be computed before the credential is signed. Anchoring can only place the effective issuance time at or after actual issuance.
 
-- **A digest anchored by another party is detected.** Any registered corporation MAY anchor any digest under one of its [[ref: verifiable service entries]], through an operator or the entry's vs-agent, and because [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest) is idempotent the first anchor fixes `created` and the anchoring entry until the entry expires; its owner is the corporation of that entry. Computing the digest requires the signed credential, which exists nowhere outside the issuer until delivery, and registration MUST precede delivery. Should another party anchor first (a credential delivered or leaked before registration), the entry belongs to that party: under `REVOCABLE_DIGEST` the issuer's exchange transaction aborts, since the VPR refuses a Credential Issuance whose digest already exists under another entry or schema, or as a direct notarization, and treats an identical anchoring as a re-send; under `DIGEST` nothing is written, the stranger's anchoring is disregarded ([TR-4]) and the issuer's own issuance transaction anchors the credential; only a credential delivered without the issuer's anchoring is refused ([CIT-4], [TR-4]). Under `REVOCABLE_DIGEST` the issuer re-issues. Ed25519 signatures are deterministic, so re-issuing the identical credential yields the identical digest: the re-issued credential MUST differ in content (for example a new `id`).
+- **A digest anchored by another party is detected.** Any registered corporation MAY anchor any digest under one of its [[ref: verifiable service entries]], through an operator or the entry's [[ref: VS Agent]], and because [Store Digest](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-di-msg-1-store-digest) is idempotent the first anchor fixes `created` and the anchoring entry until the entry expires; its owner is the corporation of that entry. Computing the digest requires the signed credential, which exists nowhere outside the issuer until delivery, and registration MUST precede delivery. Should another party anchor first (a credential delivered or leaked before registration), the entry belongs to that party: under `REVOCABLE_DIGEST` the issuer's exchange transaction aborts, since the VPR refuses a Credential Issuance whose digest already exists under another entry or schema, or as a direct notarization, and treats an identical anchoring as a re-send; under `DIGEST` nothing is written, the stranger's anchoring is disregarded ([TR-4]) and the issuer's own issuance transaction anchors the credential; only a credential delivered without the issuer's anchoring is refused ([CIT-4], [TR-4]). Under `REVOCABLE_DIGEST` the issuer re-issues. Ed25519 signatures are deterministic, so re-issuing the identical credential yields the identical digest: the re-issued credential MUST differ in content (for example a new `id`).
 
 - A `Digest` entry records `digest`, `created`, the [[ref: verifiable service entry]] under which it was anchored (whose corporation owns the digest) and, for a credential, its schema (together they name the issuer's participation, whose deposit outlives its entries), an optional `revoked` timestamp and, for schemas whose `credential_anchoring` is `REVOCABLE_DIGEST`, the credential's expiry, after which the entry is deleted; under `DIGEST` no entry is written and the event of the issuance transaction is the anchoring. It does not record which operator account anchored it, and the VPR does not verify a digest against any content. Attribution of a credential to its issuer comes from the credential's own proof, verified separately per [TR-2].
 
@@ -2546,36 +2549,36 @@ The following examples illustrate end-to-end interaction sequences between Verif
 
 ### Example 1 — Issuing a public W3C credential to a holder
 
-This example shows the action sequence for a holder VS-Agent obtaining a public W3C credential (a credential of a schema declared `PUBLIC`, [VT-DECL-MODE-1]) from an issuer and presenting it in its DID Document so that the holder service becomes visible to relying parties through the [[ref: VPR]] resolver.
+This example shows the action sequence for a holder [[ref: VS Agent]] obtaining a public W3C credential (a credential of a schema declared `PUBLIC`, [VT-DECL-MODE-1]) from an issuer and presenting it in its DID Document so that the holder service becomes visible to relying parties through the [[ref: VPR]] resolver.
 
 **Preconditions:**
 
 - The Ecosystem has defined a `CredentialSchema` `cs` for the credential (a schema that keeps `ISSUER_ONBOARDING_PROCESS`; the essential schemas are `PERMISSIONLESS`, see [VT-ECS-JSON-SCHEMA-VPR-CONFIG], and skip steps 1, 2 and 4), with an associated VTJSC published by the Ecosystem DID; `cs` is declared `PUBLIC`, with `credential_anchoring` `REVOCABLE_DIGEST` (Example 2 notes the digest alternative), and sets `holder_onboarding_mode` to `ISSUER_ONBOARDING_PROCESS`.
 - The issuer has an active `ISSUER` `Accreditation` entry on `cs` (`issuer_accreditation`), and issuer service is a Verifiable Service.
-- The holder VS-Agent knows the issuer's DID and the schema `cs` it wants to be issued a credential against.
+- The holder VS Agent knows the issuer's DID and the schema `cs` it wants to be issued a credential against.
 
 **Sequence:**
 
-1. **Start the onboarding process (holder side).** The holder's corporation submits `StartOnboarding` (`MOD-AC-MSG-1`), through an operator under an OperatorAuthorization (a vs-agent cannot execute it), on the [[ref: VPR]], targeting the issuer as validator of the requested `HOLDER` `Accreditation` entry against `cs`. The on-chain entry creates an applicant `Accreditation` entry `holder_accreditation` in `onboarding_state = PENDING` whose `validator_accreditation_id` points at `issuer_accreditation`.
+1. **Start the onboarding process (holder side).** The holder's corporation submits `StartOnboarding` (`MOD-AC-MSG-1`), through an operator under an OperatorAuthorization (not a message a VS Agent may sign, VPR [AUTHZ-CHECK-3](https://verana-labs.github.io/verifiable-trust-vpr-spec/#authz-check-3-vs-operator-authorization-checks)), on the [[ref: VPR]], targeting the issuer as validator of the requested `HOLDER` `Accreditation` entry against `cs`. The on-chain entry creates an applicant `Accreditation` entry `holder_accreditation` in `onboarding_state = PENDING` whose `validator_accreditation_id` points at `issuer_accreditation`.
 
-2. **Indexer notifies both parties.** Both the holder and the issuer VS-Agents receive an indexer notification for the new onboarding process via their respective DID-scoped subscriptions.
+2. **Indexer notifies both parties.** Both the holder and the issuer VS Agents receive an indexer notification for the new onboarding process via their respective DID-scoped subscriptions.
 
-3. **DIDComm session.** The holder VS-Agent opens a DIDComm session to the issuer and follows the onboarding process of [VT-PROTO-OP] (`onboarding-request`, `information-request` with an optional out-of-band `url`, `information`). The issuer's VS-Agent collects and validates the evidence on its side.
+3. **DIDComm session.** The holder VS Agent opens a DIDComm session to the issuer and follows the onboarding process of [VT-PROTO-OP] (`onboarding-request`, `information-request` with an optional out-of-band `url`, `information`). The issuer's VS Agent collects and validates the evidence on its side.
 
-4. **Validator approves on-chain.** Once the issuer is satisfied, its VS-Agent submits `ValidateOnboarding` (`MOD-AC-MSG-3`) on the [[ref: VPR]]. `holder_accreditation` transitions to `onboarding_state = VALIDATED` and its `effective_until` is set per the schema's policy.
+4. **Validator approves on-chain.** Once the issuer is satisfied, its VS Agent submits `ValidateOnboarding` (`MOD-AC-MSG-3`) on the [[ref: VPR]]. `holder_accreditation` transitions to `onboarding_state = VALIDATED` and its `effective_until` is set per the schema's policy.
 
-5. **Credential issuance over DIDComm.** The issuer's VS-Agent issues a W3C Verifiable Trust Credential to the holder over the existing DIDComm session, using the schema's VTJSC as `credentialSchema.id` and anchoring the deterministic `digestJCS` per [VT-CRED-W3C] and [TR-4]. The holder had supplied the `CredentialExchange` identifier when accepting the offer, and before storing the credential it verifies through its indexer that the issuance transaction anchored the digest under the issuer's entry and carries that identifier ([CIT-4], [CIT-5]).
+5. **Credential issuance over DIDComm.** The issuer's VS Agent issues a W3C Verifiable Trust Credential to the holder over the existing DIDComm session, using the schema's VTJSC as `credentialSchema.id` and anchoring the deterministic `digestJCS` per [VT-CRED-W3C] and [TR-4]. The holder had supplied the `CredentialExchange` identifier when accepting the offer, and before storing the credential it verifies through its indexer that the issuance transaction anchored the digest under the issuer's entry and carries that identifier ([CIT-4], [CIT-5]).
 
-6. **Holder publishes the credential in its DID Document.** The holder VS-Agent updates its DID Document to publish (or update) a `linked-vp` entry containing the newly received credential, alongside any previously held public credentials.
+6. **Holder publishes the credential in its DID Document.** The holder VS Agent updates its DID Document to publish (or update) a `linked-vp` entry containing the newly received credential, alongside any previously held public credentials.
 
-7. **Holder triggers the resolver.** As soon as the updated DID Document is updated, the holder VS-Agent submits `TriggerResolver` (`MOD-AC-MSG-15`) for its [[ref: verifiable service entry]] (`vs_id`). The vs-agent signs as `operator = holder.vs_operator` for `corporation = holder.corporation`, the vs_operator path of `MOD-AC-MSG-15`. The Msg makes no on-chain state change; it only emits an event.
+7. **Holder triggers the resolver.** As soon as the updated DID Document is updated, the holder VS Agent submits `TriggerResolver` (`MOD-AC-MSG-15`) for its [[ref: verifiable service entry]] (`vs_id`). The vs-agent signs as `operator = holder.vs_operator` for `corporation = holder.corporation`, the vs_operator path of `MOD-AC-MSG-15`. The Msg makes no on-chain state change; it only emits an event.
 
 8. **Trust resolution.** The [[ref: VPR]] resolver pipeline observes the `TriggerResolver` event, and trigger the resolver module that fetches the latest holder DID Document, validates each linked-vp credential per [TR], and records the holder DID's trust state. Subsequent queries to the resolver return `trustStatus = TRUSTED` for the holder DID.
 
 ```mermaid
 sequenceDiagram
-    participant Holder as Holder VS-Agent
-    participant Issuer as Issuer VS-Agent
+    participant Holder as Holder VS Agent
+    participant Issuer as Issuer VS Agent
     participant VPR as VPR (ledger)
     participant Idx as Indexer + Resolver
 
@@ -2607,20 +2610,20 @@ This example shows the symmetric flow for revoking a previously issued credentia
 
 **Sequence:**
 
-1. **Issuer revokes on-chain.** The issuer's corporation submits `RevokeAccreditation` (`MOD-AC-MSG-9`), through an operator (a vs-agent cannot execute it), against `holder_accreditation`. On confirmation, the entry is deleted and its revocation recorded by the transaction's event, which withdraws trust from every credential issued under that entry ([TR-9]); to revoke a single credential while keeping the relationship, the issuer revokes its digest instead ([TR-4]).
+1. **Issuer revokes on-chain.** The issuer's corporation submits `RevokeAccreditation` (`MOD-AC-MSG-9`), through an operator (not a message a VS Agent may sign, VPR [AUTHZ-CHECK-3](https://verana-labs.github.io/verifiable-trust-vpr-spec/#authz-check-3-vs-operator-authorization-checks)), against `holder_accreditation`. On confirmation, the entry is deleted and its revocation recorded by the transaction's event, which withdraws trust from every credential issued under that entry ([TR-9]); to revoke a single credential while keeping the relationship, the issuer revokes its digest instead ([TR-4]).
 
 2. **Resolver auto-re-resolves.** The [[ref: VPR]] resolver pipeline treats `RevokeAccreditation` as an implicit re-resolution signal for the holder DID and re-runs trust resolution. With `holder_accreditation` deleted, the credential it backed is no longer covered by a `HOLDER` entry in force ([TR-9]), so trust resolution against the holder DID's currently-published linked-vp fails for that credential. The resolver then marks the holder DID untrusted for every decision that relies on that credential. A Linked VP on which a decision does not rely is disregarded ([TR-8]), so the DID keeps, for decisions relying on its other credentials, the trust those credentials establish.
 
-3. **Issuer notifies the holder over DIDComm.** The issuer's VS-Agent sends a `credential-state` message (`revoked`, [VT-PROTO-NOTIF-1]) to the holder VS-Agent over the existing DIDComm session, informing it that the credential has been revoked. The holder VS-Agent reacts in user-land (display the revocation, request a new credential, stop offering the affected service, etc.).
+3. **Issuer notifies the holder over DIDComm.** The issuer's VS Agent sends a `credential-state` message (`revoked`, [VT-PROTO-NOTIF-1]) to the holder VS Agent over the existing DIDComm session, informing it that the credential has been revoked. The holder VS Agent reacts in user-land (display the revocation, request a new credential, stop offering the affected service, etc.).
 
-4. **Holder removes the credential from its DID Document.** The holder VS-Agent updates its `linked-vp` entry to remove the revoked credential. Until the DID Document is updated, the resolver continues to see the (now untrusted) credential.
+4. **Holder removes the credential from its DID Document.** The holder VS Agent updates its `linked-vp` entry to remove the revoked credential. Until the DID Document is updated, the resolver continues to see the (now untrusted) credential.
 
-5. **Holder may trigger the resolver again.** The holder VS-Agent may submit `TriggerResolver` so the resolver picks up the updated DID Document. After this final trigger, the resolver no longer observes the revoked credential at all; the holder DID's overall trust status is determined by whatever public credentials remain in linked-vp.
+5. **Holder may trigger the resolver again.** The holder VS Agent may submit `TriggerResolver` so the resolver picks up the updated DID Document. After this final trigger, the resolver no longer observes the revoked credential at all; the holder DID's overall trust status is determined by whatever public credentials remain in linked-vp.
 
 ```mermaid
 sequenceDiagram
-    participant Holder as Holder VS-Agent
-    participant Issuer as Issuer VS-Agent
+    participant Holder as Holder VS Agent
+    participant Issuer as Issuer VS Agent
     participant VPR as VPR (ledger)
     participant Idx as Indexer + Resolver
 
