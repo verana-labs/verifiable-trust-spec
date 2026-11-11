@@ -223,9 +223,9 @@ A Verifiable Service (VS) is a service capable of identifying itself to a peer b
 
 Peers wishing to connect to a VS can review the Verifiable Credentials presented by the service, verify their legitimacy through trust resolution, and decide whether to proceed with the connection based on the outcome.
 
-A VS is also required to verify the trustworthiness of peers attempting to connect to it, whether those peers are other Verifiable Services (VS) or Verifiable User Agents (VUA), and must reject connections from non-verifiable peers.
+A VS also verifies the peers that connect to it, other Verifiable Services (VS) or Verifiable User Agents (VUA), before serving them ([VS-REQ-8]).
 
-Furthermore, if a Verifiable Service wants to issue credentials or request credential presentation, it must first prove that it is authorized to perform these actions. Otherwise, the peer must refuse the request.
+A Verifiable Service that issues credentials or requests their presentation proves that it is authorized to, which its peer verifies ([CIT-3], [PRT-3]).
 
 #### Service Declaration
 
@@ -270,9 +270,9 @@ This reverses the common "connect first, verify later" model of today's internet
 
 *This section is non-normative.*
 
-A Verifiable User Agent (VUA) is software, such as a browser, app, or wallet, designed to connect with Verifiable Services (VS) and other VUAs. When establishing connections, a VUA must verify the identity and trustworthiness of its peers and allow connections only to compliant VS or VUA peers.
+A Verifiable User Agent (VUA) is software, such as a browser, app, or wallet, designed to connect with Verifiable Services (VS) and other VUAs. When establishing connections, a VUA verifies the identity and trustworthiness of its peers and connects to verified VS or VUA peers only ([VUA-REQ]).
 
-As part of this process, the VUA must perform trust resolution by:
+It does so by trust resolution ([TR]):
 
 - Verifying the Verifiable Credentials presented by the peers
 - Querying Verifiable Public Registries (VPRs) to confirm that these credentials were issued by recognized and authorized issuers.
