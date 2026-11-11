@@ -365,7 +365,7 @@ object "Ecosystem" as tra #3fbdb6 {
   - a **VerifierOnboardingMode**: `OPEN`, `CREDENTIAL`, `ECOSYSTEM_ONBOARDING_PROCESS` or `GRANTOR_ONBOARDING_PROCESS`;
   - a **HolderOnboardingMode**: `ISSUER_ONBOARDING_PROCESS` or `PERMISSIONLESS`.
 - A **declaration** of what the credentials are for: `subject_kind`, `presentation_mode`, `credential_format`, `presentation_validity_period` and `credential_anchoring` ([VT-DECL]).
-- A **Accreditation Tree** that defines the roles and relationships involved in managing the schema’s lifecycle.
+- An **Accreditation Tree** that defines the roles and relationships involved in managing the schema’s lifecycle.
 
 ```plantuml
 
