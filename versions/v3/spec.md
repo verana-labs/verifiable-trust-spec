@@ -2,7 +2,7 @@
 
 **Status:** superseded by [spec v4](https://verana-labs.github.io/verifiable-trust-spec/versions/v4/). This version is frozen.
 
-**Latest draft:** [spec v5-draft0](https://verana-labs.github.io/verifiable-trust-spec/)
+**Latest draft:** [spec v5-draft2](https://verana-labs.github.io/verifiable-trust-spec/)
 
 **Latest stable:** [spec v4](https://verana-labs.github.io/verifiable-trust-spec/versions/v4/)
 

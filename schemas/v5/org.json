@@ -62,6 +62,10 @@
         "lei": {
           "type": "string",
           "pattern": "^[A-Z0-9]{20}$"
+        },
+        "onboardingSummaryDigestSri": {
+          "type": "string",
+          "maxLength": 256
         }
       },
       "required": [
