@@ -115,7 +115,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ A `service` entry of a [[ref: trusted channel protocol]] in a [[ref: DID Document]], of the type given in [VT-CHAN-2], through which a peer opens a [[ref: trusted channel]] with the party that declares it.
 
 [[def: trusted channel protocol, trusted channel protocols]]:
-~ A protocol listed in [VT-CHAN] as establishing [[ref: trusted channels]]: DIDComm v2 and DIDComm v1 in this version.
+~ A protocol listed in [VT-CHAN-2], with which [[ref: trusted channels]] are established.
 
 [[def: verifiable credential, verifiable credentials]]:
 ~ A verifiable credential as defined in [[spec-norm:VC-DATA-MODEL]].
