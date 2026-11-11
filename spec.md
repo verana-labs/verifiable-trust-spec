@@ -73,7 +73,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ A DID Document, as specified in [[spec-norm:DID-CORE]].
 
 [[def: ecosystem, ecosystems]]:
-~ A [[ref: VPR]] resource, controlled by a [[ref: corporation]], that defines an approved list of [[ref: participants]] (issuers, verifiers, grantors, holders) authorized to issue, verify or hold credentials for a given set of credential schemas. The Ecosystem entry plays the role formerly known as "trust registry". For the canonical data model, see [Ecosystem](https://verana-labs.github.io/verifiable-trust-vpr-spec/#ecosystem) in the VPR spec.
+~ An `Ecosystem` entry of a [[ref: VPR]], as the VPR spec defines it ([Ecosystem](https://verana-labs.github.io/verifiable-trust-vpr-spec/#ecosystem)).
 
 [[def: essential credential schema, essential credential schemas]]:
 ~ Default [[ref: credential schema]], owned by an [[ref: ecosystem]], that provide the basis for a trust layer to exist in the ecosystem so that [[ref: VUA]] can generate a [[ref: proof of trust]].
