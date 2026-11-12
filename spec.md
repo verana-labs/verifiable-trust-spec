@@ -614,7 +614,7 @@ authorized issuers MAY issue Verifiable Credentials that conform to those schema
 
 Verifiable Credentials that comply with the Verifiable Trust Specification are referred to as **Verifiable Trust Credentials (VTCs)**.
 
-A Verifiable Trust Credential MUST be linked to the applicable **VTJSC** issued by the Ecosystem DID. For W3C VTCs ([VT-CRED-W3C]), this link is established directly via the `credentialSchema` property. For AnonCreds VTCs ([VT-CRED-ANON]), the link is indirect: the AnonCreds Credential Definition references the VTJSC via `relatedJsonSchemaCredentialId`. For SD-JWT VTCs ([VT-CRED-SDJWT]), the link is indirect as well: the credential's `vct` Type Metadata references the VTJSC via the same `relatedJsonSchemaCredentialId` property. For mdoc VTCs ([VT-CRED-MDOC]), the document carries the VTJSC reference itself, as the `relatedJsonSchemaCredentialId` element of its Verifiable Trust namespace. In all cases, this establishes a verifiable and discoverable trust chain between:
+A Verifiable Trust Credential MUST be linked to the applicable **VTJSC** issued by the Ecosystem DID. For W3C VTCs ([VT-CRED-W3C]), this link is established directly via the `credentialSchema` property. For AnonCreds VTCs ([VT-CRED-ANON]), the link is indirect: the credential names its Credential Definition, the Credential Definition names its AnonCreds Schema through `schemaId`, and the AnonCreds Schema is related to the VTJSC as the AnonCreds method of the publisher's DID method defines. For SD-JWT VTCs ([VT-CRED-SDJWT]), the link is indirect as well: the credential's `vct` Type Metadata references the VTJSC via the same `relatedJsonSchemaCredentialId` property. For mdoc VTCs ([VT-CRED-MDOC]), the document carries the VTJSC reference itself, as the `relatedJsonSchemaCredentialId` element of its Verifiable Trust namespace. In all cases, this establishes a verifiable and discoverable trust chain between:
 
 - the issued credential,
 - the governing schema definition,
@@ -851,39 +851,96 @@ Using AnonCreds for ECS User Agent VTCs is REQUIRED as specified in [VUA-REQ], a
 
 #### AnonCreds VTC Setup
 
-In the Verifiable Trust concept, AnonCreds VTCs do **not** require publishing a separate [AnonCreds Schema](https://anoncreds.github.io/anoncreds-spec/#schema-publisher-publish-schema-object) to a VDR. Instead, the credential schema is already defined by the [VT-JSON-SCHEMA-CRED-W3C] (VTJSC) issued by the Ecosystem DID, and the AnonCreds Credential Definition references it.
+The [AnonCreds](https://anoncreds.github.io/anoncreds-spec/) data model has three public issuer objects: the [Schema](https://anoncreds.github.io/anoncreds-spec/#schema-publisher-publish-schema-object), the [Credential Definition](https://anoncreds.github.io/anoncreds-spec/#issuer-create-and-publish-credential-definition-object), and the optional revocation objects. A Credential Definition names its Schema through `schemaId`. The trust chain of an AnonCreds VTC therefore runs from the credential to the Credential Definition, from the Credential Definition to the AnonCreds Schema, and from the AnonCreds Schema to the VTJSC. The AnonCreds Schema is the object that is related to the VTJSC. The Credential Definition carries no link of its own.
+
+The AnonCreds data model defines no property for that relationship, and the AnonCreds specification requires that a resolved object adheres to its data model. This specification therefore does not define how the relationship is expressed. The [AnonCreds method](https://anoncreds.github.io/anoncreds-spec/#anoncreds-methods) of the publisher's DID method defines where an AnonCreds object is published, how its identifier resolves, and how the relationship to the VTJSC is carried. This specification requires only that the relationship exists, and that a relying party can obtain it from the resolved AnonCreds Schema.
 
 Before issuing AnonCreds VTCs, the following setup MUST be completed:
 
-1. **Credential Definition**: The issuer MUST create and publish a [Credential Definition](https://anoncreds.github.io/anoncreds-spec/#issuer-create-and-publish-credential-definition-object). The Credential Definition contains the issuer's public keys used for signing credentials and is required by holders and verifiers for presentation generation and verification. The Credential Definition MUST include a `relatedJsonSchemaCredentialId` that references the VTJSC issued by the Ecosystem DID for the corresponding `CredentialSchema`. The `attributes` list MUST be the `credentialSubject` properties of the referenced VTJSC's JSON Schema except `id`, which is not an AnonCreds attribute and is disregarded in the schema's `required` list (a DID-less instance has none, [VT-DECL-SUBJECT-4]). An attribute the issuer does not assert is carried as the empty string, which relying parties treat as absent; the constraints of the JSON Schema (type, format, `minLength`) apply to asserted values only.
+1. **AnonCreds Schema**: An AnonCreds Schema that is related to the VTJSC MUST be published. The Ecosystem DID or the issuer publishes it, as the AnonCreds method permits; its `issuerId` is the publisher's DID. The relationship MUST identify the VTJSC issued by the Ecosystem DID for the corresponding `CredentialSchema`, and MUST be carried as the AnonCreds method of the publisher's DID method defines. A relying party MUST be able to obtain the VTJSC identifier from the resolved AnonCreds Schema. The `attrNames` list MUST be the `credentialSubject` properties of the JSON Schema of the VTJSC, except `id`, which is not an AnonCreds attribute and is disregarded in the schema's `required` list (a DID-less instance has none, [VT-DECL-SUBJECT-4]). An attribute the issuer does not assert is carried as the empty string, which relying parties treat as absent; the constraints of the JSON Schema (type, format, `minLength`) apply to asserted values only.
 
-2. **Revocation Registry** (optional): If credential revocation is needed, the issuer MUST create and publish a [Revocation Registry Definition](https://anoncreds.github.io/anoncreds-spec/#issuer-create-and-publish-revocation-registry-objects) and an initial Revocation Status List. When the issuer serves these objects itself (did:web AnonCreds method, did:webvh attested resources), they are published and resolved as the AnonCreds method of that DID method defines; on a ledger method the VDR holds them. How an issuer declares and serves its AnonCreds objects is the DID method's matter, not this specification's ([VS-SVC-8]). In both cases they carry the issuer DID as `issuerId`.
+2. **Credential Definition**: The issuer MUST create and publish a Credential Definition whose `schemaId` names that AnonCreds Schema. The Credential Definition contains the issuer's public keys used for signing credentials and is required by holders and verifiers for presentation generation and verification. It carries the issuer DID as `issuerId`.
 
-3. **Link Secret**: Each holder MUST create and store a [link secret](https://anoncreds.github.io/anoncreds-spec/#holder-create-and-store-link-secret), a private value that enables credential-to-holder binding across multiple credentials without revealing a correlatable identifier.
+3. **Revocation Registry** (optional): If credential revocation is needed, the issuer MUST create and publish a [Revocation Registry Definition](https://anoncreds.github.io/anoncreds-spec/#issuer-create-and-publish-revocation-registry-objects) and an initial Revocation Status List. When the issuer serves these objects itself (did:web AnonCreds method, did:webvh attested resources), they are published and resolved as the AnonCreds method of that DID method defines; on a ledger method the VDR holds them. How an issuer declares and serves its AnonCreds objects is the DID method's matter, not this specification's ([VS-SVC-8]). In both cases they carry the issuer DID as `issuerId`.
 
-##### AnonCreds Credential Definition Example
+4. **Link Secret**: Each holder MUST create and store a [link secret](https://anoncreds.github.io/anoncreds-spec/#holder-create-and-store-link-secret), a private value that enables credential-to-holder binding across multiple credentials without revealing a correlatable identifier.
+
+##### AnonCreds Schema and Credential Definition Example
+
+*This section is non-normative.*
+
+The AnonCreds Schema and the Credential Definition follow the AnonCreds data model. Neither object carries a Verifiable Trust property:
 
 ```json
-[
-  {
-    "id": "did:example:issuer/resources/creddef-123",
-    "name": "gov-id",
-    "version": "1.0",
-    "attributes": [
-      "birthDate",
-      "documentNumber",
-      "documentType",
-      "firstName",
-      "lastName",
-      "nationality"
-    ],
-    "revocationSupported": false,
-    "relatedJsonSchemaCredentialId": "https://example-ecosystem/vt/schemas-gov-id-jsc.json"
-  }
-]
+{
+  "issuerId": "did:example:ecosystem",
+  "name": "gov-id",
+  "version": "1.0",
+  "attrNames": [
+    "birthDate",
+    "documentNumber",
+    "documentType",
+    "firstName",
+    "lastName",
+    "nationality"
+  ]
+}
 ```
 
-In this example, `relatedJsonSchemaCredentialId` points to the VTJSC issued by the Ecosystem DID. This establishes the trust chain between the AnonCreds Credential Definition and the ecosystem-governed schema, without duplicating the schema definition in a separate AnonCreds-specific registry.
+```json
+{
+  "issuerId": "did:example:authorized-issuer",
+  "schemaId": "did:example:ecosystem/resources/schema-123",
+  "type": "CL",
+  "tag": "gov-id",
+  "value": {
+    "primary": { "...": "..." }
+  }
+}
+```
+
+The relationship between the AnonCreds Schema and the VTJSC is carried as the AnonCreds method defines. The two examples below show how two AnonCreds methods carry it; both use the metadata of the resolved object and the property name `relatedJsonSchemaCredentialId`.
+
+Under the [did:web AnonCreds method](https://github.com/2060-io/did-web-anoncreds-method), the resolution response wraps the object in `resource` and `resourceMetadata`. The relationship is a property of `resourceMetadata`:
+
+```json
+{
+  "resource": {
+    "issuerId": "did:web:ecosystem.example",
+    "name": "gov-id",
+    "version": "1.0",
+    "attrNames": ["birthDate", "documentNumber", "documentType", "firstName", "lastName", "nationality"]
+  },
+  "resourceMetadata": {
+    "relatedJsonSchemaCredentialId": "https://ecosystem.example/vt/schemas-gov-id-jsc.json"
+  }
+}
+```
+
+Under the [did:webvh AnonCreds method](https://identity.foundation/didwebvh/anoncreds-method/), the Schema is the `content` of an Attested Resource that the DID controller signs. The relationship is a property of `metadata`, which the proof covers:
+
+```json
+{
+  "@context": ["https://w3id.org/security/data-integrity/v2"],
+  "type": ["AttestedResource"],
+  "id": "did:webvh:QmdhkL...:ecosystem.example/resources/zQmSPbR...",
+  "content": {
+    "issuerId": "did:webvh:QmdhkL...:ecosystem.example",
+    "name": "gov-id",
+    "version": "1.0",
+    "attrNames": ["birthDate", "documentNumber", "documentType", "firstName", "lastName", "nationality"]
+  },
+  "metadata": {
+    "resourceId": "zQmSPbR...",
+    "resourceType": "anonCredsSchema",
+    "resourceName": "gov-id",
+    "relatedJsonSchemaCredentialId": "https://ecosystem.example/vt/schemas-gov-id-jsc.json"
+  },
+  "proof": { "...": "..." }
+}
+```
+
+A ledger method carries the relationship as its own AnonCreds method specification defines.
 
 #### AnonCreds VTC Issuance
 
@@ -920,7 +977,7 @@ AnonCreds credentials MAY be represented in the [W3C Verifiable Credentials form
 
 - `@context` MUST include the AnonCreds W3C context
 - `type` MUST include `VerifiableCredential` and `AnonCredsCredential`
-- `credentialSchema` MUST reference the AnonCreds Credential Definition. The Credential Definition itself links back to the VTJSC via `relatedJsonSchemaCredentialId`.
+- `credentialSchema` MUST reference the AnonCreds Credential Definition. The Credential Definition names the AnonCreds Schema, which is related to the VTJSC ([VT-CRED-ANON]).
 - `proof` MUST include an `AnonCredsProof2023` entry
 
 ```json
@@ -969,9 +1026,9 @@ SD-JWT VC Type Metadata defines no property for the **governance** of a type. Th
 
 - [VT-CRED-SDJWT-2] The `vct` of an SD-JWT VTC MUST be an `https` URL that resolves to that Type Metadata document. [SD-JWT VC](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-sd-jwt-vc-19) permits any Collision-Resistant Name and leaves retrieval to the consumer's discretion; Verifiable Trust narrows this, so that a relying party reaches the governing Ecosystem from the credential alone, with no out-of-band configuration. A consequence of this narrowing is that the Ecosystem serving the document observes requests for it; relying parties SHOULD cache Type Metadata, as [SD-JWT VC](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-sd-jwt-vc-19) recommends, and MUST NOT treat a cached document as less authoritative than a freshly retrieved one.
 
-- [VT-CRED-SDJWT-3] The Type Metadata document MUST carry the property `relatedJsonSchemaCredentialId`, whose value identifies the **VTJSC** issued by the Ecosystem DID for the corresponding `CredentialSchema` — the same linkage property the AnonCreds Credential Definition uses ([VT-CRED-ANON]). The document MUST NOT carry `schema` or `schema_uri`. The JSON Schema MUST be obtained **through** the VTJSC, from its `credentialSubject.jsonSchema.$ref`, and verified against the VTJSC's `digestSRI`. Resolution of that `$ref` is performed through the relying party's own VPR access per [WL-VPR], so no single hosting endpoint is a point of failure and the schema's authenticity derives from the Ecosystem DID's signature rather than from transport.
+- [VT-CRED-SDJWT-3] The Type Metadata document MUST carry the property `relatedJsonSchemaCredentialId`, whose value identifies the **VTJSC** issued by the Ecosystem DID for the corresponding `CredentialSchema` — the property that the did:web and did:webvh AnonCreds methods carry for the AnonCreds Schema ([VT-CRED-ANON]). The document MUST NOT carry `schema` or `schema_uri`. The JSON Schema MUST be obtained **through** the VTJSC, from its `credentialSubject.jsonSchema.$ref`, and verified against the VTJSC's `digestSRI`. Resolution of that `$ref` is performed through the relying party's own VPR access per [WL-VPR], so no single hosting endpoint is a point of failure and the schema's authenticity derives from the Ecosystem DID's signature rather than from transport.
 
-- [VT-CRED-SDJWT-4] An SD-JWT VTC MUST carry `vct#integrity`, the integrity metadata of the Type Metadata document it names, as defined by [SD-JWT VC](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-sd-jwt-vc-19). A relying party MUST verify it before using the document, and MUST fail verification when it does not match. Without this binding the link from the credential to its VTJSC rests on an unsigned document at a mutable URL; `vct#integrity` gives the SD-JWT container the same property that `credentialSchema` gives a W3C VTC ([VT-CRED-W3C]) and that the Credential Definition gives an AnonCreds VTC ([VT-CRED-ANON]).
+- [VT-CRED-SDJWT-4] An SD-JWT VTC MUST carry `vct#integrity`, the integrity metadata of the Type Metadata document it names, as defined by [SD-JWT VC](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-sd-jwt-vc-19). A relying party MUST verify it before using the document, and MUST fail verification when it does not match. Without this binding the link from the credential to its VTJSC rests on an unsigned document at a mutable URL; `vct#integrity` gives the SD-JWT container the same property that `credentialSchema` gives a W3C VTC ([VT-CRED-W3C]) and that the AnonCreds method gives an AnonCreds VTC through the relationship it carries for the AnonCreds Schema ([VT-CRED-ANON]).
 
 - [VT-CRED-SDJWT-5] During trust resolution, the VTJSC referenced under [VT-CRED-SDJWT-3] MUST be verified per [TR-3], and the issuer MUST be verified as authorized per [TR-5]: as **currently authorized**, the schema being `NO_DIGEST` in this version ([VT-DECL-ANCHOR-3]). Issuer authorization at credential reception time is enforced by the holder's wallet as specified in [CIT].
 
@@ -1011,7 +1068,7 @@ An mdoc Verifiable Trust Credential is a Verifiable Trust Credential issued as a
 
 - [VT-CRED-MDOC-1] The `docType` of an mdoc VTC identifies the **type**, not the issuer. Every issuer that an [[ref: ecosystem]] accredits for a given `CredentialSchema` MUST use the same `docType` value, chosen by the ecosystem (ISO recommends a reverse-domain name), and that value MUST NOT change while the schema exists, so that a relying party can request a type without naming the issuers that may satisfy it.
 
-- [VT-CRED-MDOC-2] An mdoc VTC MUST carry the **Verifiable Trust namespace** `io.verana.vt`, with the element `relatedJsonSchemaCredentialId`, whose value identifies the **VTJSC** issued by the Ecosystem DID for the corresponding `CredentialSchema` — the same linkage property the AnonCreds Credential Definition and the SD-JWT Type Metadata use ([VT-CRED-ANON], [VT-CRED-SDJWT-3]). The element MUST be disclosed in every presentation, and a relying party MUST request it with every request for the document. The JSON Schema MUST be obtained **through** the VTJSC, from its `credentialSubject.jsonSchema.$ref`, resolved per [WL-VPR] and verified against the VTJSC's `digestSRI`.
+- [VT-CRED-MDOC-2] An mdoc VTC MUST carry the **Verifiable Trust namespace** `io.verana.vt`, with the element `relatedJsonSchemaCredentialId`, whose value identifies the **VTJSC** issued by the Ecosystem DID for the corresponding `CredentialSchema` — the property that the SD-JWT Type Metadata carries ([VT-CRED-SDJWT-3]) and that the did:web and did:webvh AnonCreds methods carry for the AnonCreds Schema ([VT-CRED-ANON]). The element MUST be disclosed in every presentation, and a relying party MUST request it with every request for the document. The JSON Schema MUST be obtained **through** the VTJSC, from its `credentialSubject.jsonSchema.$ref`, resolved per [WL-VPR] and verified against the VTJSC's `digestSRI`.
 
 - [VT-CRED-MDOC-3] The claims of an mdoc VTC are the data elements of **one namespace per schema**, whose identifier is the `$id` of the schema's JSON Schema (the VPR reference of the `CredentialSchema` entry, `vpr:verana:VPR_CHAIN_ID:cs:VPR_CREDENTIAL_SCHEMA_ID`). The element identifiers are the `credentialSubject` properties of the JSON Schema, except `id`, which is not an mdoc element (an mdoc carries no subject identifier beyond its device key) and is disregarded in the schema's `required` list; the element values are the CBOR encodings of the JSON values, and the constraints of the JSON Schema apply to the decoded values. An issuer MUST NOT place claims of the schema in any other namespace.
 
@@ -2353,7 +2410,7 @@ A binding maps [VT-PROTO] onto one [[ref: trusted channel protocol]] of [VT-CHAN
 
 - [TR-3] For every Verifiable Trust Credential encountered during trust resolution, the referenced VTJSC MUST be resolved and verified:
   - For W3C VTCs: the VTJSC is located directly via `credentialSchema.id`.
-  - For AnonCreds VTCs: the VTJSC is located indirectly via the Credential Definition's `relatedJsonSchemaCredentialId`.
+  - For AnonCreds VTCs: the VTJSC is located indirectly: the Credential Definition names the AnonCreds Schema through `schemaId`, and the relationship that the AnonCreds method carries for that Schema identifies the VTJSC ([VT-CRED-ANON]).
   - For SD-JWT VTCs: the VTJSC is located indirectly via the `relatedJsonSchemaCredentialId` of the `vct` Type Metadata, after `vct#integrity` is verified per [VT-CRED-SDJWT-4].
   - For mdoc VTCs: the VTJSC is located via the `relatedJsonSchemaCredentialId` element of the `io.verana.vt` namespace of the document ([VT-CRED-MDOC-2]).
   - The VTJSC signature MUST be verified, and it MUST be confirmed that the VTJSC binds to a valid `CredentialSchema` entry in the VPR and is issued by the identifier (matched per [TR-10]) of the [[ref: verifiable service entry]] of the `Ecosystem` entry that controls that `CredentialSchema` entry (`ecosystem_id`), the Ecosystem DID; a VTJSC signed by any other DID is not the schema's.
@@ -2481,7 +2538,7 @@ Examples below illustrate how trust resolution is performed assuming that all re
 ### Resolve the referenced JSON Schema Credential
 
 - For W3C VTCs: read `credentialSchema.id` from the credential to locate the VTJSC directly
-- For AnonCreds VTCs: resolve the Credential Definition referenced in the credential, then read its `relatedJsonSchemaCredentialId` to locate the VTJSC
+- For AnonCreds VTCs: resolve the Credential Definition referenced in the credential, resolve the AnonCreds Schema that its `schemaId` names, then obtain the VTJSC identifier from the relationship that the AnonCreds method carries for that Schema ([VT-CRED-ANON])
 - For SD-JWT VTCs: verify `vct#integrity`, resolve the `vct` Type Metadata, then read its `relatedJsonSchemaCredentialId` to locate the VTJSC
 - For mdoc VTCs: read the `relatedJsonSchemaCredentialId` element of the `io.verana.vt` namespace to locate the VTJSC
 - Verify:
