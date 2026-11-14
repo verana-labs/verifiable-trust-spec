@@ -1144,7 +1144,7 @@ To verify that a `CredentialSchema` entry in a VPR is an Essential Credential Sc
 | Schema | Digest |
 |---|---|
 | ServiceCredential | `sha384-0v+BAFGpnBX/RVqH9dUlMglxMrD4AKy4qUtb1lMN4iW9I2gO7XjcUfmGOf0oInP3` |
-| OrganizationCredential | `sha384-g9DnERuFRiEo8+E6JhOH4sw/inexEv8jgaFn42A8QtArNxOSn244l+W1R875C2jc` |
+| OrganizationCredential | `sha384-5vfHzOIlagef2uPq7arIAevvlPokzKg3hphkbUjF/1RjQ7GazyE80LfgRvvWeSog` |
 | PersonaCredential | `sha384-upB036Jcqw2Z50NlVK7XqwjjnH7G+R53ilCdmhKv4YdA5ZBy6wygjBwkj4v/2ZV+` |
 | UserAgentCredential | `sha384-rIWkh3zBD1Ak7CNGpAwZ/ONSmf+ywOYSF3H60ULc9/a1ZYKv6EqiQMJ2dm8dOfjm` |
 | BadgeCredential | `sha384-ZxJ2aRpoF/5DJSILWwOES6bmpMg3RZYOfO2CCF8hC/YDNvU+PhCqAnAXq/66nXCq` |
@@ -1268,7 +1268,9 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 #### [ECS-ORG] Organization Credential Json Schema
 
-Used to identify Organizations that operate Verifiable Services.
+Used to identify Organizations that operate Verifiable Services: the Organization credential identifies the controller of a service.
+
+The attributes that identify the organization take their names, formats and code lists from the Legal Entity Reference Data of the Global Legal Entity Identifier System (the LEI Common Data File format published by [GLEIF](https://www.gleif.org)), so that an organization is described in an Organization credential as it is in an LEI record. The organization does not need an LEI.
 
 [Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/org.json)
 
@@ -1277,8 +1279,8 @@ Credential subject object of schema MUST contain the following attributes:
 - `id` (string) (*mandatory*): the [[ref: DID]] of the organization the credential has been issued to, which is the subject of the [[ref: verifiable credential]].  
   URI format, max length: 2048 chars.
 
-- `name` (string) (*mandatory*): name of the organization.  
-  UTF8 charset, min length: 1 char, max length: 512 chars.
+- `legalName` (string) (*mandatory*): legal name of the organization, as its registration authority records it.  
+  UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
 
 - `logoUri` (string) (*mandatory*): URI of the organization logo image (as shown in browsers and search engines).  
   Allowed media types of the dereferenced resource: `image/png`, `image/jpeg`, `image/svg+xml`.  
@@ -1287,34 +1289,80 @@ Credential subject object of schema MUST contain the following attributes:
 - `logoDigestSri` (string) (*mandatory*): Subresource Integrity digest of the `logoUri` resource, encoded as <algorithm>-<base64-digest> (SRI format).  
   Max length: 256 chars.
 
-- `registryId` (string) (*mandatory*): identifier of the organization in an external authoritative registry (e.g., company register).  
-  UTF8 charset, min length: 1 char, max length: 256 chars.
+- `registrationAuthorityId` (string) (*mandatory*): code of the register in which the organization is entered, taken from the [GLEIF Registration Authorities List](https://www.gleif.org/en/about-lei/code-lists/gleif-registration-authorities-list). Two reserved codes of that list are used: `RA999999` when the organization is entered in no register, and `RA888888` when its register is not in the list.  
+  Pattern: `^RA[0-9]{6}$`.
 
-- `registryUri` (string) (*optional*): URI pointing to the organization’s record in the external registry.  
-  URI format, max length: 4096 chars.
+- `otherRegistrationAuthorityId` (string) (*conditional*): designation of the register when it is not in the list. MUST be present when `registrationAuthorityId` is `RA888888`, and MUST NOT be present otherwise.  
+  UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
 
-- `address` (string) (*mandatory*): postal address of the organization.  
-  UTF8 charset, min length: 1 char, max length: 1024 chars.
+- `registrationAuthorityEntityId` (string) (*conditional*): identifier of the organization in that register, written as the register writes it. MUST be present unless `registrationAuthorityId` is `RA999999`, and MUST NOT be present when it is.  
+  UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
 
-- `countryCode` (string) (*mandatory*): primary country of legal registration of the organization, expressed as an ISO 3166-1 alpha-2 country code.  
-  Pattern: `^[A-Z]{2}$`.
+- `legalJurisdiction` (string) (*mandatory*): jurisdiction under whose law the organization is formed, expressed as an ISO 3166-1 alpha-2 country code or as an ISO 3166-2 subdivision code (e.g., `US-CA`). A territory that has its own ISO 3166-1 code is written with that code (`PR`, not `US-PR`).  
+  Pattern: `^[A-Z]{2}(-[A-Z0-9]{1,3})?$`.
 
-- `legalJurisdiction` (string) (*optional*): legal jurisdiction applicable to the organization when sub-national jurisdictions matter (e.g., `US-CA`).  
-  Pattern: `^[A-Z]{2}(-[A-Z0-9]{1,3})?$`, max length: 64 chars.
+- `entityCategory` (string) (*optional*): category of the organization. If omitted, `GENERAL` MUST be assumed.  
+  Allowed values:
+  - `GENERAL`: a legal entity of no other category.
+  - `BRANCH`: a branch of an organization, registered in another jurisdiction than that organization.
+  - `FUND`: an investment fund.
+  - `SOLE_PROPRIETOR`: an individual acting in a business capacity.
+  - `RESIDENT_GOVERNMENT_ENTITY`: a body of a central, state or local government.
+  - `INTERNATIONAL_ORGANIZATION`: an organization created by an international agreement.
 
-- `organizationKind` (string) (*optional*): informational classification of the organization (free-text, non-normative), intended for display or filtering purposes.  
-  UTF8 charset, min length: 1 char, max length: 64 chars.
+- `entityLegalFormCode` (string) (*optional*): legal form of the organization, as a code of the [ISO 20275 Entity Legal Forms Code List](https://www.gleif.org/en/about-lei/code-lists/iso-20275-entity-legal-forms-code-list).  
+  Pattern: `^[A-Z0-9]{4}$`.
 
-- `lei` (string) (*optional*): Legal Entity Identifier (LEI), if known and asserted by the issuer during onboarding.  
-  Pattern: `^[A-Z0-9]{20}$`.
+- `otherLegalForm` (string) (*optional*): legal form of the organization as text, when no code of the list describes it or in addition to the code.  
+  UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
+
+- `legalAddress` (object) (*mandatory*): address of the organization, as its registration authority records it. The object MUST contain no other attribute than the following:
+  - `firstAddressLine` (string) (*mandatory*): first line of the address.
+  - `addressNumber` (string) (*optional*): number of the building, when it is also given apart from the address lines.
+  - `addressNumberWithinBuilding` (string) (*optional*): number of the floor, suite or apartment within the building.
+  - `mailRouting` (string) (*optional*): routing line of the address (a "care of" address).
+  - `additionalAddressLine` (array of strings) (*optional*): one to three further lines of the address.
+  - `city` (string) (*mandatory*): name of the city.
+  - `region` (string) (*optional*): ISO 3166-2 subdivision code of the region. Pattern: `^[A-Z]{2}-[A-Z0-9]{1,3}$`.
+  - `country` (string) (*mandatory*): ISO 3166-1 alpha-2 country code. Pattern: `^[A-Z]{2}$`.
+  - `postalCode` (string) (*optional*): postal code.
+
+  Every string attribute of the object other than `region` and `country`: UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
+
+- `lei` (string) (*optional*): Legal Entity Identifier (LEI, ISO 17442) of the organization, when it has one.  
+  Pattern: `^[0-9A-Z]{18}[0-9]{2}$`.
+
 - `onboardingSummaryDigestSri` (string) (*optional*): Subresource Integrity digest, encoded as <algorithm>-<base64-digest> (SRI format), of the **onboarding summary** compiled by the issuer: the document describing the information, proofs and decisions of the validation of the organization that led to this issuance. The counterpart, for a schema in `PERMISSIONLESS` holder mode, of the `onboarding_summary_digest` a validator records on a `HOLDER` `Accreditation` entry. The issuer MUST retain the summary for the period its ecosystem governance framework requires, MUST produce it to the ecosystem governance authority on request, MAY share it with the subject, and MUST NOT publish it. Whether accredited issuers MUST set this attribute is decided by the ecosystem governance framework.  
   Max length: 256 chars.
 
+**Organization key:**
+
+- The **organization key** of an Organization credential is the pair (`registrationAuthorityId`, `registrationAuthorityEntityId`), completed by `otherRegistrationAuthorityId` when `registrationAuthorityId` is `RA888888`. A credential whose `registrationAuthorityId` is `RA999999` has no organization key.
+- Two Organization credentials that carry the same organization key identify the same organization, whatever their subjects and their other attributes. `legalJurisdiction`, `entityCategory`, `entityLegalFormCode` and `otherLegalForm` are not part of the key: a difference in one of them between two credentials of the same key is an inconsistency between these credentials, and does not make two organizations.
+- Two Organization credentials that have no organization key identify the same organization when they carry the same `lei`, or, when they carry none, when they have the same subject.
+- The ecosystem governance framework defines how the values of `registrationAuthorityEntityId` are written and compared, and which register an issuer uses when an organization is entered in several registers of its jurisdiction.
+
+**Issuance rules:**
+
+An issuer MUST verify, before it issues an Organization credential, that:
+
+- `registrationAuthorityId` is a code of the list, and designates a register of the `legalJurisdiction` of the organization. For a credential of category `BRANCH`, the register is the one in which the branch is entered, in the jurisdiction where it operates, and `legalJurisdiction`, `entityLegalFormCode` and `otherLegalForm` are those of the organization the branch belongs to.
+- `registrationAuthorityEntityId` identifies the organization itself, and not one of its establishments.
+- `entityLegalFormCode`, when present, is a code the list gives for that jurisdiction.
+- `lei`, when present, has valid check digits (ISO 7064 MOD 97-10), and its LEI record carries the same registration authority and the same identifier in it.
+
+An establishment of an organization, and a branch registered in the jurisdiction of the organization it belongs to, are not organizations: the services they operate present the Organization credential of the organization.
+
+A credential of category `BRANCH` identifies the organization the branch belongs to, through its registration in another jurisdiction. It does not identify a separate legal entity.
+
+A subsidiary is a separate organization, with its own Organization credential. This specification defines no relation between Organization credentials.
+
 **Implementation notes (non-normative):**
 
-- `credentialSubject.id` (the DID) is the **sole authoritative identifier** for trust resolution within the Verifiable Trust system.
-- External identifiers such as `lei` and `registryId` are **informational references** and MUST NOT be treated as authoritative sources of truth unless supported by verifiable credentials issued under their respective governance frameworks (e.g., vLEI).
-- `countryCode` provides a baseline jurisdiction signal. When applicable law depends on sub-national jurisdiction, `legalJurisdiction` SHOULD be provided and takes precedence for legal interpretation (e.g., moderation, liability, compliance).
+- `credentialSubject.id` (the DID) is the **sole authoritative identifier** for trust resolution within the Verifiable Trust system. The organization key tells which legal entity stands behind a DID, and that several DIDs belong to the same one.
+- The attributes are statements of the issuer of the credential, an accredited issuer of the ECS ecosystem: a verifier relies on them to the extent it trusts that ecosystem. They are not statements of the registration authority or of GLEIF, and an `lei` is authoritative only through a credential issued under its own governance framework (e.g., vLEI).
+- Trusts, funds and international organizations are common cases of organizations entered in no register (`RA999999`). LEI records write the jurisdiction of an international organization as `XX` or `UN`.
+- The LEI Common Data File format names these attributes `LegalName`, `RegistrationAuthorityID`, `OtherRegistrationAuthorityID`, `RegistrationAuthorityEntityID`, `LegalJurisdiction`, `EntityCategory`, `EntityLegalFormCode`, `OtherLegalForm`, `LegalAddress` and `LEI`.
 
 The resulting `json_schema` attribute will be the following Json Schema.
 
@@ -1336,10 +1384,11 @@ The resulting `json_schema` attribute will be the following Json Schema.
           "format": "uri",
           "maxLength": 2048
         },
-        "name": {
+        "legalName": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 512
+          "maxLength": 500,
+          "pattern": "^\\S+( \\S+)*$"
         },
         "logoUri": {
           "type": "string",
@@ -1350,41 +1399,116 @@ The resulting `json_schema` attribute will be the following Json Schema.
           "type": "string",
           "maxLength": 256
         },
-        "registryId": {
+        "registrationAuthorityId": {
+          "type": "string",
+          "pattern": "^RA[0-9]{6}$"
+        },
+        "otherRegistrationAuthorityId": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 256
+          "maxLength": 500,
+          "pattern": "^\\S+( \\S+)*$"
         },
-        "registryUri": {
-          "type": "string",
-          "format": "uri",
-          "maxLength": 4096
-        },
-        "address": {
+        "registrationAuthorityEntityId": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 1024
-        },
-        "countryCode": {
-          "type": "string",
-          "minLength": 2,
-          "maxLength": 2,
-          "pattern": "^[A-Z]{2}$"
+          "maxLength": 500,
+          "pattern": "^\\S+( \\S+)*$"
         },
         "legalJurisdiction": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 64,
           "pattern": "^[A-Z]{2}(-[A-Z0-9]{1,3})?$"
         },
-        "organizationKind": {
+        "entityCategory": {
+          "type": "string",
+          "enum": [
+            "GENERAL",
+            "BRANCH",
+            "FUND",
+            "SOLE_PROPRIETOR",
+            "RESIDENT_GOVERNMENT_ENTITY",
+            "INTERNATIONAL_ORGANIZATION"
+          ]
+        },
+        "entityLegalFormCode": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{4}$"
+        },
+        "otherLegalForm": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 64
+          "maxLength": 500,
+          "pattern": "^\\S+( \\S+)*$"
+        },
+        "legalAddress": {
+          "type": "object",
+          "properties": {
+            "firstAddressLine": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^\\S+( \\S+)*$"
+            },
+            "addressNumber": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^\\S+( \\S+)*$"
+            },
+            "addressNumberWithinBuilding": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^\\S+( \\S+)*$"
+            },
+            "mailRouting": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^\\S+( \\S+)*$"
+            },
+            "additionalAddressLine": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 3,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500,
+                "pattern": "^\\S+( \\S+)*$"
+              }
+            },
+            "city": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^\\S+( \\S+)*$"
+            },
+            "region": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}-[A-Z0-9]{1,3}$"
+            },
+            "country": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$"
+            },
+            "postalCode": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^\\S+( \\S+)*$"
+            }
+          },
+          "required": [
+            "firstAddressLine",
+            "city",
+            "country"
+          ],
+          "additionalProperties": false
         },
         "lei": {
           "type": "string",
-          "pattern": "^[A-Z0-9]{20}$"
+          "pattern": "^[0-9A-Z]{18}[0-9]{2}$"
         },
         "onboardingSummaryDigestSri": {
           "type": "string",
@@ -1393,12 +1517,62 @@ The resulting `json_schema` attribute will be the following Json Schema.
       },
       "required": [
         "id",
-        "name",
+        "legalName",
         "logoUri",
         "logoDigestSri",
-        "registryId",
-        "address",
-        "countryCode"
+        "registrationAuthorityId",
+        "legalJurisdiction",
+        "legalAddress"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "registrationAuthorityId": {
+                "const": "RA999999"
+              }
+            },
+            "required": [
+              "registrationAuthorityId"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "registrationAuthorityEntityId"
+              ]
+            }
+          },
+          "else": {
+            "required": [
+              "registrationAuthorityEntityId"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "registrationAuthorityId": {
+                "const": "RA888888"
+              }
+            },
+            "required": [
+              "registrationAuthorityId"
+            ]
+          },
+          "then": {
+            "required": [
+              "otherRegistrationAuthorityId"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "otherRegistrationAuthorityId"
+              ]
+            }
+          }
+        }
       ]
     }
   }
