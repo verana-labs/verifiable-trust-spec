@@ -637,7 +637,7 @@ This approach is:
 
 - Independent of issuer-declared metadata
 - Resistant to backdating or timestamp forgery
-- Compatible with W3C Verifiable Credentials v2.0 (which no longer mandates `issuanceDate`)
+- Compatible with the W3C Verifiable Credentials Data Model v2.0 (which no longer mandates `issuanceDate`)
 
 ##### Proving Unlinkability
 
@@ -658,7 +658,7 @@ For this reason, unlinkability requirements vary depending on the **intended vis
 
 The Verifiable Trust Specification is **container-agnostic** and supports multiple credential formats to address different requirements:
 
-- **W3C Verifiable Credentials (VC v2.0)**  
+- **W3C Verifiable Credentials (Data Model v2.0)**  
   Suitable for public or semi-public credentials where:
   - auditability and interoperability are primary concerns
   - issuance time must be objectively verifiable
@@ -2470,7 +2470,7 @@ Examples below illustrate how trust resolution is performed assuming that all re
 
 ### Verify the credential is cryptographically valid
 
-- For W3C VTCs: verify the credential signature using the issuer's DID Document and ensure the credential conforms to W3C Verifiable Credentials v2.0 processing rules
+- For W3C VTCs: verify the credential signature using the issuer's DID Document and ensure the credential conforms to the W3C Verifiable Credentials Data Model v2.0
 - For AnonCreds VTCs: verify the zero-knowledge proof using the issuer's Credential Definition
 - For SD-JWT VTCs: verify the issuer-signed JWT with the issuer key determined per [VT-CRED-SDJWT-6], and verify the Key Binding JWT against the `cnf` claim
 - For mdoc VTCs: verify `issuerAuth` with the issuer key determined per [VT-CRED-MDOC-5], and `deviceAuth` and the disclosed elements per [VT-CRED-MDOC-6]
