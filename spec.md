@@ -1644,7 +1644,7 @@ Credential subject object of schema MUST contain the following attributes:
 - `name` (string) (*mandatory*): display name of the human the credential is issued to.  
   UTF8 charset, min length: 1 char, max length: 256 chars.
 
-- `photo` (string) (*mandatory*): portrait photograph of the holder, embedded inline as a base64-encoded [`data:` URI](https://www.rfc-editor.org/rfc/rfc2397). MUST match `data:image/png;base64,<base64-data>` or `data:image/jpeg;base64,<base64-data>` (the only allowed media types are `image/png` and `image/jpeg`); enforced via the JSON Schema `pattern` below. Used as the reference image for face-matching authentication challenges.  
+- `photo` (string) (*optional*): portrait photograph of the holder, embedded inline as a base64-encoded [`data:` URI](https://www.rfc-editor.org/rfc/rfc2397). MUST match `data:image/png;base64,<base64-data>` or `data:image/jpeg;base64,<base64-data>` (the only allowed media types are `image/png` and `image/jpeg`); enforced via the JSON Schema `pattern` below. When present, used as the reference image for face-matching authentication challenges.  
   URI format (`data:` scheme), max length: 262144 chars.
 
 - `title` (string) (*optional*): position or title of the holder within the issuer's organization (e.g., `CEO`, `Janitor`).  
@@ -1652,6 +1652,12 @@ Credential subject object of schema MUST contain the following attributes:
 
 - `department` (string) (*optional*): organizational unit of the holder within the issuer's organization.  
   UTF8 charset, min length: 1 char, max length: 128 chars.
+
+- `email` (string) (*optional*): email address of the holder, as the issuer asserts it. MUST be a mailbox as defined by [RFC 5321](https://www.rfc-editor.org/rfc/rfc5321#section-4.1.2) (JSON Schema `format` `email`).  
+  Max length: 254 chars.
+
+- `phoneNumber` (string) (*optional*): telephone number of the holder, as the issuer asserts it, in [E.164](https://www.itu.int/rec/T-REC-E.164) format: `+` followed by the country code and the subscriber number, digits only (e.g., `+33612345678`); enforced via the JSON Schema `pattern` below.  
+  Max length: 16 chars.
 
 - `birthDate` (integer) (*optional*): date of birth of the holder, encoded as a "dateint" integer `YYYYMMDD` (e.g., `19910521`). The integer encoding enables zero-knowledge predicate proofs (e.g., `age >= 18`) without revealing the value (see [VT-CRED-ANON]).  
   Allowed values: 10000101 to 99991231 (inclusive).
@@ -1666,9 +1672,10 @@ Badge attributes identify the holder and carry informative facts only. A verifie
 
 **Implementation notes (non-normative):**
 
-- **No subject identifier.** Consistent with the AnonCreds container ([VT-CRED-ANON]), the schema defines no `id` attribute: holder binding relies on the holder's link secret, and the subject is identified by the (issuer, `badgeNumber`) pair. This avoids introducing a globally correlatable identifier into a user-held credential.
+- **No subject identifier.** Consistent with the AnonCreds container ([VT-CRED-ANON]), the schema defines no `id` attribute: holder binding relies on the holder's link secret, and the subject is identified by the (issuer, `badgeNumber`) pair. This avoids introducing a globally correlatable identifier into every presentation of a user-held credential; the optional `email` and `phoneNumber` are such identifiers, disclosed selectively (below).
 - **Embedded media.** `photo` (a `data:` URI) and `biometricPattern` (raw base64) are embedded inline rather than referenced by a network-dereferenceable (e.g. `https:`) URI: dereferencing a hosted resource would create a tracking and correlation vector and make biometric data web-retrievable.
-- **Selective disclosure.** `photo` and `biometricPattern` are inherently strong correlation handles. Holders SHOULD disclose them only when an authentication challenge requires them (e.g., a face-match with liveness check), and verifiers SHOULD NOT request them by default.
+- **Selective disclosure.** `photo` and `biometricPattern` are inherently strong correlation handles. Holders SHOULD disclose them only when an authentication challenge requires them (e.g., a face-match with liveness check), and verifiers SHOULD NOT request them by default. `email` and `phoneNumber` are globally correlatable identifiers: holders SHOULD disclose them only to a verifier that needs them, for example to match the holder with an account or an invitation that names the address or the number, and verifiers SHOULD NOT request them by default.
+- **Contact attributes.** `email` and `phoneNumber` let a relying party match a Badge with the accounts of identity providers that key their users on an email address or a phone number. How the issuer establishes that the holder controls the address or the number is defined by the issuer's processes and the ecosystem's governance framework.
 - **Matching topology.** How a `biometricPattern` is matched against a live capture (which party runs the match, who holds decryption keys for the protected template) is defined by the ecosystem's governance framework and is out of scope of this specification.
 
 The resulting `json_schema` attribute will be the following Json Schema.
@@ -1711,6 +1718,16 @@ The resulting `json_schema` attribute will be the following Json Schema.
           "minLength": 1,
           "maxLength": 128
         },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "phoneNumber": {
+          "type": "string",
+          "pattern": "^\\+[1-9][0-9]{1,14}$",
+          "maxLength": 16
+        },
         "birthDate": {
           "type": "integer",
           "minimum": 10000101,
@@ -1729,8 +1746,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
       },
       "required": [
         "badgeNumber",
-        "name",
-        "photo"
+        "name"
       ],
       "dependentRequired": {
         "biometricPattern": ["biometricPatternScheme"]
