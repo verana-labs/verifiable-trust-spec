@@ -201,6 +201,37 @@
               ]
             }
           }
+        },
+        {
+          "if": {
+            "required": [
+              "entityLegalFormCode"
+            ]
+          },
+          "then": {
+            "if": {
+              "properties": {
+                "entityLegalFormCode": {
+                  "enum": [
+                    "8888",
+                    "9999"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "otherLegalForm"
+              ]
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "otherLegalForm"
+                ]
+              }
+            }
+          }
         }
       ]
     }

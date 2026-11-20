@@ -1141,7 +1141,7 @@ To verify that a `CredentialSchema` entry in a VPR is an Essential Credential Sc
 | Schema | Digest |
 |---|---|
 | ServiceCredential | `sha384-0v+BAFGpnBX/RVqH9dUlMglxMrD4AKy4qUtb1lMN4iW9I2gO7XjcUfmGOf0oInP3` |
-| OrganizationCredential | `sha384-5vfHzOIlagef2uPq7arIAevvlPokzKg3hphkbUjF/1RjQ7GazyE80LfgRvvWeSog` |
+| OrganizationCredential | `sha384-g6NHUnrFc1OyTQdXdZmyHTcD4Iqph/eK9fy3aotSat6+nNb9Qm06+H9yU2MC78ba` |
 | PersonaCredential | `sha384-upB036Jcqw2Z50NlVK7XqwjjnH7G+R53ilCdmhKv4YdA5ZBy6wygjBwkj4v/2ZV+` |
 | UserAgentCredential | `sha384-rIWkh3zBD1Ak7CNGpAwZ/ONSmf+ywOYSF3H60ULc9/a1ZYKv6EqiQMJ2dm8dOfjm` |
 | BadgeCredential | `sha384-ZxJ2aRpoF/5DJSILWwOES6bmpMg3RZYOfO2CCF8hC/YDNvU+PhCqAnAXq/66nXCq` |
@@ -1307,10 +1307,10 @@ Credential subject object of schema MUST contain the following attributes:
   - `RESIDENT_GOVERNMENT_ENTITY`: a body of a central, state or local government.
   - `INTERNATIONAL_ORGANIZATION`: an organization created by an international agreement.
 
-- `entityLegalFormCode` (string) (*optional*): legal form of the organization, as a code of the [ISO 20275 Entity Legal Forms Code List](https://www.gleif.org/en/about-lei/code-lists/iso-20275-entity-legal-forms-code-list).  
+- `entityLegalFormCode` (string) (*optional*): legal form of the organization, as a code of the [ISO 20275 Entity Legal Forms Code List](https://www.gleif.org/en/about-lei/code-lists/iso-20275-entity-legal-forms-code-list). The list has two reserved codes, valid in every jurisdiction: `8888` for a legal form that is not yet in the list, and `9999` for an organization that has no separate legal form.  
   Pattern: `^[A-Z0-9]{4}$`.
 
-- `otherLegalForm` (string) (*optional*): legal form of the organization as text, when no code of the list describes it or in addition to the code.  
+- `otherLegalForm` (string) (*conditional*): legal form of the organization as text. MUST be present when `entityLegalFormCode` is `8888` or `9999`, MUST NOT be present when `entityLegalFormCode` is any other code, and MAY be present when `entityLegalFormCode` is absent.  
   UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
 
 - `legalAddress` (object) (*mandatory*): address of the organization, as its registration authority records it. The object MUST contain no other attribute than the following:
@@ -1345,7 +1345,7 @@ An issuer MUST verify, before it issues an Organization credential, that:
 
 - `registrationAuthorityId` is a code of the list, and designates a register of the `legalJurisdiction` of the organization. For a credential of category `BRANCH`, the register is the one in which the branch is entered, in the jurisdiction where it operates, and `legalJurisdiction`, `entityLegalFormCode` and `otherLegalForm` are those of the organization the branch belongs to.
 - `registrationAuthorityEntityId` identifies the organization itself, and not one of its establishments.
-- `entityLegalFormCode`, when present, is a code the list gives for that jurisdiction.
+- `entityLegalFormCode`, when present, is a code the list gives for that jurisdiction, or one of the two reserved codes.
 - `lei`, when present, has valid check digits (ISO 7064 MOD 97-10), and its LEI record carries the same registration authority and the same identifier in it.
 
 When a later version of the list includes a register for which an issuer used `RA888888`, the issuer MUST use the code of the register in the credentials it issues from then on, and MUST re-issue with that code, without waiting for their expiry, the credentials that carry `RA888888` for that register: until then the same organization has two organization keys.
@@ -1569,6 +1569,37 @@ The resulting `json_schema` attribute will be the following Json Schema.
               "required": [
                 "otherRegistrationAuthorityId"
               ]
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "entityLegalFormCode"
+            ]
+          },
+          "then": {
+            "if": {
+              "properties": {
+                "entityLegalFormCode": {
+                  "enum": [
+                    "8888",
+                    "9999"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "otherLegalForm"
+              ]
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "otherLegalForm"
+                ]
+              }
             }
           }
         }
