@@ -171,11 +171,6 @@
                 "registrationAuthorityEntityId"
               ]
             }
-          },
-          "else": {
-            "required": [
-              "registrationAuthorityEntityId"
-            ]
           }
         },
         {

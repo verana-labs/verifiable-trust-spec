@@ -1198,7 +1198,7 @@ To verify that a `CredentialSchema` entry in a VPR is an Essential Credential Sc
 | Schema | Digest |
 |---|---|
 | ServiceCredential | `sha384-0v+BAFGpnBX/RVqH9dUlMglxMrD4AKy4qUtb1lMN4iW9I2gO7XjcUfmGOf0oInP3` |
-| OrganizationCredential | `sha384-ALGwbw084Q+1U2zgPslefTYS8xA4h4H5YN11JJwK+P5rqk1/BArT5zDmqQM7xxh2` |
+| OrganizationCredential | `sha384-QavjwIoCcKbT3Nsc9M/O6v/wfZAVspyhAALWAYt5aGjEMmF9Ieox47ygGTXtz0Rs` |
 | PersonaCredential | `sha384-upB036Jcqw2Z50NlVK7XqwjjnH7G+R53ilCdmhKv4YdA5ZBy6wygjBwkj4v/2ZV+` |
 | UserAgentCredential | `sha384-rIWkh3zBD1Ak7CNGpAwZ/ONSmf+ywOYSF3H60ULc9/a1ZYKv6EqiQMJ2dm8dOfjm` |
 | BadgeCredential | `sha384-ZxJ2aRpoF/5DJSILWwOES6bmpMg3RZYOfO2CCF8hC/YDNvU+PhCqAnAXq/66nXCq` |
@@ -1349,7 +1349,7 @@ Credential subject object of schema MUST contain the following attributes:
 - `otherRegistrationAuthorityId` (string) (*conditional*): designation of the register when it is not in the list. MUST be present when `registrationAuthorityId` is `RA888888`, and MUST NOT be present otherwise.  
   UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
 
-- `registrationAuthorityEntityId` (string) (*conditional*): identifier of the organization in that register, written as the register writes it. MUST be present unless `registrationAuthorityId` is `RA999999`, and MUST NOT be present when it is.  
+- `registrationAuthorityEntityId` (string) (*conditional*): identifier of the organization in that register, written as the register writes it. MUST be present when the register assigns an identifier to the organization. MUST NOT be present when `registrationAuthorityId` is `RA999999`, nor when the register assigns none.  
   UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
 
 - `legalJurisdiction` (string) (*mandatory*): jurisdiction under whose law the organization is formed, expressed as an ISO 3166-1 alpha-2 country code or as an ISO 3166-2 subdivision code (e.g., `US-CA`), whichever the [GLEIF Accepted Legal Jurisdictions Code List](https://www.gleif.org/en/about-lei/code-lists/gleif-accepted-legal-jurisdictions-code-list) gives for that jurisdiction. A territory that has its own ISO 3166-1 code is written with that code (`PR`, not `US-PR`).  
@@ -1391,7 +1391,7 @@ Credential subject object of schema MUST contain the following attributes:
 
 **Organization key:**
 
-- The **organization key** of an Organization credential is the pair (`registrationAuthorityId`, `registrationAuthorityEntityId`), completed by `otherRegistrationAuthorityId` when `registrationAuthorityId` is `RA888888`. A credential whose `registrationAuthorityId` is `RA999999` has no organization key.
+- The **organization key** of an Organization credential is the pair (`registrationAuthorityId`, `registrationAuthorityEntityId`), completed by `otherRegistrationAuthorityId` when `registrationAuthorityId` is `RA888888`. A credential that carries no `registrationAuthorityEntityId`, because the organization is entered in no register (`RA999999`) or because its register assigns no identifier, has no organization key.
 - Two Organization credentials that carry the same organization key identify the same organization, whatever their subjects and their other attributes. `legalJurisdiction`, `entityCategory`, `entityLegalFormCode` and `otherLegalForm` are not part of the key: a difference in one of them between two credentials of the same key is an inconsistency between these credentials, and does not make two organizations.
 - Two Organization credentials that have no organization key identify the same organization when they carry the same `lei`, or, when they carry none, when they have the same subject.
 - Unless the ecosystem governance framework defines otherwise, the issuer writes `registrationAuthorityEntityId` as the register writes it, and two values are compared as strings after Unicode NFC normalization: no other character is removed or folded, since what separates two identifiers differs from one register to another.
@@ -1403,7 +1403,7 @@ An issuer MUST verify, before it issues an Organization credential, that:
 
 - `registrationAuthorityId` is a code of the list. Except for a credential of category `BRANCH`, it designates a register of the `legalJurisdiction` of the organization.
 - for a credential of category `BRANCH`: the register is the one in which the branch is entered, in the jurisdiction where it operates, and `registrationAuthorityId` is not `RA999999`; `legalJurisdiction`, `entityLegalFormCode` and `otherLegalForm` are those of the organization the branch belongs to; `legalAddress` is the address of the branch in the jurisdiction where it operates.
-- `registrationAuthorityEntityId` identifies the organization itself, and not one of its establishments.
+- `registrationAuthorityEntityId` is present whenever the register assigns an identifier to the organization, and identifies the organization itself, not one of its establishments.
 - `entityLegalFormCode`, when present, is a code the list gives for that jurisdiction, or one of the two reserved codes.
 - `lei`, when present, has valid check digits (ISO 7064 MOD 97-10), and its LEI record carries the same registration authority and the same identifier in it.
 
@@ -1600,11 +1600,6 @@ The resulting `json_schema` attribute will be the following Json Schema.
                 "registrationAuthorityEntityId"
               ]
             }
-          },
-          "else": {
-            "required": [
-              "registrationAuthorityEntityId"
-            ]
           }
         },
         {
