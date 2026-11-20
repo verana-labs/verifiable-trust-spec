@@ -1198,7 +1198,7 @@ To verify that a `CredentialSchema` entry in a VPR is an Essential Credential Sc
 | Schema | Digest |
 |---|---|
 | ServiceCredential | `sha384-0v+BAFGpnBX/RVqH9dUlMglxMrD4AKy4qUtb1lMN4iW9I2gO7XjcUfmGOf0oInP3` |
-| OrganizationCredential | `sha384-g9DnERuFRiEo8+E6JhOH4sw/inexEv8jgaFn42A8QtArNxOSn244l+W1R875C2jc` |
+| OrganizationCredential | `sha384-QavjwIoCcKbT3Nsc9M/O6v/wfZAVspyhAALWAYt5aGjEMmF9Ieox47ygGTXtz0Rs` |
 | PersonaCredential | `sha384-upB036Jcqw2Z50NlVK7XqwjjnH7G+R53ilCdmhKv4YdA5ZBy6wygjBwkj4v/2ZV+` |
 | UserAgentCredential | `sha384-rIWkh3zBD1Ak7CNGpAwZ/ONSmf+ywOYSF3H60ULc9/a1ZYKv6EqiQMJ2dm8dOfjm` |
 | BadgeCredential | `sha384-ZxJ2aRpoF/5DJSILWwOES6bmpMg3RZYOfO2CCF8hC/YDNvU+PhCqAnAXq/66nXCq` |
@@ -1322,7 +1322,9 @@ the resulting `json_schema` attribute will be the following Json Schema.
 
 #### [ECS-ORG] Organization Credential Json Schema
 
-Used to identify Organizations that operate Verifiable Services.
+Used to identify Organizations that operate Verifiable Services: the Organization credential identifies the controller of a service.
+
+The attributes that identify the organization take their names, formats and code lists from the Legal Entity Reference Data of the Global Legal Entity Identifier System (the LEI Common Data File format published by [GLEIF](https://www.gleif.org)), so that an organization is described in an Organization credential as it is in an LEI record. The organization does not need an LEI.
 
 [Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/org.json)
 
@@ -1331,8 +1333,8 @@ Credential subject object of schema MUST contain the following attributes:
 - `id` (string) (*mandatory*): the [[ref: DID]] of the organization the credential has been issued to, which is the subject of the [[ref: verifiable credential]].  
   URI format, max length: 2048 chars.
 
-- `name` (string) (*mandatory*): name of the organization.  
-  UTF8 charset, min length: 1 char, max length: 512 chars.
+- `legalName` (string) (*mandatory*): legal name of the organization, as its registration authority records it.  
+  UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
 
 - `logoUri` (string) (*mandatory*): URI of the organization logo image (as shown in browsers and search engines).  
   Allowed media types of the dereferenced resource: `image/png`, `image/jpeg`, `image/svg+xml`.  
@@ -1341,34 +1343,84 @@ Credential subject object of schema MUST contain the following attributes:
 - `logoDigestSri` (string) (*mandatory*): Subresource Integrity digest of the `logoUri` resource, encoded as <algorithm>-<base64-digest> (SRI format).  
   Max length: 256 chars.
 
-- `registryId` (string) (*mandatory*): identifier of the organization in an external authoritative registry (e.g., company register).  
-  UTF8 charset, min length: 1 char, max length: 256 chars.
+- `registrationAuthorityId` (string) (*mandatory*): code of the register in which the organization is entered, taken from the [GLEIF Registration Authorities List](https://www.gleif.org/en/about-lei/code-lists/gleif-registration-authorities-list). Two reserved codes of that list are used: `RA999999` when the organization is entered in no register, and `RA888888` when its register is not in the list. GLEIF reserves `RA888888` as an interim code, for the time it takes to add a register to the list at the request of an LEI issuer. This specification gives it a lasting meaning, any register that is not in the list, with no time limit: the issuer of an Organization credential is not an LEI issuer and cannot have a register added.  
+  Pattern: `^RA[0-9]{6}$`.
 
-- `registryUri` (string) (*optional*): URI pointing to the organization’s record in the external registry.  
-  URI format, max length: 4096 chars.
+- `otherRegistrationAuthorityId` (string) (*conditional*): designation of the register when it is not in the list. MUST be present when `registrationAuthorityId` is `RA888888`, and MUST NOT be present otherwise.  
+  UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
 
-- `address` (string) (*mandatory*): postal address of the organization.  
-  UTF8 charset, min length: 1 char, max length: 1024 chars.
+- `registrationAuthorityEntityId` (string) (*conditional*): identifier of the organization in that register, written as the register writes it. MUST be present when the register assigns an identifier to the organization. MUST NOT be present when `registrationAuthorityId` is `RA999999`, nor when the register assigns none.  
+  UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
 
-- `countryCode` (string) (*mandatory*): primary country of legal registration of the organization, expressed as an ISO 3166-1 alpha-2 country code.  
-  Pattern: `^[A-Z]{2}$`.
+- `legalJurisdiction` (string) (*mandatory*): jurisdiction under whose law the organization is formed, expressed as an ISO 3166-1 alpha-2 country code or as an ISO 3166-2 subdivision code (e.g., `US-CA`), whichever the [GLEIF Accepted Legal Jurisdictions Code List](https://www.gleif.org/en/about-lei/code-lists/gleif-accepted-legal-jurisdictions-code-list) gives for that jurisdiction. A territory that has its own ISO 3166-1 code is written with that code (`PR`, not `US-PR`).  
+  Pattern: `^[A-Z]{2}(-[A-Z0-9]{1,3})?$`.
 
-- `legalJurisdiction` (string) (*optional*): legal jurisdiction applicable to the organization when sub-national jurisdictions matter (e.g., `US-CA`).  
-  Pattern: `^[A-Z]{2}(-[A-Z0-9]{1,3})?$`, max length: 64 chars.
+- `entityCategory` (string) (*optional*): category of the organization. If omitted, `GENERAL` MUST be assumed.  
+  Allowed values:
+  - `GENERAL`: a legal entity of no other category.
+  - `BRANCH`: a branch of an organization, registered in another jurisdiction than that organization. `registrationAuthorityId` MUST NOT be `RA999999`: a branch is entered in a register.
+  - `FUND`: an investment fund.
+  - `SOLE_PROPRIETOR`: an individual acting in a business capacity.
+  - `RESIDENT_GOVERNMENT_ENTITY`: a body of a central, state or local government.
+  - `INTERNATIONAL_ORGANIZATION`: an organization created by an international agreement.
 
-- `organizationKind` (string) (*optional*): informational classification of the organization (free-text, non-normative), intended for display or filtering purposes.  
-  UTF8 charset, min length: 1 char, max length: 64 chars.
+- `entityLegalFormCode` (string) (*optional*): legal form of the organization, as a code of the [ISO 20275 Entity Legal Forms Code List](https://www.gleif.org/en/about-lei/code-lists/iso-20275-entity-legal-forms-code-list). The list has two reserved codes, valid in every jurisdiction: `8888` for a legal form that is not yet in the list, and `9999` for an organization that has no separate legal form.  
+  Pattern: `^[A-Z0-9]{4}$`.
 
-- `lei` (string) (*optional*): Legal Entity Identifier (LEI), if known and asserted by the issuer during onboarding.  
-  Pattern: `^[A-Z0-9]{20}$`.
+- `otherLegalForm` (string) (*conditional*): legal form of the organization as text. MUST be present when `entityLegalFormCode` is `8888` or `9999`, MUST NOT be present when `entityLegalFormCode` is any other code, and MAY be present when `entityLegalFormCode` is absent.  
+  UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
+
+- `legalAddress` (object) (*mandatory*): address of the organization, as its registration authority records it. The object MUST contain no other attribute than the following:
+  - `firstAddressLine` (string) (*mandatory*): first line of the address.
+  - `addressNumber` (string) (*optional*): number of the building, when it is also given apart from the address lines.
+  - `addressNumberWithinBuilding` (string) (*optional*): number of the floor, suite or apartment within the building.
+  - `mailRouting` (string) (*optional*): routing line of the address (a "care of" address).
+  - `additionalAddressLine` (array of strings) (*optional*): one to three further lines of the address.
+  - `city` (string) (*mandatory*): name of the city.
+  - `region` (string) (*optional*): ISO 3166-2 subdivision code of the region. Pattern: `^[A-Z]{2}-[A-Z0-9]{1,3}$`.
+  - `country` (string) (*mandatory*): ISO 3166-1 alpha-2 country code. Pattern: `^[A-Z]{2}$`.
+  - `postalCode` (string) (*optional*): postal code.
+
+  Every string attribute of the object other than `region` and `country`: UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
+
+- `lei` (string) (*optional*): Legal Entity Identifier (LEI, ISO 17442) of the organization, when it has one.  
+  Pattern: `^[0-9A-Z]{18}[0-9]{2}$`.
+
 - `onboardingSummaryDigestSri` (string) (*optional*): Subresource Integrity digest, encoded as <algorithm>-<base64-digest> (SRI format), of the **onboarding summary** compiled by the issuer: the document describing the information, proofs and decisions of the validation of the organization that led to this issuance. The counterpart, for a schema in `NO_ONBOARDING_PROCESS` holder mode, of the `onboarding_summary_digest` a validator records on a `HOLDER` `Accreditation` entry. The issuer MUST retain the summary for the period its ecosystem governance framework requires, MUST produce it to the ecosystem governance authority on request, MAY share it with the subject, and MUST NOT publish it. Whether accredited issuers MUST set this attribute is decided by the ecosystem governance framework.  
   Max length: 256 chars.
 
+**Organization key:**
+
+- The **organization key** of an Organization credential is the pair (`registrationAuthorityId`, `registrationAuthorityEntityId`), completed by `otherRegistrationAuthorityId` when `registrationAuthorityId` is `RA888888`. A credential that carries no `registrationAuthorityEntityId`, because the organization is entered in no register (`RA999999`) or because its register assigns no identifier, has no organization key.
+- Two Organization credentials that carry the same organization key identify the same organization, whatever their subjects and their other attributes. `legalJurisdiction`, `entityCategory`, `entityLegalFormCode` and `otherLegalForm` are not part of the key: a difference in one of them between two credentials of the same key is an inconsistency between these credentials, and does not make two organizations.
+- Two Organization credentials that have no organization key identify the same organization when they carry the same `lei`, or, when they carry none, when they have the same subject.
+- Unless the ecosystem governance framework defines otherwise, the issuer writes `registrationAuthorityEntityId` as the register writes it, and two values are compared as strings after Unicode NFC normalization: no other character is removed or folded, since what separates two identifiers differs from one register to another.
+- The ecosystem governance framework defines which register an issuer uses when an organization is entered in several registers of its jurisdiction. It also fixes the designation of each register that is not in the list, so that every issuer writes the same `otherRegistrationAuthorityId` for it: a designation written in two ways would make two organizations of one.
+
+**Issuance rules:**
+
+An issuer MUST verify, before it issues an Organization credential, that:
+
+- `registrationAuthorityId` is a code of the list. Except for a credential of category `BRANCH`, it designates a register of the `legalJurisdiction` of the organization.
+- for a credential of category `BRANCH`: the register is the one in which the branch is entered, in the jurisdiction where it operates, and `registrationAuthorityId` is not `RA999999`; `legalJurisdiction`, `entityLegalFormCode` and `otherLegalForm` are those of the organization the branch belongs to; `legalAddress` is the address of the branch in the jurisdiction where it operates.
+- `registrationAuthorityEntityId` is present whenever the register assigns an identifier to the organization, and identifies the organization itself, not one of its establishments.
+- `entityLegalFormCode`, when present, is a code the list gives for that jurisdiction, or one of the two reserved codes.
+- `lei`, when present, has valid check digits (ISO 7064 MOD 97-10), and its LEI record carries the same registration authority and the same identifier in it.
+
+When a later version of the list includes a register for which an issuer used `RA888888`, the issuer MUST use the code of the register in the credentials it issues from then on, and MUST re-issue with that code, without waiting for their expiry, the credentials that carry `RA888888` for that register: until then the same organization has two organization keys.
+
+An establishment of an organization, and a branch registered in the jurisdiction of the organization it belongs to, are not organizations: the services they operate present the Organization credential of the organization.
+
+A credential of category `BRANCH` identifies the registration of a branch in the jurisdiction where it operates. A branch is not a separate legal entity: the organization it belongs to answers for it. The credential does not identify that organization: its organization key is the registration of the branch, and it carries no reference to the head office, which may hold no Organization credential and be entered in no VPR.
+
+A subsidiary is a separate organization, with its own Organization credential. This specification defines no relation between Organization credentials.
+
 **Implementation notes (non-normative):**
 
-- `credentialSubject.id` (the DID) is the **sole authoritative identifier** for trust resolution within the Verifiable Trust system.
-- External identifiers such as `lei` and `registryId` are **informational references** and MUST NOT be treated as authoritative sources of truth unless supported by verifiable credentials issued under their respective governance frameworks (e.g., vLEI).
-- `countryCode` provides a baseline jurisdiction signal. When applicable law depends on sub-national jurisdiction, `legalJurisdiction` SHOULD be provided and takes precedence for legal interpretation (e.g., moderation, liability, compliance).
+- `credentialSubject.id` (the DID) is the **sole authoritative identifier** for trust resolution within the Verifiable Trust system. The organization key tells which legal entity stands behind a DID, and that several DIDs belong to the same one.
+- The attributes are statements of the issuer of the credential, an accredited issuer of the ECS ecosystem: a verifier relies on them to the extent it trusts that ecosystem. They are not statements of the registration authority or of GLEIF, and an `lei` is authoritative only through a credential issued under its own governance framework (e.g., vLEI).
+- Trusts, funds and international organizations are common cases of organizations entered in no register (`RA999999`). LEI records write the jurisdiction of an international organization as `UN` (the United Nations, its specialized agencies and affiliated organizations), `EU` (an organization established by a treaty signed by all the members of the European Union and no other country) or `XX` (every other case), and its legal form as the reserved code `9999` with the name of the founding treaty as text.
+- The LEI Common Data File format names these attributes `LegalName`, `RegistrationAuthorityID`, `OtherRegistrationAuthorityID`, `RegistrationAuthorityEntityID`, `LegalJurisdiction`, `EntityCategory`, `EntityLegalFormCode`, `OtherLegalForm`, `LegalAddress` and `LEI`.
 
 The resulting `json_schema` attribute will be the following Json Schema.
 
@@ -1390,10 +1442,11 @@ The resulting `json_schema` attribute will be the following Json Schema.
           "format": "uri",
           "maxLength": 2048
         },
-        "name": {
+        "legalName": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 512
+          "maxLength": 500,
+          "pattern": "^\\S+( \\S+)*$"
         },
         "logoUri": {
           "type": "string",
@@ -1404,41 +1457,116 @@ The resulting `json_schema` attribute will be the following Json Schema.
           "type": "string",
           "maxLength": 256
         },
-        "registryId": {
+        "registrationAuthorityId": {
+          "type": "string",
+          "pattern": "^RA[0-9]{6}$"
+        },
+        "otherRegistrationAuthorityId": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 256
+          "maxLength": 500,
+          "pattern": "^\\S+( \\S+)*$"
         },
-        "registryUri": {
-          "type": "string",
-          "format": "uri",
-          "maxLength": 4096
-        },
-        "address": {
+        "registrationAuthorityEntityId": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 1024
-        },
-        "countryCode": {
-          "type": "string",
-          "minLength": 2,
-          "maxLength": 2,
-          "pattern": "^[A-Z]{2}$"
+          "maxLength": 500,
+          "pattern": "^\\S+( \\S+)*$"
         },
         "legalJurisdiction": {
           "type": "string",
-          "minLength": 1,
-          "maxLength": 64,
           "pattern": "^[A-Z]{2}(-[A-Z0-9]{1,3})?$"
         },
-        "organizationKind": {
+        "entityCategory": {
+          "type": "string",
+          "enum": [
+            "GENERAL",
+            "BRANCH",
+            "FUND",
+            "SOLE_PROPRIETOR",
+            "RESIDENT_GOVERNMENT_ENTITY",
+            "INTERNATIONAL_ORGANIZATION"
+          ]
+        },
+        "entityLegalFormCode": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{4}$"
+        },
+        "otherLegalForm": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 64
+          "maxLength": 500,
+          "pattern": "^\\S+( \\S+)*$"
+        },
+        "legalAddress": {
+          "type": "object",
+          "properties": {
+            "firstAddressLine": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^\\S+( \\S+)*$"
+            },
+            "addressNumber": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^\\S+( \\S+)*$"
+            },
+            "addressNumberWithinBuilding": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^\\S+( \\S+)*$"
+            },
+            "mailRouting": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^\\S+( \\S+)*$"
+            },
+            "additionalAddressLine": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 3,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500,
+                "pattern": "^\\S+( \\S+)*$"
+              }
+            },
+            "city": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^\\S+( \\S+)*$"
+            },
+            "region": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}-[A-Z0-9]{1,3}$"
+            },
+            "country": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$"
+            },
+            "postalCode": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500,
+              "pattern": "^\\S+( \\S+)*$"
+            }
+          },
+          "required": [
+            "firstAddressLine",
+            "city",
+            "country"
+          ],
+          "additionalProperties": false
         },
         "lei": {
           "type": "string",
-          "pattern": "^[A-Z0-9]{20}$"
+          "pattern": "^[0-9A-Z]{18}[0-9]{2}$"
         },
         "onboardingSummaryDigestSri": {
           "type": "string",
@@ -1447,12 +1575,109 @@ The resulting `json_schema` attribute will be the following Json Schema.
       },
       "required": [
         "id",
-        "name",
+        "legalName",
         "logoUri",
         "logoDigestSri",
-        "registryId",
-        "address",
-        "countryCode"
+        "registrationAuthorityId",
+        "legalJurisdiction",
+        "legalAddress"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "registrationAuthorityId": {
+                "const": "RA999999"
+              }
+            },
+            "required": [
+              "registrationAuthorityId"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "registrationAuthorityEntityId"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "registrationAuthorityId": {
+                "const": "RA888888"
+              }
+            },
+            "required": [
+              "registrationAuthorityId"
+            ]
+          },
+          "then": {
+            "required": [
+              "otherRegistrationAuthorityId"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "otherRegistrationAuthorityId"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "entityLegalFormCode"
+            ]
+          },
+          "then": {
+            "if": {
+              "properties": {
+                "entityLegalFormCode": {
+                  "enum": [
+                    "8888",
+                    "9999"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "otherLegalForm"
+              ]
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "otherLegalForm"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "entityCategory": {
+                "const": "BRANCH"
+              }
+            },
+            "required": [
+              "entityCategory"
+            ]
+          },
+          "then": {
+            "properties": {
+              "registrationAuthorityId": {
+                "not": {
+                  "const": "RA999999"
+                }
+              }
+            }
+          }
+        }
       ]
     }
   }
@@ -2279,7 +2504,7 @@ sequenceDiagram
 
 How a verifier (a [[ref: VS]], or a [[ref: VUA]] within [PRB-1]) obtains over a [[ref: trusted channel]] the presentation of credentials held by a [[ref: VS]], or by a [[ref: VUA]] for its own User Agent credential (`SERVICE` schemas declared `ON_REQUEST` or `ON_APPROVAL`, [VT-DECL]) or by the person using a [[ref: VUA]] (`PERSON` schemas, [VT-DECL-SUBJECT-2]); `PUBLIC` credentials are read from the holder's DID Document. Two phases: the verifier asks which credentials of the requested schemas the holder will present, and the holder answers, automatically (`ON_REQUEST`) or after the consent and selection of its controller or of the person (`ON_APPROVAL`, `PERSON`), disclosing nothing before that consent; then each credential answered is exchanged on its own, the verifier recording and paying the exchange when one is required, the holder presenting. No answer confirms a claim before the exchange is recorded: a verifier cannot obtain for free what it would pay a presentation for. OpenID4VP and the Digital Credentials API carry no such phases: a [[ref: VS]] requests over them, in this version, only presentations requiring no `CredentialPresentation` ([PRB-5]). Messages: [VT-PRES-VS-MSG].
 
-- [VT-PRES-VS-1] **Discovery.** The verifier identifies the holder by its DID, which it MAY find through a VPR indexer or trust graph, by attributes of the credentials the holder publishes (the registry identifier of an Organization credential, for example).
+- [VT-PRES-VS-1] **Discovery.** The verifier identifies the holder by its DID, which it MAY find through a VPR indexer or trust graph, by attributes of the credentials the holder publishes (the organization key of an Organization credential, [ECS-ORG], for example).
 - [VT-PRES-VS-2] **Connection.** A [[ref: trusted channel]] ([VT-CHAN]), after mutual verification: [VS-CONN-VS] between services, [VS-CONN-VUA] and [VUA-CONN-VS] between a service and a User Agent, [VUA-CONN-VUA] between User Agents.
 - [VT-PRES-VS-3] **Request.** The verifier lists the `CredentialSchema` entries it requests, each by its VTJSC, and MAY ask that the presentations be anchored ([VT-PRES-VS-9]). A request MUST NOT mix `ON_REQUEST` schemas with consent schemas (`ON_APPROVAL`, `PERSON`); a mixed request is refused as a whole with an `error` `mixed-request` ([VT-PROTO-4]). It carries no criteria on the credentials (no attribute values, no acceptable issuers): the holder side chooses what to present. It MAY carry a free-text purpose, shown to the controller or the person, that names no attribute and is never confirmed. A presentation carries one credential. The request MUST comply with [PRB]; the holder MUST verify the verifier per [PRT-3] for each requested schema before answering.
 - [VT-PRES-VS-4] **Answer.** Before any `CredentialPresentation` transaction or fee, without disclosing any claim: for `ON_REQUEST` schemas automatically, for `ON_APPROVAL` and `PERSON` schemas only after the consent of [VT-PRES-VS-5] and with the selected credentials only. Under `ON_REQUEST` the holder answers, per schema, its most recently received active credential and whether more remain, the next one only once the previous one was exchanged ([VT-PRES-VS-6]); the order is the time it received each credential, fixed at the first answer of the request, kept across a migration or restore, consistent for equal times, never disclosed; a credential that ceased to be active after it was answered is reported with `error` `no-longer-available` carrying its `exchange_id` ([VT-PROTO-4]), and the holder answers the next credential of the order on the verifier's `next`; a credential that ceased to be active before being answered is skipped. Active: accepted by the holder's own trust resolution at the time of the answer ([TR]): not expired, not revoked, `HOLDER` entry in force when the schema requires one ([TR-9]), issuer currently authorized under `NO_DIGEST` ([TR-5]). Per credential answered: an exchange identifier (`exchange_id`, a uuid) chosen by the holder, the issuer DID, whether the holder requires a `CredentialPresentation` and whether the presentation is anchored ([VT-DECL-RECORD-3], [VT-PRES-VS-9]). No reference is named: each party derives them from the DIDs through its indexer, as the VPR applies them ([Record Credential Presentation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-ac-msg-16-record-credential-presentation)): the issuer reference is the `ISSUER` entry the credential's digest was anchored under while it exists, else an `ISSUER` entry of the issuer for the schema, validated and effective, any one when several, else the `vs_id` of its [[ref: verifiable service entry]] (refused by the VPR while an active entry exists, so that the issuer's branch is paid), the issuer DID matched per [TR-10]; the verifier reference is the verifier's active `VERIFIER` entry for the schema, any one when several, else its [[ref: verifiable service entry]] (`OPEN` or `CREDENTIAL`), none for a VUA verifier ([PRB-1]). The verifier trust-resolves the issuer before paying. A schema with no credential answered is declined ([VT-PRES-VS-5]): no `CredentialPresentation` transaction for it.
