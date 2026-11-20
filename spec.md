@@ -1286,7 +1286,7 @@ Credential subject object of schema MUST contain the following attributes:
 - `logoDigestSri` (string) (*mandatory*): Subresource Integrity digest of the `logoUri` resource, encoded as <algorithm>-<base64-digest> (SRI format).  
   Max length: 256 chars.
 
-- `registrationAuthorityId` (string) (*mandatory*): code of the register in which the organization is entered, taken from the [GLEIF Registration Authorities List](https://www.gleif.org/en/about-lei/code-lists/gleif-registration-authorities-list). Two reserved codes of that list are used: `RA999999` when the organization is entered in no register, and `RA888888` when its register is not in the list.  
+- `registrationAuthorityId` (string) (*mandatory*): code of the register in which the organization is entered, taken from the [GLEIF Registration Authorities List](https://www.gleif.org/en/about-lei/code-lists/gleif-registration-authorities-list). Two reserved codes of that list are used: `RA999999` when the organization is entered in no register, and `RA888888` when its register is not in the list. GLEIF reserves `RA888888` as an interim code, for the time it takes to add a register to the list at the request of an LEI issuer. This specification gives it a lasting meaning, any register that is not in the list, with no time limit: the issuer of an Organization credential is not an LEI issuer and cannot have a register added.  
   Pattern: `^RA[0-9]{6}$`.
 
 - `otherRegistrationAuthorityId` (string) (*conditional*): designation of the register when it is not in the list. MUST be present when `registrationAuthorityId` is `RA888888`, and MUST NOT be present otherwise.  
@@ -1337,7 +1337,7 @@ Credential subject object of schema MUST contain the following attributes:
 - The **organization key** of an Organization credential is the pair (`registrationAuthorityId`, `registrationAuthorityEntityId`), completed by `otherRegistrationAuthorityId` when `registrationAuthorityId` is `RA888888`. A credential whose `registrationAuthorityId` is `RA999999` has no organization key.
 - Two Organization credentials that carry the same organization key identify the same organization, whatever their subjects and their other attributes. `legalJurisdiction`, `entityCategory`, `entityLegalFormCode` and `otherLegalForm` are not part of the key: a difference in one of them between two credentials of the same key is an inconsistency between these credentials, and does not make two organizations.
 - Two Organization credentials that have no organization key identify the same organization when they carry the same `lei`, or, when they carry none, when they have the same subject.
-- The ecosystem governance framework defines how the values of `registrationAuthorityEntityId` are written and compared, and which register an issuer uses when an organization is entered in several registers of its jurisdiction.
+- The ecosystem governance framework defines how the values of `registrationAuthorityEntityId` are written and compared, and which register an issuer uses when an organization is entered in several registers of its jurisdiction. It also fixes the designation of each register that is not in the list, so that every issuer writes the same `otherRegistrationAuthorityId` for it: a designation written in two ways would make two organizations of one.
 
 **Issuance rules:**
 
@@ -1347,6 +1347,8 @@ An issuer MUST verify, before it issues an Organization credential, that:
 - `registrationAuthorityEntityId` identifies the organization itself, and not one of its establishments.
 - `entityLegalFormCode`, when present, is a code the list gives for that jurisdiction.
 - `lei`, when present, has valid check digits (ISO 7064 MOD 97-10), and its LEI record carries the same registration authority and the same identifier in it.
+
+When a later version of the list includes a register for which an issuer used `RA888888`, the issuer MUST use the code of the register in the credentials it issues from then on, and MUST re-issue with that code, without waiting for their expiry, the credentials that carry `RA888888` for that register: until then the same organization has two organization keys.
 
 An establishment of an organization, and a branch registered in the jurisdiction of the organization it belongs to, are not organizations: the services they operate present the Organization credential of the organization.
 
