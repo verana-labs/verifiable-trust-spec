@@ -1352,7 +1352,7 @@ When a later version of the list includes a register for which an issuer used `R
 
 An establishment of an organization, and a branch registered in the jurisdiction of the organization it belongs to, are not organizations: the services they operate present the Organization credential of the organization.
 
-A credential of category `BRANCH` identifies the organization the branch belongs to, through its registration in another jurisdiction. It does not identify a separate legal entity.
+A credential of category `BRANCH` identifies the registration of a branch in the jurisdiction where it operates. A branch is not a separate legal entity: the organization it belongs to answers for it. The credential does not identify that organization: its organization key is the registration of the branch, and it carries no reference to the head office, which may hold no Organization credential and be entered in no VPR.
 
 A subsidiary is a separate organization, with its own Organization credential. This specification defines no relation between Organization credentials.
 
