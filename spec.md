@@ -1295,7 +1295,7 @@ Credential subject object of schema MUST contain the following attributes:
 - `registrationAuthorityEntityId` (string) (*conditional*): identifier of the organization in that register, written as the register writes it. MUST be present unless `registrationAuthorityId` is `RA999999`, and MUST NOT be present when it is.  
   UTF8 charset, min length: 1 char, max length: 500 chars, no leading, trailing or consecutive spaces.
 
-- `legalJurisdiction` (string) (*mandatory*): jurisdiction under whose law the organization is formed, expressed as an ISO 3166-1 alpha-2 country code or as an ISO 3166-2 subdivision code (e.g., `US-CA`). A territory that has its own ISO 3166-1 code is written with that code (`PR`, not `US-PR`).  
+- `legalJurisdiction` (string) (*mandatory*): jurisdiction under whose law the organization is formed, expressed as an ISO 3166-1 alpha-2 country code or as an ISO 3166-2 subdivision code (e.g., `US-CA`), whichever the [GLEIF Accepted Legal Jurisdictions Code List](https://www.gleif.org/en/about-lei/code-lists/gleif-accepted-legal-jurisdictions-code-list) gives for that jurisdiction. A territory that has its own ISO 3166-1 code is written with that code (`PR`, not `US-PR`).  
   Pattern: `^[A-Z]{2}(-[A-Z0-9]{1,3})?$`.
 
 - `entityCategory` (string) (*optional*): category of the organization. If omitted, `GENERAL` MUST be assumed.  
@@ -1362,7 +1362,7 @@ A subsidiary is a separate organization, with its own Organization credential. T
 
 - `credentialSubject.id` (the DID) is the **sole authoritative identifier** for trust resolution within the Verifiable Trust system. The organization key tells which legal entity stands behind a DID, and that several DIDs belong to the same one.
 - The attributes are statements of the issuer of the credential, an accredited issuer of the ECS ecosystem: a verifier relies on them to the extent it trusts that ecosystem. They are not statements of the registration authority or of GLEIF, and an `lei` is authoritative only through a credential issued under its own governance framework (e.g., vLEI).
-- Trusts, funds and international organizations are common cases of organizations entered in no register (`RA999999`). LEI records write the jurisdiction of an international organization as `XX` or `UN`.
+- Trusts, funds and international organizations are common cases of organizations entered in no register (`RA999999`). LEI records write the jurisdiction of an international organization as `UN` (the United Nations, its specialized agencies and affiliated organizations), `EU` (an organization established by a treaty signed by all the members of the European Union and no other country) or `XX` (every other case), and its legal form as the reserved code `9999` with the name of the founding treaty as text.
 - The LEI Common Data File format names these attributes `LegalName`, `RegistrationAuthorityID`, `OtherRegistrationAuthorityID`, `RegistrationAuthorityEntityID`, `LegalJurisdiction`, `EntityCategory`, `EntityLegalFormCode`, `OtherLegalForm`, `LegalAddress` and `LEI`.
 
 The resulting `json_schema` attribute will be the following Json Schema.
