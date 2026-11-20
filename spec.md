@@ -1141,7 +1141,7 @@ To verify that a `CredentialSchema` entry in a VPR is an Essential Credential Sc
 | Schema | Digest |
 |---|---|
 | ServiceCredential | `sha384-0v+BAFGpnBX/RVqH9dUlMglxMrD4AKy4qUtb1lMN4iW9I2gO7XjcUfmGOf0oInP3` |
-| OrganizationCredential | `sha384-g6NHUnrFc1OyTQdXdZmyHTcD4Iqph/eK9fy3aotSat6+nNb9Qm06+H9yU2MC78ba` |
+| OrganizationCredential | `sha384-ALGwbw084Q+1U2zgPslefTYS8xA4h4H5YN11JJwK+P5rqk1/BArT5zDmqQM7xxh2` |
 | PersonaCredential | `sha384-upB036Jcqw2Z50NlVK7XqwjjnH7G+R53ilCdmhKv4YdA5ZBy6wygjBwkj4v/2ZV+` |
 | UserAgentCredential | `sha384-rIWkh3zBD1Ak7CNGpAwZ/ONSmf+ywOYSF3H60ULc9/a1ZYKv6EqiQMJ2dm8dOfjm` |
 | BadgeCredential | `sha384-ZxJ2aRpoF/5DJSILWwOES6bmpMg3RZYOfO2CCF8hC/YDNvU+PhCqAnAXq/66nXCq` |
@@ -1301,7 +1301,7 @@ Credential subject object of schema MUST contain the following attributes:
 - `entityCategory` (string) (*optional*): category of the organization. If omitted, `GENERAL` MUST be assumed.  
   Allowed values:
   - `GENERAL`: a legal entity of no other category.
-  - `BRANCH`: a branch of an organization, registered in another jurisdiction than that organization.
+  - `BRANCH`: a branch of an organization, registered in another jurisdiction than that organization. `registrationAuthorityId` MUST NOT be `RA999999`: a branch is entered in a register.
   - `FUND`: an investment fund.
   - `SOLE_PROPRIETOR`: an individual acting in a business capacity.
   - `RESIDENT_GOVERNMENT_ENTITY`: a body of a central, state or local government.
@@ -1343,7 +1343,8 @@ Credential subject object of schema MUST contain the following attributes:
 
 An issuer MUST verify, before it issues an Organization credential, that:
 
-- `registrationAuthorityId` is a code of the list, and designates a register of the `legalJurisdiction` of the organization. For a credential of category `BRANCH`, the register is the one in which the branch is entered, in the jurisdiction where it operates, and `legalJurisdiction`, `entityLegalFormCode` and `otherLegalForm` are those of the organization the branch belongs to.
+- `registrationAuthorityId` is a code of the list. Except for a credential of category `BRANCH`, it designates a register of the `legalJurisdiction` of the organization.
+- for a credential of category `BRANCH`: the register is the one in which the branch is entered, in the jurisdiction where it operates, and `registrationAuthorityId` is not `RA999999`; `legalJurisdiction`, `entityLegalFormCode` and `otherLegalForm` are those of the organization the branch belongs to; `legalAddress` is the address of the branch in the jurisdiction where it operates.
 - `registrationAuthorityEntityId` identifies the organization itself, and not one of its establishments.
 - `entityLegalFormCode`, when present, is a code the list gives for that jurisdiction, or one of the two reserved codes.
 - `lei`, when present, has valid check digits (ISO 7064 MOD 97-10), and its LEI record carries the same registration authority and the same identifier in it.
@@ -1599,6 +1600,27 @@ The resulting `json_schema` attribute will be the following Json Schema.
                 "required": [
                   "otherLegalForm"
                 ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "entityCategory": {
+                "const": "BRANCH"
+              }
+            },
+            "required": [
+              "entityCategory"
+            ]
+          },
+          "then": {
+            "properties": {
+              "registrationAuthorityId": {
+                "not": {
+                  "const": "RA999999"
+                }
               }
             }
           }

@@ -232,6 +232,27 @@
               }
             }
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "entityCategory": {
+                "const": "BRANCH"
+              }
+            },
+            "required": [
+              "entityCategory"
+            ]
+          },
+          "then": {
+            "properties": {
+              "registrationAuthorityId": {
+                "not": {
+                  "const": "RA999999"
+                }
+              }
+            }
+          }
         }
       ]
     }
