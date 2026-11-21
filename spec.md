@@ -75,6 +75,9 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 [[def: ecosystem, ecosystems]]:
 ~ An `Ecosystem` entry of a [[ref: VPR]], as the VPR spec defines it ([Ecosystem](https://verana-labs.github.io/verifiable-trust-vpr-spec/#ecosystem)).
 
+[[def: Ecosystem DID, Ecosystem DIDs]]:
+~ The [[ref: DID]] that is the current identifier of the [[ref: verifiable service entry]] of an `Ecosystem` entry (`Ecosystem.vs_id`). It issues the VTJSCs of the credential schemas of that [[ref: ecosystem]]. Several `Ecosystem` entries of one [[ref: corporation]] MAY share it: an ecosystem is identified by its `id` in the [[ref: VPR]], not by this DID.
+
 [[def: essential credential schema, essential credential schemas]]:
 ~ Default [[ref: credential schema]], owned by an [[ref: ecosystem]], that provide the basis for a trust layer to exist in the ecosystem so that [[ref: VUA]] can generate a [[ref: proof of trust]].
 
@@ -2649,7 +2652,7 @@ A binding maps [VT-PROTO] onto one [[ref: trusted channel protocol]] of [VT-CHAN
 
 - [TR-6] Every DID that appears as an issuer of a Verifiable Trust Credential during trust resolution (a VTJSC is a JSON Schema Credential, whose issuer is accepted under [TR-3] and [TR-7]) MUST itself be verified as a **Verifiable Service** conforming to [VS-REQ]. The credentials presented by that issuer's DID Document MUST themselves be verified by recursively applying [TR-1] through [TR-6] and [TR-9] through [TR-12].
 
-- [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at the **Ecosystem DID**, which is the issuer of the VTJSC and the identifier of the Ecosystem itself. The Ecosystem DID is the trust root: it is accepted under [TR-3], not as a Verifiable Service, and, for the Essential Credential Schemas, only when it is listed in the resolver's [WL-ECS] whitelist for the VPR of [WL-VPR]; an essential credential whose ecosystem is not whitelisted fails the resolution.
+- [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at the [[ref: Ecosystem DID]], which is the issuer of the VTJSC and the identifier of the [[ref: verifiable service entry]] of the Ecosystem that controls the schema ([TR-3]); the same DID MAY serve several Ecosystems of one corporation. The Ecosystem DID is the trust root: it is accepted under [TR-3], not as a Verifiable Service, and, for the Essential Credential Schemas, only when it is listed in the resolver's [WL-ECS] whitelist for the VPR of [WL-VPR]; an essential credential whose ecosystem is not whitelisted fails the resolution.
 
 - [TR-8] If any verification step in [TR-1] through [TR-7], [TR-9], [TR-10], [TR-11] or [TR-12] fails for any credential or DID encountered during trust resolution, the trust resolution MUST be considered failed, and the connection or credential MUST be rejected. A failure on an additional Linked VP ([VS-REQ-5]) on which the trust decision does not rely does not fail the resolution of the DID: that credential is disregarded.
 
@@ -2700,7 +2703,7 @@ A binding maps [VT-PROTO] onto one [[ref: trusted channel protocol]] of [VT-CHAN
 }
 ```
 
-- [WL-ECS]: Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of DIDs of Ecosystems they trust for providing essential credential schemas. Since an ECS Ecosystem may provide only some of them ([ECS-EC]), the list SHOULD cover the five essential credential schemas, [ECS-SERVICE], [ECS-ORG], [ECS-PERSONA], [ECS-UA] and [ECS-BADGE], each provided by at least one listed Ecosystem: an essential credential whose schema no listed Ecosystem provides fails the resolution ([TR-7]), so a list without the Service schema, or without both the Organization and Persona schemas, resolves no [[ref: VS]] ([VS-REQ-2] to [VS-REQ-4]), and a list without the User Agent schema admits no User Agent ([VS-CONN-VUA], [VUA-CONN-VUA]).
+- [WL-ECS]: Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of DIDs of Ecosystems they trust for providing essential credential schemas. A listed DID stands for every Ecosystem it is the [[ref: Ecosystem DID]] of: all of them are controlled by the same corporation, and the list cannot accept one and refuse another. Since an ECS Ecosystem may provide only some of them ([ECS-EC]), the list SHOULD cover the five essential credential schemas, [ECS-SERVICE], [ECS-ORG], [ECS-PERSONA], [ECS-UA] and [ECS-BADGE], each provided by at least one listed Ecosystem: an essential credential whose schema no listed Ecosystem provides fails the resolution ([TR-7]), so a list without the Service schema, or without both the Organization and Persona schemas, resolves no [[ref: VS]] ([VS-REQ-2] to [VS-REQ-4]), and a list without the User Agent schema admits no User Agent ([VS-CONN-VUA], [VUA-CONN-VUA]).
 
 Example:
 
