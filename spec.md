@@ -61,7 +61,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ A [[ref: VPR]] resource representing a legal/organizational entity that operates one or more [[ref: VSs]], each registered as a [[ref: verifiable service entry]] it owns, and MAY control [[ref: ecosystems]] and hold `Accreditation` entries in ecosystems. See [Corporation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#corporation) in the VPR spec.
 
 [[def: credential schema, credential schemas]]:
-~ An [[ref: VPR]] resource which represents a verifiable credential definition and the associated accreditations and business rules for issuing, verifying or holding a credential linked to this credential schema.
+~ A `CredentialSchema` entry of a [[ref: VPR]], as the VPR spec defines it ([CredentialSchema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema)).
 
 [[def: decentralized identifier, DID, DIDs]]:
 ~ A decentralized identifier, as specified in [[spec-norm:DID-CORE]].
@@ -133,7 +133,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ A digital identifier bound to cryptographic key material, such that another party can verify control of the identifier and resolve it to keys and endpoints, as specified in the [Trust Spanning Protocol (TSP) Specification](https://trustoverip.github.io/tswg-tsp-specification/). [[ref: DIDs]] are one type of VID. A [[ref: VPR]] registers VIDs without resolving them ([[ref: verifiable service entry]]); this specification requires the VIDs it resolves to be [[ref: DIDs]].
 
 [[def: verifiable public registry, VPR, VPRs]]:
-~ a public, normally decentralized network, which provides: ecosystem features, that can be used by all its [[ref: participants]]: create ecosystems, for each ecosystem, define its credential schemas, who can issue, verify credential of a specific credential schema,... For more information, please refer to [VPR Spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/).
+~ The registry that the [VPR spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/) defines: a public, ledger-based network that stores [[ref: ecosystems]], their [[ref: credential schemas]] and the accreditations of their [[ref: participants]].
 
 [[def: verifiable service, VS, VSs]]:
 ~ A service, identified by a resolvable [[ref: DID]], that can be deployed anywhere by its owner, that conforms to this spec, and that has a resolvable [[ref: proof of trust]]. A VS declares its service endpoints in its [[ref: DID Document]] (see [VS-SVC]); it MUST declare a service entry for each [[ref: trusted channel protocol]] it implements, DIDComm v2 at least, and MAY declare additional services such as MCP, A2A, a website, or any other service type.
