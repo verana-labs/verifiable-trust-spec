@@ -84,6 +84,9 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 [[def: holder, holders]]:
 ~ A role an entity might perform by possessing one or more verifiable credentials and generating verifiable presentations from them. A holder is often, but not always, a [[ref: subject]] of the verifiable credentials they are holding. Holders store their credentials in credential repositories. Example holders include organizations, persons, things.
 
+[[def: indexer, indexers]]:
+~ A service that follows the transactions and the events of a [[ref: VPR]] and serves its current state, its history and its exchange records to [[ref: VSs]] and [[ref: VUAs]], which read the VPR through the indexers of their whitelist ([WL-VPR]). Its interface is defined by the Indexer specification of the same version, published in [verana-spec](https://github.com/verana-labs/verana-spec).
+
 [[def: issuer, issuers]]:
 ~ A role an entity can perform by asserting claims about one or more [[ref: subjects]], creating a verifiable credential from these claims, and transmitting the verifiable credential to a [[ref: holder]]. Example issuers include corporations, non-profit organizations, trade associations, governments, and individuals.
 
@@ -2657,7 +2660,7 @@ A binding maps [VT-PROTO] onto one [[ref: trusted channel protocol]] of [VT-CHAN
 
 ### [WL] ECS Ecosystem whitelists and vpr: scheme resolution
 
-- [WL-VPR] Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of VPRs and how to access them: the indexer endpoints used for trust resolution and the RPC endpoints of the nodes used for transactions. As VPRs are decentralized, this gives the option to the VUA vendor or VS provider to run its own node and indexer and use their endpoints. An identifier of the form `vpr:<network>:<chain id>:...` (a schema reference, [VT-CRED-MDOC-3]) resolves through the whitelist entry whose `scheme` is its prefix `vpr:<network>:<chain id>`, with that entry's indexer; with no such entry it is unresolvable and the verification fails. An indexer serves an exchange record by its `exchange_id` from the event of the transaction ([VT-PRES-VS-6], [CIT-5]); its interface is specified with the indexer.
+- [WL-VPR] Compliant [[ref: VSs]] and [[ref: VUAs]] MUST maintain a list of VPRs and how to access them: the [[ref: indexer]] endpoints used for trust resolution and the RPC endpoints of the nodes used for transactions. As VPRs are decentralized, this gives the option to the VUA vendor or VS provider to run its own node and indexer and use their endpoints. An identifier of the form `vpr:<network>:<chain id>:...` (a schema reference, [VT-CRED-MDOC-3]) resolves through the whitelist entry whose `scheme` is its prefix `vpr:<network>:<chain id>`, with that entry's indexer; with no such entry it is unresolvable and the verification fails. An indexer serves an exchange record by its `exchange_id` from the event of the transaction ([VT-PRES-VS-6], [CIT-5]); its interface is defined by the Indexer specification ([[ref: indexer]]).
 
 **Example:**
 
