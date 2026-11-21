@@ -111,11 +111,17 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 [[def: recognized]]:
 ~ Of an `Accreditation` entry, for trust resolution: within its effective window, and neither its participation nor its corporation excluded ([TR-12]). Differs from the VPR's *active*, which also requires the absence of a slash debt: a debt bars acts, it does not withdraw trust.
 
+[[def: resolver, resolvers]]:
+~ A party, or a component of a party, that performs [[ref: trust resolution]] ([TR]): a [[ref: VS]] or a [[ref: VUA]] for its own decisions, or a service that performs it for others. A resolver applies its own whitelists ([WL-VPR], [WL-ECS]).
+
 [[def: service controller, controller of the service]]:
 ~ The party that decides for a [[ref: VS]]: the [[ref: corporation]] that owns its [[ref: verifiable service entry]], acting through the persons or the systems it appoints. It issues the Service credential of the service ([VS-REQ-4]) and, for `ON_APPROVAL` schemas, approves or declines the presentation requests the service receives ([VT-DECL-MODE-4]). Not to be confused with the controller of a DID, nor with the corporation that controls an [[ref: ecosystem]].
 
 [[def: subject, subjects]]:
 ~ A thing about which claims are made. Example subjects include human beings, animals, things, and organization, a [[ref: DID]]...
+
+[[def: transition window, transition windows]]:
+~ The period during which a former identifier remains acceptable after it was replaced, by the rotation of the identifier of a [[ref: verifiable service entry]] or by the move of an ecosystem to another entry: it ends at the `transition_until` of the VPR event that replaced it. [TR-10] defines what a former identifier remains acceptable for.
 
 [[def: trust resolution]]:
 ~ Process run by, for example a [[ref: VUA]] or a [[ref: VS]], which purpose is to recursively resolve [[ref: DID]] by digging into [[ref: DID Documents]] and look for [[ref: linked-vp]] entries and their [[ref: issuer]] [[ref: DIDs]], and [[ref: ecosystem]] entries to gather whether the service provided by the [[ref: DID]] is trusted (and legitimate), or not.
@@ -142,7 +148,7 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 ~ A service, identified by a resolvable [[ref: DID]], that can be deployed anywhere by its owner, that conforms to this spec, and that has a resolvable [[ref: proof of trust]]. A VS declares its service endpoints in its [[ref: DID Document]] (see [VS-SVC]); it MUST declare a service entry for each [[ref: trusted channel protocol]] it implements, DIDComm v2 at least, and MAY declare additional services such as MCP, A2A, a website, or any other service type.
 
 [[def: verifiable service entry, verifiable service entries]]:
-~ The registration of a [[ref: VID]] in a [[ref: VPR]] (a `VerifiableService` entry, referenced by `vs_id`): it records the owner [[ref: corporation]], the VS account that the service signs VPR messages with (`vs_account`), and the current value of the identifier; former values and their transition windows are known from the VPR's rotation events. Every `Accreditation` entry of a service references it, and a service MAY be registered without holding any `Accreditation` entry. See the [VPR spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#verifiableservice).
+~ The registration of a [[ref: VID]] in a [[ref: VPR]] (a `VerifiableService` entry, referenced by `vs_id`): it records the owner [[ref: corporation]], the VS account that the service signs VPR messages with (`vs_account`), and the current value of the identifier; former values and their [[ref: transition windows]] are known from the VPR's rotation events. Every `Accreditation` entry of a service references it, and a service MAY be registered without holding any `Accreditation` entry. See the [VPR spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#verifiableservice).
 
 [[def: verifiable user agent, VUA, VUAs]]:
 ~ A user agent for accessing and using [[ref: VSs]]. To be considered a [[ref: VUA]], a user agent must conform and enforce this spec, such as presenting a proof of trust to end user before accepting connecting to [[ref: VS]] compliant services, and refuse connecting to not compliant services.
@@ -2658,7 +2664,7 @@ A binding maps [VT-PROTO] onto one [[ref: trusted channel protocol]] of [VT-CHAN
 
 - [TR-6] Every DID that appears as an issuer of a Verifiable Trust Credential during trust resolution (a VTJSC is a JSON Schema Credential, whose issuer is accepted under [TR-3] and [TR-7]) MUST itself be verified as a **Verifiable Service** conforming to [VS-REQ]. The credentials presented by that issuer's DID Document MUST themselves be verified by recursively applying [TR-1] through [TR-6] and [TR-9] through [TR-12].
 
-- [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at the [[ref: Ecosystem DID]], which is the issuer of the VTJSC and the identifier of the [[ref: verifiable service entry]] of the Ecosystem that controls the schema ([TR-3]); the same DID MAY serve several Ecosystems of one corporation. The Ecosystem DID is the trust root: it is accepted under [TR-3], not as a Verifiable Service, and, for the Essential Credential Schemas, only when it is listed in the resolver's [WL-ECS] whitelist for the VPR of [WL-VPR]; an essential credential whose ecosystem is not whitelisted fails the resolution.
+- [TR-7] The recursion defined in [TR-1] and [TR-6] terminates at the [[ref: Ecosystem DID]], which is the issuer of the VTJSC and the identifier of the [[ref: verifiable service entry]] of the Ecosystem that controls the schema ([TR-3]); the same DID MAY serve several Ecosystems of one corporation. The Ecosystem DID is the trust root: it is accepted under [TR-3], not as a Verifiable Service, and, for the Essential Credential Schemas, only when it is listed in the [WL-ECS] whitelist of the [[ref: resolver]] for the VPR of [WL-VPR]; an essential credential whose ecosystem is not whitelisted fails the resolution.
 
 - [TR-8] If any verification step in [TR-1] through [TR-7], [TR-9], [TR-10], [TR-11] or [TR-12] fails for any credential or DID encountered during trust resolution, the trust resolution MUST be considered failed, and the connection or credential MUST be rejected. A failure on an additional Linked VP ([VS-REQ-5]) on which the trust decision does not rely does not fail the resolution of the DID: that credential is disregarded.
 
