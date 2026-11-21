@@ -36,7 +36,7 @@ The rapid expansion of AI agents makes this even more urgent. Autonomous agents 
 
 **Verifiable Trust** is an open, decentralized trust layer designed to address these problems at their root. It introduces a model where every service, organization, and user agent can cryptographically prove its identity, authorization, and governance context — before any connection is established.
 
-The core idea is straightforward: a **Verifiable Service** presents verifiable credentials that identify its owner, describe its purpose, and prove its authorization within a governed ecosystem. A **Verifiable User Agent** resolves and verifies these credentials, queries a **Verifiable Public Registry** to confirm that they were issued by recognized authorities, and displays a **Proof-of-Trust** to the user — all before the first interaction takes place.
+The core idea is straightforward: a **Verifiable Service** presents verifiable credentials that identify its owner, describe its purpose, and prove its authorization within a governed ecosystem. A **Verifiable User Agent** resolves and verifies these credentials, queries a **Verifiable Public Registry** to confirm that they were issued by recognized authorities, and displays a **proof of trust** to the user — all before the first interaction takes place.
 
 A key consequence is that a Verifiable Service is not identified by an opaque URL, but by a **resolvable DID**. Its DID Document declares its service endpoints (a trusted channel endpoint, **MCP**, **A2A** or a plain **website**, for example), and a peer verifies the service before it connects. This inverts the familiar "connect first, verify later" pattern of today's internet into a "verify first, then connect" model that applies uniformly to humans, applications, and AI agents.
 
@@ -160,11 +160,11 @@ The key words MAY, MUST, MUST NOT, OPTIONAL, RECOMMENDED, REQUIRED, SHOULD, and 
 
 *This section is non-normative.*
 
-When a user is invited to connect to a service, a verifiable trust-compliant user agent performs *trust resolution* on the service, presents the resulting Proof-of-Trust to the user, and prompts them to either accept or refuse the connection.
+When a user is invited to connect to a service, a verifiable trust-compliant user agent performs *trust resolution* on the service, presents the resulting proof of trust to the user, and prompts them to either accept or refuse the connection.
 
 ![proof-of-trust](./img/proof-of-trust.png)
 
-Trust Resolution is as simple as calling a method passing the DID of the service we want to resolve, to display a **Proof-of-Trust** to the end-user:
+Trust Resolution is as simple as calling a method passing the DID of the service we want to resolve, to display a **proof of trust** to the end-user:
 
 ```json
 resolve_trust("did:example:gaia")
@@ -229,7 +229,7 @@ Verifiable Trust introduces the following core concepts:
 - Verifiable Trust Credentials (VTC)
 - Essential Credential Schemas (ECS)
 
-The Proof-of-Trust is established by recursively resolving the credentials presented by (in this example) a service. What makes this trust verifiable is the use of cryptographic mechanisms built into Decentralized Identifiers (DIDs) and Verifiable Credentials, as applied across these five key concepts.
+The proof of trust is established by recursively resolving the credentials presented by (in this example) a service. What makes this trust verifiable is the use of cryptographic mechanisms built into Decentralized Identifiers (DIDs) and Verifiable Credentials, as applied across these five key concepts.
 
 Because these concepts are deeply interdependent, you may need to explore them together, and revisit them several times to fully grasp the Verifiable Trust model.
 
@@ -434,7 +434,7 @@ issuer --> holder: granted schema participant
 
 The roles of an `Accreditation` entry (`ECOSYSTEM`, `ISSUER_GRANTOR`, `VERIFIER_GRANTOR`, `ISSUER`, `VERIFIER`, `HOLDER`) are defined by the VPR spec ([Accreditation](https://verana-labs.github.io/verifiable-trust-vpr-spec/#accreditation)). A grantor is a participant that holds a grantor accreditation, under which it validates candidate issuers or verifiers.
 
-Example of a Json Schema credential schema:
+Example of a JSON Schema credential schema:
 
 ```json
 {
@@ -477,7 +477,7 @@ Example of a Json Schema credential schema:
 }
 ```
 
-### Verifiable Trust Json Schema Credentials (VTJSCs) and Verifiable Trust Credentials (VTCs)
+### Verifiable Trust JSON Schema Credentials (VTJSCs) and Verifiable Trust Credentials (VTCs)
 
 Data stored in a VPR is not verified at the time of storage, nor does it need to be. Verification happens outside the scope of the VPR.
 
@@ -487,9 +487,9 @@ The VPR provides registrations, not validations, leaving trust decisions and ver
 
 To make things verifiable, for a given credential schema:
 
-- Ecosystem creates a Credential Json Schema in a VPR, linked to its Ecosystem DID.
-- Ecosystem issues, with its DID, a **Json Schema Credential** linked to its credential **Json Schema** in the VPR
-- Then, authorized issuers can issue **Verifiable Trust Credentials** linked to the **Json Schema Credential** issued by Ecosystem DID.
+- Ecosystem creates a Credential JSON Schema in a VPR, linked to its Ecosystem DID.
+- Ecosystem issues, with its DID, a **JSON Schema Credential** linked to its credential **JSON Schema** in the VPR
+- Then, authorized issuers can issue **Verifiable Trust Credentials** linked to the **JSON Schema Credential** issued by Ecosystem DID.
 
 ```plantuml
 
@@ -502,7 +502,7 @@ object "CredentialSchema (in VPR)" as cs {
   id: 12345678
   json_schema: { "$id": ... "title": "ExampleCredential"}
 }
-object "Verifiable Trust Json Schema Credential" as jsc #3fbdb6 {
+object "Verifiable Trust JSON Schema Credential" as jsc #3fbdb6 {
   issuer: did:example:ecosystem
   jsonSchema: vpr:verana:vna-mainnet-1:cs:12345678
 }
@@ -535,11 +535,11 @@ With the Verifiable Trust concept now clearly established, we’re ready to dive
 
 ## Specification
 
-### [VT-JSON-SCHEMA-CRED-W3C] Verifiable Trust Json Schema Credential
+### [VT-JSON-SCHEMA-CRED-W3C] Verifiable Trust JSON Schema Credential
 
 To provide cryptographic evidence that data stored in a VPR (e.g., a credential JSON Schema) is authored and controlled by the Ecosystem that governs it, the **[[ref: corporation]] controlling the Ecosystem** issues a VTJSC (which is a [JSON Schema Credential](https://www.w3.org/TR/vc-json-schema/)) **after** creating the `CredentialSchema` entry in the VPR.
 
-The Json Schema Credential MUST be issued using the **Ecosystem DID recorded in the VPR** and MUST reference the corresponding `CredentialSchema` entry.
+The JSON Schema Credential MUST be issued using the **Ecosystem DID recorded in the VPR** and MUST reference the corresponding `CredentialSchema` entry.
 
 A VTJSC MUST include, at a minimum, the following attributes:
 
@@ -1128,7 +1128,7 @@ A relying party holding any mdoc VTC or presentation can therefore walk the `io.
 
 ### [VT-DECL] Credential Schema Declaration
 
-Each `CredentialSchema` entry of a [[ref: VPR]] declares, beyond its Json Schema and its onboarding modes, what the credentials of the schema are for and how agents handle them. The attributes and their values are defined by the VPR spec ([CredentialSchema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema)); this section states what agents do with each value:
+Each `CredentialSchema` entry of a [[ref: VPR]] declares, beyond its JSON Schema and its onboarding modes, what the credentials of the schema are for and how agents handle them. The attributes and their values are defined by the VPR spec ([CredentialSchema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credentialschema)); this section states what agents do with each value:
 
 - `subject_kind`: `SERVICE` when credentials are issued to a software (a [[ref: VS]] identified by its [[ref: DID]], or an instance of a software such as a [[ref: VUA]]), `PERSON` when they are issued to a natural person and held in that person's [[ref: VUA]];
 - `presentation_mode`, for `SERVICE` schemas only: `PUBLIC`, `ON_REQUEST` or `ON_APPROVAL`;
@@ -1194,7 +1194,7 @@ Ecosystems can create Essential Credential Schemas (ECS) by creating an [[ref: E
 - Service;
 - Organization;
 - Persona;
-- UserAgent;
+- User Agent;
 - Badge.
 
 #### [ECS-EC] Essential Credential Schemas Ecosystem
@@ -1223,7 +1223,7 @@ To verify that a `CredentialSchema` entry in a VPR is an Essential Credential Sc
 
 The `$id` property is excluded because it contains the VPR-specific schema identifier, which varies across deployments. The remaining schema content is identical for all conforming ECS Ecosystems.
 
-#### [ECS-SERVICE] Service Credential Json Schema
+#### [ECS-SERVICE] Service Credential JSON Schema
 
 Used to identify Verifiable Services.
 
@@ -1248,7 +1248,7 @@ Credential subject object of schema MUST contain the following attributes:
 - `privacyPolicyUri` (string) (mandatory): URI of the privacy policy of the service. URI format, max length: 4096 chars.
 - `privacyPolicyDigestSri` (string) (mandatory): Subresource Integrity digest of the `privacyPolicyUri` resource, encoded as <algorithm>-<base64-digest> (SRI format). Max length: 256 chars.
 
-the resulting `json_schema` attribute will be the following Json Schema.
+the resulting `json_schema` attribute will be the following JSON Schema.
 
 - `$id`: `VPR_CHAIN_ID` and `VPR_CREDENTIAL_SCHEMA_ID` are replaced by the VPR itself when it stores the schema, by its chain id and the id of the created `CredentialSchema` entry ([Create Credential Schema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-cs-msg-1-create-credential-schema)): the `$id` of a stored schema is always `vpr:verana:<chain id>:cs:<id>`.
 
@@ -1338,7 +1338,7 @@ the resulting `json_schema` attribute will be the following Json Schema.
 }
 ```
 
-#### [ECS-ORG] Organization Credential Json Schema
+#### [ECS-ORG] Organization Credential JSON Schema
 
 Used to identify Organizations that operate Verifiable Services: the Organization credential identifies the controller of a service.
 
@@ -1440,7 +1440,7 @@ A subsidiary is a separate organization, with its own Organization credential. T
 - Trusts, funds and international organizations are common cases of organizations entered in no register (`RA999999`). LEI records write the jurisdiction of an international organization as `UN` (the United Nations, its specialized agencies and affiliated organizations), `EU` (an organization established by a treaty signed by all the members of the European Union and no other country) or `XX` (every other case), and its legal form as the reserved code `9999` with the name of the founding treaty as text.
 - The LEI Common Data File format names these attributes `LegalName`, `RegistrationAuthorityID`, `OtherRegistrationAuthorityID`, `RegistrationAuthorityEntityID`, `LegalJurisdiction`, `EntityCategory`, `EntityLegalFormCode`, `OtherLegalForm`, `LegalAddress` and `LEI`.
 
-The resulting `json_schema` attribute will be the following Json Schema.
+The resulting `json_schema` attribute will be the following JSON Schema.
 
 - `$id`: `VPR_CHAIN_ID` and `VPR_CREDENTIAL_SCHEMA_ID` are replaced by the VPR itself when it stores the schema, by its chain id and the id of the created `CredentialSchema` entry ([Create Credential Schema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-cs-msg-1-create-credential-schema)): the `$id` of a stored schema is always `vpr:verana:<chain id>:cs:<id>`.
 
@@ -1702,7 +1702,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 }
 ```
 
-#### [ECS-PERSONA] Persona Credential Json Schema
+#### [ECS-PERSONA] Persona Credential JSON Schema
 
 Used to identify Personas (human-controlled avatars) that operate Verifiable Services.
 
@@ -1746,7 +1746,7 @@ Credential subject object of schema MUST contain the following attributes:
 - The Persona DID (`credentialSubject.id`) remains the authoritative identifier for trust resolution within the Verifiable Trust system.
 - If `controllerJurisdiction` is present, it SHOULD take precedence over `controllerCountryCode` for legal interpretation purposes.
 
-The resulting `json_schema` attribute will be the following Json Schema.
+The resulting `json_schema` attribute will be the following JSON Schema.
 
 - `$id`: `VPR_CHAIN_ID` and `VPR_CREDENTIAL_SCHEMA_ID` are replaced by the VPR itself when it stores the schema, by its chain id and the id of the created `CredentialSchema` entry ([Create Credential Schema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-cs-msg-1-create-credential-schema)): the `$id` of a stored schema is always `vpr:verana:<chain id>:cs:<id>`.
 
@@ -1820,7 +1820,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 }
 ```
 
-#### [ECS-UA] User Agent Credential Json Schema
+#### [ECS-UA] User Agent Credential JSON Schema
 
 [Permanent link to schema](https://verana-labs.github.io/verifiable-trust-spec/schemas/v5/ua.json)
 
@@ -1839,7 +1839,7 @@ Credential subject object of schema MUST contain the following attributes:
 - A UserAgentCredential is issued per User Agent instance. The credential carries **no instance identifier**: consistent with the AnonCreds container ([VT-CRED-ANON]), holder binding relies on the holder's link secret, so no correlatable identifier is shared during issuance or presentation.
 - Only identity-critical information is included in this schema. Descriptive, legal, or branding metadata (name, logo, policies, etc.) are intentionally excluded to keep trust resolution minimal and deterministic.
 
-The resulting `json_schema` attribute will be the following Json Schema.
+The resulting `json_schema` attribute will be the following JSON Schema.
 
 - `$id`: `VPR_CHAIN_ID` and `VPR_CREDENTIAL_SCHEMA_ID` are replaced by the VPR itself when it stores the schema, by its chain id and the id of the created `CredentialSchema` entry ([Create Credential Schema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-cs-msg-1-create-credential-schema)): the `$id` of a stored schema is always `vpr:verana:<chain id>:cs:<id>`.
 
@@ -1873,7 +1873,7 @@ The resulting `json_schema` attribute will be the following Json Schema.
 }
 ```
 
-#### [ECS-BADGE] Badge Credential Json Schema
+#### [ECS-BADGE] Badge Credential JSON Schema
 
 Used to identify **humans** (natural persons), such as the employees or members of the organization that operates a Verifiable Service. A Badge is issued to a human holder by a [[ref: VS]]; the organization or persona standing behind the holder is obtained by trust-resolving the **issuer** DID of the credential (see [VS-REQ] and [TR]).
 
@@ -1914,7 +1914,7 @@ Badge attributes identify the holder and carry informative facts only. A verifie
 - **Selective disclosure.** `photo` and `biometricPattern` are inherently strong correlation handles. Holders SHOULD disclose them only when an authentication challenge requires them (e.g., a face-match with liveness check), and verifiers SHOULD NOT request them by default.
 - **Matching topology.** How a `biometricPattern` is matched against a live capture (which party runs the match, who holds decryption keys for the protected template) is defined by the ecosystem's governance framework and is out of scope of this specification.
 
-The resulting `json_schema` attribute will be the following Json Schema.
+The resulting `json_schema` attribute will be the following JSON Schema.
 
 - `$id`: `VPR_CHAIN_ID` and `VPR_CREDENTIAL_SCHEMA_ID` are replaced by the VPR itself when it stores the schema, by its chain id and the id of the created `CredentialSchema` entry ([Create Credential Schema](https://verana-labs.github.io/verifiable-trust-vpr-spec/#mod-cs-msg-1-create-credential-schema)): the `$id` of a stored schema is always `vpr:verana:<chain id>:cs:<id>`.
 
@@ -1991,7 +1991,7 @@ To be considered compliant:
 - CredentialSchema entries for [ECS-SERVICE] MUST set `issuer_onboarding_mode` to `OPEN`: a [[ref: VS]] that issues its own Service credential ([VS-REQ-3]) is held accountable through the Organization or Persona credential bound to it, so the accreditation gate of the ECS trust model is on the Organization and Persona schemas, whichever ECS ecosystem provides them, and a VS anchors its own Service credential under its [[ref: verifiable service entry]] without any `ISSUER` entry ([CIB-4]); a VS whose Service credential is issued by another VS ([VS-REQ-4]) needs none either.
 - CredentialSchema entries for [ECS-ORG], [ECS-PERSONA] and [ECS-UA] MUST NOT set `issuer_onboarding_mode` to `OPEN`: these schemas are the accreditation gate of the ECS trust model (an Organization or Persona credential is what makes a service accountable, a User Agent credential identifies a software product line), so their issuers hold `ISSUER` entries obtained through an onboarding process (`ECOSYSTEM_ONBOARDING_PROCESS` or `GRANTOR_ONBOARDING_PROCESS`, the ecosystem's choice).
 - CredentialSchema entries for [ECS-BADGE] MUST set `issuer_onboarding_mode` to `OPEN` and `holder_onboarding_mode` to `NO_ONBOARDING_PROCESS`: any [[ref: corporation]] whose service qualifies as a [[ref: VS]] per [VS-REQ] issues Badges to the humans it stands behind under its [[ref: verifiable service entry]], without any `ISSUER` entry (it MAY self-create one to declare the fees it charges): trust in a Badge derives from trust-resolving its issuer ([TR-5], [TR-6]), not from an onboarding gate, and holders require no `Accreditation` entry in the VPR.
-- CredentialSchema entries for [ECS-UA] MUST set `holder_onboarding_mode` to `NO_ONBOARDING_PROCESS`, `verifier_onboarding_mode` to `OPEN` and `presentation_validity_period` to 0 or null, and the `verification_fees` of every [ECS-UA] `Accreditation` entry MUST be 0: a User Agent instance holds no `Accreditation` entry, and a VUA that verifies another VUA's credential ([VUA-CONN-VUA]) has no [[ref: verifiable service entry]], so it can neither hold a VERIFIER entry nor send a `CredentialPresentation` transaction. No `CredentialPresentation` transaction is ever sent for a UserAgent presentation, no fee is ever collected on it, and a verifier MUST NOT ask that such a presentation be anchored.
+- CredentialSchema entries for [ECS-UA] MUST set `holder_onboarding_mode` to `NO_ONBOARDING_PROCESS`, `verifier_onboarding_mode` to `OPEN` and `presentation_validity_period` to 0 or null, and the `verification_fees` of every [ECS-UA] `Accreditation` entry MUST be 0: a User Agent instance holds no `Accreditation` entry, and a VUA that verifies another VUA's credential ([VUA-CONN-VUA]) has no [[ref: verifiable service entry]], so it can neither hold a VERIFIER entry nor send a `CredentialPresentation` transaction. No `CredentialPresentation` transaction is ever sent for a User Agent presentation, no fee is ever collected on it, and a verifier MUST NOT ask that such a presentation be anchored.
 - CredentialSchema entries MUST set the declaration attributes of [VT-DECL] as follows:
 
 | Schema | `subject_kind` | `presentation_mode` | `credential_format` | `presentation_validity_period` | `credential_anchoring` |
@@ -2010,11 +2010,11 @@ See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credenti
 
 ### [VT-ECS-JSON-SCHEMA-CRED-W3C] Essential Schema VTJSCs
 
-- VTJSC [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].
-- VTJSC [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-ORG].
-- VTJSC [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-PERSONA].
-- VTJSC [VT-ECS-UA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-UA].
-- VTJSC [VT-ECS-BADGE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a Json Schema of a CredentialSchema entry that conforms to [ECS-BADGE].
+- VTJSC [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a JSON Schema of a CredentialSchema entry that conforms to [ECS-SERVICE].
+- VTJSC [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a JSON Schema of a CredentialSchema entry that conforms to [ECS-ORG].
+- VTJSC [VT-ECS-PERSONA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a JSON Schema of a CredentialSchema entry that conforms to [ECS-PERSONA].
+- VTJSC [VT-ECS-UA-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a JSON Schema of a CredentialSchema entry that conforms to [ECS-UA].
+- VTJSC [VT-ECS-BADGE-JSON-SCHEMA-CRED-W3C]: a [VT-JSON-SCHEMA-CRED-W3C] linked to a JSON Schema of a CredentialSchema entry that conforms to [ECS-BADGE].
 
 ### [VT-ECS-CRED] Essential Schema Verifiable Trust Credentials
 
@@ -2060,7 +2060,7 @@ See [vpr spec](https://verana-labs.github.io/verifiable-trust-vpr-spec/#credenti
 
 ### [VT-ECS-ECOSYSTEM-DIDDOC] Ecosystem DID Document for declaring Essential Credential Schemas
 
-If an Ecosystem wishes to provide ECS trust resolution, it MUST present the VT Json Schema Credential of each ECS it provides ([ECS-EC]), as well as the corresponding VPR entry for verification. To do that, Ecosystem MUST define the following entry in its DID Document for each ECS it provides:
+If an Ecosystem wishes to provide ECS trust resolution, it MUST present the VT JSON Schema Credential of each ECS it provides ([ECS-EC]), as well as the corresponding VPR entry for verification. To do that, Ecosystem MUST define the following entry in its DID Document for each ECS it provides:
 
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-schemas-service-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-SERVICE-JSON-SCHEMA-CRED-W3C].
 - a "LinkedVerifiablePresentation" service entry with fragment name equal to `#vpr-schemas-org-vtjsc-vp`, that MUST point to a self-issued and presented [VT-ECS-ORG-JSON-SCHEMA-CRED-W3C].
@@ -2748,7 +2748,7 @@ Such services typically ingest and index:
 - VPR entries (Ecosystems, Credential Schemas, Accreditations, ...)
 - Ecosystem DID Documents
 - Linked Verifiable Presentations published in DID Documents
-- Verifiable Trust Credentials and Verifiable Trust Json Schema Credentials
+- Verifiable Trust Credentials and Verifiable Trust JSON Schema Credentials
 - On-chain digest anchoring data (credentials of anchored schemas)
 
 Using this indexed data, a relying party (or a wallet acting on its behalf) can answer higher-level trust questions such as the following.
