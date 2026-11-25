@@ -33,6 +33,16 @@
           "minLength": 1,
           "maxLength": 128
         },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "maxLength": 254
+        },
+        "phoneNumber": {
+          "type": "string",
+          "pattern": "^\\+[1-9][0-9]{1,14}$",
+          "maxLength": 16
+        },
         "birthDate": {
           "type": "integer",
           "minimum": 10000101,
@@ -51,8 +61,7 @@
       },
       "required": [
         "badgeNumber",
-        "name",
-        "photo"
+        "name"
       ],
       "dependentRequired": {
         "biometricPattern": [
